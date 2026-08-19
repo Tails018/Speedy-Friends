@@ -1212,15 +1212,14 @@
         const snapshot=await this.usersRef.once("value");
         const remote=snapshot.val() || {};
         const remoteUsers=Object.values(remote);
-
-        // Merge the profiles already present in the HTML/local state with
-        // profiles stored in Firebase. Remote data wins for existing IDs,
-        // while local profiles missing remotely are uploaded by the admin.
         const localUsers=Array.isArray(state.users) ? state.users : [];
         const byId=new Map();
 
+        // Keep every profile that already exists locally or remotely.
+        // Remote data wins only when the same profile ID already exists.
         localUsers.forEach(user=>{
-          if(user?.id) byId.set(String(user.id), {
+          if(!user?.id) return;
+          byId.set(String(user.id),{
             ...defaultProfile(),
             ...user,
             rings:Number(user.rings||0),
@@ -1229,7 +1228,8 @@
         });
 
         remoteUsers.forEach(user=>{
-          if(user?.id) byId.set(String(user.id), {
+          if(!user?.id) return;
+          byId.set(String(user.id),{
             ...defaultProfile(),
             ...user,
             rings:Number(user.rings||0),
@@ -1237,63 +1237,68 @@
           });
         });
 
-        // If the signed-in Google account has no linked profile yet,
-        // create one automatically from the current local profile when
-        // possible; otherwise create a minimal profile for the account.
+        // IMPORTANT: every Google account gets its own stable profile.
+        // Never reuse/reassign another user's profile just because it is
+        // the currently selected profile on this browser.
         let own=Array.from(byId.values()).find(u=>u.ownerUid===this.uid);
+
         if(!own && this.email){
           own=Array.from(byId.values()).find(u=>
             String(u.ownerEmail||"").toLowerCase()===this.email.toLowerCase()
           );
+          if(own){
+            own.ownerUid=this.uid;
+            own.ownerEmail=this.email;
+            byId.set(String(own.id),own);
+          }
         }
 
         if(!own){
-          const candidate=localUsers.find(u=>
-            !u.ownerUid &&
-            String(u.ownerEmail||"").toLowerCase()===this.email.toLowerCase()
-          ) || activeUser();
+          const baseName=(this.email || "runner").split("@")[0]
+            .replace(/[^a-zA-Z0-9_-]/g,"")
+            .slice(0,24) || "runner";
 
-          const profile={
-            ...(candidate || defaultProfile()),
+          let profileId=`user-${this.uid}`;
+          let suffix=1;
+          while(byId.has(profileId)){
+            profileId=`user-${this.uid}-${suffix++}`;
+          }
+
+          own={
+            ...defaultProfile(),
+            id:profileId,
+            name:baseName,
+            username:baseName,
+            role:"Runner",
+            bio:"",
+            rings:0,
+            level:1,
+            xp:0,
             ownerUid:this.uid,
             ownerEmail:this.email,
-            id:candidate?.id || `user-${this.uid}`,
-            rings:Number(candidate?.rings||0),
-            equipped:{...DEFAULT_EQUIPPED,...(candidate?.equipped||{})}
+            equipped:{...DEFAULT_EQUIPPED}
           };
 
-          byId.set(String(profile.id),profile);
-          own=profile;
-        }else if(own.ownerUid!==this.uid || own.ownerEmail!==this.email){
-          own.ownerUid=this.uid;
-          own.ownerEmail=this.email;
-          byId.set(String(own.id),own);
+          byId.set(profileId,own);
         }
 
         state.users=Array.from(byId.values());
+        state.activeUserId=own.id;
 
-        if(!state.users.some(user=>user.id===state.activeUserId)){
-          state.activeUserId=own?.id || state.users[0]?.id || "";
-        }
-
-        // Admin publishes local profiles that are not yet in Firebase.
-        // Existing remote profiles are never overwritten wholesale.
+        // Admin uploads only profiles that are missing remotely.
+        // It never replaces the complete users collection.
         if(this.isAdmin()){
           const updates={};
           state.users.forEach(user=>{
-            if(!remote[user.id]){
-              updates[user.id]=this.sanitizeUser(user);
-            }
+            if(!remote[user.id]) updates[user.id]=this.sanitizeUser(user);
           });
-
           if(Object.keys(updates).length){
             await this.usersRef.update(updates);
           }
-        }else if(own){
-          // Ensure the signed-in user's own profile exists remotely.
-          await this.usersRef.child(own.id).update(
-            this.sanitizeUser(own)
-          );
+        }else{
+          // A newly authenticated account creates/updates only its own
+          // profile, leaving every other teammate untouched.
+          await this.usersRef.child(own.id).update(this.sanitizeUser(own));
         }
 
         try{
@@ -1322,8 +1327,14 @@
 
           if(!state.users.length) return;
 
-          if(!state.users.some(user=>user.id===current)){
-            state.activeUserId=own?.id || state.users[0].id;
+          // Keep this account on its own profile; do not switch it to
+          // another teammate when another user signs in elsewhere.
+          if(state.users.some(user=>user.id===own.id)){
+            state.activeUserId=own.id;
+          }else if(current && state.users.some(user=>user.id===current)){
+            state.activeUserId=current;
+          }else{
+            state.activeUserId=state.users[0].id;
           }
 
           renderActiveTab();
@@ -1337,9 +1348,7 @@
         const ringsSnapshot=await this.ringsRef.once("value");
         if(!ringsSnapshot.exists() && this.isAdmin()){
           const ringMap={};
-          state.users.forEach(user=>{
-            ringMap[user.id]=Number(user.rings||0);
-          });
+          state.users.forEach(user=>ringMap[user.id]=Number(user.rings||0));
           await this.ringsRef.set(ringMap);
         }
 
@@ -1375,11 +1384,14 @@
         </section>
         <section class="surface p-5">
           <div class="section-kicker">Control de Rings</div><h3 class="section-title mt-1">Agregar o quitar Rings</h3>
-          <form id="admin-rings-form" class="grid gap-3 mt-4 md:grid-cols-3">
+          <form id="admin-rings-form" class="grid gap-3 mt-4 md:grid-cols-4" autocomplete="off">
             <select id="admin-rings-user" class="select" required>${adminUserOptions()}</select>
-            <input id="admin-rings-amount" class="input" type="number" step="1" placeholder="Ej. 500 o -100" required>
-            <input id="admin-rings-reason" class="input" placeholder="Motivo (opcional)">
-            <button class="primary-btn md:col-span-3"><i class="ph-bold ph-plus-minus"></i> Aplicar cambio</button>
+            <input id="admin-rings-amount" class="input" type="number" min="1" step="1" placeholder="Cantidad" required>
+            <input id="admin-rings-reason" class="input md:col-span-2" placeholder="Motivo (opcional)">
+            <div class="button-row md:col-span-4">
+              <button type="submit" class="primary-btn" data-ring-operation="add"><i class="ph-bold ph-plus"></i> Agregar Rings</button>
+              <button type="button" class="danger-btn" data-ring-operation="remove"><i class="ph-bold ph-minus"></i> Quitar Rings</button>
+            </div>
           </form>
         </section>
       </div>`;
@@ -2723,6 +2735,33 @@
       if(action==="remove-custom-ost") removeCustomOst();
     });
 
+    document.addEventListener("click",async event => {
+      const removeButton=event.target.closest('[data-ring-operation="remove"]');
+      if(!removeButton) return;
+
+      const form=document.getElementById("admin-rings-form");
+      if(!form) return;
+
+      const userId=document.getElementById("admin-rings-user")?.value;
+      const rawAmount=Number(document.getElementById("admin-rings-amount")?.value);
+      const reason=document.getElementById("admin-rings-reason")?.value || "";
+
+      if(!userId || !Number.isFinite(rawAmount) || rawAmount<=0){
+        toast("Indica una cantidad mayor que 0","danger");
+        return;
+      }
+
+      try{
+        const total=await RealtimeSync.setRingAmount(userId,-Math.trunc(rawAmount),reason);
+        toast(`Rings quitados: ${total.toLocaleString("es-PE")}`,"success");
+        form.reset();
+        renderAdmin();
+        renderActiveTab();
+      }catch(error){
+        toast(error.message||"No se pudo quitar Rings","danger");
+      }
+    });
+
     document.addEventListener("mouseover",event => {
       const card=event.target.closest("[data-preview-product]");
       if(card && state.activeTab==="store" && state.previewProductId!==card.dataset.previewProduct){
@@ -2760,7 +2799,16 @@
 
     document.addEventListener("change",async event => {
       if(event.target.id==="profile-selector"){
-        state.activeUserId=event.target.value;
+        const selectedId=event.target.value;
+        const selected=state.users.find(u=>u.id===selectedId);
+
+        if(!RealtimeSync.isAdmin() && selected && selected.ownerUid!==RealtimeSync.uid){
+          toast("Solo puedes seleccionar tu propio perfil","danger");
+          renderProfile();
+          return;
+        }
+
+        state.activeUserId=selectedId;
         pending.avatar=null;pending.cover=null;pending.ostBlob=null;pending.ostName="";
         AudioController.stop();
         persist();
@@ -2794,15 +2842,28 @@
       if(event.target.id==="profile-form") saveProfile(event);
       if(event.target.id==="admin-rings-form") {
         event.preventDefault();
+        const submitter=event.submitter;
         const userId=document.getElementById("admin-rings-user")?.value;
-        const amount=Number(document.getElementById("admin-rings-amount")?.value);
+        const rawAmount=Number(document.getElementById("admin-rings-amount")?.value);
         const reason=document.getElementById("admin-rings-reason")?.value || "";
+        const operation=submitter?.dataset?.ringOperation || "add";
+
+        if(!userId || !Number.isFinite(rawAmount) || rawAmount<=0){
+          toast("Indica una cantidad mayor que 0","danger");
+          return;
+        }
+
+        const delta=operation==="remove" ? -Math.trunc(rawAmount) : Math.trunc(rawAmount);
+
         try{
-          const total=await RealtimeSync.setRingAmount(userId,amount,reason);
-          toast(`Rings actualizados: ${total.toLocaleString("es-PE")}`,"success");
+          const total=await RealtimeSync.setRingAmount(userId,delta,reason);
+          toast(`${operation==="remove"?"Rings quitados":"Rings agregados"}: ${total.toLocaleString("es-PE")}`,"success");
+          event.target.reset();
           renderAdmin();
           renderActiveTab();
-        }catch(error){ toast(error.message||"No se pudo modificar Rings","danger"); }
+        }catch(error){
+          toast(error.message||"No se pudo modificar Rings","danger");
+        }
       }
     });
 
