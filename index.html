@@ -957,6 +957,34 @@
       }
     };
 
+    // OST COMPARTIDO: Cloudinary almacena el audio y Firebase guarda solo la URL.
+    // Este preset debe ser UNSIGNED. No pongas aquí API Secret ni API Key.
+    const CLOUDINARY_CONFIG = {
+      cloudName: "qgf6z2er",
+      uploadPreset: "speedy_friends_ost"
+    };
+
+    const CloudinaryOST = {
+      async upload(file, userId){
+        if(!file || !file.type.startsWith("audio/")) throw new Error("Selecciona un archivo de audio válido");
+        const maxBytes = 25 * 1024 * 1024;
+        if(file.size > maxBytes) throw new Error("El OST debe pesar 25 MB o menos");
+        const form = new FormData();
+        form.append("file", file);
+        form.append("upload_preset", CLOUDINARY_CONFIG.uploadPreset);
+        form.append("folder", "speedy-friends/ost");
+        form.append("public_id", `${userId}-${Date.now()}`);
+        const endpoint = `https://api.cloudinary.com/v1_1/${CLOUDINARY_CONFIG.cloudName}/video/upload`;
+        const response = await fetch(endpoint, {method:"POST", body:form});
+        const data = await response.json().catch(()=>({}));
+        if(!response.ok || !data.secure_url){
+          console.error("[Cloudinary OST] upload failed", data);
+          throw new Error(data?.error?.message || "No se pudo subir el OST a Cloudinary");
+        }
+        return { url:data.secure_url, name:file.name, bytes:file.size };
+      }
+    };
+
     const RealtimeSync = {
       ready:false,
       ref:null,
@@ -1166,7 +1194,7 @@
       queueWrite(){
         if(!this.ready || !this.uid) return;
         clearTimeout(this.timer);
-        this.timer=setTimeout(()=>this.write(),150);
+        this.timer=setTimeout(()=>this.write(),250);
       },
 
       async init(){
@@ -1655,12 +1683,21 @@
         this.stop();
 
         let source="";
-        if(user.legacyOst){
+        if(user.ostUrl){
+          source=user.ostUrl;
+        }else if(user.legacyOst){
           source=user.legacyOst;
         }else{
-          const blob=await AssetDB.get(`ost:${user.id}`);
+          let blob=null;
+          try{
+            blob=await AssetDB.get(`ost:${user.id}`);
+          }catch(error){
+            console.error("[OST] read failed",error);
+            toast("No se pudo acceder al OST personalizado","danger");
+            return;
+          }
           if(!blob){
-            toast("No se encontró el archivo del OST","danger");
+            toast("No se encontró el archivo del OST en este dispositivo","danger");
             return;
           }
           if(this.customUrl) URL.revokeObjectURL(this.customUrl);
@@ -2017,7 +2054,7 @@
 
               <label class="file-drop">
                 <strong class="text-sm">OST personalizado</strong>
-                <span class="tiny muted">${user.ostName ? `Actual: ${escapeHtml(user.ostName)}` : "Audio guardado en el navegador mediante IndexedDB."}</span>
+                <span class="tiny muted">${user.ostName ? `Actual: ${escapeHtml(user.ostName)}` : "Audio compartido mediante Cloudinary."}</span>
                 <input id="ost-file" type="file" accept="audio/*" aria-label="Subir OST personalizado">
               </label>
             </div>
@@ -2577,8 +2614,19 @@
     async function saveProfile(event){
       event.preventDefault();
       const user=activeUser();
-      const name=document.getElementById("profile-name").value.trim();
-      const username=document.getElementById("profile-username").value.trim();
+      if(!user){
+        toast("No hay un perfil activo","danger");
+        return;
+      }
+
+      // A normal account can only save its own profile.
+      if(!RealtimeSync.isAdmin() && user.ownerUid !== RealtimeSync.uid){
+        toast("Este perfil no pertenece a tu cuenta","danger");
+        return;
+      }
+
+      const name=document.getElementById("profile-name")?.value.trim();
+      const username=document.getElementById("profile-username")?.value.trim();
 
       if(!name || !username){
         toast("Completa nombre y usuario","danger");
@@ -2587,24 +2635,65 @@
 
       user.name=name;
       user.username=username;
-      user.role=document.getElementById("profile-role").value.trim() || "Runner";
-      user.bio=document.getElementById("profile-bio").value.trim();
+      user.role=document.getElementById("profile-role")?.value.trim() || "Runner";
+      user.bio=document.getElementById("profile-bio")?.value.trim() || "";
+
       if(RealtimeSync.isAdmin() || RealtimeSync.canEditRings(user.id)){
-        const requested=Math.max(0,Number(document.getElementById("profile-rings")?.value || user.rings || 0));
+        const requested=Math.max(
+          0,
+          Number(document.getElementById("profile-rings")?.value || user.rings || 0)
+        );
         const delta=requested-Number(user.rings||0);
         if(delta!==0){
-          try{ await RealtimeSync.setRingAmount(user.id,delta,"Cambio desde perfil"); }catch(error){ toast(error.message||"No se pudo modificar Rings","danger"); }
+          try{
+            await RealtimeSync.setRingAmount(user.id,delta,"Cambio desde perfil");
+          }catch(error){
+            toast(error.message||"No se pudo modificar Rings","danger");
+            return;
+          }
         }
       }
 
       if(pending.avatar) user.avatar=pending.avatar;
       if(pending.cover) user.cover=pending.cover;
 
+      // OST compartido: súbelo a Cloudinary y guarda únicamente la URL en Firebase.
       if(pending.ostBlob){
-        await AssetDB.put(`ost:${user.id}`,pending.ostBlob);
-        user.hasOst=true;
-        user.ostName=pending.ostName;
-        delete user.legacyOst;
+        try{
+          toast("Subiendo OST…", "success");
+          const uploaded=await CloudinaryOST.upload(pending.ostBlob,user.id);
+          user.ostUrl=uploaded.url;
+          user.hasOst=true;
+          user.ostName=uploaded.name;
+          user.ostBytes=uploaded.bytes;
+          delete user.legacyOst;
+          await AssetDB.put(`ost:${user.id}`,pending.ostBlob).catch(()=>{});
+        }catch(error){
+          console.error("[Cloudinary OST] save failed",error);
+          toast(error.message||"No se pudo subir el OST personalizado","danger");
+          return;
+        }
+      }
+
+      // Keep the Google ownership fields intact so Firebase rules accept
+      // the write and the profile cannot jump to another account.
+      user.ownerUid=RealtimeSync.uid || user.ownerUid || "";
+      user.ownerEmail=RealtimeSync.email || user.ownerEmail || "";
+
+      const cleanUser=RealtimeSync.sanitizeUser(user);
+
+      try{
+        if(RealtimeSync.ready && RealtimeSync.usersRef){
+          if(RealtimeSync.isAdmin()){
+            await RealtimeSync.usersRef.child(user.id).update(cleanUser);
+          }else{
+            await RealtimeSync.usersRef.child(user.id).update(cleanUser);
+          }
+        }
+      }catch(error){
+        console.error("[Profile] Firebase save failed",error);
+        toast("No se pudo guardar el perfil en Firebase","danger");
+        return;
       }
 
       pending.avatar=null;
@@ -2612,7 +2701,16 @@
       pending.ostBlob=null;
       pending.ostName="";
 
-      persist();
+      try{
+        localStorage.setItem(
+          STORAGE_KEY,
+          JSON.stringify({
+            ...state,
+            users:state.users.map(({legacyOst,...u})=>u)
+          })
+        );
+      }catch{}
+
       renderProfile();
       renderSidebar();
       renderTopbar();
@@ -2638,13 +2736,25 @@
 
     async function removeCustomOst(){
       const user=activeUser();
+      if(!user) return;
       await AssetDB.remove(`ost:${user.id}`).catch(()=>{});
       user.hasOst=false;
       user.ostName="";
+      user.ostBytes=0;
+      delete user.ostUrl;
       delete user.legacyOst;
       AudioController.stop();
+      try{
+        if(RealtimeSync.ready && RealtimeSync.usersRef){
+          await RealtimeSync.usersRef.child(user.id).update({hasOst:false,ostName:"",ostBytes:0,ostUrl:null});
+        }
+      }catch(error){
+        console.error("[OST] remove failed",error);
+        toast("No se pudo quitar el OST de Firebase","danger");
+        return;
+      }
       persist();
-      renderAudio();
+      renderProfile();
       toast("OST personalizado eliminado","success");
     }
 
@@ -2834,7 +2944,7 @@
         }
         pending.ostBlob=file;
         pending.ostName=file.name;
-        toast("OST preparado. Guarda el perfil para conservarlo.","success");
+        toast("OST preparado. Guarda el perfil para subirlo y compartirlo.","success");
       }
     });
 
