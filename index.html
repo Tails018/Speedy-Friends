@@ -1083,6 +1083,39 @@
         if(enabled) await ref.set(true); else await ref.remove();
       },
 
+      async deleteUser(userId){
+        if(!this.isAdmin() || !this.usersRef || !this.ringsRef || !this.permissionsRef){
+          throw new Error("Solo el administrador puede eliminar usuarios");
+        }
+        const profile=state.users.find(u=>u.id===userId);
+        if(!profile) throw new Error("Usuario no encontrado");
+        if(profile.ownerUid===this.uid || String(profile.ownerEmail||"").toLowerCase()===this.email.toLowerCase()){
+          throw new Error("No puedes eliminar tu propio perfil de administrador");
+        }
+        const label=profile.username || profile.name || userId;
+        if(!confirm(`¿Eliminar a ${label} de Speedy Friends? Esta acción quitará su perfil, Rings y permiso de Rings de Firebase.`)){
+          return false;
+        }
+
+        await this.usersRef.child(userId).remove();
+        await this.ringsRef.child(userId).remove();
+        if(profile.ownerUid) await this.permissionsRef.child(profile.ownerUid).remove();
+
+        state.users=state.users.filter(u=>u.id!==userId);
+        if(!state.users.length){
+          state.users=[defaultProfile()];
+        }
+        if(state.activeUserId===userId){
+          state.activeUserId=state.users[0].id;
+        }
+        persist();
+        renderActiveTab();
+        renderSidebar();
+        renderTopbar();
+        toast(`${label} eliminado de Speedy Friends`,"success");
+        return true;
+      },
+
       async logout(){
         try{ await firebase.auth().signOut(); }catch{}
         this.uid=""; this.email=""; this.admin=false; this.permissions={};
@@ -1175,48 +1208,141 @@
 
       async loadSharedUsers(){
         if(!this.usersRef || !this.uid) return;
+
         const snapshot=await this.usersRef.once("value");
         const remote=snapshot.val() || {};
-        if(Object.keys(remote).length){
-          state.users=Object.values(remote).map(user=>({
+        const remoteUsers=Object.values(remote);
+
+        // Merge the profiles already present in the HTML/local state with
+        // profiles stored in Firebase. Remote data wins for existing IDs,
+        // while local profiles missing remotely are uploaded by the admin.
+        const localUsers=Array.isArray(state.users) ? state.users : [];
+        const byId=new Map();
+
+        localUsers.forEach(user=>{
+          if(user?.id) byId.set(String(user.id), {
+            ...defaultProfile(),
+            ...user,
+            rings:Number(user.rings||0),
+            equipped:{...DEFAULT_EQUIPPED,...(user.equipped||{})}
+          });
+        });
+
+        remoteUsers.forEach(user=>{
+          if(user?.id) byId.set(String(user.id), {
+            ...defaultProfile(),
+            ...user,
+            rings:Number(user.rings||0),
+            equipped:{...DEFAULT_EQUIPPED,...(user.equipped||{})}
+          });
+        });
+
+        // If the signed-in Google account has no linked profile yet,
+        // create one automatically from the current local profile when
+        // possible; otherwise create a minimal profile for the account.
+        let own=Array.from(byId.values()).find(u=>u.ownerUid===this.uid);
+        if(!own && this.email){
+          own=Array.from(byId.values()).find(u=>
+            String(u.ownerEmail||"").toLowerCase()===this.email.toLowerCase()
+          );
+        }
+
+        if(!own){
+          const candidate=localUsers.find(u=>
+            !u.ownerUid &&
+            String(u.ownerEmail||"").toLowerCase()===this.email.toLowerCase()
+          ) || activeUser();
+
+          const profile={
+            ...(candidate || defaultProfile()),
+            ownerUid:this.uid,
+            ownerEmail:this.email,
+            id:candidate?.id || `user-${this.uid}`,
+            rings:Number(candidate?.rings||0),
+            equipped:{...DEFAULT_EQUIPPED,...(candidate?.equipped||{})}
+          };
+
+          byId.set(String(profile.id),profile);
+          own=profile;
+        }else if(own.ownerUid!==this.uid || own.ownerEmail!==this.email){
+          own.ownerUid=this.uid;
+          own.ownerEmail=this.email;
+          byId.set(String(own.id),own);
+        }
+
+        state.users=Array.from(byId.values());
+
+        if(!state.users.some(user=>user.id===state.activeUserId)){
+          state.activeUserId=own?.id || state.users[0]?.id || "";
+        }
+
+        // Admin publishes local profiles that are not yet in Firebase.
+        // Existing remote profiles are never overwritten wholesale.
+        if(this.isAdmin()){
+          const updates={};
+          state.users.forEach(user=>{
+            if(!remote[user.id]){
+              updates[user.id]=this.sanitizeUser(user);
+            }
+          });
+
+          if(Object.keys(updates).length){
+            await this.usersRef.update(updates);
+          }
+        }else if(own){
+          // Ensure the signed-in user's own profile exists remotely.
+          await this.usersRef.child(own.id).update(
+            this.sanitizeUser(own)
+          );
+        }
+
+        try{
+          localStorage.setItem(
+            STORAGE_KEY,
+            JSON.stringify({
+              ...state,
+              users:state.users.map(({legacyOst,...u})=>u)
+            })
+          );
+        }catch{}
+
+        this.ready=true;
+
+        this.usersRef.off();
+        this.usersRef.on("value",snap=>{
+          const remoteNow=snap.val() || {};
+          const current=activeUser()?.id;
+
+          state.users=Object.values(remoteNow).map(user=>({
             ...defaultProfile(),
             ...user,
             rings:Number(user.rings||0),
             equipped:{...DEFAULT_EQUIPPED,...(user.equipped||{})}
           }));
-          if(!state.users.some(user=>user.id===state.activeUserId)) state.activeUserId=state.users[0].id;
-          try{localStorage.setItem(STORAGE_KEY,JSON.stringify({...state,users:state.users.map(({legacyOst,...u})=>u)}));}catch{}
-        }else if(this.isAdmin()){
-          const updates={};
-          state.users.forEach(user=>{ updates[user.id]=this.sanitizeUser(user); });
-          await this.usersRef.set(updates);
-        }else{
-          await this.ensureOwnerProfile();
-          const user=state.users.find(item=>item.ownerUid===this.uid);
-          if(user) await this.usersRef.child(user.id).set(this.sanitizeUser(user));
-        }
 
-        this.ready=true;
-        this.usersRef.off();
-        this.usersRef.on("value",snap=>{
-          const remote=snap.val() || {};
-          const current=activeUser()?.id;
-          state.users=Object.values(remote).map(user=>({
-            ...defaultProfile(),...user,
-            rings:Number(user.rings||0),
-            equipped:{...DEFAULT_EQUIPPED,...(user.equipped||{})}
-          }));
           if(!state.users.length) return;
-          if(!state.users.some(user=>user.id===current)) state.activeUserId=state.users[0].id;
-          renderActiveTab(); renderSidebar(); renderTopbar();
+
+          if(!state.users.some(user=>user.id===current)){
+            state.activeUserId=own?.id || state.users[0].id;
+          }
+
+          renderActiveTab();
+          renderSidebar();
+          renderTopbar();
           this.setStatus("live","En tiempo real");
         });
+
         await this.bindPermissionListeners();
+
         const ringsSnapshot=await this.ringsRef.once("value");
         if(!ringsSnapshot.exists() && this.isAdmin()){
-          const ringMap={}; state.users.forEach(user=>ringMap[user.id]=Number(user.rings||0));
+          const ringMap={};
+          state.users.forEach(user=>{
+            ringMap[user.id]=Number(user.rings||0);
+          });
           await this.ringsRef.set(ringMap);
         }
+
         this.setStatus("live",`En tiempo real · ${this.email}`);
       }
     };
@@ -1234,7 +1360,10 @@
         const granted=Boolean(ownerUid && RealtimeSync.permissions?.[ownerUid]?.rings===true);
         return `<div class="surface-soft p-4 grid gap-3 md:grid-cols-[1fr_auto] items-center">
           <div class="min-w-0"><div class="font-black truncate">${escapeHtml(user.username || user.name || "Sin nombre")}</div><div class="tiny muted truncate">Cuenta: ${escapeHtml(user.ownerEmail || "sin cuenta vinculada")}</div><div class="tiny mt-1 text-[var(--gold)]">${Number(user.rings||0).toLocaleString("es-PE")} Rings</div></div>
-          <button class="${granted?"soft-btn":"primary-btn"} small-btn" data-action="toggle-ring-permission" data-user-id="${escapeHtml(user.id)}" data-enabled="${granted?"0":"1"}">${granted?"Quitar permiso":"Dar permiso Rings"}</button>
+          <div class="button-row">
+            <button class="${granted?"soft-btn":"primary-btn"} small-btn" data-action="toggle-ring-permission" data-user-id="${escapeHtml(user.id)}" data-enabled="${granted?"0":"1"}">${granted?"Quitar permiso":"Dar permiso Rings"}</button>
+            <button class="danger-btn small-btn" data-action="admin-delete-user" data-user-id="${escapeHtml(user.id)}"><i class="ph-bold ph-trash"></i> Eliminar</button>
+          </div>
         </div>`;
       }).join("");
       panel.innerHTML=`<div class="steam-grid">
@@ -1820,7 +1949,17 @@
           <div class="field mb-4">
             <label for="profile-selector">Perfil activo</label>
             <select id="profile-selector" class="select" data-action="select-profile">
-              ${state.users.map(item => `<option value="${item.id}" ${item.id===state.activeUserId ? "selected" : ""}>${escapeHtml(item.username)}</option>`).join("")}
+              ${(() => {
+                const signedInProfiles = RealtimeSync.isSignedIn()
+                  ? state.users.filter(item => item.ownerUid === RealtimeSync.uid)
+                  : [];
+                const visibleProfiles = signedInProfiles.length
+                  ? signedInProfiles
+                  : [user];
+                return visibleProfiles.map(item =>
+                  `<option value="${item.id}" ${item.id===state.activeUserId ? "selected" : ""}>${escapeHtml(item.username || item.name || "Mi perfil")}</option>`
+                ).join("");
+              })()}
             </select>
           </div>
 
@@ -1874,7 +2013,7 @@
             <div class="button-row">
               <button class="primary-btn" type="submit"><i class="ph-bold ph-floppy-disk"></i> Guardar perfil</button>
               <button class="soft-btn" type="button" data-action="play-custom-ost"><i class="ph-bold ph-play"></i> Probar Mi OST</button>
-              <button class="danger-btn" type="button" data-action="delete-profile"><i class="ph-bold ph-trash"></i> Borrar perfil</button>
+              ${RealtimeSync.isAdmin() ? `<button class="danger-btn" type="button" data-action="delete-profile"><i class="ph-bold ph-trash"></i> Borrar perfil local</button>` : ""}
             </div>
           </form>
         </div>
@@ -2551,6 +2690,7 @@
       if(action==="google-login") RealtimeSync.isSignedIn() ? RealtimeSync.logout() : RealtimeSync.signInGoogle();
       if(action==="admin-logout") RealtimeSync.logout();
       if(action==="toggle-ring-permission") RealtimeSync.grantRingsPermission(actionButton.dataset.userId,actionButton.dataset.enabled==="1").then(()=>renderAdmin()).catch(error=>toast(error.message||"No se pudo cambiar el permiso","danger"));
+      if(action==="admin-delete-user") RealtimeSync.deleteUser(actionButton.dataset.userId).then(()=>renderAdmin()).catch(error=>toast(error.message||"No se pudo eliminar el usuario","danger"));
       if(action==="go-store") switchTab("store");
       if(action==="toggle-theme"){
         state.theme=state.theme==="dark" ? "light" : "dark";
