@@ -995,6 +995,7 @@
       email:"",
       admin:false,
       permissions:{},
+      ringValues:{},
       timer:null,
       lastSharedHash:"",
       statusNode:null,
@@ -1077,8 +1078,14 @@
         });
         this.ringsRef.on("value",snap=>{
           const data=snap.val() || {};
+          // Rings are the authoritative ranking value. The profile listener
+          // can contain an older cached rings value, so never let it overwrite
+          // the live Rings value and make a user jump down/up in the ranking.
+          this.ringValues=data;
           state.users.forEach(user=>{
-            if(Object.prototype.hasOwnProperty.call(data,user.id)) user.rings=Number(data[user.id]||0);
+            if(Object.prototype.hasOwnProperty.call(data,user.id)) {
+              user.rings=Number(data[user.id]||0);
+            }
           });
           renderActiveTab();
           renderSidebar();
@@ -1096,10 +1103,15 @@
         const ref=this.ringsRef.child(userId);
         const result=await ref.transaction(current=>Math.max(0,Number(current ?? user.rings ?? 0)+amount));
         if(!result.committed) throw new Error("No se pudo aplicar el cambio");
+        // Optimistic local/cache update prevents a stale users snapshot from
+        // briefly moving the player to the wrong ranking position.
+        const newTotal=Number(result.snapshot.val()||0);
+        this.ringValues[userId]=newTotal;
+        user.rings=newTotal;
         await this.ringsRef.root.child(`speedy-friends-teams/${REALTIME_CONFIG.teamId}/ringHistory`).push({
           userId,delta:amount,reason:String(reason||""),byUid:this.uid,byEmail:this.email||"",at:firebase.database.ServerValue.TIMESTAMP
         });
-        return Number(result.snapshot.val()||0);
+        return newTotal;
       },
 
       async grantRingsPermission(userId,enabled){
@@ -1349,7 +1361,11 @@
           state.users=Object.values(remoteNow).map(user=>({
             ...defaultProfile(),
             ...user,
-            rings:Number(user.rings||0),
+            // If the live Rings node already has a value for this user, it
+            // wins over the profile's possibly stale rings field.
+            rings:Object.prototype.hasOwnProperty.call(this.ringValues,user.id)
+              ? Number(this.ringValues[user.id]||0)
+              : Number(user.rings||0),
             equipped:{...DEFAULT_EQUIPPED,...(user.equipped||{})}
           }));
 
