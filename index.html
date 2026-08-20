@@ -2183,7 +2183,7 @@
 
           <div class="ranking-list">
             ${data.map((item,index) => `
-              <article class="surface-soft rank-row">
+              <article class="surface-soft rank-row ${item.type==="user" ? "cursor-pointer" : ""}" ${item.type==="user" ? `data-action="view-public-profile" data-user-id="${item.userId}" tabindex="0" role="button"` : ""}>
                 <div class="rank-position">${index+1}</div>
                 <img class="rank-avatar" src="${item.avatar}" alt="${escapeHtml(item.name)}" loading="lazy">
                 <div class="min-w-0">
@@ -2195,7 +2195,6 @@
                   <div class="tiny muted">rings</div>
                 </div>
                 <div class="flex items-center justify-end gap-2 flex-wrap">
-                  ${item.type==="user" ? `<button class="soft-btn small-btn" data-action="view-public-profile" data-user-id="${item.userId}"><i class="ph-bold ph-user"></i> Ver perfil</button>` : ""}
                   ${item.type==="user" && item.hasOst ? `<button class="icon-btn !w-[38px] !h-[38px]" data-action="play-user-ost" data-user-id="${item.userId}" aria-label="Reproducir OST de ${escapeHtml(item.name)}"><i class="ph-bold ph-music-notes"></i></button>` : ""}
                 </div>
               </article>
@@ -2220,19 +2219,37 @@
       const title=document.getElementById("public-profile-title");
       if(!overlay || !body || !title) return;
       title.textContent=user.username || user.name || "Integrante";
-      const avatar=user.avatar || BASE_RANKING[4].avatar;
-      const hasOst=user.hasOst || Boolean(user.legacyOst);
+
+      const equipment=user.equipped || {};
+      const bgProduct=productById(equipment.background);
+      const avatarProduct=productById(equipment.avatar);
+      const frameProduct=productById(equipment.frame);
+      const badgeProduct=productById(equipment.badge);
+      const avatar=avatarProduct?.image || user.avatar || BASE_RANKING[4].avatar;
+      const frameClass=frameProduct?.visualClass || "";
+      const bgClass=bgProduct?.visualClass || "bg-default";
+      const customCoverStyle=!bgProduct && user.cover
+        ? `background-image:linear-gradient(to top,rgba(5,11,18,.96),rgba(5,11,18,.08) 65%),url('${String(user.cover).replace(/'/g,"%27")}');background-size:cover;background-position:center;`
+        : "";
+      const badgeEmoji=badgeProduct?.emoji || "⚡";
+      const badgeLabel=badgeProduct?.label || user.role || "Runner";
+      const hasOst=user.hasOst || Boolean(user.legacyOst || user.ostUrl);
+
       body.innerHTML=`
-        <div class="profile-preview bg-default" style="min-height:250px;margin-bottom:18px">
+        <div class="profile-preview ${bgClass}" style="${customCoverStyle}min-height:250px;margin-bottom:18px">
           <div class="profile-banner-line"></div>
           <div class="profile-avatar-row">
-            <img src="${avatar}" alt="Avatar de ${escapeHtml(user.username||user.name)}" class="profile-avatar" loading="lazy">
-            <div class="profile-badge">👤 ${escapeHtml(user.role || "Runner")}</div>
+            <div class="avatar-frame ${frameClass}">
+              <img src="${avatar}" alt="Avatar de ${escapeHtml(user.username||user.name)}" class="profile-avatar" loading="lazy">
+            </div>
+            <div class="min-w-0">
+              <div class="profile-badge">${badgeEmoji} ${escapeHtml(badgeLabel)}</div>
+              <div class="orbitron text-2xl sm:text-3xl font-black break-words">${escapeHtml(user.username || user.name || "Integrante")}</div>
+              <div class="text-sm text-white/70 mt-1">${escapeHtml(user.role || "Runner")} · Nivel ${Number(user.level || 1)}</div>
+            </div>
           </div>
           <div class="profile-preview-content">
-            <div class="section-kicker">${escapeHtml(user.username || user.name || "Integrante")}</div>
-            <h3 class="section-title mt-1">${escapeHtml(user.name || "Integrante")}</h3>
-            <p class="muted text-sm mt-2">${escapeHtml(user.bio || "Sin descripción todavía.")}</p>
+            <p class="muted text-sm mt-3 leading-relaxed">${escapeHtml(user.bio || "Sin descripción todavía.")}</p>
           </div>
         </div>
         <div class="grid grid-cols-2 md:grid-cols-4 gap-3">
@@ -2242,8 +2259,9 @@
           <div class="public-profile-stat"><strong>⭐ Próximamente</strong><div class="tiny muted mt-1">Estrellas</div></div>
         </div>
         <div class="public-profile-actions">
-          ${hasOst ? `<button class="primary-btn" data-action="play-user-ost" data-user-id="${escapeHtml(user.id)}"><i class="ph-bold ph-music-notes"></i> Escuchar OST</button>` : ""}
-        </div>`;
+          ${hasOst ? `<button class="primary-btn small-btn" data-action="play-user-ost" data-user-id="${escapeHtml(user.id)}"><i class="ph-bold ph-music-notes"></i> Escuchar OST</button>` : ""}
+        </div>
+      `;
       overlay.classList.add("open");
       overlay.setAttribute("aria-hidden","false");
     }
@@ -2888,6 +2906,14 @@
       }
       persist();
     }
+
+    document.addEventListener("keydown",event => {
+      if(event.key!=="Enter" && event.key!==" ") return;
+      const row=event.target.closest('[data-action="view-public-profile"]');
+      if(!row || event.target.closest('button')) return;
+      event.preventDefault();
+      showPublicProfile(row.dataset.userId);
+    });
 
     document.addEventListener("click",async event => {
       const tabButton=event.target.closest("[data-tab]");
