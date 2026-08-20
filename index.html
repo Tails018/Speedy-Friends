@@ -815,7 +815,32 @@
       .search-wrap{max-width:none}
     }
   </style>
-<style id="sf-ratings-css">.rating-stars{display:flex;gap:5px;align-items:center;flex-wrap:wrap}.rating-star{border:0;background:transparent;color:#697386;font-size:1.65rem;line-height:1;padding:4px;cursor:pointer;transition:transform .12s,color .12s}.rating-star:hover,.rating-star.active{color:var(--gold);transform:scale(1.08)}.rating-box{padding:16px;border-radius:18px;background:var(--panel-soft);border:1px solid var(--line);margin-top:16px}.rating-summary{display:flex;align-items:center;gap:10px;flex-wrap:wrap}.rating-score{font-size:1.8rem;font-weight:1000;color:var(--gold)}.rating-count{font-size:.78rem;color:var(--muted)}</style></head>
+<style id="sf-ratings-css">.rating-stars{display:flex;gap:5px;align-items:center;flex-wrap:wrap}.rating-star{border:0;background:transparent;color:#697386;font-size:1.65rem;line-height:1;padding:4px;cursor:pointer;transition:transform .12s,color .12s}.rating-star:hover,.rating-star.active{color:var(--gold);transform:scale(1.08)}.rating-box{padding:16px;border-radius:18px;background:var(--panel-soft);border:1px solid var(--line);margin-top:16px}.rating-summary{display:flex;align-items:center;gap:10px;flex-wrap:wrap}.rating-score{font-size:1.8rem;font-weight:1000;color:var(--gold)}.rating-count{font-size:.78rem;color:var(--muted)}</style>
+<style id="sf-auto-frame-style">
+.sf-af-overlay{position:fixed;inset:0;z-index:99999;background:rgba(3,7,12,.92);display:none;align-items:center;justify-content:center;padding:16px}
+.sf-af-overlay.open{display:flex}
+.sf-af-card{width:min(720px,100%);max-height:96vh;background:#111a27;border:1px solid rgba(255,255,255,.12);border-radius:22px;box-shadow:0 28px 90px rgba(0,0,0,.55);overflow:hidden;display:flex;flex-direction:column}
+.sf-af-head{display:flex;align-items:center;justify-content:space-between;padding:14px 16px;border-bottom:1px solid rgba(255,255,255,.1)}
+.sf-af-head strong{font-size:18px}.sf-af-head span{font-size:12px;color:#91a3b7}
+.sf-af-work{padding:14px;display:flex;justify-content:center}
+.sf-af-stage{position:relative;width:min(680px,100%);aspect-ratio:16/9;background:#05080d;overflow:hidden;border-radius:16px;touch-action:none;user-select:none}
+.sf-af-stage.avatar{aspect-ratio:1/1;max-width:520px}
+.sf-af-img{position:absolute;left:50%;top:50%;max-width:none;transform-origin:center center;pointer-events:none;user-select:none}
+.sf-af-grid{position:absolute;inset:0;pointer-events:none;background:
+ linear-gradient(to right,transparent 33.333%,rgba(255,255,255,.55) 33.333%,rgba(255,255,255,.55) calc(33.333% + 1px),transparent calc(33.333% + 1px),transparent 66.666%,rgba(255,255,255,.55) 66.666%,rgba(255,255,255,.55) calc(66.666% + 1px),transparent calc(66.666% + 1px)),
+ linear-gradient(to bottom,transparent 33.333%,rgba(255,255,255,.55) 33.333%,rgba(255,255,255,.55) calc(33.333% + 1px),transparent calc(33.333% + 1px),transparent 66.666%,rgba(255,255,255,.55) 66.666%,rgba(255,255,255,.55) calc(66.666% + 1px),transparent calc(66.666% + 1px));
+ box-shadow:inset 0 0 0 3px rgba(255,255,255,.95);opacity:1}
+.sf-af-mask{position:absolute;inset:0;box-shadow:inset 0 0 0 9999px rgba(0,0,0,.18);pointer-events:none}
+.sf-af-controls{display:flex;align-items:center;gap:10px;padding:0 16px 14px}.sf-af-controls label{font-size:12px;color:#91a3b7}.sf-af-controls input{width:100%}
+.sf-af-actions{display:flex;justify-content:flex-end;gap:10px;padding:14px 16px;border-top:1px solid rgba(255,255,255,.1)}
+.sf-af-btn{border:0;border-radius:12px;padding:11px 16px;font-weight:800;cursor:pointer}.sf-af-cancel{background:#243244;color:#fff}.sf-af-save{background:#1a9fff;color:#fff}
+@media(max-width:620px){
+ .sf-af-overlay{padding:0}.sf-af-card{width:100%;height:100%;max-height:none;border-radius:0}
+ .sf-af-work{flex:1;align-items:center}.sf-af-head{padding-top:calc(12px + env(safe-area-inset-top))}
+ .sf-af-actions{padding-bottom:calc(14px + env(safe-area-inset-bottom))}
+}
+</style>
+</head>
 
 <body>
   <div id="toast" class="toast" role="status" aria-live="polite"></div>
@@ -1513,7 +1538,7 @@
     const TAB_META = {
       home:["Inicio","Tu centro de Speedy Friends"],
       profile:["Perfil","Edita tu identidad, foto y OST"],
-      ranking:["Ranking Global","Personajes base e integrantes registrados"],
+      ranking:["Ranking Global","Integrantes registrados"],
       store:["Tienda de Accesorios","Compra y prueba cosméticos para tu perfil"],
       inventory:["Mi Inventario","Equipa los accesorios que ya compraste"],
       audio:["Audio y OST","Control manual sin cambios automáticos al navegar"],
@@ -1664,6 +1689,7 @@
     })();
 
     const pending = {avatar:null,cover:null,ostBlob:null,ostName:""};
+    window.pending = pending;
 
     const AssetDB = {
       db:null,
@@ -2202,8 +2228,7 @@
         hasOst:user.hasOst || Boolean(user.legacyOst)
       }));
 
-      const data=BASE_RANKING.map(item => ({...item,type:"base"}))
-        .concat(registered)
+      const data=registered
         .sort((a,b)=>Number(b.rings)-Number(a.rings));
 
       document.getElementById("tab-ranking").innerHTML=`
@@ -2212,7 +2237,7 @@
             <div>
               <div class="section-kicker">Competencia</div>
               <h2 class="section-title mt-1">Ranking Global</h2>
-              <p class="muted text-sm mt-2">Los cinco personajes base se mantienen y cada perfil registrado se añade automáticamente.</p>
+              <p class="muted text-sm mt-2">Solo aparecen integrantes registrados en Speedy Friends.</p>
             </div>
             <button class="primary-btn small-btn" data-tab="profile"><i class="ph-bold ph-user-plus"></i> Registrar perfil</button>
           </div>
@@ -3108,13 +3133,15 @@
       }
 
       if(event.target.id==="avatar-file" && event.target.files[0]){
-        pending.avatar=await resizeImage(event.target.files[0],850,.86);
-        toast("Foto preparada. Guarda el perfil para aplicarla.","success");
+        const file=event.target.files[0];
+        if(window.sfHandleImageFile) window.sfHandleImageFile(file,"avatar");
+        event.target.value="";
       }
 
       if(event.target.id==="cover-file" && event.target.files[0]){
-        pending.cover=await resizeImage(event.target.files[0],1400,.82);
-        toast("Fondo preparado. Guarda el perfil para aplicarlo.","success");
+        const file=event.target.files[0];
+        if(window.sfHandleImageFile) window.sfHandleImageFile(file,"cover");
+        event.target.value="";
       }
 
       if(event.target.id==="ost-file" && event.target.files[0]){
@@ -3236,5 +3263,208 @@
   In speedy-friends-teams/$teamId/ratings/$profileId/$raterUid use:
   ".write": "auth != null && auth.uid == $raterUid && !data.exists() && root.child('speedy-friends-teams').child($teamId).child('users').child($profileId).child('ownerUid').val() != auth.uid"
 -->
+
+<div id="sf-auto-frame" class="sf-af-overlay" aria-hidden="true">
+  <section class="sf-af-card" role="dialog" aria-modal="true" aria-labelledby="sf-af-title">
+    <div class="sf-af-head">
+      <div><strong id="sf-af-title">Ajustar imagen</strong><div><span id="sf-af-subtitle">Vista previa · ajusta tu imagen</span></div></div>
+      <button type="button" class="icon-btn" id="sf-af-x" aria-label="Cerrar"><i class="ph-bold ph-x"></i></button>
+    </div>
+    <div class="sf-af-work">
+      <div id="sf-af-stage" class="sf-af-stage">
+        <img id="sf-af-img" class="sf-af-img" alt="">
+        <div class="sf-af-grid"></div><div class="sf-af-mask"></div>
+      </div>
+    </div>
+    <div class="sf-af-controls">
+      <label for="sf-af-zoom">Zoom</label>
+      <input id="sf-af-zoom" type="range" min="1" max="3.5" step="0.01" value="1">
+    </div>
+    <div class="sf-af-actions">
+      <button type="button" id="sf-af-cancel" class="sf-af-btn sf-af-cancel">Cancelar</button>
+      <button type="button" id="sf-af-save" class="sf-af-btn sf-af-save">Aplicar y guardar</button>
+    </div>
+  </section>
+</div>
+
+<script id="sf-auto-frame-script">
+(() => {
+  const AF = {file:null, mode:"cover", ratio:16/9, img:null, zoom:1, x:0, y:0, baseScale:1, dragging:false, sx:0, sy:0, ox:0, oy:0};
+
+  const $af = id => document.getElementById(id);
+  const afClamp = (v,a,b) => Math.max(a,Math.min(b,v));
+
+  function afOpen(file, mode){
+    const reader=new FileReader();
+    reader.onload=()=>{
+      const img=new Image();
+      img.onload=()=>{
+        AF.file=file; AF.mode=mode; AF.ratio=mode==="avatar"?1:16/9; AF.img=img;
+        AF.zoom=1; AF.x=0; AF.y=0;
+        const stage=$af("sf-af-stage");
+        stage.classList.toggle("avatar",mode==="avatar");
+        $af("sf-af-title").textContent=mode==="avatar"?"Ajustar icono":"Ajustar portada";
+        $af("sf-af-subtitle").textContent=mode==="avatar"?"Vista previa · cuadrícula 3×3 · 320×320":"Vista previa · cuadrícula 3×3 · 16:9";
+        $af("sf-af-img").src=reader.result;
+        $af("sf-af-zoom").value="1";
+        $af("sf-auto-frame").classList.add("open");
+        $af("sf-auto-frame").setAttribute("aria-hidden","false");
+        requestAnimationFrame(afLayout);
+      };
+      img.src=reader.result;
+    };
+    reader.readAsDataURL(file);
+  }
+
+  function afLayout(){
+    const stage=$af("sf-af-stage"), img=$af("sf-af-img");
+    if(!stage || !AF.img) return;
+    const sw=stage.clientWidth, sh=stage.clientHeight;
+    const scale=Math.max(sw/AF.img.naturalWidth, sh/AF.img.naturalHeight);
+    AF.baseScale=scale;
+    afRender();
+  }
+
+  function afRender(){
+    const img=$af("sf-af-img");
+    if(!img || !AF.img) return;
+    const scale=AF.baseScale*AF.zoom;
+    img.style.width=AF.img.naturalWidth*scale+"px";
+    img.style.height=AF.img.naturalHeight*scale+"px";
+    img.style.transform=`translate(calc(-50% + ${AF.x}px),calc(-50% + ${AF.y}px))`;
+  }
+
+  function afClose(){
+    $af("sf-auto-frame").classList.remove("open");
+    $af("sf-auto-frame").setAttribute("aria-hidden","true");
+    AF.file=null; AF.img=null;
+  }
+
+  function afCanvas(){
+    const img=AF.img, stage=$af("sf-af-stage");
+    const outW=AF.mode==="avatar"?320:1280, outH=AF.mode==="avatar"?320:720;
+    const sw=stage.clientWidth, sh=stage.clientHeight;
+    const scale=AF.baseScale*AF.zoom;
+    const displayedW=img.naturalWidth*scale, displayedH=img.naturalHeight*scale;
+    const left=(sw-displayedW)/2+AF.x, top=(sh-displayedH)/2+AF.y;
+    const srcX=afClamp((0-left)/scale,0,img.naturalWidth);
+    const srcY=afClamp((0-top)/scale,0,img.naturalHeight);
+    const srcW=afClamp(sw/scale,1,img.naturalWidth-srcX);
+    const srcH=afClamp(sh/scale,1,img.naturalHeight-srcY);
+    const c=document.createElement("canvas"); c.width=outW;c.height=outH;
+    const ctx=c.getContext("2d"); ctx.imageSmoothingEnabled=true;ctx.imageSmoothingQuality="high";
+    ctx.drawImage(img,srcX,srcY,srcW,srcH,0,0,outW,outH);
+    return c.toDataURL("image/jpeg",.88);
+  }
+
+  async function afSave(){
+    try{
+      const data=afCanvas();
+      if(AF.mode==="avatar") window.__speedyPendingAvatar=data;
+      else window.__speedyPendingCover=data;
+      const ev=new CustomEvent("sf:auto-frame-ready",{detail:{mode:AF.mode,data}});
+      document.dispatchEvent(ev);
+      afClose();
+    }catch(e){ console.error(e); if(window.toast) toast("No se pudo preparar la imagen","danger"); }
+  }
+
+  $af("sf-af-zoom")?.addEventListener("input",e=>{AF.zoom=Number(e.target.value);afRender()});
+  $af("sf-af-save")?.addEventListener("click",afSave);
+  $af("sf-af-cancel")?.addEventListener("click",afClose);
+  $af("sf-af-x")?.addEventListener("click",afClose);
+  window.addEventListener("resize",()=>{if(AF.img && $af("sf-auto-frame").classList.contains("open")) afLayout()});
+
+  const stage=$af("sf-af-stage");
+  stage?.addEventListener("pointerdown",e=>{
+    e.preventDefault(); AF.dragging=true; AF.sx=e.clientX;AF.sy=e.clientY;AF.ox=AF.x;AF.oy=AF.y;stage.setPointerCapture?.(e.pointerId);
+  });
+  stage?.addEventListener("pointermove",e=>{
+    if(!AF.dragging)return;
+    AF.x=AF.ox+(e.clientX-AF.sx); AF.y=AF.oy+(e.clientY-AF.sy); afRender();
+  });
+  stage?.addEventListener("pointerup",()=>AF.dragging=false);
+  stage?.addEventListener("pointercancel",()=>AF.dragging=false);
+  stage?.addEventListener("wheel",e=>{
+    e.preventDefault(); AF.zoom=afClamp(AF.zoom+(e.deltaY<0?.08:-.08),1,3.5);$af("sf-af-zoom").value=String(AF.zoom);afRender();
+  },{passive:false});
+
+  // Repeatedly selecting the same file works.
+  document.addEventListener("sf:auto-frame-ready",e=>{
+    const {mode,data}=e.detail;
+    if(mode==="avatar") window.__speedyPendingAvatar=data;
+    if(mode==="cover") window.__speedyPendingCover=data;
+  });
+
+  window.sfOpenAutoFrame=afOpen;
+})();
+</script>
+
+<script id="sf-auto-frame-connector">
+document.addEventListener("sf:auto-frame-ready",e=>{
+  if(!window.pending) return;
+  if(e.detail.mode==="avatar") window.pending.avatar=e.detail.data;
+  if(e.detail.mode==="cover") window.pending.cover=e.detail.data;
+  if(window.toast) toast(e.detail.mode==="avatar"?"Icono preparado. Guarda el perfil para aplicarlo.":"Portada preparada. Guarda el perfil para aplicarla.","success");
+});
+</script>
+
+<script id="sf-auto-frame-direct">
+(() => {
+  function directFrame(file, mode){
+    return new Promise((resolve,reject)=>{
+      const reader=new FileReader();
+      reader.onload=()=>{
+        const img=new Image();
+        img.onload=()=>{
+          const ratio=mode==="avatar"?1:16/9;
+          const targetW=mode==="avatar"?320:1280;
+          const targetH=mode==="avatar"?320:720;
+          let sw=img.naturalWidth, sh=Math.round(sw/ratio);
+          if(sh>img.naturalHeight){sh=img.naturalHeight;sw=Math.round(sh*ratio)}
+          const sx=Math.max(0,Math.round((img.naturalWidth-sw)/2));
+          const sy=Math.max(0,Math.round((img.naturalHeight-sh)/2));
+          const c=document.createElement("canvas");c.width=targetW;c.height=targetH;
+          const ctx=c.getContext("2d");ctx.imageSmoothingQuality="high";
+          ctx.drawImage(img,sx,sy,sw,sh,0,0,targetW,targetH);
+          resolve(c.toDataURL("image/jpeg",.88));
+        };
+        img.onerror=reject; img.src=reader.result;
+      };
+      reader.onerror=reject;reader.readAsDataURL(file);
+    });
+  }
+
+  window.sfHandleImageFile = async (file,mode) => {
+    try{
+      const info=await new Promise((resolve,reject)=>{
+        const r=new FileReader();
+        r.onload=()=>{
+          const im=new Image();
+          im.onload=()=>resolve({w:im.naturalWidth,h:im.naturalHeight});
+          im.onerror=reject;im.src=r.result;
+        };
+        r.onerror=reject;r.readAsDataURL(file);
+      });
+
+      // Siempre mostrar una vista previa con cuadrícula 3x3.
+      // El encuadre inicial ya respeta 1:1 para icono o 16:9 para portada,
+      // y el usuario puede mover/ajustar la imagen antes de guardar.
+      if(window.sfOpenAutoFrame){
+        window.sfOpenAutoFrame(file,mode);
+        return;
+      }
+
+      const data=await directFrame(file,mode);
+      window.pending = window.pending || {};
+      if(mode==="avatar") window.pending.avatar=data;
+      else window.pending.cover=data;
+      if(window.toast) toast(mode==="avatar"?"Icono encuadrado automáticamente. Guarda el perfil para aplicarlo.":"Portada encuadrada automáticamente. Guarda el perfil para aplicarla.","success");
+    }catch(error){
+      console.error(error);
+      if(window.toast) toast("No se pudo preparar la imagen","danger");
+    }
+  };
+})();
+</script>
 </body>
 </html>
