@@ -684,6 +684,13 @@
     .audio-wave.playing{animation:waveMove 1.2s linear infinite}
     @keyframes waveMove{to{background-position:180px 0,0 0}}
 
+    .public-profile-overlay{position:fixed;inset:0;z-index:120;background:rgba(0,0,0,.72);backdrop-filter:blur(8px);display:flex;align-items:center;justify-content:center;padding:18px;opacity:0;pointer-events:none;transition:.2s}
+    .public-profile-overlay.open{opacity:1;pointer-events:auto}
+    .public-profile-card{width:min(720px,100%);max-height:min(88vh,820px);overflow:auto;border:1px solid rgba(255,255,255,.09);border-radius:24px;background:var(--panel);box-shadow:0 24px 80px rgba(0,0,0,.45)}
+    .public-profile-head{display:flex;align-items:center;justify-content:space-between;gap:14px;padding:18px 20px;border-bottom:1px solid rgba(255,255,255,.07)}
+    .public-profile-body{padding:20px}
+    .public-profile-stat{padding:14px;border-radius:16px;background:var(--panel-soft);text-align:center}
+    .public-profile-actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:18px}
     .cart-overlay{
       position:fixed;inset:0;z-index:90;
       background:rgba(0,0,0,.58);
@@ -808,18 +815,6 @@
       .search-wrap{max-width:none}
     }
   </style>
-
-<style>
-  #public-profile-modal{position:fixed;inset:0;z-index:9999;display:none;align-items:center;justify-content:center;padding:20px;background:rgba(2,6,12,.78);backdrop-filter:blur(10px)}
-  #public-profile-modal.open{display:flex}
-  .public-profile-dialog{width:min(720px,100%);max-height:90vh;overflow:auto;border:1px solid rgba(255,255,255,.12);border-radius:24px;background:var(--panel,#0b1220);box-shadow:0 24px 80px rgba(0,0,0,.45)}
-  .public-profile-close{position:absolute;right:18px;top:18px;z-index:2;width:42px;height:42px;border-radius:14px;border:1px solid rgba(255,255,255,.15);background:rgba(0,0,0,.35);color:#fff;font-size:20px}
-  .public-profile-stats{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px}
-  @media(max-width:640px){.public-profile-stats{grid-template-columns:repeat(2,minmax(0,1fr))}}
-  .public-profile-stat{padding:14px;border-radius:16px;background:rgba(255,255,255,.055);text-align:center}
-  .public-profile-stat strong{display:block;font-size:1.15rem}
-  .public-profile-action-row{display:flex;gap:10px;flex-wrap:wrap;margin-top:16px}
-</style>
 </head>
 
 <body>
@@ -893,6 +888,15 @@
     </nav>
   </div>
 
+  <div id="public-profile-overlay" class="public-profile-overlay" aria-hidden="true">
+    <section class="public-profile-card" role="dialog" aria-modal="true" aria-labelledby="public-profile-title">
+      <div class="public-profile-head">
+        <div><div class="section-kicker">Perfil público</div><h2 id="public-profile-title" class="section-title mt-1">Integrante</h2></div>
+        <button class="icon-btn" data-action="close-public-profile" aria-label="Cerrar perfil"><i class="ph-bold ph-x"></i></button>
+      </div>
+      <div id="public-profile-body" class="public-profile-body"></div>
+    </section>
+  </div>
   <div id="cart-overlay" class="cart-overlay" aria-hidden="true">
     <aside class="cart-drawer" role="dialog" aria-modal="true" aria-labelledby="cart-title">
       <div class="flex items-center justify-between gap-3 pb-3 border-b border-white/10">
@@ -1106,20 +1110,37 @@
       },
 
       async setRingAmount(userId,delta,reason=""){
-        if(!this.ready || !this.ringsRef) throw new Error("Realtime no está listo");
+        // Wait briefly for Firebase/auth to finish initializing instead of
+        // failing intermittently when the admin panel is opened too quickly.
+        if(!this.ready || !this.ringsRef){
+          await new Promise((resolve,reject)=>{
+            const started=Date.now();
+            const timer=setInterval(()=>{
+              if(this.ready && this.ringsRef){ clearInterval(timer); resolve(); }
+              else if(Date.now()-started>7000){ clearInterval(timer); reject(new Error("Realtime no está listo. Espera a que aparezca 'En tiempo real'.")); }
+            },100);
+          });
+        }
         const user=state.users.find(u=>u.id===userId);
         if(!user) throw new Error("Usuario no encontrado");
         if(!this.isAdmin() && !this.permissions?.[this.uid]?.rings) throw new Error("Sin permiso para modificar Rings");
         const amount=Math.trunc(Number(delta));
         if(!Number.isFinite(amount) || amount===0) throw new Error("Cantidad inválida");
         const ref=this.ringsRef.child(userId);
-        const result=await ref.transaction(current=>Math.max(0,Number(current ?? user.rings ?? 0)+amount));
-        if(!result.committed) throw new Error("No se pudo aplicar el cambio");
-        // Optimistic local/cache update prevents a stale users snapshot from
-        // briefly moving the player to the wrong ranking position.
+        const currentLive=Object.prototype.hasOwnProperty.call(this.ringValues,userId)
+          ? Number(this.ringValues[userId]||0)
+          : Number(user.rings||0);
+        const result=await ref.transaction(current=>{
+          const base=current === null || current === undefined ? currentLive : Number(current||0);
+          return Math.max(0,base+amount);
+        });
+        if(!result.committed) throw new Error("Firebase no confirmó el cambio de Rings");
         const newTotal=Number(result.snapshot.val()||0);
         this.ringValues[userId]=newTotal;
         user.rings=newTotal;
+        // Keep the profile's cached rings field synchronized too. The rings
+        // node remains the authoritative value used by the ranking.
+        if(this.usersRef) await this.usersRef.child(userId).update({rings:newTotal});
         await this.ringsRef.root.child(`speedy-friends-teams/${REALTIME_CONFIG.teamId}/ringHistory`).push({
           userId,delta:amount,reason:String(reason||""),byUid:this.uid,byEmail:this.email||"",at:firebase.database.ServerValue.TIMESTAMP
         });
@@ -1427,15 +1448,15 @@
           <div class="min-w-0"><div class="font-black truncate">${escapeHtml(user.username || user.name || "Sin nombre")}</div><div class="tiny muted truncate">Cuenta: ${escapeHtml(user.ownerEmail || "sin cuenta vinculada")}</div><div class="tiny mt-1 text-[var(--gold)]">${Number(user.rings||0).toLocaleString("es-PE")} Rings</div></div>
           <div class="button-row">
             <button class="${granted?"soft-btn":"primary-btn"} small-btn" data-action="toggle-ring-permission" data-user-id="${escapeHtml(user.id)}" data-enabled="${granted?"0":"1"}">${granted?"Quitar permiso":"Dar permiso Rings"}</button>
-            
+            <button class="danger-btn small-btn" data-action="admin-delete-user" data-user-id="${escapeHtml(user.id)}"><i class="ph-bold ph-trash"></i> Eliminar</button>
           </div>
         </div>`;
       }).join("");
       panel.innerHTML=`<div class="steam-grid">
         <section class="surface p-5">
           <div class="section-kicker">Solo administrador</div>
-          <div class="flex items-center justify-between gap-3 flex-wrap mt-1"><h2 class="section-title">Usuarios y permisos</h2><button class="soft-btn small-btn" data-action="admin-logout"><i class="ph-bold ph-sign-out"></i> Cerrar sesión admin</button></div>
-          <p class="muted text-sm mt-2">Aquí aparecen automáticamente los usuarios registrados. Por ahora solo puedes dar o quitar permiso para modificar Rings.</p>
+          <div class="flex items-center justify-between gap-3 flex-wrap mt-1"><h2 class="section-title">Permisos del team</h2><button class="soft-btn small-btn" data-action="admin-logout"><i class="ph-bold ph-sign-out"></i> Cerrar sesión admin</button></div>
+          <p class="muted text-sm mt-2">Cuenta admin: ${escapeHtml(RealtimeSync.email || REALTIME_CONFIG.adminEmail)}</p>
           <div class="steam-grid gap-3 mt-5">${rows || `<div class="muted">No hay usuarios registrados.</div>`}</div>
         </section>
         <section class="surface p-5">
@@ -2097,56 +2118,6 @@
       `;
     }
 
-    function openPublicProfile(userId){
-      const user=state.users.find(item=>item.id===userId);
-      if(!user){ toast("Perfil no encontrado","danger"); return; }
-      const modal=document.getElementById("public-profile-modal");
-      const content=document.getElementById("public-profile-content");
-      if(!modal || !content) return;
-      const avatar=user.avatar || BASE_RANKING[4].avatar;
-      const ostButton=user.hasOst && (user.ostUrl || user.legacyOst)
-        ? `<button class="primary-btn small-btn" data-action="play-user-ost" data-user-id="${escapeHtml(user.id)}"><i class="ph-bold ph-music-notes"></i> Escuchar OST</button>`
-        : "";
-      const isOwn=RealtimeSync.isSignedIn() && user.ownerUid===RealtimeSync.uid;
-      content.innerHTML=`
-        <div class="p-5 sm:p-7">
-          <div class="flex items-center gap-4">
-            <img src="${avatar}" alt="Avatar de ${escapeHtml(user.username)}" class="rank-avatar !w-[86px] !h-[86px]" loading="lazy">
-            <div class="min-w-0">
-              <div class="section-kicker">Perfil público</div>
-              <h2 id="public-profile-title" class="section-title mt-1 break-words">${escapeHtml(user.username || user.name || "Integrante")}</h2>
-              <div class="muted text-sm mt-1">${escapeHtml(user.name || "Integrante")} · ${escapeHtml(user.role || "Runner")}</div>
-            </div>
-          </div>
-
-          <div class="surface-soft p-4 mt-5">
-            <div class="section-kicker">Descripción</div>
-            <p class="mt-2 leading-relaxed">${escapeHtml(user.bio || "Este integrante aún no ha escrito una descripción.")}</p>
-          </div>
-
-          <div class="public-profile-stats mt-5">
-            <div class="public-profile-stat"><strong>${Number(user.rings||0).toLocaleString("es-PE")}</strong><span class="tiny muted">Rings</span></div>
-            <div class="public-profile-stat"><strong>Nivel ${Number(user.level||1)}</strong><span class="tiny muted">Nivel</span></div>
-            <div class="public-profile-stat"><strong>${Number(user.xp||0).toLocaleString("es-PE")}</strong><span class="tiny muted">XP</span></div>
-            <div class="public-profile-stat"><strong>${user.hasOst ? "🎵 Sí" : "—"}</strong><span class="tiny muted">OST</span></div>
-          </div>
-
-          <div class="public-profile-action-row">
-            ${ostButton}
-            ${isOwn ? `<button class="soft-btn small-btn" data-tab="profile" data-action="close-public-profile"><i class="ph-bold ph-pencil"></i> Editar mi perfil</button>` : ""}
-          </div>
-        </div>`;
-      modal.classList.add("open");
-      modal.setAttribute("aria-hidden","false");
-    }
-
-    function closePublicProfile(){
-      const modal=document.getElementById("public-profile-modal");
-      if(!modal) return;
-      modal.classList.remove("open");
-      modal.setAttribute("aria-hidden","true");
-    }
-
     function renderProfile(){
       const user=activeUser();
       const equipment=effectiveEquipment(user);
@@ -2223,8 +2194,8 @@
                   <strong>${Number(item.rings).toLocaleString("es-PE")}</strong>
                   <div class="tiny muted">rings</div>
                 </div>
-                <div class="button-row justify-end">
-                  ${item.type==="user" ? `<button class="soft-btn small-btn" data-action="view-public-profile" data-user-id="${item.userId}"><i class="ph-bold ph-eye"></i> Ver perfil</button>` : ""}
+                <div class="flex items-center justify-end gap-2 flex-wrap">
+                  ${item.type==="user" ? `<button class="soft-btn small-btn" data-action="view-public-profile" data-user-id="${item.userId}"><i class="ph-bold ph-user"></i> Ver perfil</button>` : ""}
                   ${item.type==="user" && item.hasOst ? `<button class="icon-btn !w-[38px] !h-[38px]" data-action="play-user-ost" data-user-id="${item.userId}" aria-label="Reproducir OST de ${escapeHtml(item.name)}"><i class="ph-bold ph-music-notes"></i></button>` : ""}
                 </div>
               </article>
@@ -2232,6 +2203,49 @@
           </div>
         </div>
       `;
+    }
+
+    function closePublicProfile(){
+      const overlay=document.getElementById("public-profile-overlay");
+      if(!overlay) return;
+      overlay.classList.remove("open");
+      overlay.setAttribute("aria-hidden","true");
+    }
+
+    function showPublicProfile(userId){
+      const user=state.users.find(item=>item.id===userId);
+      if(!user) return toast("Usuario no encontrado","danger");
+      const overlay=document.getElementById("public-profile-overlay");
+      const body=document.getElementById("public-profile-body");
+      const title=document.getElementById("public-profile-title");
+      if(!overlay || !body || !title) return;
+      title.textContent=user.username || user.name || "Integrante";
+      const avatar=user.avatar || BASE_RANKING[4].avatar;
+      const hasOst=user.hasOst || Boolean(user.legacyOst);
+      body.innerHTML=`
+        <div class="profile-preview bg-default" style="min-height:250px;margin-bottom:18px">
+          <div class="profile-banner-line"></div>
+          <div class="profile-avatar-row">
+            <img src="${avatar}" alt="Avatar de ${escapeHtml(user.username||user.name)}" class="profile-avatar" loading="lazy">
+            <div class="profile-badge">👤 ${escapeHtml(user.role || "Runner")}</div>
+          </div>
+          <div class="profile-preview-content">
+            <div class="section-kicker">${escapeHtml(user.username || user.name || "Integrante")}</div>
+            <h3 class="section-title mt-1">${escapeHtml(user.name || "Integrante")}</h3>
+            <p class="muted text-sm mt-2">${escapeHtml(user.bio || "Sin descripción todavía.")}</p>
+          </div>
+        </div>
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-3">
+          <div class="public-profile-stat"><strong class="text-[var(--gold)]">${Number(user.rings||0).toLocaleString("es-PE")}</strong><div class="tiny muted mt-1">Rings</div></div>
+          <div class="public-profile-stat"><strong>${Number(user.level||1)}</strong><div class="tiny muted mt-1">Nivel</div></div>
+          <div class="public-profile-stat"><strong>${Number(user.xp||0)}</strong><div class="tiny muted mt-1">XP</div></div>
+          <div class="public-profile-stat"><strong>⭐ Próximamente</strong><div class="tiny muted mt-1">Estrellas</div></div>
+        </div>
+        <div class="public-profile-actions">
+          ${hasOst ? `<button class="primary-btn" data-action="play-user-ost" data-user-id="${escapeHtml(user.id)}"><i class="ph-bold ph-music-notes"></i> Escuchar OST</button>` : ""}
+        </div>`;
+      overlay.classList.add("open");
+      overlay.setAttribute("aria-hidden","false");
     }
 
     function productCardHtml(product){
@@ -2889,10 +2903,9 @@
 
       if(action==="admin-login") RealtimeSync.signInAdmin();
       if(action==="google-login") RealtimeSync.isSignedIn() ? RealtimeSync.logout() : RealtimeSync.signInGoogle();
-      if(action==="view-public-profile") openPublicProfile(actionButton.dataset.userId);
-      if(action==="close-public-profile"){ closePublicProfile(); if(actionButton.dataset.tab) switchTab(actionButton.dataset.tab); }
       if(action==="admin-logout") RealtimeSync.logout();
       if(action==="toggle-ring-permission") RealtimeSync.grantRingsPermission(actionButton.dataset.userId,actionButton.dataset.enabled==="1").then(()=>renderAdmin()).catch(error=>toast(error.message||"No se pudo cambiar el permiso","danger"));
+      if(action==="admin-delete-user") RealtimeSync.deleteUser(actionButton.dataset.userId).then(()=>renderAdmin()).catch(error=>toast(error.message||"No se pudo eliminar el usuario","danger"));
       if(action==="go-store") switchTab("store");
       if(action==="toggle-theme"){
         state.theme=state.theme==="dark" ? "light" : "dark";
@@ -2917,6 +2930,8 @@
       if(action==="play-main-ost") AudioController.playMain();
       if(action==="play-custom-ost") AudioController.playCustom();
       if(action==="play-user-ost") AudioController.playCustom(actionButton.dataset.userId);
+      if(action==="view-public-profile") showPublicProfile(actionButton.dataset.userId);
+      if(action==="close-public-profile") closePublicProfile();
       if(action==="stop-audio") AudioController.stop();
       if(action==="toggle-audio"){
         AudioController.toggle();
@@ -2950,10 +2965,6 @@
       }catch(error){
         toast(error.message||"No se pudo quitar Rings","danger");
       }
-    });
-
-    document.addEventListener("click",event => {
-      if(event.target.id==="public-profile-modal") closePublicProfile();
     });
 
     document.addEventListener("mouseover",event => {
@@ -3061,12 +3072,16 @@
       }
     });
 
+    document.getElementById("public-profile-overlay")?.addEventListener("click",event => {
+      if(event.target.id==="public-profile-overlay") closePublicProfile();
+    });
+
     document.getElementById("cart-overlay").addEventListener("click",event => {
       if(event.target.id==="cart-overlay") closeCart();
     });
 
     document.addEventListener("keydown",event => {
-      if(event.key==="Escape") closeCart();
+      if(event.key==="Escape"){ closeCart(); closePublicProfile(); }
     });
 
     async function init(){
@@ -3129,12 +3144,5 @@
     }
   -->
 
-
-<div id="public-profile-modal" aria-hidden="true">
-  <div class="public-profile-dialog surface" role="dialog" aria-modal="true" aria-labelledby="public-profile-title" style="position:relative">
-    <button class="public-profile-close" type="button" data-action="close-public-profile" aria-label="Cerrar">×</button>
-    <div id="public-profile-content"></div>
-  </div>
-</div>
 </body>
 </html>
