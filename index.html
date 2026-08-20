@@ -808,6 +808,18 @@
       .search-wrap{max-width:none}
     }
   </style>
+
+<style>
+  #public-profile-modal{position:fixed;inset:0;z-index:9999;display:none;align-items:center;justify-content:center;padding:20px;background:rgba(2,6,12,.78);backdrop-filter:blur(10px)}
+  #public-profile-modal.open{display:flex}
+  .public-profile-dialog{width:min(720px,100%);max-height:90vh;overflow:auto;border:1px solid rgba(255,255,255,.12);border-radius:24px;background:var(--panel,#0b1220);box-shadow:0 24px 80px rgba(0,0,0,.45)}
+  .public-profile-close{position:absolute;right:18px;top:18px;z-index:2;width:42px;height:42px;border-radius:14px;border:1px solid rgba(255,255,255,.15);background:rgba(0,0,0,.35);color:#fff;font-size:20px}
+  .public-profile-stats{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px}
+  @media(max-width:640px){.public-profile-stats{grid-template-columns:repeat(2,minmax(0,1fr))}}
+  .public-profile-stat{padding:14px;border-radius:16px;background:rgba(255,255,255,.055);text-align:center}
+  .public-profile-stat strong{display:block;font-size:1.15rem}
+  .public-profile-action-row{display:flex;gap:10px;flex-wrap:wrap;margin-top:16px}
+</style>
 </head>
 
 <body>
@@ -1415,15 +1427,15 @@
           <div class="min-w-0"><div class="font-black truncate">${escapeHtml(user.username || user.name || "Sin nombre")}</div><div class="tiny muted truncate">Cuenta: ${escapeHtml(user.ownerEmail || "sin cuenta vinculada")}</div><div class="tiny mt-1 text-[var(--gold)]">${Number(user.rings||0).toLocaleString("es-PE")} Rings</div></div>
           <div class="button-row">
             <button class="${granted?"soft-btn":"primary-btn"} small-btn" data-action="toggle-ring-permission" data-user-id="${escapeHtml(user.id)}" data-enabled="${granted?"0":"1"}">${granted?"Quitar permiso":"Dar permiso Rings"}</button>
-            <button class="danger-btn small-btn" data-action="admin-delete-user" data-user-id="${escapeHtml(user.id)}"><i class="ph-bold ph-trash"></i> Eliminar</button>
+            
           </div>
         </div>`;
       }).join("");
       panel.innerHTML=`<div class="steam-grid">
         <section class="surface p-5">
           <div class="section-kicker">Solo administrador</div>
-          <div class="flex items-center justify-between gap-3 flex-wrap mt-1"><h2 class="section-title">Permisos del team</h2><button class="soft-btn small-btn" data-action="admin-logout"><i class="ph-bold ph-sign-out"></i> Cerrar sesión admin</button></div>
-          <p class="muted text-sm mt-2">Cuenta admin: ${escapeHtml(RealtimeSync.email || REALTIME_CONFIG.adminEmail)}</p>
+          <div class="flex items-center justify-between gap-3 flex-wrap mt-1"><h2 class="section-title">Usuarios y permisos</h2><button class="soft-btn small-btn" data-action="admin-logout"><i class="ph-bold ph-sign-out"></i> Cerrar sesión admin</button></div>
+          <p class="muted text-sm mt-2">Aquí aparecen automáticamente los usuarios registrados. Por ahora solo puedes dar o quitar permiso para modificar Rings.</p>
           <div class="steam-grid gap-3 mt-5">${rows || `<div class="muted">No hay usuarios registrados.</div>`}</div>
         </section>
         <section class="surface p-5">
@@ -2085,6 +2097,56 @@
       `;
     }
 
+    function openPublicProfile(userId){
+      const user=state.users.find(item=>item.id===userId);
+      if(!user){ toast("Perfil no encontrado","danger"); return; }
+      const modal=document.getElementById("public-profile-modal");
+      const content=document.getElementById("public-profile-content");
+      if(!modal || !content) return;
+      const avatar=user.avatar || BASE_RANKING[4].avatar;
+      const ostButton=user.hasOst && (user.ostUrl || user.legacyOst)
+        ? `<button class="primary-btn small-btn" data-action="play-user-ost" data-user-id="${escapeHtml(user.id)}"><i class="ph-bold ph-music-notes"></i> Escuchar OST</button>`
+        : "";
+      const isOwn=RealtimeSync.isSignedIn() && user.ownerUid===RealtimeSync.uid;
+      content.innerHTML=`
+        <div class="p-5 sm:p-7">
+          <div class="flex items-center gap-4">
+            <img src="${avatar}" alt="Avatar de ${escapeHtml(user.username)}" class="rank-avatar !w-[86px] !h-[86px]" loading="lazy">
+            <div class="min-w-0">
+              <div class="section-kicker">Perfil público</div>
+              <h2 id="public-profile-title" class="section-title mt-1 break-words">${escapeHtml(user.username || user.name || "Integrante")}</h2>
+              <div class="muted text-sm mt-1">${escapeHtml(user.name || "Integrante")} · ${escapeHtml(user.role || "Runner")}</div>
+            </div>
+          </div>
+
+          <div class="surface-soft p-4 mt-5">
+            <div class="section-kicker">Descripción</div>
+            <p class="mt-2 leading-relaxed">${escapeHtml(user.bio || "Este integrante aún no ha escrito una descripción.")}</p>
+          </div>
+
+          <div class="public-profile-stats mt-5">
+            <div class="public-profile-stat"><strong>${Number(user.rings||0).toLocaleString("es-PE")}</strong><span class="tiny muted">Rings</span></div>
+            <div class="public-profile-stat"><strong>Nivel ${Number(user.level||1)}</strong><span class="tiny muted">Nivel</span></div>
+            <div class="public-profile-stat"><strong>${Number(user.xp||0).toLocaleString("es-PE")}</strong><span class="tiny muted">XP</span></div>
+            <div class="public-profile-stat"><strong>${user.hasOst ? "🎵 Sí" : "—"}</strong><span class="tiny muted">OST</span></div>
+          </div>
+
+          <div class="public-profile-action-row">
+            ${ostButton}
+            ${isOwn ? `<button class="soft-btn small-btn" data-tab="profile" data-action="close-public-profile"><i class="ph-bold ph-pencil"></i> Editar mi perfil</button>` : ""}
+          </div>
+        </div>`;
+      modal.classList.add("open");
+      modal.setAttribute("aria-hidden","false");
+    }
+
+    function closePublicProfile(){
+      const modal=document.getElementById("public-profile-modal");
+      if(!modal) return;
+      modal.classList.remove("open");
+      modal.setAttribute("aria-hidden","true");
+    }
+
     function renderProfile(){
       const user=activeUser();
       const equipment=effectiveEquipment(user);
@@ -2161,7 +2223,8 @@
                   <strong>${Number(item.rings).toLocaleString("es-PE")}</strong>
                   <div class="tiny muted">rings</div>
                 </div>
-                <div>
+                <div class="button-row justify-end">
+                  ${item.type==="user" ? `<button class="soft-btn small-btn" data-action="view-public-profile" data-user-id="${item.userId}"><i class="ph-bold ph-eye"></i> Ver perfil</button>` : ""}
                   ${item.type==="user" && item.hasOst ? `<button class="icon-btn !w-[38px] !h-[38px]" data-action="play-user-ost" data-user-id="${item.userId}" aria-label="Reproducir OST de ${escapeHtml(item.name)}"><i class="ph-bold ph-music-notes"></i></button>` : ""}
                 </div>
               </article>
@@ -2826,9 +2889,10 @@
 
       if(action==="admin-login") RealtimeSync.signInAdmin();
       if(action==="google-login") RealtimeSync.isSignedIn() ? RealtimeSync.logout() : RealtimeSync.signInGoogle();
+      if(action==="view-public-profile") openPublicProfile(actionButton.dataset.userId);
+      if(action==="close-public-profile"){ closePublicProfile(); if(actionButton.dataset.tab) switchTab(actionButton.dataset.tab); }
       if(action==="admin-logout") RealtimeSync.logout();
       if(action==="toggle-ring-permission") RealtimeSync.grantRingsPermission(actionButton.dataset.userId,actionButton.dataset.enabled==="1").then(()=>renderAdmin()).catch(error=>toast(error.message||"No se pudo cambiar el permiso","danger"));
-      if(action==="admin-delete-user") RealtimeSync.deleteUser(actionButton.dataset.userId).then(()=>renderAdmin()).catch(error=>toast(error.message||"No se pudo eliminar el usuario","danger"));
       if(action==="go-store") switchTab("store");
       if(action==="toggle-theme"){
         state.theme=state.theme==="dark" ? "light" : "dark";
@@ -2886,6 +2950,10 @@
       }catch(error){
         toast(error.message||"No se pudo quitar Rings","danger");
       }
+    });
+
+    document.addEventListener("click",event => {
+      if(event.target.id==="public-profile-modal") closePublicProfile();
     });
 
     document.addEventListener("mouseover",event => {
@@ -3061,5 +3129,12 @@
     }
   -->
 
+
+<div id="public-profile-modal" aria-hidden="true">
+  <div class="public-profile-dialog surface" role="dialog" aria-modal="true" aria-labelledby="public-profile-title" style="position:relative">
+    <button class="public-profile-close" type="button" data-action="close-public-profile" aria-label="Cerrar">×</button>
+    <div id="public-profile-content"></div>
+  </div>
+</div>
 </body>
 </html>
