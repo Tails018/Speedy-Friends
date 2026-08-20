@@ -815,7 +815,7 @@
       .search-wrap{max-width:none}
     }
   </style>
-</head>
+<style id="sf-ratings-css">.rating-stars{display:flex;gap:5px;align-items:center;flex-wrap:wrap}.rating-star{border:0;background:transparent;color:#697386;font-size:1.65rem;line-height:1;padding:4px;cursor:pointer;transition:transform .12s,color .12s}.rating-star:hover,.rating-star.active{color:var(--gold);transform:scale(1.08)}.rating-box{padding:16px;border-radius:18px;background:var(--panel-soft);border:1px solid var(--line);margin-top:16px}.rating-summary{display:flex;align-items:center;gap:10px;flex-wrap:wrap}.rating-score{font-size:1.8rem;font-weight:1000;color:var(--gold)}.rating-count{font-size:.78rem;color:var(--muted)}</style></head>
 
 <body>
   <div id="toast" class="toast" role="status" aria-live="polite"></div>
@@ -1007,6 +1007,8 @@
       usersRef:null,
       permissionsRef:null,
       ringsRef:null,
+      ratingsRef:null,
+      ratings:{},
       uid:"",
       email:"",
       admin:false,
@@ -1107,6 +1109,33 @@
           renderSidebar();
           renderTopbar();
         });
+      },
+
+      async bindRatingListeners(){
+        if(!this.ratingsRef || !this.uid) return;
+        this.ratingsRef.off();
+        this.ratingsRef.on("value",snap=>{
+          this.ratings=snap.val() || {};
+          if(state.activeTab==="ranking") renderRanking();
+          const overlay=document.getElementById("public-profile-overlay");
+          if(overlay?.classList.contains("open")){
+            const targetId=overlay.dataset.userId;
+            if(targetId) showPublicProfile(targetId);
+          }
+        });
+      },
+      ratingSummary(userId){
+        const values=Object.values(this.ratings?.[userId] || {}).map(Number).filter(v=>v>=1&&v<=5);
+        return {total:values.length,average:values.length?values.reduce((a,b)=>a+b,0)/values.length:0};
+      },
+      myRating(userId){ return Number(this.ratings?.[userId]?.[this.uid] || 0); },
+      async setRating(userId,score){
+        if(!this.ready || !this.ratingsRef || !this.uid) throw new Error("Inicia sesión con Google para valorar");
+        if(!Number.isInteger(score)||score<1||score>5) throw new Error("La valoración debe ser de 1 a 5 estrellas");
+        const target=state.users.find(u=>u.id===userId);
+        if(!target) throw new Error("Usuario no encontrado");
+        if(target.ownerUid===this.uid) throw new Error("No puedes valorarte a ti mismo");
+        await this.ratingsRef.child(userId).child(this.uid).set(score);
       },
 
       async setRingAmount(userId,delta,reason=""){
@@ -1253,6 +1282,7 @@
           this.usersRef=firebase.database().ref(`speedy-friends-teams/${REALTIME_CONFIG.teamId}/users`);
           this.permissionsRef=firebase.database().ref(`speedy-friends-teams/${REALTIME_CONFIG.teamId}/permissions`);
           this.ringsRef=firebase.database().ref(`speedy-friends-teams/${REALTIME_CONFIG.teamId}/rings`);
+          this.ratingsRef=firebase.database().ref(`speedy-friends-teams/${REALTIME_CONFIG.teamId}/ratings`);
 
           firebase.auth().onAuthStateChanged(async user=>{
             if(!user){
@@ -1421,6 +1451,7 @@
         });
 
         await this.bindPermissionListeners();
+        await this.bindRatingListeners();
 
         const ringsSnapshot=await this.ringsRef.once("value");
         if(!ringsSnapshot.exists() && this.isAdmin()){
@@ -2193,6 +2224,7 @@
                 <div class="rank-rings">
                   <strong>${Number(item.rings).toLocaleString("es-PE")}</strong>
                   <div class="tiny muted">rings</div>
+                  ${item.type==="user" && RealtimeSync.ratingSummary(item.userId).total ? `<div class="tiny" style="color:var(--gold);margin-top:3px">⭐ ${RealtimeSync.ratingSummary(item.userId).average.toFixed(1)}</div>` : ""}
                 </div>
                 <div class="flex items-center justify-end gap-2 flex-wrap">
                   ${item.type==="user" && item.hasOst ? `<button class="icon-btn !w-[38px] !h-[38px]" data-action="play-user-ost" data-user-id="${item.userId}" aria-label="Reproducir OST de ${escapeHtml(item.name)}"><i class="ph-bold ph-music-notes"></i></button>` : ""}
@@ -2219,6 +2251,7 @@
       const title=document.getElementById("public-profile-title");
       if(!overlay || !body || !title) return;
       title.textContent=user.username || user.name || "Integrante";
+      overlay.dataset.userId=user.id;
 
       const equipment=user.equipped || {};
       const bgProduct=productById(equipment.background);
@@ -2256,7 +2289,12 @@
           <div class="public-profile-stat"><strong class="text-[var(--gold)]">${Number(user.rings||0).toLocaleString("es-PE")}</strong><div class="tiny muted mt-1">Rings</div></div>
           <div class="public-profile-stat"><strong>${Number(user.level||1)}</strong><div class="tiny muted mt-1">Nivel</div></div>
           <div class="public-profile-stat"><strong>${Number(user.xp||0)}</strong><div class="tiny muted mt-1">XP</div></div>
-          <div class="public-profile-stat"><strong>⭐ Próximamente</strong><div class="tiny muted mt-1">Estrellas</div></div>
+          <div class="public-profile-stat"><strong>${RealtimeSync.ratingSummary(user.id).total ? `⭐ ${RealtimeSync.ratingSummary(user.id).average.toFixed(1)}` : "⭐ —"}</strong><div class="tiny muted mt-1">${RealtimeSync.ratingSummary(user.id).total ? `${RealtimeSync.ratingSummary(user.id).total} valoraciones` : "Sin valoraciones"}</div></div>
+        </div>
+        <div class="rating-box">
+          <div class="section-kicker">Valoración de la comunidad</div>
+          <div class="rating-summary mt-2"><span class="rating-score">${RealtimeSync.ratingSummary(user.id).total ? RealtimeSync.ratingSummary(user.id).average.toFixed(1) : "—"}</span><span class="rating-count">${RealtimeSync.ratingSummary(user.id).total ? `${RealtimeSync.ratingSummary(user.id).total} valoraciones` : "Sé el primero en valorar"}</span></div>
+          ${RealtimeSync.uid && user.ownerUid!==RealtimeSync.uid ? `<div class="tiny muted mt-4">Tu valoración</div><div class="rating-stars mt-2">${[1,2,3,4,5].map(n=>`<button type="button" class="rating-star ${RealtimeSync.myRating(user.id)>=n?"active":""}" data-action="rate-user" data-user-id="${escapeHtml(user.id)}" data-rating="${n}" aria-label="${n} estrellas">★</button>`).join("")}</div>` : `<div class="tiny muted mt-3">${RealtimeSync.uid ? "No puedes valorarte a ti mismo." : "Inicia sesión con Google para valorar."}</div>`}
         </div>
         <div class="public-profile-actions">
           ${hasOst ? `<button class="primary-btn small-btn" data-action="play-user-ost" data-user-id="${escapeHtml(user.id)}"><i class="ph-bold ph-music-notes"></i> Escuchar OST</button>` : ""}
@@ -2924,6 +2962,14 @@
 
       const actionButton=event.target.closest("[data-action]");
       if(!actionButton) return;
+      if(actionButton.dataset.action==="rate-user") {
+        try {
+          await RealtimeSync.setRating(actionButton.dataset.userId,Number(actionButton.dataset.rating));
+          showPublicProfile(actionButton.dataset.userId);
+          toast(`Valoración guardada: ${actionButton.dataset.rating} ⭐`,"success");
+        } catch(error) { toast(error.message||"No se pudo guardar la valoración","danger"); }
+        return;
+      }
       const action=actionButton.dataset.action;
       const productId=actionButton.dataset.productId;
 
