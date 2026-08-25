@@ -71,6 +71,7 @@ const BASE_RANKING = [{"name": "Sir Galahad", "rings": 820, "avatar": "data:imag
 
       currentUser(){ return typeof firebase !== "undefined" ? firebase.auth().currentUser : null; },
       isAdmin(){ return this.admin === true; },
+      isRoleAdmin(){ return Boolean(this.uid && this.permissions?.[this.uid]?.role === "admin"); },
       isSignedIn(){ return Boolean(this.uid); },
       isCreatorProfile(userId){
         const profile=state.users.find(user=>user.id===userId);
@@ -605,7 +606,49 @@ const BASE_RANKING = [{"name": "Sir Galahad", "rings": 820, "avatar": "data:imag
     function renderAdmin(){
       const panel=document.getElementById("tab-admin");
       if(!panel) return;
-      if(!RealtimeSync.isAdmin()){ panel.innerHTML=""; return; }
+      if(!RealtimeSync.isAdmin() && !RealtimeSync.isRoleAdmin()){ panel.innerHTML=""; return; }
+
+      // Panel reducido para administradores por rol: solo Rings.
+      if(!RealtimeSync.isAdmin() && RealtimeSync.isRoleAdmin()){
+        const query=String(state.adminSearch||"").trim().toLowerCase();
+        const filteredUsers=state.users.filter(user=>{
+          if(RealtimeSync.isCreatorProfile(user.id)) return false;
+          if(!query) return true;
+          return [user.username,user.name,user.ownerEmail,user.ownerUid,user.id]
+            .some(value=>String(value||"").toLowerCase().includes(query));
+        });
+        const rows=filteredUsers.map(user=>`<div class="surface-soft p-4 flex items-center justify-between gap-3 flex-wrap">
+          <div class="min-w-0">
+            <div class="font-black truncate">${escapeHtml(user.username || user.name || "Sin nombre")}</div>
+            <div class="tiny muted truncate">${escapeHtml(user.ownerEmail || "sin cuenta vinculada")}</div>
+            <div class="tiny mt-1 text-[var(--gold)]">${Number(user.rings||0).toLocaleString("es-PE")} Rings</div>
+          </div>
+          <div class="button-row">
+            <button class="primary-btn small-btn" data-action="role-admin-ring" data-user-id="${escapeHtml(user.id)}" data-delta="1"><i class="ph-bold ph-plus"></i> Dar Rings</button>
+            <button class="danger-btn small-btn" data-action="role-admin-ring" data-user-id="${escapeHtml(user.id)}" data-delta="-1"><i class="ph-bold ph-minus"></i> Quitar Rings</button>
+          </div>
+        </div>`).join("");
+        panel.innerHTML=`<div class="steam-grid">
+          <section class="surface p-5">
+            <div class="section-kicker">Administrador</div>
+            <div class="flex items-center justify-between gap-3 flex-wrap mt-1">
+              <h2 class="section-title">Panel de Rings</h2>
+              <button class="soft-btn small-btn" data-action="admin-logout"><i class="ph-bold ph-sign-out"></i> Cerrar sesión</button>
+            </div>
+            <p class="muted text-sm mt-2">Solo puedes agregar o quitar Rings. La creadora está protegida.</p>
+            <div class="surface-soft p-3 mt-4">
+              <label class="tiny muted">Buscar integrante</label>
+              <div class="flex gap-2 mt-2">
+                <input id="admin-user-search" class="input flex-1" type="search" value="${escapeHtml(state.adminSearch||"")}" placeholder="Nombre, usuario, correo o UID">
+                <button class="soft-btn small-btn" type="button" data-action="clear-admin-search">Limpiar</button>
+              </div>
+              <div class="tiny muted mt-2">${filteredUsers.length} integrantes encontrados</div>
+            </div>
+            <div class="steam-grid gap-3 mt-5">${rows || `<div class="muted">No hay coincidencias.</div>`}</div>
+          </section>
+        </div>`;
+        return;
+      }
 
       const query=String(state.adminSearch||"").trim().toLowerCase();
       const filteredUsers=state.users.filter(user=>{
@@ -1118,7 +1161,7 @@ const BASE_RANKING = [{"name": "Sir Galahad", "rings": 820, "avatar": "data:imag
     function renderSidebar(){
       const user=activeUser();
       document.querySelectorAll('[data-admin-nav]').forEach(node=>node.remove());
-      if(RealtimeSync.isAdmin()){
+      if(RealtimeSync.isAdmin() || RealtimeSync.isRoleAdmin()){
         document.getElementById("desktop-nav")?.insertAdjacentHTML("beforeend",`<button class="nav-item ${state.activeTab==='admin'?"active":""}" data-tab="admin" data-admin-nav="1" aria-label="Administración"><i class="ph-bold ph-shield-check"></i><span>Administración</span></button>`);
         document.getElementById("mobile-nav")?.insertAdjacentHTML("beforeend",`<button class="nav-item ${state.activeTab==='admin'?"active":""}" data-tab="admin" data-admin-nav="1" aria-label="Administración"><i class="ph-bold ph-shield-check"></i><span>Admin</span></button>`);
       }
@@ -1774,7 +1817,7 @@ const BASE_RANKING = [{"name": "Sir Galahad", "rings": 820, "avatar": "data:imag
       if(state.activeTab==="inventory") renderInventory();
       if(state.activeTab==="audio") renderAudio();
       if(state.activeTab==="admin") {
-        if(RealtimeSync.isAdmin()) renderAdmin();
+        if(RealtimeSync.isAdmin() || RealtimeSync.isRoleAdmin()) renderAdmin();
         else { state.activeTab="home"; renderHome(); }
       }
 
@@ -1783,8 +1826,8 @@ const BASE_RANKING = [{"name": "Sir Galahad", "rings": 820, "avatar": "data:imag
 
     function switchTab(tab){
       if(!TAB_META[tab]) return;
-      if(tab==="admin" && !RealtimeSync.isAdmin()){
-        toast("Solo la cuenta administradora puede abrir esta sección","danger");
+      if(tab==="admin" && !RealtimeSync.isAdmin() && !RealtimeSync.isRoleAdmin()){
+        toast("Solo la creadora o un administrador puede abrir esta sección","danger");
         return;
       }
       state.activeTab=tab;
@@ -2174,6 +2217,7 @@ const BASE_RANKING = [{"name": "Sir Galahad", "rings": 820, "avatar": "data:imag
       if(action==="admin-logout") RealtimeSync.logout();
       if(action==="toggle-ring-permission") RealtimeSync.grantRingsPermission(actionButton.dataset.userId,actionButton.dataset.enabled==="1").then(()=>renderAdmin()).catch(error=>toast(error.message||"No se pudo cambiar el permiso","danger"));
       if(action==="toggle-admin-role") RealtimeSync.setAdminRole(actionButton.dataset.userId,actionButton.dataset.enabled==="1").then(()=>{ renderAdmin(); if(state.activeTab==="ranking") renderRanking(); }).catch(error=>toast(error.message||"No se pudo cambiar el rol","danger"));
+      if(action==="role-admin-ring") RealtimeSync.setRingAmount(actionButton.dataset.userId,Number(actionButton.dataset.delta||0),"Panel de administrador").then(()=>renderAdmin()).catch(error=>toast(error.message||"No se pudo modificar Rings","danger"));
       if(action==="clear-branding-icon"){
         const preview=document.getElementById("branding-preview");
         if(preview) preview.innerHTML='<span class="orbitron">SF</span>';
