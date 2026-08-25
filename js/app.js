@@ -265,7 +265,10 @@ const BASE_RANKING = [{"name": "Sir Galahad", "rings": 820, "avatar": "data:imag
         const next={title:safeTitle,subtitle:safeSubtitle};
         if(iconData === null) next.icon="";
         else next.icon=String(iconData || current.icon || "");
-        await firebase.database().ref(`speedy-friends-teams/${REALTIME_CONFIG.teamId}/siteSettings`).set(next);
+        // Keep the same siteSettings node and update only its fields.
+        // This preserves the realtime listener and avoids replacing unrelated
+        // branding data if more settings are added later.
+        await firebase.database().ref(`speedy-friends-teams/${REALTIME_CONFIG.teamId}/siteSettings`).update(next);
       },
 
       async setAdminRole(userId,enabled){
@@ -350,7 +353,10 @@ const BASE_RANKING = [{"name": "Sir Galahad", "rings": 820, "avatar": "data:imag
           if(this.isAdmin()){
             const updates={};
             state.users.forEach(user=>{ updates[user.id]=this.sanitizeUser(user); });
-            await this.usersRef.set(updates);
+            // Update children instead of replacing the whole /users node.
+            // Firebase rules are defined at /users/$profileId, so a child
+            // update lets those per-profile rules be evaluated correctly.
+            await this.usersRef.update(updates);
           }else{
             const user=state.users.find(item=>item.ownerUid===this.uid);
             if(!user) return;

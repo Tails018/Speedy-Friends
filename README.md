@@ -20,3 +20,5 @@ No se necesita Node.js ni Python para esta prueba si Live Server ya está instal
 - El rol `admin` organiza el ranking; el permiso `rings` sigue siendo independiente.
 - Los usuarios con permiso Rings pueden modificar a otros integrantes, pero no a la creadora.
 - Se incluye `firebase-rules.json` con la protección de servidor para la creadora.
+
+- La creadora puede cambiar en tiempo real el icono SF, "Speedy Friends" y "Community Hub" desde Administración.
