@@ -1,0 +1,586 @@
+<!doctype html>
+
+<style id="sf-loader-style">
+.sf-page-loader{
+  position:fixed;inset:0;z-index:99999;
+  display:grid;place-items:center;
+  background:radial-gradient(circle at 50% 44%,rgba(34,34,34,.98),rgba(5,5,5,.99) 72%);
+  backdrop-filter:blur(14px);pointer-events:none;
+  opacity:1;visibility:visible;
+  transition:opacity .34s ease,visibility .34s ease;
+  pointer-events:auto;
+}
+.sf-page-loader.is-hidden{opacity:0;visibility:hidden;pointer-events:none}
+.sf-loader-orbit{
+  position:absolute;
+  width:clamp(170px,22vw,260px);
+  aspect-ratio:1;
+  border-radius:50%;
+  border:1px solid rgba(18,18,18,.08);
+  animation:sfLoaderOrbit 6s linear infinite;
+}
+.sf-loader-orbit::before,
+.sf-loader-orbit::after{
+  content:"";
+  position:absolute;
+  border-radius:50%;
+  border:1px dashed rgba(35,61,143,.16);
+}
+.sf-loader-orbit::before{inset:13px}
+.sf-loader-orbit::after{inset:29px}
+@keyframes sfLoaderOrbit{to{transform:rotate(360deg)}}
+.sf-loader-card{
+  position:relative;
+  width:min(330px,82vw);
+  padding:28px 28px 24px;
+  background:rgba(18,18,18,.96);
+  border:1px solid rgba(18,18,18,.08);
+  box-shadow:0 25px 80px rgba(0,0,0,.1);
+  text-align:center;
+  overflow:hidden;
+  transform:translateY(12px) scale(.975);
+  animation:sfLoaderCardIn .55s cubic-bezier(.16,1,.3,1) forwards;
+}
+@keyframes sfLoaderCardIn{to{transform:none}}
+.sf-loader-card::before{
+  content:"";position:absolute;left:-35%;top:0;width:24%;height:100%;
+  background:linear-gradient(90deg,transparent,rgba(255,255,255,.65),transparent);
+  transform:skewX(-16deg);
+  animation:sfLoaderSweep 1.65s cubic-bezier(.16,1,.3,1) infinite;
+}
+@keyframes sfLoaderSweep{
+  0%,28%{opacity:0;transform:skewX(-16deg) translateX(0)}
+  44%{opacity:.9}
+  67%,100%{opacity:0;transform:skewX(-16deg) translateX(560%)}
+}
+.sf-loader-gif{
+  position:relative;z-index:2;
+  width:112px;height:112px;object-fit:contain;
+  display:block;margin:0 auto 11px;
+  filter:drop-shadow(0 12px 22px rgba(0,0,0,.1));
+  animation:sfLoaderBob 1.9s ease-in-out infinite;
+}
+@keyframes sfLoaderBob{
+  0%,100%{transform:translateY(0) scale(1)}
+  50%{transform:translateY(-5px) scale(1.025)}
+}
+.sf-loader-kicker{
+  position:relative;z-index:2;
+  margin:0 0 6px;
+  color:#ef263f;
+  font-size:6px;font-weight:900;letter-spacing:.19em;
+  text-transform:uppercase;
+}
+.sf-loader-title{
+  position:relative;z-index:2;
+  margin:0;
+  font-family:SFDisplay,Arial Black,Arial,sans-serif;
+  font-size:clamp(27px,5vw,42px);
+  line-height:.8;
+  letter-spacing:-.055em;
+  text-transform:uppercase;
+}
+.sf-loader-subtitle{
+  position:relative;z-index:2;
+  margin:10px 0 0;
+  font-size:7px;font-weight:900;letter-spacing:.12em;
+  text-transform:uppercase;opacity:.46;
+}
+.sf-loader-line{
+  position:relative;z-index:2;
+  height:3px;margin:17px auto 0;max-width:230px;
+  background:rgba(18,18,18,.08);overflow:hidden;
+}
+.sf-loader-line::after{
+  content:"";display:block;height:100%;width:36%;
+  background:linear-gradient(90deg,#ef263f,#233d8f);
+  animation:sfLoaderBar 1.1s ease-in-out infinite;
+}
+@keyframes sfLoaderBar{
+  0%{transform:translateX(-115%)}
+  100%{transform:translateX(420%)}
+}
+@media(prefers-reduced-motion:reduce){
+  .sf-loader-orbit,.sf-loader-gif,.sf-loader-card,.sf-loader-card::before,.sf-loader-line::after{
+    animation:none!important
+  }
+}
+</style>
+<div class="sf-page-loader" id="sf-page-loader" aria-live="polite" aria-busy="true">
+  <div class="sf-loader-orbit" aria-hidden="true"></div>
+  <div class="sf-loader-card">
+    <img class="sf-loader-gif" src="assets/loader.gif" alt="" aria-hidden="true">
+    <p class="sf-loader-kicker" id="sf-loader-kicker">Speedy Friends / Navigation</p>
+    <h2 class="sf-loader-title" id="sf-loader-title">CARGANDO</h2>
+    <p class="sf-loader-subtitle" id="sf-loader-subtitle">Preparando la página…</p>
+    <div class="sf-loader-line" aria-hidden="true"></div>
+  </div>
+</div>
+<script>
+(() => {
+  const loader = document.getElementById('sf-page-loader');
+  const title = document.getElementById('sf-loader-title');
+  const subtitle = document.getElementById('sf-loader-subtitle');
+  const kicker = document.getElementById('sf-loader-kicker');
+  if (!loader) return;
+
+  let shownAt = performance.now();
+  let hideTimer = null;
+  const minVisible = 520;
+
+  const routeName = href => {
+    try {
+      const u = new URL(href, window.location.href);
+      const file = (u.pathname.split('/').pop() || 'index.html').toLowerCase();
+      const names = {
+        'index.html':'INICIO',
+        'profile.html':'PERFIL',
+        'ost.html':'AUDIO / OST',
+        'ranking.html':'RANKING',
+        'admin.html':'ADMIN',
+        'admin-role.html':'STAFF ADMIN'
+      };
+      return names[file] || (file ? file.replace('.html','').replace(/[-_]/g,' ').toUpperCase() : 'PÁGINA');
+    } catch { return 'PÁGINA'; }
+  };
+
+  const show = (page = 'PÁGINA', sub = 'Preparando la página…') => {
+    if (!loader.classList.contains('is-hidden')) {
+      shownAt = performance.now();
+    } else {
+      loader.classList.remove('is-hidden');
+      loader.setAttribute('aria-hidden','false');
+      loader.setAttribute('aria-busy','true');
+      shownAt = performance.now();
+    }
+    if (kicker) kicker.textContent = 'SPEEDY FRIENDS / NAVEGACIÓN';
+    if (title) title.textContent = page;
+    if (subtitle) subtitle.textContent = sub;
+  };
+
+  const hide = () => {
+    const wait = Math.max(0, minVisible - (performance.now() - shownAt));
+    clearTimeout(hideTimer);
+    hideTimer = setTimeout(() => {
+      loader.classList.add('is-hidden');
+      loader.setAttribute('aria-hidden','true');
+      loader.setAttribute('aria-busy','false');
+    }, wait);
+  };
+
+  window.addEventListener('load', hide, {once:true});
+  if (document.readyState === 'complete') hide();
+
+  document.addEventListener('click', event => {
+    const link = event.target.closest('a[href]');
+    if (!link) return;
+
+    const raw = link.getAttribute('href') || '';
+    if (!raw || raw.startsWith('#') || raw.startsWith('mailto:') || raw.startsWith('tel:') ||
+        link.target === '_blank' || event.ctrlKey || event.metaKey || event.shiftKey || event.altKey) return;
+
+    let target;
+    try { target = new URL(raw, window.location.href); } catch { return; }
+    if (target.origin !== window.location.origin) return;
+
+    const page = routeName(target.href);
+    const isSameDocument = target.pathname === window.location.pathname && target.hash;
+    if (isSameDocument) {
+      show(page, 'Navegando a la sección…');
+      setTimeout(() => { window.location.href = target.href; }, 250);
+      return;
+    }
+
+    // Full page navigation: display loader before the browser leaves.
+    show(page, page === 'RANKING' ? 'Cargando clasificación…' :
+               page === 'AUDIO / OST' ? 'Cargando biblioteca OST…' :
+               page === 'PERFIL' ? 'Cargando perfil…' :
+               page === 'ADMIN' || page === 'STAFF ADMIN' ? 'Cargando panel…' :
+               'Preparando la página…');
+  });
+})();
+</script>
+
+
+<html lang="es">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Audio / OST · Speedy Friends</title>
+<link rel="stylesheet" href="styles.css">
+<style>
+body.ost-page{margin:0;background:#f4f3ee;color:#151515;overflow-x:hidden}
+.ost-shell{min-height:100vh;padding:0 clamp(20px,4vw,68px) 60px;position:relative;overflow:clip}
+.ost-ghost{position:absolute;top:18%;left:-3%;font-family:SFDisplay,Arial Black,Arial,sans-serif;font-size:clamp(150px,27vw,420px);line-height:.65;letter-spacing:-.1em;opacity:.045;filter:blur(1.2px);transform:skewX(-9deg);pointer-events:none;animation:og 11s ease-in-out infinite alternate}
+@keyframes og{from{transform:skewX(-9deg) translateX(-1%)}to{transform:skewX(-9deg) translate(4%,2%) scale(1.02)}}
+.ost-topbar{position:relative;z-index:10;display:flex;align-items:center;gap:24px;min-height:76px;border-bottom:1px solid rgba(18,18,18,.09)}
+.ost-brand{color:#171717;text-decoration:none;font-size:21px;font-weight:900;letter-spacing:-.05em;white-space:nowrap}.ost-brand span{color:#ef263f;font-style:italic}
+.ost-nav{display:flex;align-items:center;gap:clamp(14px,2.4vw,34px);flex:1;justify-content:center;overflow:auto}
+.ost-nav a{position:relative;color:#171717;text-decoration:none;font-size:10px;font-weight:900;letter-spacing:.14em;padding:8px 0;transition:.3s}.ost-nav a::after{content:"";position:absolute;left:0;right:100%;bottom:1px;height:2px;background:#ef263f;transition:right .35s}.ost-nav a:hover{transform:translateY(-2px);color:#ef263f}.ost-nav a:hover::after{right:0}
+.ost-menu{width:46px;height:46px;display:grid;place-items:center;border-radius:50%;text-decoration:none;color:#fff;background:#666;box-shadow:0 10px 24px rgba(0,0,0,.12);transition:.3s}.ost-menu:hover{transform:scale(1.05) rotate(4deg)}
+.ost-hero{position:relative;z-index:2;display:grid;grid-template-columns:minmax(290px,.78fr) minmax(0,1.22fr);gap:clamp(24px,4vw,64px);align-items:center;padding:clamp(50px,7vw,98px) 0 38px}
+.ost-title-wrap{max-width:640px}.ost-kicker{margin:0 0 10px;font-size:9px;letter-spacing:.2em;font-weight:900;text-transform:uppercase;opacity:.58}
+.ost-title{margin:0;font-family:SFDisplay,Arial Black,Arial,sans-serif;font-size:clamp(68px,10vw,142px);line-height:.72;letter-spacing:-.075em;text-transform:uppercase}.ost-title em{color:#ef263f;font-style:normal}
+.ost-lead{max-width:500px;margin:24px 0 0;font-size:11px;line-height:1.75;opacity:.58}
+.ost-now{position:relative;min-height:340px;padding:clamp(22px,3vw,38px);background:#fff;border:1px solid rgba(18,18,18,.08);box-shadow:0 24px 70px rgba(0,0,0,.08);overflow:hidden;animation:on .72s cubic-bezier(.16,1,.3,1) both;transition:transform .18s ease}.ost-now::before{content:"";position:absolute;inset:0;background:radial-gradient(circle at 78% 28%,rgba(35,61,143,.12),transparent 35%),radial-gradient(circle at 16% 84%,rgba(239,38,63,.10),transparent 30%);pointer-events:none}.ost-now::after{content:"";position:absolute;left:-34%;top:0;width:18%;height:100%;background:linear-gradient(90deg,transparent,rgba(255,255,255,.55),transparent);transform:skewX(-15deg);animation:sw 5.8s cubic-bezier(.16,1,.3,1) infinite;pointer-events:none}@keyframes on{from{opacity:0;transform:translateY(28px) rotateX(5deg)}to{opacity:1;transform:translateY(0) rotateX(0)}}@keyframes sw{0%,55%{opacity:0;transform:skewX(-15deg) translateX(0)}63%{opacity:.8}79%,100%{opacity:0;transform:skewX(-15deg) translateX(760%)}}
+.ost-now-head{display:flex;align-items:flex-end;justify-content:space-between;gap:14px;position:relative;z-index:2}.ost-now-head h2{margin:0;font-family:SFDisplay,Arial Black,Arial,sans-serif;font-size:clamp(28px,4vw,56px);line-height:.8;letter-spacing:-.055em;text-transform:uppercase}.ost-status{font-size:7px;font-weight:900;letter-spacing:.16em;color:#ef263f;border:1px solid rgba(239,38,63,.28);padding:7px 9px}
+.ost-player{position:relative;z-index:2;margin-top:28px;display:grid;grid-template-columns:78px 1fr;gap:18px;align-items:center}.ost-disc{width:78px;height:78px;border-radius:50%;display:grid;place-items:center;background:radial-gradient(circle at 50% 50%,#f4f3ee 0 11%,transparent 12%),repeating-radial-gradient(circle,#1a1a1a 0 2px,#313131 3px 4px);box-shadow:0 14px 28px rgba(0,0,0,.18);animation:spin 8s linear infinite}.ost-disc::after{content:"SF";width:25px;height:25px;border-radius:50%;display:grid;place-items:center;background:#ef263f;color:#fff;font-size:8px;font-weight:900}@keyframes spin{to{transform:rotate(360deg)}}.ost-track-title{font-family:SFDisplay,Arial Black,Arial,sans-serif;font-size:clamp(26px,3.7vw,48px);line-height:.82;letter-spacing:-.055em;text-transform:uppercase;margin:0}.ost-track-meta{display:flex;gap:12px;flex-wrap:wrap;margin-top:7px;font-size:7px;font-weight:900;letter-spacing:.11em;text-transform:uppercase;opacity:.52}
+.ost-controls{margin-top:30px;display:grid;grid-template-columns:auto 1fr auto;gap:12px;align-items:center;position:relative;z-index:2}.ost-play{width:48px;height:48px;border-radius:50%;border:0;cursor:pointer;background:#ef263f;color:#fff;display:grid;place-items:center;font-size:16px;box-shadow:0 12px 28px rgba(239,38,63,.2);transition:.3s}.ost-play:hover{transform:scale(1.08)}.ost-range{appearance:none;width:100%;height:4px;border-radius:99px;background:rgba(18,18,18,.1);outline:none}.ost-range::-webkit-slider-thumb{appearance:none;width:13px;height:13px;border-radius:50%;background:#ef263f;cursor:pointer}.ost-time{font-size:7px;font-weight:900;letter-spacing:.1em;opacity:.48;white-space:nowrap}
+.ost-library{position:relative;z-index:2}.ost-library-head{display:flex;align-items:end;justify-content:space-between;gap:18px;margin-bottom:16px}.ost-library-head h2{margin:0;font-family:SFDisplay,Arial Black,Arial,sans-serif;font-size:clamp(34px,5vw,64px);line-height:.8;letter-spacing:-.06em;text-transform:uppercase}.ost-library-head p{margin:0;max-width:360px;font-size:8px;line-height:1.6;text-transform:uppercase;letter-spacing:.1em;opacity:.48}
+.ost-list{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}.ost-row{position:relative;display:grid;grid-template-columns:50px minmax(0,1fr) auto;gap:16px;align-items:center;min-height:94px;padding:14px 16px;background:rgba(255,255,255,.78);border:1px solid rgba(18,18,18,.07);overflow:hidden;cursor:pointer;transition:.42s cubic-bezier(.16,1,.3,1);transform:translateY(18px);opacity:0}.ost-row.is-visible{animation:rin .62s cubic-bezier(.16,1,.3,1) forwards;animation-delay:var(--delay)}@keyframes rin{to{opacity:1;transform:translateY(0)}}.ost-row:hover{transform:translateY(-5px) skewX(-1deg);background:#fff;box-shadow:0 16px 34px rgba(0,0,0,.08)}.ost-row::after{content:"";position:absolute;left:0;bottom:0;width:100%;height:3px;background:linear-gradient(90deg,#ef263f,#233d8f);transform:scaleX(0);transform-origin:left;transition:.42s}.ost-row:hover::after,.ost-row.is-active::after{transform:scaleX(1)}.ost-index{width:44px;height:44px;display:grid;place-items:center;border:1px solid rgba(18,18,18,.1);font-size:9px;font-weight:900;transition:.35s}.ost-row:hover .ost-index,.ost-row.is-active .ost-index{transform:rotate(-7deg) scale(1.05);background:#ef263f;color:#fff}.ost-row-title{margin:0;font-family:SFDisplay,Arial Black,Arial,sans-serif;font-size:clamp(20px,2.3vw,32px);line-height:.86;letter-spacing:-.05em;text-transform:uppercase}.ost-row-meta{margin-top:6px;font-size:7px;font-weight:900;letter-spacing:.11em;text-transform:uppercase;opacity:.46}.ost-row-duration{font-size:8px;font-weight:900;letter-spacing:.1em;opacity:.5}.ost-eq{display:none;align-items:end;gap:3px;height:20px}.ost-row.is-active .ost-eq{display:flex}.ost-eq i{display:block;width:3px;background:#ef263f;animation:eq .8s ease-in-out infinite alternate}.ost-eq i:nth-child(1){height:8px}.ost-eq i:nth-child(2){height:16px;animation-delay:.12s}.ost-eq i:nth-child(3){height:11px;animation-delay:.25s}.ost-eq i:nth-child(4){height:18px;animation-delay:.17s}@keyframes eq{from{transform:scaleY(.55)}to{transform:scaleY(1.05)}}
+.ost-actions{margin-top:14px;display:flex;flex-wrap:wrap;gap:10px}.ost-action{appearance:none;border:1px solid rgba(18,18,18,.12);background:#fff;color:#171717;padding:12px 16px;font-size:8px;font-weight:900;letter-spacing:.13em;text-transform:uppercase;text-decoration:none;cursor:pointer;transition:.32s}.ost-action:hover{transform:translateY(-4px);background:#171717;color:#fff}.ost-action.primary{background:#ef263f;color:#fff;border-color:#ef263f}
+@media(max-width:940px){.ost-hero{grid-template-columns:1fr}.ost-nav{justify-content:flex-start}.ost-list{grid-template-columns:1fr}}
+@media(max-width:640px){.ost-topbar{min-height:64px;gap:12px}.ost-brand{font-size:18px}.ost-nav a{font-size:8px}.ost-hero{padding-top:42px}.ost-title{font-size:64px}.ost-player{grid-template-columns:64px 1fr}.ost-disc{width:64px;height:64px}.ost-row{grid-template-columns:42px minmax(0,1fr) auto;gap:11px}}
+@media(prefers-reduced-motion:reduce){.ost-ghost,.ost-now,.ost-now::after,.ost-disc,.ost-row,.ost-eq i{animation:none!important}.ost-row{opacity:1;transform:none}}
+
+.ost-upload{display:inline-flex;align-items:center;justify-content:center;user-select:none}
+.ost-custom-label{margin-top:18px;margin-bottom:9px;font-size:7px;font-weight:900;letter-spacing:.18em;text-transform:uppercase;opacity:.5}
+.ost-custom-list{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.ost-custom-list:empty{display:none}
+.ost-custom-row{position:relative;display:grid;grid-template-columns:38px minmax(0,1fr) auto;gap:12px;align-items:center;min-height:76px;padding:12px 14px;background:rgba(255,255,255,.78);border:1px solid rgba(18,18,18,.07);cursor:pointer;overflow:hidden;transition:transform .38s cubic-bezier(.16,1,.3,1),box-shadow .3s ease,background .25s ease}
+.ost-custom-row:hover{transform:translateY(-4px);background:#fff;box-shadow:0 14px 28px rgba(0,0,0,.07)}
+.ost-custom-row.is-active{border-color:rgba(239,38,63,.3)}
+.ost-custom-row.is-active::after{content:"";position:absolute;left:0;bottom:0;width:100%;height:3px;background:#ef263f;animation:customActiveIn .4s cubic-bezier(.16,1,.3,1)}
+@keyframes customActiveIn{from{transform:scaleX(0);transform-origin:left}to{transform:scaleX(1);transform-origin:left}}
+.ost-custom-num{width:34px;height:34px;display:grid;place-items:center;background:#f4f3ee;border:1px solid rgba(18,18,18,.08);font-size:8px;font-weight:900;transition:.3s}
+.ost-custom-row:hover .ost-custom-num,.ost-custom-row.is-active .ost-custom-num{background:#ef263f;color:#fff;transform:rotate(-6deg)}
+.ost-custom-name{margin:0;font-family:SFDisplay,Arial Black,Arial,sans-serif;font-size:clamp(17px,2vw,27px);line-height:.86;letter-spacing:-.04em;text-transform:uppercase;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.ost-custom-meta{margin-top:5px;font-size:6px;letter-spacing:.1em;font-weight:900;opacity:.46;text-transform:uppercase}
+.ost-custom-remove{appearance:none;width:30px;height:30px;border-radius:50%;border:1px solid rgba(18,18,18,.1);background:#fff;color:#111;cursor:pointer;font-size:12px;transition:.28s}
+.ost-custom-remove:hover{transform:rotate(90deg);background:#111;color:#fff}
+.ost-stop{border-color:rgba(18,18,18,.18)}
+@media(max-width:940px){.ost-custom-list{grid-template-columns:1fr}}
+
+</style>
+
+<script src="https://www.gstatic.com/firebasejs/12.1.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/12.1.0/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/12.1.0/firebase-database-compat.js"></script>
+<script src="firebase-legacy.js"></script>
+
+
+<style id="ost-firebase-polish">
+.ost-firebase-status{
+ display:inline-flex;align-items:center;min-height:30px;padding:0 10px;margin-left:8px;
+ border:1px solid rgba(18,18,18,.1);background:#fff;font-size:6px;font-weight:900;
+ letter-spacing:.12em;text-transform:uppercase;opacity:.55
+}
+.ost-custom-row.is-uploading{opacity:.55;pointer-events:none}
+.ost-custom-row.is-online{border-color:rgba(31,132,76,.22)}
+.ost-custom-meta.online{color:#1f844c}
+@media(max-width:700px){.ost-firebase-status{margin:8px 0 0}}
+</style>
+
+<script src="global-ost-player.js"></script>
+</head>
+<body class="ost-page"><main class="ost-shell"><div class="ost-ghost">AUDIO</div>
+<nav class="ost-topbar"><a class="ost-brand" href="index.html"><span>SPEEDY</span> FRIENDS</a><div class="ost-nav">
+<a href="index.html#topics">NOVEDADES</a><a href="index.html#friends">AMIGOS</a><a href="index.html#special">ESPECIAL</a><a href="index.html#download">DESCARGAS</a><a href="index.html#quick-actions">ACCESOS</a><a href="index.html#videos">VIDEOS</a></div><a class="ost-menu" href="index.html#quick-actions">☰</a></nav>
+<section class="ost-hero"><div class="ost-title-wrap"><p class="ost-kicker">Speedy Friends / Sound Archive</p><h1 class="ost-title">Audio <em>/</em><br>OST</h1><p class="ost-lead">Tu espacio para la música de Speedy Friends. Selecciona una pista y controla la reproducción desde este panel.</p></div>
+<section class="ost-now"><div class="ost-now-head"><div><p class="ost-kicker">Now Playing</p><h2>Speedy Friends</h2></div><span class="ost-status" id="now-status">READY</span></div>
+<div class="ost-player"><div class="ost-disc"></div><div><p class="ost-track-title" id="now-track">SELECT A TRACK</p><div class="ost-track-meta"><span id="now-author">SPEEDY FRIENDS OST</span><span>ORIGINAL / DEMO</span></div></div></div>
+<div class="ost-controls"><button class="ost-play" id="play" type="button">▶</button><input class="ost-range" id="seek" type="range" min="0" max="100" value="0"><span class="ost-time" id="time">0:00 / 0:00</span></div></section></section>
+<section class="ost-library"><div class="ost-library-head"><div><p class="ost-kicker">Library</p><h2>Tracks</h2></div><p>Selecciona una pista para cargarla en el reproductor. Después conectaremos los archivos reales sin cambiar esta interfaz.</p></div>
+<div class="ost-list">
+<article class="ost-row" data-title="Main Theme" data-author="Speedy Friends" data-duration="2:48"><div class="ost-index">01</div><div><h3 class="ost-row-title">Main Theme</h3><div class="ost-row-meta">Speedy Friends · Main Menu</div></div><div class="ost-row-duration">2:48</div><div class="ost-eq"><i></i><i></i><i></i><i></i></div></article>
+<article class="ost-row" data-title="Neon Run" data-author="Speedy Friends" data-duration="3:12"><div class="ost-index">02</div><div><h3 class="ost-row-title">Neon Run</h3><div class="ost-row-meta">Speedy Friends · Night Drive</div></div><div class="ost-row-duration">3:12</div><div class="ost-eq"><i></i><i></i><i></i><i></i></div></article>
+<article class="ost-row" data-title="Community Lobby" data-author="Speedy Friends" data-duration="2:21"><div class="ost-index">03</div><div><h3 class="ost-row-title">Community Lobby</h3><div class="ost-row-meta">Speedy Friends · Community</div></div><div class="ost-row-duration">2:21</div><div class="ost-eq"><i></i><i></i><i></i><i></i></div></article>
+<article class="ost-row" data-title="Ring Rush" data-author="Speedy Friends" data-duration="2:56"><div class="ost-index">04</div><div><h3 class="ost-row-title">Ring Rush</h3><div class="ost-row-meta">Speedy Friends · Rings</div></div><div class="ost-row-duration">2:56</div><div class="ost-eq"><i></i><i></i><i></i><i></i></div></article>
+<article class="ost-row" data-title="Sunset Arcade" data-author="Speedy Friends" data-duration="3:44"><div class="ost-index">05</div><div><h3 class="ost-row-title">Sunset Arcade</h3><div class="ost-row-meta">Speedy Friends · Chill</div></div><div class="ost-row-duration">3:44</div><div class="ost-eq"><i></i><i></i><i></i><i></i></div></article>
+<article class="ost-row" data-title="Final Lap" data-author="Speedy Friends" data-duration="4:02"><div class="ost-index">06</div><div><h3 class="ost-row-title">Final Lap</h3><div class="ost-row-meta">Speedy Friends · Finale</div></div><div class="ost-row-duration">4:02</div><div class="ost-eq"><i></i><i></i><i></i><i></i></div></article>
+</div><div class="ost-custom-label">CUSTOM OST</div><div class="ost-custom-list" id="custom-list"></div><div class="ost-actions"><a class="ost-action primary" href="index.html">← Volver a Speedy Friends</a><button class="ost-action" id="random" type="button">Reproducir aleatorio</button>
+<button class="ost-action ost-stop" id="stop" type="button">■ Detener</button>
+<label class="ost-action ost-upload" for="custom-ost">＋ Agregar OST personalizado</label>
+<input id="custom-ost" type="file" accept="audio/*" multiple hidden><span id="ost-firebase-status" class="ost-firebase-status" aria-live="polite">NO INICIADO</span></div></section></main>
+
+
+
+
+<script>
+(() => {
+  const audio=window.__sfGlobalAudio || (window.__sfGlobalAudio=new Audio());
+  if(!audio.id) audio.id='sf-cloudinary-audio';
+  audio.preload='metadata';
+  audio.crossOrigin='anonymous';
+  audio.controls=false;
+
+  const fileInput=document.getElementById('custom-ost');
+  const list=document.getElementById('custom-list');
+  const status=document.getElementById('ost-firebase-status')||document.getElementById('ost-cloud-status');
+  const playBtn=document.getElementById('play');
+  const stopBtn=document.getElementById('stop');
+  const seek=document.getElementById('seek');
+  const time=document.getElementById('time');
+  const randomBtn=document.getElementById('random');
+  const nowTrack=document.getElementById('now-track');
+  const nowAuthor=document.getElementById('now-author');
+  const nowStatus=document.getElementById('now-status');
+  const demoRows=[...document.querySelectorAll('.ost-row')];
+
+  let currentUrl='';
+  let currentEl=null;
+
+  const sf=()=>window.SpeedyFirebase;
+  const me=()=>sf()?.current||{};
+  const setStatus=text=>{
+    if(!status)return;
+    status.textContent=text;
+    status.classList.toggle('ok',/SINCRONIZADO|CLOUDINARY|LISTO|REPRODUCIENDO/.test(text));
+    status.classList.toggle('error',/ERROR|NO DISPONIBLE|INICIA/.test(text));
+  };
+  const fmt=s=>{
+    s=Math.max(0,Math.floor(Number(s)||0));
+    return `${Math.floor(s/60)}:${String(s%60).padStart(2,'0')}`;
+  };
+  const clearActive=()=>document.querySelectorAll('.ost-row,.ost-custom-row').forEach(x=>x.classList.remove('is-active'));
+
+  function setTrack(track,el=null){
+    if(!track?.url)return false;
+    audio.pause();
+    audio.currentTime=0;
+    audio.src=track.url;
+    audio.load();
+    clearActive();
+    el?.classList.add('is-active');
+    currentUrl=track.url;
+    currentEl=el;
+    if(nowTrack)nowTrack.textContent=track.name||'OST';
+    if(nowAuthor)nowAuthor.textContent=`${track.author||'SPEEDY FRIENDS'} · CLOUDINARY`;
+    if(nowStatus)nowStatus.textContent='LISTO';
+    if(playBtn)playBtn.textContent='▶';
+    if(seek)seek.value=0;
+    if(time)time.textContent='0:00 / 0:00';
+    return true;
+  }
+
+  async function playCurrent(){
+    if(!currentUrl)return;
+    try{
+      await audio.play();
+      if(nowStatus)nowStatus.textContent='PLAYING';
+      if(playBtn)playBtn.textContent='Ⅱ';
+      setStatus('REPRODUCIENDO · CLOUDINARY');
+    }catch(err){
+      console.error('[Cloudinary OST] play()',err);
+      if(nowStatus)nowStatus.textContent='ERROR DE AUDIO';
+      setStatus('NO DISPONIBLE');
+    }
+  }
+
+  function stopCurrent(){
+    try{audio.pause();audio.currentTime=0}catch{}
+    if(playBtn)playBtn.textContent='▶';
+    if(seek)seek.value=0;
+    if(time)time.textContent='0:00 / 0:00';
+    if(nowStatus)nowStatus.textContent='STOPPED';
+    currentEl?.classList.remove('is-active');
+  }
+
+  playBtn?.addEventListener('click',()=>{
+    if(!currentUrl){
+      const first=demoRows[0];
+      if(first){
+        const parts=(first.dataset.duration||'0:00').split(':');
+        setTrack({url:'',name:first.dataset.title||'TRACK',author:first.dataset.author||'SPEEDY FRIENDS'},first);
+      }
+      return;
+    }
+    audio.paused?playCurrent():audio.pause();
+  });
+  stopBtn?.addEventListener('click',stopCurrent);
+
+  audio.addEventListener('loadedmetadata',()=>{
+    if(Number.isFinite(audio.duration)&&audio.duration>0 && time)
+      time.textContent=`0:00 / ${fmt(audio.duration)}`;
+    if(nowStatus && currentUrl)nowStatus.textContent='READY';
+  });
+  audio.addEventListener('timeupdate',()=>{
+    if(!Number.isFinite(audio.duration)||audio.duration<=0)return;
+    if(seek)seek.value=Math.min(100,audio.currentTime/audio.duration*100);
+    if(time)time.textContent=`${fmt(audio.currentTime)} / ${fmt(audio.duration)}`;
+  });
+  audio.addEventListener('play',()=>{if(playBtn)playBtn.textContent='Ⅱ';if(nowStatus)nowStatus.textContent='PLAYING'});
+  audio.addEventListener('pause',()=>{if(playBtn)playBtn.textContent='▶';if(nowStatus&&audio.currentTime>0)nowStatus.textContent='PAUSED'});
+  audio.addEventListener('ended',()=>{if(playBtn)playBtn.textContent='▶';if(nowStatus)nowStatus.textContent='ENDED'});
+  audio.addEventListener('error',()=>{
+    console.error('[Cloudinary OST] HTMLAudio error',audio.error);
+    if(nowStatus)nowStatus.textContent='AUDIO ERROR';
+    setStatus('ERROR DE AUDIO');
+  });
+
+  seek?.addEventListener('input',()=>{
+    if(Number.isFinite(audio.duration)&&audio.duration>0)
+      audio.currentTime=audio.duration*(Number(seek.value)/100);
+  });
+
+  // The "demo" rows remain visual previews, but do not interfere with Cloudinary tracks.
+  demoRows.forEach(row=>{
+    row.addEventListener('click',()=>{
+      clearActive();
+      row.classList.add('is-active');
+      if(nowTrack)nowTrack.textContent=row.dataset.title||'TRACK';
+      if(nowAuthor)nowAuthor.textContent=(row.dataset.author||'SPEEDY FRIENDS')+' · DEMO';
+      if(nowStatus)nowStatus.textContent='DEMO';
+      currentUrl='';
+      currentEl=row;
+      try{audio.pause();audio.removeAttribute('src');audio.load()}catch{}
+      if(playBtn)playBtn.textContent='▶';
+    });
+  });
+
+  function appendCloudTrack(track){
+    if(!track?.url || !list)return;
+    const el=document.createElement('article');
+    el.className='ost-custom-row is-online';
+    el.innerHTML=`<div class="ost-custom-num"></div><div><h3 class="ost-custom-name"></h3><div class="ost-custom-meta online">ONLINE · CLOUDINARY</div></div><button class="ost-custom-remove" type="button" aria-label="Eliminar OST">×</button>`;
+    el.querySelector('.ost-custom-name').textContent=track.name||'OST';
+    el.querySelector('.ost-custom-num').textContent=String(list.children.length+1).padStart(2,'0');
+    list.appendChild(el);
+
+    el.addEventListener('click',event=>{
+      if(event.target.closest('.ost-custom-remove'))return;
+      setTrack(track,el);
+      playCurrent();
+    });
+
+    el.querySelector('.ost-custom-remove')?.addEventListener('click',async event=>{
+      event.stopPropagation();
+      try{
+        const state=me(),pid=state.profileId||state.uid;
+        if(pid && track.id && track.id!=='primary')
+          await sf().refs.users.child(pid).child('ostTracks').child(track.id).remove();
+        if(pid)
+          await sf().refs.users.child(pid).update({hasOst:false,ostName:'',ostUrl:null,ostBytes:0});
+      }catch(err){console.error('[Cloudinary OST] remove',err)}
+      if(currentUrl===track.url)stopCurrent();
+      el.remove();
+      setStatus('LISTO PARA SUBIR');
+    });
+  }
+
+
+  async function migrateExistingOstToTracks(pid, profile){
+    if(!pid || !sf()?.refs?.users)return;
+    try{
+      const ref=sf().refs.users.child(pid).child('ostTracks');
+      const snap=await ref.once('value');
+      const tracks=snap.val()||{};
+      const urls=new Set(Object.values(tracks).map(t=>String(t?.url||'')));
+
+      // Previous versions stored the current OST directly as ostUrl.
+      // Keep it by adding a track instead of replacing/deleting it.
+      if(profile?.ostUrl && !urls.has(String(profile.ostUrl))){
+        await ref.push({
+          name:profile.ostName||'OST anterior',
+          url:profile.ostUrl,
+          author:profile.username||profile.name||'MI OST',
+          bytes:Number(profile.ostBytes||0),
+          source:'legacy-profile',
+          migratedAt:firebase.database.ServerValue.TIMESTAMP,
+          createdAt:profile.ostUpdatedAt||firebase.database.ServerValue.TIMESTAMP
+        });
+      }
+
+      // Very old builds used legacyOst. If it is still a URL, preserve it too.
+      const legacy=String(profile?.legacyOst||'');
+      if(legacy && /^https?:\/\//i.test(legacy) && !urls.has(legacy) && legacy!==String(profile?.ostUrl||'')){
+        await ref.push({
+          name:profile.ostName||'OST anterior',
+          url:legacy,
+          author:profile.username||profile.name||'MI OST',
+          source:'legacy-url',
+          migratedAt:firebase.database.ServerValue.TIMESTAMP,
+          createdAt:firebase.database.ServerValue.TIMESTAMP
+        });
+      }
+    }catch(error){
+      console.error('[OST migration] could not preserve old tracks',error);
+    }
+  }
+
+  async function loadMyOst(){
+    const state=me();
+    if(!state.uid){setStatus('INICIA SESIÓN');return}
+    try{
+      const pid=state.profileId||state.uid;
+      const profile=state.profile||{};
+      await migrateExistingOstToTracks(pid,profile);
+      list&&(list.innerHTML='');
+
+      const snap=await sf().refs.users.child(pid).child('ostTracks').once('value');
+      let tracks=Object.entries(snap.val()||{})
+        .map(([id,t])=>({id,name:t.name||'OST',url:t.url||'',author:t.author||profile.username||'MI OST'}))
+        .filter(x=>x.url);
+
+      if(!tracks.length && profile.ostUrl)
+        tracks=[{id:'primary',name:profile.ostName||'OST',url:profile.ostUrl,author:profile.username||'MI OST'}];
+
+      tracks.forEach(appendCloudTrack);
+      setStatus(tracks.length?'OST SINCRONIZADO':'LISTO PARA SUBIR');
+    }catch(err){
+      console.error('[Cloudinary OST] Firebase read failed',err);
+      setStatus('ERROR FIREBASE');
+    }
+  }
+
+  fileInput?.addEventListener('change',async event=>{
+    const files=[...event.target.files].filter(f=>f.type.startsWith('audio/'));
+    event.target.value='';
+    const state=me();
+
+    if(!state.uid){setStatus('INICIA SESIÓN PARA SUBIR');return}
+    if(!sf()?.CloudinaryOST){setStatus('CLOUDINARY NO DISPONIBLE');return}
+
+    const pid=state.profileId||state.uid;
+
+    for(const file of files){
+      setStatus('SUBIENDO A CLOUDINARY…');
+      try{
+        const uploaded=await sf().CloudinaryOST.upload(file,state.uid);
+        if(!uploaded?.url)throw new Error('Cloudinary no devolvió una URL de audio');
+
+        const ref=sf().refs.users.child(pid).child('ostTracks').push();
+        const record={
+          name:uploaded.name?.replace(/\.[^/.]+$/,'')||file.name.replace(/\.[^/.]+$/,''),
+          url:uploaded.url,
+          author:state.profile?.username||state.profile?.nickname||state.profile?.name||'MI OST',
+          bytes:uploaded.bytes||file.size,
+          createdAt:firebase.database.ServerValue.TIMESTAMP
+        };
+
+        await ref.set(record);
+        await sf().refs.users.child(pid).update({
+          ostName:record.name,
+          ostUrl:record.url,
+          hasOst:true,
+          ostBytes:record.bytes,
+          ostUpdatedAt:firebase.database.ServerValue.TIMESTAMP
+        });
+
+        appendCloudTrack({id:ref.key,name:record.name,url:record.url,author:record.author});
+        setStatus('OST SINCRONIZADO');
+      }catch(error){
+        console.error('[Cloudinary OST] upload failed',error);
+        setStatus(error?.message||'ERROR CLOUDINARY');
+      }
+    }
+  });
+
+  randomBtn?.addEventListener('click',()=>{
+    const tracks=[...document.querySelectorAll('.ost-custom-row')];
+    if(tracks.length){
+      tracks[Math.floor(Math.random()*tracks.length)].click();
+      return;
+    }
+    if(demoRows.length){
+      demoRows[Math.floor(Math.random()*demoRows.length)].click();
+    }
+  });
+
+  document.addEventListener('speedy:firebase-ready',loadMyOst,{once:true});
+  if(me().uid)loadMyOst();
+})();
+</script>
+
+
+
+</body></html>

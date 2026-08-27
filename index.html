@@ -1,1 +1,638 @@
-<!DOCTYPE html>
+<!doctype html>
+
+</div>
+<script>
+(() => {
+  const loader = document.getElementById('sf-page-loader');
+  const title = document.getElementById('sf-loader-title');
+  const subtitle = document.getElementById('sf-loader-subtitle');
+  const kicker = document.getElementById('sf-loader-kicker');
+  if (!loader) return;
+
+  let shownAt = performance.now();
+  let hideTimer = null;
+  const minVisible = 520;
+
+  const routeName = href => {
+    try {
+      const u = new URL(href, window.location.href);
+      const file = (u.pathname.split('/').pop() || 'index.html').toLowerCase();
+      const names = {
+        'index.html':'INICIO',
+        'profile.html':'PERFIL',
+        'ost.html':'AUDIO / OST',
+        'ranking.html':'RANKING',
+        'admin.html':'ADMIN',
+        'admin-role.html':'STAFF ADMIN'
+      };
+      return names[file] || (file ? file.replace('.html','').replace(/[-_]/g,' ').toUpperCase() : 'PÁGINA');
+    } catch { return 'PÁGINA'; }
+  };
+
+  const show = (page = 'PÁGINA', sub = 'Preparando la página…') => {
+    if (!loader.classList.contains('is-hidden')) {
+      shownAt = performance.now();
+    } else {
+      loader.classList.remove('is-hidden');
+      loader.setAttribute('aria-hidden','false');
+      loader.setAttribute('aria-busy','true');
+      shownAt = performance.now();
+    }
+    if (kicker) kicker.textContent = 'SPEEDY FRIENDS / NAVEGACIÓN';
+    if (title) title.textContent = page;
+    if (subtitle) subtitle.textContent = sub;
+  };
+
+  const hide = () => {
+    const wait = Math.max(0, minVisible - (performance.now() - shownAt));
+    clearTimeout(hideTimer);
+    hideTimer = setTimeout(() => {
+      loader.classList.add('is-hidden');
+      loader.setAttribute('aria-hidden','true');
+      loader.setAttribute('aria-busy','false');
+    }, wait);
+  };
+
+  window.addEventListener('load', hide, {once:true});
+  if (document.readyState === 'complete') hide();
+
+  document.addEventListener('click', event => {
+    const link = event.target.closest('a[href]');
+    if (!link) return;
+
+    const raw = link.getAttribute('href') || '';
+    if (!raw || raw.startsWith('#') || raw.startsWith('mailto:') || raw.startsWith('tel:') ||
+        link.target === '_blank' || event.ctrlKey || event.metaKey || event.shiftKey || event.altKey) return;
+
+    let target;
+    try { target = new URL(raw, window.location.href); } catch { return; }
+    if (target.origin !== window.location.origin) return;
+
+    const page = routeName(target.href);
+    const isSameDocument = target.pathname === window.location.pathname && target.hash;
+    if (isSameDocument) {
+      show(page, 'Navegando a la sección…');
+      setTimeout(() => { window.location.href = target.href; }, 250);
+      return;
+    }
+
+    // Full page navigation: display loader before the browser leaves.
+    show(page, page === 'RANKING' ? 'Cargando clasificación…' :
+               page === 'AUDIO / OST' ? 'Cargando biblioteca OST…' :
+               page === 'PERFIL' ? 'Cargando perfil…' :
+               page === 'ADMIN' || page === 'STAFF ADMIN' ? 'Cargando panel…' :
+               'Preparando la página…');
+  });
+})();
+</script>
+
+
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Speedy Friends — Portal</title>
+<meta name="description" content="Speedy Friends — portal visual reconstruido a partir de la arquitectura de Sonic Channel.">
+<link rel="stylesheet" href="vendor/common.min.css">
+<link rel="stylesheet" href="vendor/top.min.css">
+<link rel="stylesheet" href="vendor/oldStyle.min.css">
+<link rel="stylesheet" href="styles.css">
+
+<style id="sf-navigation-fixes">
+html[data-sf-theme="dark"] .hero-utility-rail,
+html[data-sf-theme="dark"] .sf-utility-panel{
+  background:#111 !important;
+  color:#fff !important;
+  border-color:#2b2b2b !important;
+}
+html[data-sf-theme="dark"] .hero-utility-rail .hero-utility-side b,
+html[data-sf-theme="dark"] .hero-utility-rail .hero-utility-side small{color:#fff}
+html[data-sf-theme="dark"] .hero-utility-rail .hero-utility-side small{opacity:.58}
+html[data-sf-theme="dark"] .hero-utility-rail .hero-utility-card{
+  background:#181818 !important;color:#fff !important;border-color:#2c2c2c !important;
+}
+html[data-sf-theme="dark"] .hero-utility-rail .hero-utility-card strong,
+html[data-sf-theme="dark"] .hero-utility-rail .hero-utility-card span{color:#fff}
+html[data-sf-theme="dark"] .hero-utility-rail .hero-utility-card em{color:#aaa}
+html[data-sf-theme="dark"] .hero-utility-rail .hero-utility-icon,
+html[data-sf-theme="dark"] .hero-utility-rail .utility-icon{background:#ef263f !important;color:#fff !important}
+html[data-sf-theme="dark"] .sf-utility-backdrop{background:rgba(0,0,0,.63)}
+.sf-nav-route-feedback{animation:sfRoutePulse .35s cubic-bezier(.16,1,.3,1)!important}
+@keyframes sfRoutePulse{50%{transform:scale(1.035);filter:brightness(1.08)}}
+</style>
+
+
+<script src="https://www.gstatic.com/firebasejs/12.1.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/12.1.0/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/12.1.0/firebase-database-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/12.1.0/firebase-storage-compat.js"></script>
+<script src="firebase-legacy.js"></script>
+
+
+<style id="sf-selection-stability">
+.hero-nav-top .hero-utility-card{
+  -webkit-tap-highlight-color:transparent;
+}
+.hero-nav-top .hero-utility-card:focus{
+  outline:none;
+}
+.hero-nav-top .hero-utility-card:focus-visible{
+  outline:2px solid #ef263f;
+  outline-offset:3px;
+}
+.hero-nav-top .hero-utility-card.is-selected{
+  box-shadow:0 16px 32px rgba(0,0,0,.12);
+  border-color:rgba(239,38,63,.36);
+}
+.quick-action-card.is-active{
+  will-change:transform,box-shadow;
+}
+</style>
+
+<script src="global-ost-player.js"></script>
+</head>
+<body>
+
+<style id="sf-loader-style">
+.sf-page-loader{position:fixed;inset:0;z-index:99999;display:grid;place-items:center;background:radial-gradient(circle at 50% 44%,rgba(34,34,34,.98),rgba(5,5,5,.99) 72%);backdrop-filter:blur(14px);pointer-events:none;opacity:1;visibility:visible;transition:opacity .34s ease,visibility .34s ease;pointer-events:auto}
+.sf-page-loader.is-hidden{opacity:0;visibility:hidden;pointer-events:none}
+.sf-loader-orbit{position:absolute;width:clamp(170px,22vw,260px);aspect-ratio:1;border-radius:50%;border:1px solid rgba(18,18,18,.08);animation:sfLoaderOrbit 6s linear infinite}.sf-loader-orbit::before,.sf-loader-orbit::after{content:"";position:absolute;border-radius:50%;border:1px dashed rgba(35,61,143,.16)}.sf-loader-orbit::before{inset:13px}.sf-loader-orbit::after{inset:29px}@keyframes sfLoaderOrbit{to{transform:rotate(360deg)}}
+.sf-loader-card{position:relative;width:min(330px,82vw);padding:28px 28px 24px;background:rgba(18,18,18,.96);border:1px solid rgba(255,255,255,.1);box-shadow:0 30px 100px rgba(0,0,0,.55),0 0 55px rgba(239,38,63,.12);text-align:center;overflow:hidden;transform:translateY(12px) scale(.975);animation:sfLoaderCardIn .55s cubic-bezier(.16,1,.3,1) forwards}.sf-loader-card::before{content:"";position:absolute;left:-35%;top:0;width:24%;height:100%;background:linear-gradient(90deg,transparent,rgba(255,255,255,.65),transparent);transform:skewX(-16deg);animation:sfLoaderSweep 1.65s cubic-bezier(.16,1,.3,1) infinite}@keyframes sfLoaderCardIn{to{transform:none}}@keyframes sfLoaderSweep{0%,28%{opacity:0;transform:skewX(-16deg)}44%{opacity:.9}67%,100%{opacity:0;transform:skewX(-16deg) translateX(560%)}}
+.sf-loader-gif{position:relative;z-index:2;width:112px;height:112px;object-fit:contain;display:block;margin:0 auto 11px;filter:drop-shadow(0 12px 22px rgba(0,0,0,.1));animation:sfLoaderBob 1.9s ease-in-out infinite}@keyframes sfLoaderBob{0%,100%{transform:translateY(0) scale(1)}50%{transform:translateY(-5px) scale(1.025)}}
+.sf-loader-kicker{position:relative;z-index:2;margin:0 0 6px;color:#ff3b54;font-size:6px;font-weight:900;letter-spacing:.19em;text-transform:uppercase}.sf-loader-title{position:relative;z-index:2;margin:0;color:#fff;font-family:SFDisplay,Arial Black,Arial,sans-serif;font-size:clamp(27px,5vw,42px);line-height:.8;letter-spacing:-.055em;text-transform:uppercase}.sf-loader-subtitle{position:relative;z-index:2;margin:10px 0 0;color:rgba(255,255,255,.62);font-size:7px;font-weight:900;letter-spacing:.12em;text-transform:uppercase;opacity:.46}.sf-loader-line{position:relative;z-index:2;height:3px;margin:17px auto 0;max-width:230px;background:rgba(255,255,255,.12);overflow:hidden}.sf-loader-line::after{content:"";display:block;height:100%;width:36%;background:linear-gradient(90deg,#ef263f,#233d8f);animation:sfLoaderBar 1.1s ease-in-out infinite}@keyframes sfLoaderBar{0%{transform:translateX(-115%)}100%{transform:translateX(420%)}}
+@media(prefers-reduced-motion:reduce){.sf-loader-orbit,.sf-loader-gif,.sf-loader-card,.sf-loader-card::before,.sf-loader-line::after{animation:none!important}}
+</style>
+<div class="sf-page-loader" id="sf-page-loader" aria-live="polite" aria-busy="true">
+  <div class="sf-loader-orbit" aria-hidden="true"></div>
+  <div class="sf-loader-card">
+    <img class="sf-loader-gif" src="assets/loader.gif" alt="" aria-hidden="true">
+    <p class="sf-loader-kicker" id="sf-loader-kicker">SPEEDY FRIENDS / NAVEGACIÓN</p>
+    <h2 class="sf-loader-title" id="sf-loader-title">CARGANDO</h2>
+    <p class="sf-loader-subtitle" id="sf-loader-subtitle">Preparando la página…</p>
+    <div class="sf-loader-line" aria-hidden="true"></div>
+  </div>
+</div>
+<script>
+(() => {
+  const loader=document.getElementById('sf-page-loader');
+  const title=document.getElementById('sf-loader-title');
+  const subtitle=document.getElementById('sf-loader-subtitle');
+  let shownAt=performance.now(), timer=null, minVisible=520;
+  const names={'profile.html':'PERFIL','ost.html':'AUDIO / OST','ranking.html':'RANKING','admin.html':'ADMIN','admin-role.html':'STAFF ADMIN','index.html':'INICIO'};
+  const routeName=href=>{try{const u=new URL(href,location.href);return names[(u.pathname.split('/').pop()||'index.html').toLowerCase()]||'PÁGINA'}catch{return 'PÁGINA'}};
+  const show=(page,sub)=>{shownAt=performance.now();loader.classList.remove('is-hidden');title.textContent=page;subtitle.textContent=sub||'Preparando la página…';};
+  const hide=()=>{const wait=Math.max(0,minVisible-(performance.now()-shownAt));clearTimeout(timer);timer=setTimeout(()=>{loader.classList.add('is-hidden');loader.setAttribute('aria-busy','false')},wait)};
+  window.addEventListener('load',hide,{once:true}); if(document.readyState==='complete')hide();
+  document.addEventListener('click',e=>{
+    const link=e.target.closest('a[href]');
+    if(link){return;}
+  });
+  window.sfShowLoader=(page,sub)=>show(page,sub);
+})();
+</script>
+
+
+<div class="sf-page">
+  <div class="sf-bg sf-bg-a"></div><div class="sf-bg sf-bg-b"></div><div class="sf-grid"></div>
+
+  <header class="sf-header">
+    <a class="sf-brand" href="#top" aria-label="Speedy Friends">
+      <span class="sf-brand-speedy">SPEEDY</span><span class="sf-brand-friends">FRIENDS</span>
+    </a>
+    <nav class="sf-desktop-nav" aria-label="Navegación principal">
+      <a href="#topics">Novedades</a><a href="#friends">Amigos</a><a href="#special">Especial</a><a href="#downloads">Descargas</a><a href="#quick-actions" data-open-quick-panel>Accesos</a><a href="#videos">Videos</a>
+    </nav>
+    <div class="sf-socials"><button aria-label="X">X</button><button aria-label="Discord">D</button><button aria-label="Facebook">f</button></div>
+    <button id="menuBtn" class="sf-menu" aria-label="Abrir menú"><span></span><span></span><span></span></button>
+  </header>
+
+  <main id="top">
+    <section class="sf-hero reveal">
+
+      <div class="hero-nav-top" aria-label="Navegación rápida de Speedy Friends">
+        <div class="hero-nav-ghosts" aria-hidden="true">
+          <span>INICIO</span><span>PERFIL</span><span>RANKING</span>
+          <span>TIENDA</span><span>INVENTARIO</span><span>OST</span><span>ADMIN</span>
+        </div>
+        <div class="hero-nav-label">
+          <b>SPEEDY<br>FRIENDS</b>
+          <small>COMMUNITY<br>NAVIGATION</small>
+        </div>
+        <div class="hero-nav-track">
+          <button class="hero-utility-card nav-copy-card" aria-label="Inicio" type="button" data-route="#top">
+            <i class="utility-icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24"><path d="M3.5 11.5 12 4l8.5 7.5"/><path d="M5.5 10.5V20h13v-9.5"/><path d="M9.5 20v-5.2h5V20"/></svg>
+            </i><strong>INICIO</strong><em>↗</em><span>PORTAL · HOME</span>
+          </button>
+          <button class="hero-utility-card nav-copy-card" aria-label="Perfil" type="button" data-route="profile.html">
+            <i class="utility-icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24"><circle cx="12" cy="8.2" r="3.1"/><path d="M5.8 20c.7-4.1 2.7-6 6.2-6s5.5 1.9 6.2 6"/></svg>
+            </i><strong>PERFIL</strong><em>↗</em><span>IDENTIDAD · STATS</span>
+          </button>
+          <button class="hero-utility-card nav-copy-card" aria-label="Ranking" type="button" data-route="ranking.html">
+            <i class="utility-icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24"><path d="M5 19V10"/><path d="M12 19V5"/><path d="M19 19v-7"/><path d="M3.5 19.5h17"/></svg>
+            </i><strong>RANKING</strong><em>↗</em><span>RINGS · POSICIÓN</span>
+          </button>
+          <button class="hero-utility-card nav-copy-card" aria-label="Tienda" type="button" data-route="#special">
+            <i class="utility-icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24"><path d="M5 9.5h14l-1 10H6z"/><path d="M8.5 9.5V7.8A3.5 3.5 0 0 1 12 4.3a3.5 3.5 0 0 1 3.5 3.5v1.7"/></svg>
+            </i><strong>TIENDA</strong><em>↗</em><span>ACCESORIOS · ITEMS</span>
+          </button>
+          <button class="hero-utility-card nav-copy-card" aria-label="Inventario" type="button" data-route="#friends">
+            <i class="utility-icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24"><rect x="5" y="5" width="14" height="14" rx="1.5"/><path d="M8 8h8M8 12h5M8 16h8"/></svg>
+            </i><strong>INVENTARIO</strong><em>↗</em><span>COLECCIÓN · EQUIPO</span>
+          </button>
+          <button class="hero-utility-card nav-copy-card" aria-label="Audio y OST" type="button" data-route="ost.html">
+            <i class="utility-icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24"><path d="M9 18a2.8 2.8 0 1 1-2.8-2.8H9V6l9-2v10"/><path d="M18 15.9a2.8 2.8 0 1 1-2.8-2.8H18z"/></svg>
+            </i><strong>AUDIO / OST</strong><em>↗</em><span>MÚSICA · AMBIENTE</span>
+          </button>
+          <a class="hero-utility-card nav-copy-card" aria-label="Admin" data-firebase-admin hidden href="admin.html">
+            <i class="utility-icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24"><path d="m12 3 2 2.2 3-.1.8 2.9 2.5 1.5-1.2 2.7 1.2 2.7-2.5 1.5-.8 2.9-3-.1L12 21l-2-2.2-3 .1-.8-2.9-2.5-1.5L5.9 12l-1.2-2.7 2.5-1.5.8-2.9 3 .1z"/><circle cx="12" cy="12" r="2.5"/></svg>
+            </i><strong>ADMIN</strong><em>↗</em><span>TEAM · PERMISOS</span>
+          </a>
+        </div>
+      </div>
+
+      <div class="hero-utility-rail" aria-label="Accesos principales de Speedy Friends">
+        <div class="hero-utility-ghosts" aria-hidden="true"><span>INICIO</span><span>PERFIL</span><span>RANKING</span><span>TIENDA</span><span>INVENTARIO</span><span>OST</span><span>ADMIN</span></div>
+        <div class="hero-utility-side"><b>SPEEDY<br>FRIENDS</b><small>COMMUNITY<br>NAVIGATION</small></div>
+        <div class="hero-utility-track" aria-label="Accesos rápidos del portal"></div>
+      </div>
+      <div class="sf-hero-copy">
+        <p class="eyebrow">SPEEDY FRIENDS / COMMUNITY PORTAL</p>
+        <h1>Rolea. Juega.<br><em>Conoce.</em></h1>
+        <p class="lead">Un portal dinámico para tu team: noticias, amigos, eventos, contenido y momentos destacados en un solo lugar.</p>
+        <div class="sf-actions"><a class="sf-btn primary sf-btn-animated" href="#topics">Explorar novedades <span>→</span></a><a class="sf-btn ghost sf-btn-animated" href="#friends"><span class="sf-btn-label">Ver amigos</span><span aria-hidden="true">→</span></a></div>
+      </div>
+      <div class="sf-hero-art">
+        <div class="hero-orbit orbit-a"></div><div class="hero-orbit orbit-b"></div>
+        <div class="hero-ring ring1"></div><div class="hero-ring ring2"></div>
+        <div class="sf-hero-swiper swiper">
+          <div class="swiper-wrapper">
+            <div class="swiper-slide hero-slide"><div class="hero-card hero-card-main"><img src="assets/user-carousel/carousel-01.jpg" alt="Speedy Friends portada"></div></div>
+            <div class="swiper-slide hero-slide"><div class="hero-card hero-card-main"><img src="assets/user-carousel/carousel-02.jpg" alt="Evento Speedy Friends"></div></div>
+            <div class="swiper-slide hero-slide"><div class="hero-card hero-card-main"><img src="assets/user-carousel/carousel-03.jpg" alt="Especial Speedy Friends"></div></div>
+          </div>
+          <div class="sf-hero-dots swiper-pagination"></div>
+        </div>
+        <div class="hero-card hero-card-small"><img src="assets/gametitle_SonicRacingCrossWorld_square.webp" alt="Destacado"></div>
+        <div class="hero-spark spark1">✦</div><div class="hero-spark spark2">✦</div>
+        <div class="hero-starfield"></div>
+      </div>
+      <div class="scroll-cue">SCROLL <span></span></div>
+    </section>
+
+    <section id="topics" class="sf-section sf-section-light reveal">
+      <div class="sf-section-head"><div><p class="eyebrow">01 / NEWS</p><h2>Novedades</h2></div><a class="sf-more" href="#">Ver todo <span>→</span></a></div>
+      <div class="sf-news-grid">
+        <article class="sf-news-card featured"><div class="thumb"><img src="assets/section-replacement.png" alt="Evento"></div><div class="news-meta">26.08.2026 · EVENTO</div><h3>El próximo gran encuentro de Speedy Friends ya está aquí.</h3><p>Descubre las actividades, retos y sorpresas de la comunidad.</p></article>
+        <article class="sf-news-card"><div class="thumb"><img src="assets/section-replacement.png" alt="Información"></div><div class="news-meta">25.08.2026 · INFO</div><h3>Nuevos retos y recompensas para el team.</h3></article>
+        <article class="sf-news-card"><div class="thumb"><img src="assets/section-replacement.png" alt="Colaboración"></div><div class="news-meta">21.08.2026 · COLAB</div><h3>Una nueva colaboración llega al universo Speedy Friends.</h3></article>
+        <article class="sf-news-card"><div class="thumb"><img src="assets/section-replacement.png" alt="Competencia"></div><div class="news-meta">03.08.2026 · EVENTO</div><h3>Competencia especial: demuestra tu velocidad.</h3></article>
+      </div>
+    </section>
+
+    <section id="friends" class="sf-section sf-dark reveal">
+      <div class="sf-diagonal"></div>
+      <div class="sf-section-head on-dark"><div><p class="eyebrow">02 / COMMUNITY</p><h2>Amigos</h2></div><a class="sf-more" href="#">Todos los perfiles <span>→</span></a></div>
+      <div class="friends-track">
+        <article class="friend-card active"><div class="friend-img"><img src="assets/section-replacement.png" alt="Amigo 01"></div><div class="friend-info"><span>#01</span><h3>Blaze</h3><p>Racer · Explorer</p><b>ONLINE</b></div></article>
+        <article class="friend-card"><div class="friend-img"><img src="assets/section-replacement.png" alt="Amigo 02"></div><div class="friend-info"><span>#02</span><h3>Espio</h3><p>Stealth · Speed</p><b>ONLINE</b></div></article>
+        <article class="friend-card"><div class="friend-img"><img src="assets/section-replacement.png" alt="Amigo 03"></div><div class="friend-info"><span>#03</span><h3>Nova</h3><p>Creator · Builder</p><b>AWAY</b></div></article>
+        <article class="friend-card"><div class="friend-img"><img src="assets/section-replacement.png" alt="Amigo 04"></div><div class="friend-info"><span>#04</span><h3>Rin</h3><p>Artist · Chaser</p><b>ONLINE</b></div></article>
+      </div>
+    </section>
+
+    <section id="special" class="sf-section sf-special reveal">
+      <div class="special-art"><img src="assets/section-replacement.png" alt="Especial"></div>
+      <div class="special-copy"><p class="eyebrow">03 / SPECIAL</p><h2>Momentos<br><em>especiales.</em></h2><p>Galerías, historias del team, celebraciones y contenido que merece quedarse en la portada.</p><a class="sf-btn dark" href="#">Entrar al especial <span>→</span></a></div>
+    </section>
+
+    <section id="downloads" class="sf-section sf-section-light reveal">
+      <div class="sf-section-head"><div><p class="eyebrow">04 / DOWNLOADS</p><h2>Descargas</h2></div><a class="sf-more" href="#">Biblioteca <span>→</span></a></div>
+      <div class="download-grid">
+        <a class="download-card" href="assets/wallpaper_261_blaze_18_pc_thm-thumb-400x400-19286.jpg"><img src="assets/section-replacement.png" alt="Wallpaper"><span>WALLPAPER</span><b>Speedy Edition <i>↓</i></b></a>
+        <a class="download-card" href="assets/wallpaper_260_espio_05_pc_thm-thumb-400x400-19097.jpg"><img src="assets/section-replacement.png" alt="Wallpaper"><span>WALLPAPER</span><b>Night Run <i>↓</i></b></a>
+        <a class="download-card" href="assets/calendar_2608_thm-thumb-220x220-19140.jpg"><img src="assets/section-replacement.png" alt="Calendario"><span>CALENDAR</span><b>Agosto 2026 <i>↓</i></b></a>
+      </div>
+    </section>
+
+    <section id="quick-actions" class="sf-section sf-section-light sf-quick-actions reveal">
+      <div class="sf-section-head">
+        <div><p class="eyebrow">05 / QUICK ACCESS</p><h2>Accesos rápidos</h2></div>
+        <span class="sf-more sf-more-static">Controles del portal</span>
+      </div>
+      <div class="quick-action-grid">
+        <button class="quick-action-card" data-action="rings" type="button">
+          <span class="quick-action-icon ring-icon" aria-hidden="true">◉</span>
+          <span class="quick-action-copy"><small>RINGS</small><strong><span id="quick-rings">0</span> Rings</strong><em>Ver saldo</em></span>
+          <span class="quick-action-arrow" aria-hidden="true">↗</span>
+        </a>
+        <button class="quick-action-card" data-action="account" type="button">
+          <span class="quick-action-icon">◌</span>
+          <span class="quick-action-copy"><small>CUENTA</small><strong id="quick-account-label">Mi cuenta</strong><em>Iniciar sesión / perfil</em></span>
+          <span class="quick-action-arrow" aria-hidden="true">↗</span>
+        </a>
+        <a class="quick-action-card" data-action="admin" type="button" data-firebase-admin hidden href="admin.html">
+          <span class="quick-action-icon">◇</span>
+          <span class="quick-action-copy"><small>ADMIN</small><strong>Panel admin</strong><em>Herramientas del team</em></span>
+          <span class="quick-action-arrow" aria-hidden="true">↗</span>
+        </a>
+        <button class="quick-action-card" data-action="theme" type="button">
+          <span class="quick-action-icon">◐</span>
+          <span class="quick-action-copy"><small>APARIENCIA</small><strong id="quick-theme-label">Modo claro</strong><em>Cambiar tema</em></span>
+          <span class="quick-action-arrow" aria-hidden="true">↗</span>
+        </a>
+        <button class="quick-action-card" data-action="cart" type="button">
+          <span class="quick-action-icon">▣</span>
+          <span class="quick-action-copy"><small>CARRITO</small><strong>Mi carrito <span class="quick-cart-count" id="quick-cart-count">0</span></strong><em>Ver productos guardados</em></span>
+          <span class="quick-action-arrow" aria-hidden="true">↗</span>
+        </a>
+      </div>
+    </section>
+
+
+    <section id="sf-library" class="sf-section sf-section-light sf-library reveal is-legacy-library">
+      <div class="library-ghosts" aria-hidden="true">
+        <span>PERFIL</span>
+        <span>RANKING</span>
+        <span>TIENDA</span>
+        <span>INVENTARIO</span>
+        <span>OST</span>
+      </div>
+      <div class="sf-section-head">
+        <div><p class="eyebrow">06 / TEAM LIBRARY</p><h2>Tu portal.</h2></div>
+        <span class="sf-more sf-more-static">Perfil · Ranking · Tienda · Inventario · OST</span>
+      </div>
+      <div class="library-layout">
+        <aside class="library-rail" aria-label="Secciones de Speedy Friends">
+          <div class="library-rail-label">SPEEDY<br>FRIENDS</div>
+          <div class="library-rail-copy">COMMUNITY<br>LIBRARY</div>
+        </aside>
+        <div class="library-carousel">
+          <button class="library-carousel-btn prev" type="button" aria-label="Anterior">←</a>
+          <div class="library-tabs" role="navigation" aria-label="Biblioteca del team">
+          <button class="library-tab" type="button" data-library-action="profile">
+            <span class="library-tab-mark">01</span><span class="library-tab-title">Perfil</span><span class="library-tab-meta">IDENTIDAD · STATS</span><span class="library-tab-arrow">↗</span>
+          </a>
+          <button class="library-tab" type="button" data-library-action="ranking">
+            <span class="library-tab-mark">02</span><span class="library-tab-title">Ranking</span><span class="library-tab-meta">RINGS · POSICIÓN</span><span class="library-tab-arrow">↗</span>
+          </button>
+          <button class="library-tab" type="button" data-library-action="store">
+            <span class="library-tab-mark">03</span><span class="library-tab-title">Tienda</span><span class="library-tab-meta">ACCESORIOS · ITEMS</span><span class="library-tab-arrow">↗</span>
+          </button>
+          <button class="library-tab" type="button" data-library-action="inventory">
+            <span class="library-tab-mark">04</span><span class="library-tab-title">Inventario</span><span class="library-tab-meta">COLECCIÓN · EQUIPAMIENTO</span><span class="library-tab-arrow">↗</span>
+          </button>
+          <button class="library-tab" type="button" data-library-action="audio">
+            <span class="library-tab-mark">05</span><span class="library-tab-title">Audio y OST</span><span class="library-tab-meta">MÚSICA · AMBIENTE</span><span class="library-tab-arrow">↗</span>
+          </button>
+          <button class="library-tab" type="button" data-library-action="admin">
+            <span class="library-tab-mark">06</span><span class="library-tab-title">Admin</span><span class="library-tab-meta">TEAM · PERMISOS</span><span class="library-tab-arrow">↗</span>
+          </button>
+          </div>
+          <button class="library-carousel-btn next" type="button" aria-label="Siguiente">→</button>
+          <div class="library-carousel-progress" aria-hidden="true"><span></span></div>
+        </div>
+      </div>
+    </section>
+
+    <section id="videos" class="sf-video reveal">
+      <div class="video-bg"><img src="assets/section-replacement.png" alt=""></div><div class="video-overlay"></div>
+      <div class="video-copy"><p class="eyebrow">05 / VIDEO</p><h2>En movimiento.</h2><p>Una sección preparada para convertir tus mejores clips en parte de la portada.</p><button class="play-btn" id="playDemo">▶</button></div>
+      <div class="video-preview"><img src="assets/section-replacement.png" alt="Video preview"><span>WATCH NOW</span></div>
+    </section>
+
+    <section class="sf-section sf-section-light reveal">
+      <div class="sf-section-head"><div><p class="eyebrow">06 / FAN GALLERY</p><h2>Galería</h2></div><a class="sf-more" href="#">Ver galería <span>→</span></a></div>
+      <div class="gallery-grid"><img src="assets/section-replacement.png" alt="Fanart"><img src="assets/section-replacement.png" alt="Captura"><img src="assets/section-replacement.png" alt="Creación"><img src="assets/section-replacement.png" alt="Contenido"></div>
+    </section>
+
+    <section class="sf-lineup reveal"><div class="lineup-inner"><div><p class="eyebrow">07 / LATEST</p><h2>Últimos<br><em>momentos.</em></h2></div><div class="lineup-cards"><article><img src="assets/section-replacement.png" alt=""><b>FRONTIER</b><span>New chapter</span></article><article><img src="assets/section-replacement.png" alt=""><b>SHADOW</b><span>Night mode</span></article><article><img src="assets/section-replacement.png" alt=""><b>RACING</b><span>Cross worlds</span></article></div></div></section>
+  </main>
+
+  <footer class="sf-footer"><div class="sf-footer-brand">SPEEDY <strong>FRIENDS</strong></div><div>© 2026 Speedy Friends · Visual rebuild</div><div><a href="#top">TOP ↑</a></div></footer>
+</div>
+
+<div id="mobileNav" class="mobile-nav"><div class="mobile-nav-inner"><button id="closeMenu">×</button><p class="eyebrow">SPEEDY FRIENDS</p><a href="#topics">Novedades</a><a href="#friends">Amigos</a><a href="#special">Especial</a><a href="#downloads">Descargas</a><a href="#quick-actions" data-open-quick-panel>Accesos</a><a href="#videos">Videos</a><a href="#top">Inicio</a></div></div>
+<div id="toast" class="toast">Demo visual activa</div>
+<script src="vendor/jquery-3.7.1.min.js"></script><script src="vendor/swiper-bundle.min.js"></script><script src="app.js"></script>
+
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+  const adminControls = [...document.querySelectorAll("[data-firebase-admin]")];
+  const rings = [...document.querySelectorAll("[data-firebase-rings]")];
+  const accountLabel = document.getElementById("quick-account-label");
+  const adminLoginButton = document.getElementById("admin-login-btn");
+
+  const hideAdmin = () => {
+    adminControls.forEach(el => {
+      el.hidden = true;
+      el.style.display = "none";
+    });
+    if(adminLoginButton){
+      adminLoginButton.hidden = true;
+      adminLoginButton.style.display = "none";
+    }
+  };
+
+  const showAdmin = href => {
+    adminControls.forEach(el => {
+      el.hidden = false;
+      el.style.removeProperty("display");
+      if(el.tagName==="A") el.setAttribute("href",href);
+      el.dataset.firebaseAdminHref=href;
+    });
+    if(adminLoginButton){
+      adminLoginButton.hidden = false;
+      adminLoginButton.style.removeProperty("display");
+    }
+  };
+
+  const renderState = state => {
+    if(!state || !state.uid){
+      hideAdmin();
+      rings.forEach(n=>n.textContent="0");
+      if(accountLabel) accountLabel.textContent="Mi cuenta";
+      return;
+    }
+
+    rings.forEach(n=>n.textContent=Number(state.rings||0).toLocaleString("es-PE"));
+    if(accountLabel) accountLabel.textContent=state.profile?.username || state.profile?.name || "Mi cuenta";
+
+    const href=window.SpeedyFirebase.adminHref();
+    if(href) showAdmin(href);
+    else hideAdmin();
+
+    if(href==="admin.html") document.documentElement.dataset.sfFirebaseRole="creator";
+    else if(href==="admin-role.html") document.documentElement.dataset.sfFirebaseRole="admin";
+    else document.documentElement.dataset.sfFirebaseRole="member";
+  };
+
+  const initialize = async () => {
+    if(!window.SpeedyFirebase) return;
+    renderState(await window.SpeedyFirebase.resolve());
+    await window.SpeedyFirebase.syncRings(value => {
+      rings.forEach(n=>n.textContent=Number(value||0).toLocaleString("es-PE"));
+    });
+  };
+
+  document.addEventListener("speedy:firebase-ready", e => renderState(e.detail));
+  document.addEventListener("speedy:firebase-error", hideAdmin);
+
+  document.addEventListener("click", async event => {
+    const admin = event.target.closest("[data-firebase-admin]");
+    if(admin && !admin.hidden){
+      const href=admin.dataset.firebaseAdminHref;
+      if(href){
+        event.preventDefault();
+        window.location.assign(href);
+        return;
+      }
+    }
+
+    const adminLogin = event.target.closest("#admin-login-btn");
+    if(adminLogin && window.SpeedyFirebase){
+      event.preventDefault();
+      const href=window.SpeedyFirebase.adminHref();
+      if(href) window.location.assign(href);
+      else {
+        try { await window.SpeedyFirebase.signInGoogle(); }
+        catch(error){ console.error(error); }
+      }
+    }
+  });
+
+  initialize();
+});
+</script>
+
+
+<style>
+#sf-firebase-status{
+  position:fixed;left:16px;bottom:16px;z-index:9997;
+  padding:8px 10px;background:rgba(18,18,18,.82);color:#fff;
+  font:700 7px/1.2 system-ui,sans-serif;letter-spacing:.1em;text-transform:uppercase;
+  border:1px solid rgba(255,255,255,.12);backdrop-filter:blur(7px);
+  transition:opacity .25s ease,transform .25s ease
+}
+#sf-firebase-status.ready{background:rgba(25,110,67,.88)}
+#sf-firebase-status.local{background:rgba(90,65,20,.9)}
+</style>
+<div id="sf-firebase-status" class="local">FIREBASE · CONECTANDO</div>
+<script>
+document.addEventListener("speedy:firebase-ready",e=>{
+  const n=document.getElementById("sf-firebase-status"); if(!n)return;
+  const s=e.detail||{};
+  n.className="ready";
+  n.textContent=s.isCreator?"FIREBASE · CREADORA":"FIREBASE · "+(s.role||"MEMBER").toUpperCase();
+});
+document.addEventListener("speedy:firebase-error",()=>{
+  const n=document.getElementById("sf-firebase-status"); if(!n)return;
+  n.className="local"; n.textContent="FIREBASE · ERROR";
+});
+</script>
+
+
+
+<script>
+document.addEventListener("DOMContentLoaded",()=>{
+  const cards=[...document.querySelectorAll(".hero-nav-top .hero-utility-card")];
+  const reduced=window.matchMedia("(prefers-reduced-motion: reduce)");
+  const scrollToSelector=selector=>{
+    const target=document.querySelector(selector);
+    if(!target)return;
+    const top=target.getBoundingClientRect().top+window.scrollY-54;
+    window.scrollTo({top,behavior:reduced.matches?"auto":"smooth"});
+  };
+  cards.forEach(card=>{
+    card.addEventListener("click",event=>{
+      event.preventDefault();
+      event.stopPropagation();
+      card.classList.remove("sf-nav-tap");
+      void card.offsetWidth;
+      card.classList.add("sf-nav-tap");
+
+      const route=card.dataset.route||"";
+      if(!route)return;
+
+      if(route.startsWith("#")){
+        scrollToSelector(route);
+        return;
+      }
+
+      // Only route buttons navigate. Hover never does.
+      const label=(card.getAttribute("aria-label")||"PÁGINA").toUpperCase();
+      const subtitle=label==="RANKING"?"Cargando clasificación…":
+        label.includes("OST")?"Cargando biblioteca OST…":
+        label==="PERFIL"?"Cargando perfil…":
+        label==="ADMIN"?"Cargando panel…":"Preparando la página…";
+
+      if(window.sfShowLoader)window.sfShowLoader(label,subtitle);
+      window.setTimeout(()=>window.location.assign(route),150);
+    });
+    card.addEventListener("pointerenter",()=>{
+      card.classList.add("is-hovering");
+    });
+    card.addEventListener("pointerleave",()=>{
+      card.classList.remove("is-hovering");
+    });
+  });
+});
+</script>
+
+
+<script>
+document.addEventListener("speedy:firebase-ready",e=>{
+  const state=e.detail||{};
+  const target=state.isCreator?"admin.html":state.role==="admin"?"admin-role.html":null;
+  document.querySelectorAll("[data-firebase-admin]").forEach(el=>{
+    if(target){
+      el.hidden=false;
+      el.style.removeProperty("display");
+      el.dataset.adminDirectTarget=target;
+      if(el.tagName==="A")el.setAttribute("href",target);
+    }
+  });
+});
+document.addEventListener("click",e=>{
+  const el=e.target.closest("[data-firebase-admin]");
+  if(!el || el.hidden)return;
+  const target=el.dataset.adminDirectTarget;
+  if(!target)return;
+  e.preventDefault();
+  e.stopImmediatePropagation();
+  window.location.assign(target);
+},true);
+</script>
+
+
+
+
+
+
+<script id="sf-admin-href-only">
+(function(){
+  const apply=state=>{
+    const target=state?.isCreator?"admin.html":state?.role==="admin"?"admin-role.html":"";
+    document.querySelectorAll("[data-firebase-admin]").forEach(el=>{
+      el.hidden=!target;
+      if(target){
+        el.setAttribute("href",target);
+        el.dataset.firebaseAdminHref=target;
+        el.removeAttribute("aria-hidden");
+      }else{
+        el.removeAttribute("href");
+        el.setAttribute("aria-hidden","true");
+      }
+    });
+  };
+  document.addEventListener("speedy:firebase-ready",e=>apply(e.detail||{}));
+  window.addEventListener("load",()=>setTimeout(()=>apply(window.SpeedyFirebase?.current||{}),0));
+})();
+</script>
+</body></html>

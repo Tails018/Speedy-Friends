@@ -1,24 +1,13 @@
-# Speedy Friends — versión modular
+# Speedy Friends — Sonic-style Animated Portal
 
-Esta versión parte del `index(2).html` proporcionado y conserva la lógica original.
-Primera etapa:
-- `index.html`: estructura y contenido.
-- `styles.css`: estilos que estaban dentro de `<style>`.
-- `js/config.js`: configuración compartida.
-- `js/utils.js`: utilidades puras.
-- `js/app.js`: lógica principal y scripts restantes.
+Reconstrucción visual de Speedy Friends inspirada en la arquitectura de interacción de Sonic Channel.
 
-## Probar en la laptop
-Abrir la carpeta en VS Code y usar **Live Server** sobre `index.html`.
+### Integración añadida
+- Sección **Accesos rápidos** colocada inmediatamente después de **Descargas**.
+- Misma tipografía display, ritmo de espaciado y sistema de `reveal`/stagger.
+- Cinco controles heredados del panel original de Speedy Friends: Rings, Cuenta, Admin, Apariencia y Carrito.
+- Efecto 3D según el puntero, elevación, barrido de luz y barra inferior animada.
+- Estado local persistente para los controles de demostración.
+- Navegación de escritorio y móvil actualizada con el acceso a la nueva sección.
 
-No se necesita Node.js ni Python para esta prueba si Live Server ya está instalado.
-
-## Cambios de esta versión
-- Ranking separado en Creadora / Administración / Integrantes.
-- Buscador en el panel de administración por nombre, correo o UID.
-- La creadora puede asignar/quitar el rol `admin` desde el panel.
-- El rol `admin` organiza el ranking; el permiso `rings` sigue siendo independiente.
-- Los usuarios con permiso Rings pueden modificar a otros integrantes, pero no a la creadora.
-- Se incluye `firebase-rules.json` con la protección de servidor para la creadora.
-
-- La creadora puede cambiar en tiempo real el icono SF, "Speedy Friends" y "Community Hub" desde Administración.
+Los controles están desacoplados del carrusel y del resto de las animaciones para evitar romper la capa visual existente.
