@@ -610,6 +610,161 @@ body.rank-ost-playing .rank-profile-modal{box-shadow:-25px 0 65px rgba(239,38,63
 </style>
 
 <script src="global-ost-player.js"></script>
+
+<style id="ranking-mobile-name-fix">
+.rank-row,.rank-user,.rank-user>div{min-width:0;max-width:100%}
+.rank-user strong,.rank-user small{
+  display:block;
+  max-width:100%;
+  min-width:0;
+  overflow:hidden;
+  text-overflow:ellipsis;
+  white-space:nowrap;
+}
+@media(max-width:680px){
+  .rank-row{
+    grid-template-columns:32px minmax(0,1fr) 58px!important;
+    gap:7px!important;
+    min-width:0!important;
+    width:100%!important;
+    overflow:hidden!important;
+  }
+  .rank-user{min-width:0!important;gap:7px!important}
+  .rank-avatar{width:34px!important;height:34px!important}
+  .rank-user strong{font-size:15px!important;line-height:.92!important}
+  .rank-user small{font-size:5px!important;letter-spacing:.08em!important}
+  .rank-rings{min-width:0!important;text-align:right}
+  .rank-rings strong{font-size:18px!important}
+  .rank-rings span{font-size:5px!important}
+  .rank-move{display:block!important;min-width:0!important;text-align:right}
+  .rank-ost-btn{max-width:34px!important;overflow:hidden!important}
+}
+</style>
+
+<style id="ranking-mobile-harmony-final">
+.rank-row,
+.rank-user,
+.rank-user>div,
+.rank-rings,
+.rank-rings>strong,
+.rank-rings>span{
+  min-width:0!important;
+  max-width:100%!important;
+  box-sizing:border-box;
+}
+.rank-user strong{
+  min-width:0!important;
+  max-width:100%!important;
+  overflow:hidden!important;
+  text-overflow:ellipsis!important;
+  white-space:nowrap!important;
+}
+@media(max-width:680px){
+  .rank-table-wrap{width:100%!important;box-sizing:border-box!important;overflow:hidden!important}
+  .rank-list{width:100%!important;min-width:0!important}
+  .rank-row{
+    width:100%!important;
+    max-width:100%!important;
+    grid-template-columns:34px minmax(0,1fr) 76px!important;
+    gap:8px!important;
+    padding:10px 9px!important;
+    overflow:hidden!important;
+  }
+  .rank-no{font-size:22px!important}
+  .rank-user{gap:7px!important;overflow:hidden!important}
+  .rank-avatar{width:34px!important;height:34px!important}
+  .rank-user>div{overflow:hidden!important}
+  .rank-user strong{
+    font-size:15px!important;
+    line-height:.92!important;
+    display:block!important;
+    overflow:hidden!important;
+    text-overflow:ellipsis!important;
+    white-space:nowrap!important;
+  }
+  .rank-user small{
+    max-width:100%!important;
+    overflow:hidden!important;
+    text-overflow:ellipsis!important;
+    white-space:nowrap!important;
+  }
+  .rank-rings{
+    width:76px!important;
+    overflow:hidden!important;
+    display:flex!important;
+    align-items:center!important;
+    justify-content:flex-end!important;
+    gap:4px!important;
+    white-space:nowrap!important;
+  }
+  .rank-rings strong{
+    max-width:51px!important;
+    overflow:hidden!important;
+    text-overflow:ellipsis!important;
+    white-space:nowrap!important;
+    font-size:16px!important;
+    line-height:.9!important;
+  }
+  .rank-rings span{display:none!important}
+  .rank-rings .ring-icon{
+    width:19px!important;height:19px!important;flex:0 0 19px!important;
+  }
+}
+@media(max-width:380px){
+  .rank-row{grid-template-columns:30px minmax(0,1fr) 66px!important;gap:6px!important;padding-inline:7px!important}
+  .rank-avatar{width:31px!important;height:31px!important}
+  .rank-user strong{font-size:13px!important}
+  .rank-rings{width:66px!important}
+  .rank-rings strong{max-width:43px!important;font-size:14px!important}
+  .rank-rings .ring-icon{width:17px!important;height:17px!important;flex-basis:17px!important}
+}
+</style>
+
+<style id="ranking-special-role-sections">
+.podium-grid[aria-hidden="true"]{display:none!important}
+.special-ranking-section{margin:0 0 26px;position:relative;z-index:2}
+.special-ranking-head{display:flex;justify-content:space-between;align-items:end;gap:16px;margin:0 0 10px;padding-bottom:10px;border-bottom:1px solid rgba(18,18,18,.10)}
+.special-ranking-head p{margin:0 0 4px;font-size:7px;font-weight:900;letter-spacing:.18em;text-transform:uppercase;opacity:.48}
+.special-ranking-head h2{margin:0;font-family:SFDisplay,Arial Black,Arial,sans-serif;font-size:clamp(34px,5vw,64px);line-height:.78;letter-spacing:-.06em}
+.special-ranking-head>span{font-size:7px;font-weight:900;letter-spacing:.14em;opacity:.45}
+.special-ranking-list{display:grid;gap:9px}
+.creator-rank-card{display:grid;grid-template-columns:70px minmax(0,1fr) auto;align-items:center;gap:18px;padding:20px 22px;background:#171717;color:#fff;border:1px solid rgba(18,18,18,.08);box-shadow:0 18px 48px rgba(0,0,0,.10);cursor:pointer;position:relative;overflow:hidden}
+.creator-rank-card::before{content:"";position:absolute;inset:0;background:linear-gradient(105deg,transparent 35%,rgba(255,255,255,.08) 50%,transparent 65%);transform:translateX(-100%);animation:creatorSweep 5.5s ease-in-out infinite;pointer-events:none}
+@keyframes creatorSweep{55%,100%{transform:translateX(100%)}}
+.creator-rank-number{font-family:SFDisplay,Arial Black,Arial,sans-serif;font-size:54px;line-height:.7;letter-spacing:-.06em;color:#ef263f}
+.creator-rank-user{display:flex;align-items:center;gap:14px;min-width:0}
+.creator-rank-user>div:last-child{min-width:0}
+.creator-rank-user strong{display:block;font-family:SFDisplay,Arial Black,Arial,sans-serif;font-size:clamp(25px,4vw,48px);line-height:.82;letter-spacing:-.06em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.creator-rank-user small{display:block;margin-top:6px;font-size:6px;font-weight:900;letter-spacing:.16em;color:#ef263f}
+.creator-rank-avatar{width:68px;height:68px;flex:0 0 68px;border-radius:50%;display:grid;place-items:center;background:#eee;color:#171717;font-weight:900;background-position:center;background-repeat:no-repeat;background-size:cover}
+.creator-rank-badge{font-size:7px;font-weight:900;letter-spacing:.14em;color:#fff;border:1px solid rgba(255,255,255,.22);padding:10px 12px;white-space:nowrap}
+.admin-ranking-section .rank-row{cursor:pointer}
+.admin-rank-row{border-left:4px solid #233d8f}
+.special-empty{padding:25px;background:#fff;border:1px solid rgba(18,18,18,.08);font-size:8px;font-weight:900;letter-spacing:.14em;opacity:.5}
+@media(max-width:680px){
+ .special-ranking-head{align-items:start;flex-direction:column;gap:5px}
+ .creator-rank-card{grid-template-columns:35px minmax(0,1fr);gap:9px;padding:13px}
+ .creator-rank-number{font-size:30px}
+ .creator-rank-avatar{width:44px;height:44px;flex-basis:44px}
+ .creator-rank-user{gap:8px}
+ .creator-rank-user strong{font-size:18px}
+ .creator-rank-badge{grid-column:2;justify-self:start;padding:7px 9px;font-size:6px}
+ .special-ranking-list .rank-row{grid-template-columns:30px minmax(0,1fr) 68px!important}
+}
+</style>
+
+<style id="ranking-special-cleanup">
+.ranking-board>.podium-grid{display:none!important}
+.ranking-board>.rank-table-wrap{display:none!important}
+.ranking-board>.special-ranking-section{display:block!important}
+.special-ranking-section[hidden]{display:none!important}
+.creator-ranking-section{margin-bottom:30px}
+.admin-ranking-section{margin-bottom:30px}
+.member-ranking-section{margin-bottom:20px}
+.special-ranking-section .rank-list{display:grid;gap:8px}
+.special-ranking-section .rank-row{opacity:1!important;transform:none!important;animation:none!important}
+.special-ranking-section .rank-row:hover{transform:translateX(3px)!important}
+</style>
 </head>
 <body class="ranking-page">
 <main class="ranking-shell">
@@ -641,57 +796,40 @@ body.rank-ost-playing .rank-profile-modal{box-shadow:-25px 0 65px rgba(239,38,63
     </div>
   </header>
 
-  <section class="ranking-board" aria-label="Podio">
-    <div class="podium-grid">
-      <article class="podium-card" data-profile="Speedy" data-role="Community Leader" data-rings="12,840" data-position="01" data-initials="SF">
-        <div class="podium-rank">02</div>
-        <div class="podium-avatar">SF</div>
-        <h2 class="podium-name">Runner</h2>
-        <p class="podium-sub">Speedy Member</p>
-        <div class="podium-score-row"><div class="podium-score">8,420 <small><img class="ring-icon" src="assets/ring-animated.png" alt="" aria-hidden="true"></small></div></div>
-        <div class="podium-bar"><span style="--fill:.78;transform-origin:left;transform:scaleX(.78)"></span></div>
-      </article>
-
-      <article class="podium-card" data-profile="Runner" data-role="Speedy Member" data-rings="8,420" data-position="02" data-initials="SF">
-        <div class="podium-rank">01</div>
-        <div class="podium-avatar">SF</div>
-        <h2 class="podium-name">Speedy</h2>
-        <p class="podium-sub">Community Leader</p>
-        <div class="podium-score-row"><div class="podium-score">12,840 <small><img class="ring-icon" src="assets/ring-animated.png" alt="" aria-hidden="true"></small></div></div>
-        <div class="podium-bar"><span style="transform-origin:left;transform:scaleX(.96)"></span></div>
-      </article>
-
-      <article class="podium-card" data-profile="Dash" data-role="Speedy Member" data-rings="7,960" data-position="03" data-initials="SF">
-        <div class="podium-rank">03</div>
-        <div class="podium-avatar">SF</div>
-        <h2 class="podium-name">Dash</h2>
-        <p class="podium-sub">Speedy Member</p>
-        <div class="podium-score-row"><div class="podium-score">7,960 <small><img class="ring-icon" src="assets/ring-animated.png" alt="" aria-hidden="true"></small></div></div>
-        <div class="podium-bar"><span style="transform-origin:left;transform:scaleX(.69)"></span></div>
-      </article>
+  <section class="ranking-board" aria-label="Ranking Speedy Friends">
+  <section class="special-ranking-section creator-ranking-section" id="creator-ranking-section">
+    <div class="special-ranking-head">
+      <div><p>Speedy Friends / Creator</p><h2>CREADORA</h2></div>
+      <span>01 · SPECIAL CARD</span>
     </div>
-
-    <section class="rank-table-wrap">
-      <div class="rank-table-head">
-        <div><p class="ranking-kicker">Community</p><h2>Clasificación</h2></div>
-        <p>Última actualización: demostración local</p>
-      </div>
-
-      <div class="rank-list">
-        <article class="rank-row" data-profile="Arc" data-role="Active Member" data-rings="7,430" data-position="04" data-initials="A"><div class="rank-no">04</div><div class="rank-user"><div class="rank-avatar">A</div><div><strong>Arc</strong><small>Active member</small></div></div><div class="rank-rings"><strong>7,430</strong><span>RINGS</span></div><div class="rank-move up">↑ 2<span>THIS WEEK</span></div></article>
-        <article class="rank-row" data-profile="Nova" data-role="Active Member" data-rings="6,980" data-position="05" data-initials="N"><div class="rank-no">05</div><div class="rank-user"><div class="rank-avatar">N</div><div><strong>Nova</strong><small>Active member</small></div></div><div class="rank-rings"><strong>6,980</strong><span>RINGS</span></div><div class="rank-move up">↑ 1<span>THIS WEEK</span></div></article>
-        <article class="rank-row" data-profile="Zero" data-role="Active Member" data-rings="6,210" data-position="06" data-initials="Z"><div class="rank-no">06</div><div class="rank-user"><div class="rank-avatar">Z</div><div><strong>Zero</strong><small>Active member</small></div></div><div class="rank-rings"><strong>6,210</strong><span>RINGS</span></div><div class="rank-move down">↓ 1<span>THIS WEEK</span></div></article>
-        <article class="rank-row" data-profile="Kiro" data-role="Active Member" data-rings="5,870" data-position="07" data-initials="K"><div class="rank-no">07</div><div class="rank-user"><div class="rank-avatar">K</div><div><strong>Kiro</strong><small>Active member</small></div></div><div class="rank-rings"><strong>5,870</strong><span>RINGS</span></div><div class="rank-move up">↑ 3<span>THIS WEEK</span></div></article>
-        <article class="rank-row" data-profile="Lyra" data-role="Active Member" data-rings="5,420" data-position="08" data-initials="L"><div class="rank-no">08</div><div class="rank-user"><div class="rank-avatar">L</div><div><strong>Lyra</strong><small>Active member</small></div></div><div class="rank-rings"><strong>5,420</strong><span>RINGS</span></div><div class="rank-move down">↓ 2<span>THIS WEEK</span></div></article>
-        <article class="rank-row" data-profile="Rex" data-role="Active Member" data-rings="5,180" data-position="09" data-initials="R"><div class="rank-no">09</div><div class="rank-user"><div class="rank-avatar">R</div><div><strong>Rex</strong><small>Active member</small></div></div><div class="rank-rings"><strong>5,180</strong><span>RINGS</span></div><div class="rank-move up">↑ 1<span>THIS WEEK</span></div></article>
-      </div>
-
-      <footer class="ranking-footer">
-        <a class="rank-btn primary" href="index.html">← Volver a Speedy Friends</a>
-        <button class="rank-btn" type="button" id="shuffle">Actualizar muestra</button>
-      </footer>
-    </section>
+    <div class="special-ranking-list" id="creator-ranking-list"></div>
   </section>
+
+  <section class="special-ranking-section admin-ranking-section" id="admin-ranking-section">
+    <div class="special-ranking-head">
+      <div><p>Speedy Friends / Staff</p><h2>ADMINISTRADORES</h2></div>
+      <span id="admin-ranking-count">0 MOSTRADOS</span>
+    </div>
+    <div class="special-ranking-list" id="admin-ranking-list"></div>
+  </section>
+
+  <section class="special-ranking-section member-ranking-section" id="member-ranking-section">
+    <div class="special-ranking-head">
+      <div><p>Speedy Friends / Community</p><h2>MIEMBROS</h2></div>
+      <span id="member-ranking-count">0 MOSTRADOS</span>
+    </div>
+    <div class="rank-table-head" style="margin-bottom:10px">
+      <div></div>
+      <p>RINGS TOTALES · ADMINISTRADORES Y MIEMBROS</p>
+    </div>
+    <div class="rank-list" id="member-ranking-list"></div>
+  </section>
+
+  <footer class="ranking-footer">
+    <a class="rank-btn primary" href="index.html">← Volver a Speedy Friends</a>
+    <button class="rank-btn" type="button" id="shuffle">Actualizar muestra</button>
+  </footer>
+</section>
 </main>
 
 
@@ -699,9 +837,12 @@ body.rank-ost-playing .rank-profile-modal{box-shadow:-25px 0 65px rgba(239,38,63
 <script>
 document.addEventListener('DOMContentLoaded',()=>{
   const filters=[...document.querySelectorAll('.ranking-filter')];
-  const podiumGrid=document.querySelector('.podium-grid');
-  const rankList=document.querySelector('.rank-list');
-  const hint=document.querySelector('.rank-table-head p');
+  const creatorList=document.getElementById('creator-ranking-list');
+  const adminList=document.getElementById('admin-ranking-list');
+  const memberList=document.getElementById('member-ranking-list');
+  const adminCount=document.getElementById('admin-ranking-count');
+  const memberCount=document.getElementById('member-ranking-count');
+  const hint=document.querySelector('.member-ranking-section .rank-table-head p');
   let mode='rings',users=[];
 
   const esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[c]));
@@ -714,81 +855,92 @@ document.addEventListener('DOMContentLoaded',()=>{
     nickname:u?.nickname||'',
     title:u?.title||'Integrante',
     role:u?.role||'member',
+    ownerEmail:u?.ownerEmail||u?.email||'',
     description:u?.description||u?.bio||'',
     rings:num(u?.rings),
     level:num(u?.level)||1,
     friends:num(u?.friendsCount||u?.friends||0),
     weekly:num(u?.weeklyRings||u?.weekly?.rings||u?.weekly||0),
-    avatar:u?.avatar||'',
-    cover:u?.cover||'',
-    iconPosition:u?.iconPosition||'50% 50%',
-    iconZoom:num(u?.iconZoom)||100,
-    ost:u?.ostName||u?.ostTitle||'',
-    ostUrl:u?.ostUrl||''
+    avatar:u?.avatar||'',cover:u?.cover||'',
+    iconPosition:u?.iconPosition||'50% 50%',iconZoom:num(u?.iconZoom)||100,
+    ost:u?.ostName||u?.ostTitle||'',ostUrl:u?.ostUrl||''
   }));
+  const isCreator=u=>{
+    const r=String(u.role||'').toLowerCase();
+    const me=String(window.SpeedyFirebase?.current?.email||'').toLowerCase();
+    return r==='creator'||(me && String(u.ownerEmail||'').toLowerCase()===me);
+  };
+  const isAdmin=u=>String(u.role||'').toLowerCase()==='admin';
 
-  function sorted(){
-    let a=users.slice();
+  function sortGroup(list){
+    const a=list.slice();
     if(mode==='level')a.sort((x,y)=>y.level-x.level||y.rings-x.rings);
     else if(mode==='week')a.sort((x,y)=>y.weekly-x.weekly||y.rings-x.rings);
     else a.sort((x,y)=>y.rings-x.rings);
     return a;
   }
-  const avatarStyle=u=>u.avatar
-    ? `style="background-image:url('${esc(u.avatar)}');background-position:${esc(u.iconPosition)};background-size:${u.iconZoom}%"`
-    : '';
 
-  function render(){
-    const a=sorted();
-    filters.forEach(f=>f.classList.toggle('active',f.dataset.mode===mode));
-    if(hint)hint.textContent=mode==='level'?'NIVEL ACTUAL · TODOS LOS INTEGRANTES':mode==='week'?'PROGRESO SEMANAL · ÚLTIMOS 7 DÍAS':'RINGS TOTALES · TODOS LOS INTEGRANTES';
+  const avatarStyle=u=>u.avatar?`style="background-image:url('${esc(u.avatar)}');background-position:${esc(u.iconPosition)};background-size:${u.iconZoom}%"`:'';
 
-    if(!a.length){
-      podiumGrid.innerHTML='<div class="ranking-empty-state">AÚN NO HAY INTEGRANTES REGISTRADOS</div>';
-      rankList.innerHTML='';
-      return;
-    }
+  const card=(u,pos,type)=>{
+    const score=mode==='level'?`${u.level} <small>LVL</small>`:
+      mode==='week'?`${u.weekly.toLocaleString('en-US')} <small>R</small>`:
+      `${u.rings.toLocaleString('en-US')} <small>R</small>`;
+    const roleLabel=type==='creator'?'CREADORA':type==='admin'?'ADMIN':'INTEGRANTE';
+    const rings=type==='creator'?'':`<div class="rank-rings"><strong>${mode==='level'?u.level:mode==='week'?u.weekly.toLocaleString('en-US'):u.rings.toLocaleString('en-US')}</strong>${mode==='level'?'':'<img class="ring-icon" src="assets/ring-animated.png" alt="" aria-hidden="true">'}<span>${mode==='level'?'LVL':'RINGS'}</span></div>`;
+    return `<article class="${type==='creator'?'creator-rank-card':'rank-row'} visible ${type==='admin'?'admin-rank-row':''}" style="--delay:${Math.min(14,pos)*35}ms"
+      data-profile-id="${esc(u.id)}" data-profile="${esc(u.username)}" data-role="${esc(u.title||roleLabel)}"
+      data-rings="${u.rings.toLocaleString('en-US')}" data-position="${String(pos+1).padStart(2,'0')}"
+      data-initials="${esc(init(u))}" data-avatar="${esc(u.avatar)}" data-cover="${esc(u.cover)}"
+      data-description="${esc(u.description)}" data-nickname="${esc(u.nickname)}" data-friends="${u.friends}"
+      data-level="${u.level}" data-week="${u.weekly}" data-ost-track="${esc(u.ost)}" data-ost-url="${esc(u.ostUrl)}">
+      <div class="${type==='creator'?'creator-rank-number':'rank-no'}">${String(pos+1).padStart(2,'0')}</div>
+      <div class="${type==='creator'?'creator-rank-user':'rank-user'}">
+        <div class="${type==='creator'?'creator-rank-avatar':'rank-avatar'} ${u.avatar?'has-photo':''}" ${avatarStyle(u)}>${u.avatar?'':esc(init(u))}</div>
+        <div><strong>${esc(u.username)}</strong><small>${esc(type==='creator'?'CREADORA':u.nickname||u.title||roleLabel)}</small></div>
+      </div>
+      ${type==='creator'?`<div class="creator-rank-badge">★ CREADORA</div>`:rings}
+      ${type!=='creator'?`<div class="rank-move">${u.ostUrl?`<button class="rank-ost-btn rank-row-ost" type="button" data-ost-track="${esc(u.ost)}" data-ost-url="${esc(u.ostUrl)}" aria-label="Escuchar OST de ${esc(u.username)}">♫</button>`:`<span>${roleLabel}</span>`}</div>`:''}
+    </article>`;
+  };
 
-    podiumGrid.innerHTML=a.slice(0,3).map((u,i)=>`
-      <article class="podium-card visible" data-profile-id="${esc(u.id)}" data-profile="${esc(u.username)}" data-role="${esc(u.title)}"
-        data-rings="${u.rings.toLocaleString('en-US')}" data-position="${String(i+1).padStart(2,'0')}" data-initials="${esc(init(u))}"
-        data-avatar="${esc(u.avatar)}" data-cover="${esc(u.cover)}" data-description="${esc(u.description)}"
-        data-nickname="${esc(u.nickname)}" data-friends="${u.friends}" data-level="${u.level}" data-week="${u.weekly}"
-        data-ost-track="${esc(u.ost)}" data-ost-url="${esc(u.ostUrl)}">
-        <div class="podium-rank">${String(i+1).padStart(2,'0')}</div>
-        <div class="podium-avatar ${u.avatar?'has-photo':''}" ${avatarStyle(u)}>${u.avatar?'':esc(init(u))}</div>
-        <div class="podium-name">${esc(u.username)}</div><div class="podium-sub">${esc(u.title)}</div>
-        <div class="podium-score">${mode==='level'?u.level+' <small>LVL</small>':mode==='week'?u.weekly.toLocaleString('en-US')+' <small>R</small>':u.rings.toLocaleString('en-US')+' <small>R</small>'}</div>
-        <div class="podium-bar"><span style="transform:scaleX(${Math.max(.16,Math.min(1,(mode==='level'?u.level:mode==='week'?u.weekly:u.rings)/Math.max(1,(mode==='level'?a[0].level:mode==='week'?a[0].weekly:a[0].rings))))})"></span></div>
-      </article>`).join('');
-
-    rankList.innerHTML=a.map((u,i)=>`
-      <article class="rank-row visible" style="--delay:${Math.min(14,i)*35}ms" data-profile-id="${esc(u.id)}"
-        data-profile="${esc(u.username)}" data-role="${esc(u.title)}" data-rings="${u.rings.toLocaleString('en-US')}"
-        data-position="${String(i+1).padStart(2,'0')}" data-initials="${esc(init(u))}" data-avatar="${esc(u.avatar)}"
-        data-cover="${esc(u.cover)}" data-description="${esc(u.description)}" data-nickname="${esc(u.nickname)}"
-        data-friends="${u.friends}" data-level="${u.level}" data-week="${u.weekly}" data-ost-track="${esc(u.ost)}" data-ost-url="${esc(u.ostUrl)}">
-        <div class="rank-no">${String(i+1).padStart(2,'0')}</div>
-        <div class="rank-user"><div class="rank-avatar ${u.avatar?'has-photo':''}" ${avatarStyle(u)}>${u.avatar?'':esc(init(u))}</div>
-          <div><strong>${esc(u.username)}</strong><small>${esc(u.nickname||u.title)}</small></div></div>
-        <div class="rank-rings"><strong>${mode==='level'?u.level:mode==='week'?u.weekly.toLocaleString('en-US'):u.rings.toLocaleString('en-US')}</strong>${mode==='level'?'':'<img class="ring-icon" src="assets/ring-animated.png" alt="" aria-hidden="true">'}<span>${mode==='level'?'LVL':'R'}</span></div>
-        <div class="rank-move">${u.ostUrl?`<button class="rank-ost-btn rank-row-ost" type="button" data-ost-track="${esc(u.ost)}" data-ost-url="${esc(u.ostUrl)}" aria-label="Escuchar OST de ${esc(u.username)}">♫</button>`:`<span>INTEGRANTE</span>`}</div>
-        
-      </article>`).join('');
-
-    document.querySelectorAll('.rank-row,.podium-card').forEach(card=>{
+  function bindCards(root){
+    root.querySelectorAll('.rank-row,.creator-rank-card').forEach(card=>{
       card.addEventListener('click',e=>{
         if(e.target.closest('button,a'))return;
         document.dispatchEvent(new CustomEvent('ranking:profile-select',{detail:card}));
       });
     });
-    document.querySelectorAll('.rank-ost-btn').forEach(btn=>btn.addEventListener('click',e=>{
-      e.stopPropagation();document.dispatchEvent(new CustomEvent('ranking:ost-play',{detail:btn}));
+    root.querySelectorAll('.rank-ost-btn').forEach(btn=>btn.addEventListener('click',e=>{
+      e.stopPropagation();
+      document.dispatchEvent(new CustomEvent('ranking:ost-play',{detail:btn}));
     }));
   }
 
-  filters.forEach(f=>f.addEventListener('click',()=>{mode=f.dataset.mode||'rings';render()}));
+  function render(){
+    const creators=users.filter(isCreator).slice(0,1);
+    const admins=sortGroup(users.filter(u=>!isCreator(u)&&isAdmin(u)));
+    const members=sortGroup(users.filter(u=>!isCreator(u)&&!isAdmin(u)));
 
+    filters.forEach(f=>f.classList.toggle('active',f.dataset.mode===mode));
+    if(hint)hint.textContent=mode==='level'?'NIVEL ACTUAL · ADMINISTRADORES Y MIEMBROS':
+      mode==='week'?'PROGRESO SEMANAL · ADMINISTRADORES Y MIEMBROS':'RINGS TOTALES · ADMINISTRADORES Y MIEMBROS';
+
+    creatorList.innerHTML=creators.length?creators.map((u,i)=>card(u,i,'creator')).join(''):'<div class="special-empty">CUENTA CREADORA NO ENCONTRADA</div>';
+    adminList.innerHTML=admins.length?admins.map((u,i)=>card(u,i,'admin')).join(''):'<div class="special-empty">AÚN NO HAY ADMINISTRADORES</div>';
+    memberList.innerHTML=members.length?members.map((u,i)=>card(u,i,'member')).join(''):'<div class="ranking-empty-state">AÚN NO HAY INTEGRANTES REGISTRADOS</div>';
+
+    const creatorSection=document.getElementById('creator-ranking-section');
+    const adminSection=document.getElementById('admin-ranking-section');
+    creatorSection.hidden=!creators.length;
+    adminSection.hidden=!admins.length;
+    memberCount.textContent=`${members.length} MOSTRADOS`;
+    adminCount.textContent=`${admins.length} MOSTRADOS`;
+    bindCards(creatorList);bindCards(adminList);bindCards(memberList);
+  }
+
+  document.getElementById('shuffle')?.addEventListener('click',()=>render());
+  filters.forEach(f=>f.addEventListener('click',()=>{mode=f.dataset.mode||'rings';render()}));
   const bindFirebase=()=>{
     if(!window.SpeedyFirebase?.watchPublicUsers)return;
     window.SpeedyFirebase.watchPublicUsers(raw=>{users=normalize(raw);render()});

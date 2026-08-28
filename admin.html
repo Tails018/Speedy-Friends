@@ -634,7 +634,7 @@ body.admin-profile-open{overflow:hidden}
 <button class="admin-side-btn" data-panel="rings">Rings</button>
 <button class="admin-side-btn" data-panel="permissions">Permisos</button>
 <button class="admin-side-btn" data-panel="identity">Identidad</button>
-<button class="admin-side-btn" data-panel="audit">Actividad</button>
+<button class="admin-side-btn" data-panel="audit">Actividad</button><button class="admin-side-btn" data-panel="cafe-workers">Cafetería</button>
 </div>
 <div class="admin-side-note">Espacio preparado para la cuenta creadora. Las reglas reales de acceso se conectarán con Firebase al finalizar la interfaz.</div>
 </aside>
@@ -677,6 +677,19 @@ body.admin-profile-open{overflow:hidden}
 <div class="admin-surface"><h3>Speedy Friends Community Hub</h3><p>Editar título, subtítulo y estilo del sitio. Estos campos quedarán preparados para sincronización en Firebase.</p><div class="admin-form"><input class="admin-input wide" value="Speedy Friends Community Hub" maxlength="60"><input class="admin-input" value="Community Hub" maxlength="100"><select class="admin-select"><option>Red / Cream</option><option>Blue / Cream</option><option>Monochrome</option></select><button class="admin-btn primary" id="save-identity" type="button">Guardar identidad</button></div></div>
 </section>
 
+
+<section class="admin-section" id="cafe-workers">
+  <div class="admin-section-head"><div><p class="admin-kicker">Café Club</p><h2>Trabajadores</h2></div><p>Usuarios registrados · LIVE</p></div>
+  <div class="admin-surface">
+    <h3>Asignar trabajadores de Cafetería</h3>
+    <p>Todos los usuarios registrados aparecen aquí. Puedes activar o desactivar su acceso al panel de trabajo sin escribir UID manualmente.</p>
+    <div class="admin-form" style="grid-template-columns:1fr auto">
+      <input class="admin-input" id="cafe-worker-search" autocomplete="off" placeholder="Buscar usuario o apodo">
+      <button class="admin-btn" id="cafe-worker-clear" type="button">Limpiar</button>
+    </div>
+    <div id="cafe-worker-list" class="user-list"></div>
+  </div>
+</section>
 <section class="admin-section" id="audit"><div class="admin-section-head"><div><p class="admin-kicker">Team Log</p><h2>Actividad</h2></div><p>Historial de cambios</p></div>
 <div class="audit-list"><div class="audit-row"><div class="audit-time">18:42</div><div class="audit-main"><strong>Runner</strong><span>permiso Rings activado</span></div><div class="audit-delta">✓</div></div><div class="audit-row"><div class="audit-time">18:31</div><div class="audit-main"><strong>Dash</strong><span>+250 Rings · evento semanal</span></div><div class="audit-delta">+250</div></div><div class="audit-row"><div class="audit-time">17:58</div><div class="audit-main"><strong>Nova</strong><span>nuevo integrante registrado</span></div><div class="audit-delta">NEW</div></div></div>
 </section>
@@ -712,7 +725,7 @@ body.admin-profile-open{overflow:hidden}
   const ringSelect = document.getElementById('ring-user');
   const ringAmount = document.getElementById('ring-amount');
   const ringReason = document.getElementById('ring-reason');
-  const ringLog = document.getElementById('ring-log');
+  const ringLog = document.getElementById('ring-log'); const cafeWorkerList=document.getElementById('cafe-worker-list'); const cafeWorkerSearch=document.getElementById('cafe-worker-search');
   const users=[];
   let currentUsers = {};
   let currentPerms = {};
@@ -971,18 +984,57 @@ body.admin-profile-open{overflow:hidden}
     }).join('');
   }
 
-  async function bootRealtime(){
+ 
+ async function renderCafeWorkers(){
+   if(!cafeWorkerList || roleMode!=='creator')return;
+   const users=getUsers();
+   const q=String(cafeWorkerSearch?.value||'').trim().toLowerCase();
+   let workers={};
+   try{
+     const snap=await sf.db.ref('speedy-friends-teams/speedy-friends/cafeteria/workers').once('value');
+     workers=snap.val()||{};
+   }catch(error){
+     cafeWorkerList.innerHTML='<div class="admin-empty-live">No se pudo leer trabajadores.</div>';
+     return;
+   }
+   const filtered=users.filter(u=>!q || [u.username,u.nickname,u.name,u.ownerEmail,u.ownerUid].join(' ').toLowerCase().includes(q));
+   if(!filtered.length){cafeWorkerList.innerHTML='<div class="admin-empty-live">Ningún usuario coincide.</div>';return;}
+   cafeWorkerList.innerHTML=filtered.map(u=>{
+     const uid=u.ownerUid;
+     const w=uid?workers[uid]:null;
+     const active=!!w && w.active!==false;
+     const protectedCreator=String(u.ownerEmail||'').toLowerCase()===String(sf.current?.email||'').toLowerCase();
+     return `<article class="user-row visible" style="opacity:1!important;transform:none;display:flex;justify-content:space-between;gap:12px;align-items:center;padding:12px;border-bottom:1px solid rgba(18,18,18,.08)">
+       <div style="display:flex;gap:10px;align-items:center;min-width:0">
+         <div class="user-avatar ${u.avatar?'has-photo':''}" ${avatarStyle(u)}>${u.avatar?'':initial(u)}</div>
+         <div style="min-width:0"><strong>${esc(u.username)}</strong><span style="display:block;font-size:6px;opacity:.55">${esc(u.nickname||u.name)} · ${esc(u.ownerEmail||'Cuenta vinculada')}</span></div>
+       </div>
+       <button class="admin-btn ${active?'primary':''}" data-cafe-worker="${esc(u.id)}" ${protectedCreator||!uid?'disabled':''}>${protectedCreator?'CREADORA':active?'TRABAJADOR ACTIVO':'DAR ROL'}</button>
+     </article>`;
+   }).join('');
+   cafeWorkerList.querySelectorAll('[data-cafe-worker]').forEach(btn=>btn.addEventListener('click',async()=>{
+     const u=selectedUserById(btn.dataset.cafeWorker); if(!u)return;
+     try{
+       const snap=await sf.db.ref('speedy-friends-teams/speedy-friends/cafeteria/workers').child(u.ownerUid).once('value');
+       const active=snap.val()?.active!==false && !!snap.val();
+       await sf.setCafeWorkerRole(u.id,!active);
+       notify(!active?'Trabajador activado':'Trabajador desactivado');
+       await renderCafeWorkers();
+     }catch(err){notify(err?.message||'No se pudo cambiar el rol');}
+   }));
+ }
+ async function bootRealtime(){
     if(!sf?.refs?.users)return;
     const state=await sf.resolve();
     if(!state.uid){ notify('Sesión no disponible'); return; }
     // One shared live users listener.
     usersUnsub=sf.watchPublicUsers(raw=>{
       currentUsers=raw||{};
-      renderOverview(); renderUsers(); renderRingResults(); if(canManageRoles)renderPermissions();
+      renderOverview(); renderUsers(); renderRingResults(); if(canManageRoles){renderPermissions(); renderCafeWorkers();}
     });
     permsUnsub=sf.refs.permissions.on('value',snap=>{
       currentPerms=snap.val()||{};
-      renderOverview(); if(canManageRoles)renderPermissions();
+      renderOverview(); if(canManageRoles){renderPermissions(); renderCafeWorkers();}
     });
     historyUnsub=sf.refs.ringHistory.on('value',snap=>{
       lastHistory=Object.values(snap.val()||{}).sort((a,b)=>n(a.at)-n(b.at));
@@ -990,10 +1042,11 @@ body.admin-profile-open{overflow:hidden}
     });
     // Explicit rings listener refreshes the current user's displayed balance.
     ringsUnsub=sf.watchUserRings?.(()=>{});
-    renderOverview();renderUsers();renderRingResults();if(canManageRoles)renderPermissions();
+    renderOverview();renderUsers();renderRingResults();if(canManageRoles){renderPermissions(); renderCafeWorkers();}
   }
 
-  document.addEventListener('speedy:firebase-ready',bootRealtime,{once:true});
+  cafeWorkerSearch?.addEventListener('input',renderCafeWorkers); document.getElementById('cafe-worker-clear')?.addEventListener('click',()=>{if(cafeWorkerSearch)cafeWorkerSearch.value='';renderCafeWorkers();});
+ document.addEventListener('speedy:firebase-ready',bootRealtime,{once:true});
   if(sf?.current?.uid)bootRealtime();
 
 })();

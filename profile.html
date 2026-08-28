@@ -1332,7 +1332,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     if(canvasName) canvasName.textContent=displayName;
     if(mainBio) mainBio.textContent=editDescription?.value.trim() || 'Aquí se verá tu presentación, tus estadísticas y tu identidad dentro de la comunidad.';
     if(mainLabel) mainLabel.textContent=editTitle?.value.trim() || 'Usuario';
-    markChanged();
+    changed();
   }
 
   [editName,editNickname,editTitle,editUsername,editDescription].forEach(field=>{
@@ -1414,6 +1414,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   }
   const revoke=url=>{if(url&&String(url).startsWith('blob:'))try{URL.revokeObjectURL(url)}catch{}};
   const changed=()=>{if(saveStatus)saveStatus.textContent='CAMBIOS SIN GUARDAR'};
+  const markChanged=changed;
 
   /* ---------- Apply images to EVERY profile preview ---------- */
   function applyAvatar(){
@@ -1459,6 +1460,24 @@ document.addEventListener('DOMContentLoaded', async () => {
     buttons.forEach(b=>b.classList.toggle('active',b.getAttribute(attr)===value));
   }
 
+  /* ---------- Sync crop editor surfaces ---------- */
+  function applyCropSurfaces(){
+    if(iconSurfaceImage){
+      iconSurfaceImage.style.backgroundImage=avatarUrl?`url("${avatarUrl}")`:'';
+      iconSurfaceImage.style.backgroundPosition=iconPosition||'50% 50%';
+      iconSurfaceImage.style.backgroundSize=`${Number(iconZoom)||100}%`;
+      iconSurfaceImage.style.backgroundRepeat='no-repeat';
+    }
+    if(coverSurfaceImage){
+      coverSurfaceImage.style.backgroundImage=coverUrl?`url("${coverUrl}")`:'';
+      coverSurfaceImage.style.backgroundPosition=coverPosition||'50% 50%';
+      coverSurfaceImage.style.backgroundSize=`${Number(coverZoom)||100}%`;
+      coverSurfaceImage.style.backgroundRepeat='no-repeat';
+    }
+    iconSurface?.classList.toggle('has-image',Boolean(avatarUrl));
+    coverSurface?.classList.toggle('has-image',Boolean(coverUrl));
+  }
+
   /* ---------- Preset 3×3 + direct drag ---------- */
   const presetValue={
     top:{y:18},center:{y:50},bottom:{y:82},
@@ -1493,7 +1512,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   iconZoomInput?.addEventListener('input',()=>{
     iconZoom=Math.max(100,Number(iconZoomInput.value)||100);
     if(iconZoomValue)iconZoomValue.textContent=`${iconZoom}%`;
-    applyAvatar();changed();
+    applyAvatar();applyCropSurfaces();changed();
   });
   coverZoomInput?.addEventListener('input',()=>{
     coverZoom=Math.max(100,Number(coverZoomInput.value)||100);
@@ -1600,15 +1619,119 @@ document.addEventListener('DOMContentLoaded', async () => {
     applyCover();changed();
   });
 
+  /* ---------- Save images directly in Realtime Database (legacy-compatible) ---------- */
+  const fileToDataUrl=(file,maxBytes)=>{
+    if(!file) return Promise.resolve('');
+    if(file.size>maxBytes){
+      return Promise.reject(new Error(`La imagen es demasiado grande. Máximo ${Math.round(maxBytes/1024/1024*10)/10} MB`));
+    }
+    return new Promise((resolve,reject)=>{
+      const reader=new FileReader();
+      reader.onload=()=>resolve(String(reader.result||''));
+      reader.onerror=()=>reject(reader.error||new Error('No se pudo leer la imagen'));
+      reader.readAsDataURL(file);
+    });
+  };
+
+  const withTimeout=(promise,ms,message)=>Promise.race([
+    Promise.resolve(promise),
+    new Promise((_,reject)=>setTimeout(()=>reject(new Error(message)),ms))
+  ]);
+
+  const directAuthUser=async()=>{
+    const sf=window.SpeedyFirebase;
+    if(!sf?.auth||!sf?.refs?.users)throw new Error('Firebase no está disponible');
+
+    let user=sf.auth.currentUser;
+    if(!user){
+      user=await new Promise((resolve,reject)=>{
+        let finished=false;
+        const unsubscribe=sf.auth.onAuthStateChanged(u=>{
+          if(finished||!u)return;
+          finished=true;
+          clearTimeout(timer);
+          try{unsubscribe()}catch{}
+          resolve(u);
+        });
+        const timer=setTimeout(()=>{
+          if(finished)return;
+          finished=true;
+          try{unsubscribe()}catch{}
+          reject(new Error('No se detectó tu sesión de Google'));
+        },7000);
+      });
+    }
+    return {sf,user};
+  };
+
+  const findOwnedProfile=async(sf,user)=>{
+    const snapshot=await withTimeout(
+      sf.refs.users.once('value'),
+      8000,
+      'Firebase tardó demasiado en leer los perfiles'
+    );
+    const users=snapshot.val()||{};
+    const email=String(user.email||'').toLowerCase();
+
+    for(const [id,data] of Object.entries(users)){
+      const ownerUid=String(data?.ownerUid||'');
+      const ownerEmail=String(data?.ownerEmail||data?.email||'').toLowerCase();
+      if(ownerUid===String(user.uid)||ownerEmail===email){
+        return {id,data:data||{}};
+      }
+    }
+
+    // Create a single profile only when this account has no existing record.
+    let id=`user-${user.uid}`;
+    let suffix=1;
+    while(Object.prototype.hasOwnProperty.call(users,id)){
+      id=`user-${user.uid}-${suffix++}`;
+    }
+
+    const baseName=(email.split('@')[0]||'integrante').slice(0,32);
+    const profile={
+      id,
+      name:baseName,
+      username:baseName,
+      nickname:'',
+      title:'Runner',
+      role:'Runner',
+      description:'',
+      bio:'',
+      rings:0,
+      level:1,
+      xp:0,
+      ownerUid:user.uid,
+      ownerEmail:user.email||'',
+      avatar:'',
+      cover:'',
+      iconPosition:'50% 50%',
+      iconZoom:100,
+      coverPosition:'50% 50%',
+      coverZoom:100,
+      ostName:'',
+      hasOst:false,
+      ostUrl:''
+    };
+
+    await withTimeout(
+      sf.refs.users.child(id).set(profile),
+      8000,
+      'No se pudo crear tu perfil'
+    );
+    return {id,data:profile};
+  };
+
   /* ---------- Save persistently ---------- */
   saveButton?.addEventListener('click',async()=>{
     if(saveStatus)saveStatus.textContent='GUARDANDO...';
-    try{
-      const sf=window.SpeedyFirebase;
-      if(!sf)throw new Error('Firebase no está disponible');
+    saveButton?.classList.remove('saved');
 
-      const current=await sf.resolve();
-      if(!current.uid){if(saveStatus)saveStatus.textContent='INICIA SESIÓN';return;}
+    try{
+      const {sf,user}=await directAuthUser();
+      const owned=await findOwnedProfile(sf,user);
+      const id=owned.id;
+      const existing=owned.data||{};
 
       const identity={
         name:editName?.value.trim()||'',
@@ -1618,43 +1741,88 @@ document.addEventListener('DOMContentLoaded', async () => {
         description:editDescription?.value.trim()||''
       };
 
-      let avatarRemote=current.profile?.avatar||'';
-      let coverRemote=current.profile?.cover||'';
+      // Keep the exact old project approach: profile images are stored as
+      // data URLs in Realtime Database. No Firebase Storage request is made.
+      // This also keeps GIFs animated because the original GIF bytes are kept.
+      let avatarData=existing.avatar||avatarUrl||'';
+      let coverData=existing.cover||coverUrl||'';
 
       if(avatarBlob){
-        avatarRemote=await sf.uploadProfileAsset(current.uid,'avatar',avatarBlob);
+        avatarData=await withTimeout(
+          fileToDataUrl(avatarBlob,2.5*1024*1024),
+          10000,
+          'El icono tardó demasiado en procesarse'
+        );
       }
       if(coverBlob){
-        coverRemote=await sf.uploadProfileAsset(current.uid,'cover',coverBlob);
+        coverData=await withTimeout(
+          fileToDataUrl(coverBlob,4*1024*1024),
+          10000,
+          'La portada tardó demasiado en procesarse'
+        );
       }
 
-      const saved=await sf.saveProfile({
+      const safe={
+        ...existing,
         ...identity,
-        role:current.profile?.role||'Runner',
+        id,
         bio:identity.description,
-        avatar:avatarRemote,
-        cover:coverRemote,
-        iconPosition,
-        iconZoom,
-        coverPosition,
-        coverZoom
+        ownerUid:existing.ownerUid||user.uid,
+        ownerEmail:existing.ownerEmail||user.email||'',
+        avatar:avatarData||'',
+        cover:coverData||'',
+        iconPosition:iconPosition||'50% 50%',
+        iconZoom:Number(iconZoom)||100,
+        coverPosition:coverPosition||'50% 50%',
+        coverZoom:Number(coverZoom)||100
+      };
+
+      await withTimeout(
+        sf.refs.users.child(id).update(safe),
+        10000,
+        'Firebase tardó demasiado en guardar tu perfil'
+      );
+
+      // Update in-memory Firebase state so every preview uses the same data
+      // immediately. Ranking listens to /users in real time.
+      sf.current.uid=user.uid;
+      sf.current.email=String(user.email||'');
+      sf.current.profileId=id;
+      sf.current.profile=safe;
+      sf.current.ready=true;
+
+      avatarUrl=avatarData||'';
+      coverUrl=coverData||'';
+
+      writeMeta({
+        iconPosition,iconZoom,coverPosition,coverZoom,
+        identity,hasAvatar:Boolean(avatarData),hasCover:Boolean(coverData)
       });
 
-      avatarUrl=saved.avatar||avatarUrl;
-      coverUrl=saved.cover||coverUrl;
-      writeMeta({iconPosition,iconZoom,coverPosition,coverZoom,
-        identity,hasAvatar:Boolean(saved.avatar),hasCover:Boolean(saved.cover)});
-      applyAvatar();applyCover();applyCropSurfaces();syncEditedText();
+      applyAvatar();
+      applyCover();
+      applyCropSurfaces();
+      syncEditedText();
+
+      // Keep the local IndexedDB copy too, matching the old project behavior.
+      if(avatarBlob)await dbPut('avatar',avatarBlob);
+      if(coverBlob)await dbPut('cover',coverBlob);
+
+      avatarBlob=null;
+      coverBlob=null;
 
       if(saveStatus)saveStatus.textContent='GUARDADO EN FIREBASE ✓';
-      saveButton.classList.add('saved');
+      saveButton?.classList.add('saved');
+
       setTimeout(()=>{
         if(saveStatus)saveStatus.textContent='CAMBIOS GUARDADOS';
-        saveButton.classList.remove('saved');
-      },1800);
+        saveButton?.classList.remove('saved');
+      },2200);
+
     }catch(error){
       console.error('[Profile save]',error);
       if(saveStatus)saveStatus.textContent=`ERROR: ${error?.message||'AL GUARDAR'}`;
+      saveButton?.classList.remove('saved');
     }
   });
 

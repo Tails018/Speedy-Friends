@@ -150,6 +150,16 @@ html[data-sf-theme="dark"] .sf-utility-backdrop{background:rgba(0,0,0,.63)}
 </style>
 
 <script src="global-ost-player.js"></script>
+
+<style id="cafeteria-index-card-style">
+.cafe-index-card{background:linear-gradient(135deg,rgba(232,196,93,.14),rgba(201,87,63,.08))}
+.cafe-index-card .utility-icon{color:#c9573f}
+.cafe-index-card:hover{border-color:rgba(201,87,63,.34)}
+</style>
+
+<style id="sf-role-visibility-fallback">
+[data-sf-cafe-role-card]{display:none}
+</style>
 </head>
 <body>
 
@@ -249,6 +259,18 @@ html[data-sf-theme="dark"] .sf-utility-backdrop{background:rgba(0,0,0,.63)}
               <svg viewBox="0 0 24 24"><path d="M9 18a2.8 2.8 0 1 1-2.8-2.8H9V6l9-2v10"/><path d="M18 15.9a2.8 2.8 0 1 1-2.8-2.8H18z"/></svg>
             </i><strong>AUDIO / OST</strong><em>↗</em><span>MÚSICA · AMBIENTE</span>
           </button>
+<a class="hero-utility-card nav-copy-card cafe-index-card" aria-label="Cafetería" href="cafeteria.html">
+  <i class="utility-icon" aria-hidden="true">
+    <svg viewBox="0 0 24 24"><path d="M5 9h11v7a4 4 0 0 1-4 4H9a4 4 0 0 1-4-4z"/><path d="M16 11h2.2a2.8 2.8 0 0 1 0 5.6H16M7 5c0 1 1 1 1 2M11 5c0 1 1 1 1 2M15 5c0 1 1 1 1 2"/></svg>
+  </i>
+  <strong>CAFETERÍA</strong><em>↗</em><span>CAFÉ · PEDIDOS · MÚSICA</span>
+</a>
+<a class="hero-utility-card nav-copy-card sf-cafe-role-card" data-sf-cafe-role-card="creator" href="cafe-creator.html" style="display:none">
+  <i class="utility-icon" aria-hidden="true">⚙</i><strong>CAFÉ<br>CREADORA</strong><em>↗</em><span>CONTROL · CARTA · ROLES</span>
+</a>
+<a class="hero-utility-card nav-copy-card sf-cafe-role-card" data-sf-cafe-role-card="worker" href="cafe-worker.html" style="display:none">
+  <i class="utility-icon" aria-hidden="true">☕</i><strong>CAFÉ<br>TRABAJO</strong><em>↗</em><span>PEDIDOS · MENÚ · ESTADOS</span>
+</a>
           <a class="hero-utility-card nav-copy-card" aria-label="Admin" data-firebase-admin hidden href="admin.html">
             <i class="utility-icon" aria-hidden="true">
               <svg viewBox="0 0 24 24"><path d="m12 3 2 2.2 3-.1.8 2.9 2.5 1.5-1.2 2.7 1.2 2.7-2.5 1.5-.8 2.9-3-.1L12 21l-2-2.2-3 .1-.8-2.9-2.5-1.5L5.9 12l-1.2-2.7 2.5-1.5.8-2.9 3 .1z"/><circle cx="12" cy="12" r="2.5"/></svg>
@@ -633,6 +655,108 @@ document.addEventListener("click",e=>{
   };
   document.addEventListener("speedy:firebase-ready",e=>apply(e.detail||{}));
   window.addEventListener("load",()=>setTimeout(()=>apply(window.SpeedyFirebase?.current||{}),0));
+})();
+</script>
+
+<script id="sf-cafeteria-hard-route">
+(() => {
+  document.addEventListener('click', event => {
+    const card = event.target.closest('.cafe-index-card');
+    if (!card) return;
+    if (event.button !== undefined && event.button !== 0) return;
+    event.preventDefault();
+    event.stopImmediatePropagation();
+    const href = card.getAttribute('href') || 'cafeteria.html';
+    if (window.sfShowLoader) window.sfShowLoader('CAFETERÍA','Entrando al Café Club…');
+    window.setTimeout(() => window.location.assign(href), 80);
+  }, true);
+})();
+</script>
+
+<section id="sf-role-panel" style="position:fixed;right:18px;bottom:18px;z-index:130;display:none;width:min(285px,calc(100vw - 36px));background:rgba(255,250,241,.98);border:1px solid rgba(38,33,30,.12);box-shadow:0 22px 70px rgba(0,0,0,.16);padding:12px">
+  <div style="display:flex;justify-content:space-between;align-items:center">
+    <strong style="font-family:SFDisplay,Arial Black,sans-serif;font-size:22px;letter-spacing:-.05em">MI PANEL</strong>
+    <button id="sf-role-close" style="border:0;background:none;font-size:18px;cursor:pointer">×</button>
+  </div>
+  <div id="sf-role-actions" style="display:grid;gap:7px;margin-top:9px"></div>
+</section>
+<button id="sf-role-fab" aria-label="Abrir panel de rol" style="position:fixed;right:18px;bottom:18px;z-index:129;width:50px;height:50px;border:0;border-radius:50%;background:#c9573f;color:#fff;display:none;cursor:pointer">☕</button>
+<script id="sf-role-sidebar">
+document.addEventListener('DOMContentLoaded',()=>{
+ const panel=document.getElementById('sf-role-panel'), fab=document.getElementById('sf-role-fab'), actions=document.getElementById('sf-role-actions'), close=document.getElementById('sf-role-close');
+ const open=()=>{panel.style.display='block';fab.style.display='none'}, hide=()=>{panel.style.display='none'; if(fab.dataset.active==='1')fab.style.display='block'};
+ close.onclick=hide; fab.onclick=open;
+ const render=async e=>{
+   const state=e?.detail||window.SpeedyFirebase?.current;
+   if(!state?.uid){panel.style.display='none';fab.style.display='none';return}
+   let links=[];
+   if(state.isCreator){
+     links=[
+       ['admin.html','⚙ PANEL DE CREADORA','#71836d'],
+       ['cafe-worker.html','☕ PANEL DE TRABAJO','#c9573f']
+     ];
+   }else if(state.role==='admin'){
+     links=[['admin-role.html','⚙ PANEL ADMIN','#8d7ca8']];
+   }else{
+     try{
+       const cafeRole=await window.SpeedyCafe?.role();
+       if(cafeRole==='worker')links=[['cafe-worker.html','☕ PANEL DE TRABAJADOR','#c9573f']];
+     }catch{}
+   }
+   if(!links.length){panel.style.display='none';fab.style.display='none';return}
+   actions.innerHTML=links.map(([href,label,bg])=>`<a href="${href}" style="display:block;padding:11px 12px;background:${bg};color:#fff;text-decoration:none;font-size:7px;font-weight:900;letter-spacing:.13em;text-transform:uppercase">${label}</a>`).join('');
+   fab.dataset.active='1'; fab.style.display='block';
+ };
+ document.addEventListener('speedy:firebase-ready',render,{once:true});
+ if(window.SpeedyFirebase?.current?.uid) render();
+});
+</script>
+
+<div id="sf-cafe-role-badge" style="display:none;position:fixed;left:18px;bottom:18px;z-index:120;padding:9px 12px;background:#17110f;color:#fff;font-size:6px;font-weight:900;letter-spacing:.12em;text-transform:uppercase;box-shadow:0 12px 35px rgba(0,0,0,.16)"></div>
+<script id="sf-cafe-role-gate">
+(() => {
+  const getCafeRole = async () => {
+    try {
+      const sf = window.SpeedyFirebase;
+      if (!sf?.resolve) return;
+      const state = await sf.resolve();
+      const adminCards = document.querySelectorAll('[data-firebase-admin]');
+      adminCards.forEach(card => {
+        const allowed = !!state.isCreator || String(state.role || '') === 'admin';
+        card.hidden = !allowed;
+        card.style.display = allowed ? '' : 'none';
+        card.setAttribute('aria-hidden', allowed ? 'false' : 'true');
+      });
+
+      const badge = document.getElementById('sf-cafe-role-badge');
+      if (!badge) return;
+      let cafeRole = '';
+      if (state.isCreator) cafeRole = 'CREADORA';
+      else if (String(state.role || '') === 'admin') cafeRole = 'ADMIN';
+      else if (window.SpeedyCafe?.role) cafeRole = await window.SpeedyCafe.role();
+      document.querySelectorAll('[data-sf-cafe-role-card]').forEach(card => {
+        const want = card.getAttribute('data-sf-cafe-role-card');
+        card.style.display = ((cafeRole === 'creator' && want === 'creator') || (cafeRole === 'worker' && want === 'worker')) ? '' : 'none';
+      });
+      if (cafeRole === 'worker') {
+        badge.textContent = 'CAFÉ · TRABAJADOR';
+        badge.style.display = 'block';
+        badge.style.background = '#c9573f';
+      } else if (cafeRole === 'creator') {
+        badge.textContent = 'CAFÉ · CREADORA';
+        badge.style.display = 'block';
+        badge.style.background = '#71836d';
+      } else {
+        badge.style.display = 'none';
+      }
+    } catch (error) {
+      console.warn('[Speedy Friends] role gate:', error);
+    }
+  };
+  document.addEventListener('speedy:firebase-ready', getCafeRole);
+  document.addEventListener('speedy:cafe-ready', getCafeRole);
+  getCafeRole();
+  window.setInterval(()=>{ if(window.SpeedyFirebase?.current?.uid) getCafeRole(); }, 1500);
 })();
 </script>
 </body></html>

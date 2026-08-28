@@ -1,0 +1,268 @@
+<!doctype html><html lang="es"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Café Club · Panel de Creadora</title><link rel="stylesheet" href="styles.css">
+<style>
+:root{--e:#17110f;--p:#fffaf1;--c:#f2e8d7;--r:#c9573f;--s:#71836d;--b:#e8c45d;--l:#8d7ca8;--ink:#28221e;--m:#756b62;--line:#28221e1e}
+*{box-sizing:border-box}body{margin:0;background:var(--c);color:var(--ink);font-family:Arial,sans-serif}.top{height:68px;position:sticky;top:0;z-index:30;background:#f2e8d7ee;backdrop-filter:blur(14px);border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between;padding:0 4vw}.brand{font-size:17px;font-weight:1000;letter-spacing:-.06em}.brand b{color:var(--r);font-style:italic}.top a{font-size:6px;font-weight:900;letter-spacing:.12em;text-decoration:none;color:inherit}.wrap{padding:28px 4vw 80px}.k{font-size:6px;letter-spacing:.22em;font-weight:900;color:var(--r);text-transform:uppercase}h1,h2,h3{font-family:SFDisplay,Arial Black,sans-serif;letter-spacing:-.065em}h1{font-size:clamp(65px,9vw,120px);line-height:.63;margin:8px 0}h2{font-size:42px;line-height:.72;margin:0 0 12px;text-transform:uppercase}.intro{font-size:8px;line-height:1.65;color:var(--m);max-width:760px}.layout{display:grid;grid-template-columns:235px 1fr;gap:11px;margin-top:28px}.side{background:var(--e);color:#fff;padding:10px;height:max-content;position:sticky;top:83px}.side button{width:100%;border:0;background:none;color:#fff;text-align:left;padding:11px 9px;font-size:6px;font-weight:900;letter-spacing:.13em;text-transform:uppercase;cursor:pointer}.side button.active,.side button:hover{background:var(--r)}.panel{display:none;background:var(--p);border:1px solid var(--line);padding:17px}.panel.active{display:block}.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:7px}.stat{padding:14px;background:#eee3d1;min-height:100px}.stat:nth-child(2){background:#dce7da}.stat:nth-child(3){background:#ebe2ee}.stat:nth-child(4){background:#f0d8cf}.stat b{display:block;font-family:SFDisplay,Arial Black,sans-serif;font-size:38px;line-height:.7}.stat span{display:block;margin-top:8px;font-size:5px;font-weight:900;letter-spacing:.11em;color:var(--m)}.search{width:100%;padding:10px;border:1px solid var(--line);background:#fff;font-size:8px}.list{display:grid;gap:7px;margin-top:11px}.row{display:grid;grid-template-columns:auto 1fr auto;gap:10px;align-items:center;background:#fff;border:1px solid var(--line);padding:10px}.avatar{width:45px;height:45px;border-radius:50%;background:#ece7dc;display:grid;place-items:center;font-size:8px;font-weight:900;background-size:cover;background-position:center}.name{font-family:SFDisplay,Arial Black,sans-serif;font-size:20px;line-height:.8}.small{font-size:6px;line-height:1.5;color:var(--m);margin-top:5px}.btn{border:0;background:var(--e);color:#fff;padding:9px 10px;font-size:6px;font-weight:900;letter-spacing:.1em;cursor:pointer}.red{background:var(--r)}.green{background:var(--s)}.form{display:grid;grid-template-columns:1fr 1fr;gap:7px}.form input,.form textarea{width:100%;padding:9px;border:1px solid var(--line);background:#fff;font:inherit;font-size:8px}.form textarea{grid-column:1/-1;min-height:78px}.full{grid-column:1/-1}.special{display:grid;grid-template-columns:1fr 1fr;gap:10px}.special-art{min-height:365px;background:var(--e);color:#fff;position:relative;overflow:hidden}.special-art img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:.35}.special-art>div{position:absolute;left:18px;right:18px;bottom:20px}.special-art h3{font-size:56px;line-height:.65;margin:0}.order-actions{display:flex;gap:5px;flex-wrap:wrap}.order-actions .btn{padding:7px}.history-row{display:grid;grid-template-columns:auto 1fr auto;gap:10px;align-items:center}.note{padding:11px;background:#f0dfbd;font-size:6px;line-height:1.5}.denied{padding:20px;background:#fff;border:1px solid var(--line);margin-top:25px}
+@media(max-width:880px){.layout{grid-template-columns:1fr}.side{position:static}.stats{grid-template-columns:1fr 1fr}.special{grid-template-columns:1fr}}@media(max-width:560px){.wrap{padding:20px 12px 60px}.top{padding:0 12px}.form{grid-template-columns:1fr}.row,.history-row{grid-template-columns:auto 1fr}.row .btn,.history-row>b{grid-column:2}}
+</style>
+<script src="https://www.gstatic.com/firebasejs/12.1.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/12.1.0/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/12.1.0/firebase-database-compat.js"></script>
+<script src="firebase-legacy.js"></script><script src="cafeteria-core.js"></script>
+</head><body>
+<header class="top"><a class="brand" href="cafeteria.html"><b>SPEEDY</b> FRIENDS · CAFÉ</a><div><a href="cafeteria.html">CAFETERÍA</a> · <a href="index.html">INICIO</a></div></header>
+<main class="wrap"><p class="k">Café Club / Control exclusivo</p><h1>CAFÉ<br>CREATOR</h1><p class="intro">Tu panel personalizado de Creadora. Este no es el administrador general: aquí controlas exclusivamente Cafetería, trabajadores, carta, música, especialidad, pedidos y tu historial privado.</p>
+<div id="deny" class="denied" style="display:none"><h2>ACCESO RESTRINGIDO</h2></div>
+<div id="layout" class="layout" style="display:none">
+<nav class="side">
+<button class="active" data-tab="dash">Resumen</button><button data-tab="workers">Trabajadores</button><button data-tab="menu">Bebidas / Comida</button><button data-tab="music">Disquera</button><button data-tab="special">Especialidad</button><button data-tab="covers">Carátulas</button><button data-tab="orders">Pedidos</button><button data-tab="history">Historial privado</button>
+<div style="height:1px;background:#fff2;margin:8px 0"></div><a href="cafeteria.html" style="display:block;color:#fff;padding:10px;font-size:6px;font-weight:900;letter-spacing:.1em;text-decoration:none">☕ VER CAFETERÍA</a>
+</nav>
+<section>
+<div id="dash" class="panel active"><p class="k">Live</p><h2>RESUMEN</h2><div class="stats"><div class="stat"><b id="s-users">0</b><span>USUARIOS</span></div><div class="stat"><b id="s-workers">0</b><span>TRABAJADORES</span></div><div class="stat"><b id="s-orders">0</b><span>PEDIDOS ACTIVOS</span></div><div class="stat"><b id="s-history">0</b><span>HISTORIAL</span></div></div><div class="note" style="margin-top:11px">Las operaciones de este panel no cambian tu panel de Administración general.</div></div>
+<div id="workers" class="panel"><p class="k">Roles</p><h2>TRABAJADORES</h2><input id="w-search" class="search" placeholder="Buscar en usuarios registrados..."><div id="w-list" class="list"></div></div>
+<div id="menu" class="panel"><p class="k">Catálogo</p><h2>BEBIDAS / COMIDA</h2><form id="menu-form" class="form"><input id="mn" placeholder="Nombre" required><input id="mp" type="number" min="0" placeholder="Rings" required><textarea id="md" placeholder="Descripción"></textarea><input id="mi" type="file" accept="image/*"><input id="mu" placeholder="URL / ruta de imagen"><button class="btn red full">AGREGAR A LA CARTA</button></form><div id="menu-list" class="list"></div></div>
+<div id="music" class="panel"><p class="k">Speedy Records · solo Cafetería</p><h2>DISQUERA</h2><form id="music-form" class="form"><input id="mt" placeholder="Título" required><input id="ma" placeholder="Artista"><input id="mf" type="file" accept="audio/*" class="full" required><button class="btn red full">SUBIR AUDIO</button></form><div id="music-list" class="list"></div></div>
+<div id="special" class="panel"><p class="k">Featured / Editable</p><h2>ESPECIALIDAD DE LA CASA</h2><div class="special"><article class="special-art"><img id="sp-img" src="assets/cafe-matcha-sonic.jpg"><div><span id="sp-tag" class="k" style="color:#e8c45d">HOUSE SPECIAL / 01</span><h3 id="sp-title">GREEN BOOST</h3><p id="sp-sub">Especialidad de la casa.</p></div></article><form id="sp-form" class="form"><input id="spt" placeholder="Título"><input id="sptag" placeholder="Etiqueta"><textarea id="spsub" placeholder="Descripción"></textarea><input id="spfile" type="file" accept="image/*"><input id="spurl" placeholder="URL / ruta de imagen"><button class="btn red full">GUARDAR ESPECIALIDAD</button></form></div></div>
+
+<div id="covers" class="panel"><p class="k">Referencias</p><h2>CARÁTULAS DEL CAFÉ</h2><p class="intro">Dos referencias visuales nuevas para usar como carátulas del menú/especialidad.</p><div style="display:grid;grid-template-columns:1fr 1fr;gap:10px"><figure id="reference-covers" style="margin:0;background:#fff;border:1px solid var(--line);padding:8px"><img src="assets/cafe-sonic-menu-board.jpg" alt="Carátula menú Sonic" style="width:100%;aspect-ratio:4/3;object-fit:cover"><figcaption style="font-size:6px;font-weight:900;letter-spacing:.12em;padding:9px 2px">MENU BOARD / SONIC</figcaption></figure><figure style="margin:0;background:#fff;border:1px solid var(--line);padding:8px"><img src="assets/cafe-sonic-dessert.jpg" alt="Carátula postre Sonic" style="width:100%;aspect-ratio:3/4;object-fit:cover"><figcaption style="font-size:6px;font-weight:900;letter-spacing:.12em;padding:9px 2px">DESSERT / CAFE POSTER</figcaption></figure></div></div>
+<div id="orders" class="panel"><p class="k">Operación</p><h2>PEDIDOS</h2><div id="orders-list" class="list"></div></div>
+<div id="history" class="panel"><p class="k">Solo tú</p><h2>HISTORIAL PRIVADO</h2><p class="intro">Cliente + trabajador atendiendo. Se muestran usuario, apodo e icono del trabajador, Rings cobrados y fecha.</p><div id="history-list" class="list"></div></div>
+</section></div></main>
+<script>
+document.addEventListener('DOMContentLoaded',()=>{
+  const $=id=>document.getElementById(id);
+  const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[c]));
+  const toData=f=>new Promise((resolve,reject)=>{const r=new FileReader();r.onload=()=>resolve(String(r.result||''));r.onerror=()=>reject(new Error('No se pudo leer'));r.readAsDataURL(f)});
+  let users={},workers={},orders={};
+
+  document.querySelectorAll('[data-tab]').forEach(btn=>btn.onclick=()=>{
+    document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
+    $(btn.dataset.tab).classList.add('active');
+    document.querySelectorAll('[data-tab]').forEach(x=>x.classList.toggle('active',x===btn));
+  });
+
+  function drawWorkers(){
+    const q=String($('w-search').value||'').toLowerCase();
+    const rows=Object.entries(users).filter(([id,u])=>[id,u.username,u.name,u.nickname,u.ownerEmail,u.ownerUid].join(' ').toLowerCase().includes(q));
+    $('w-list').innerHTML=rows.map(([id,u])=>{
+      const uid=u.ownerUid||'';
+      const w=uid?workers[uid]:null;
+      const active=!!w&&w.active!==false;
+      const me=String(u.ownerEmail||u.email||'').toLowerCase()===String(window.SpeedyFirebase.current.email||'').toLowerCase();
+      return `<article class="row"><div class="avatar" ${u.avatar?`style="background-image:url('${esc(u.avatar)}')"`:''}>${u.avatar?'':esc(String(u.username||u.name||'SF').slice(0,2).toUpperCase())}</div><div><div class="name">${esc(u.username||u.name)}</div><div class="small">${esc(u.nickname||'Sin apodo')} · ${esc(u.ownerEmail||u.email||'')}<br>UID: ${esc(uid||'sin vincular')}</div></div><button class="btn ${active?'green':'red'}" data-worker="${esc(id)}" ${me||!uid?'disabled':''}>${me?'CREADORA':active?'QUITAR ROL':'DAR ROL'}</button></article>`;
+    }).join('')||'<p class="intro">No hay usuarios registrados.</p>';
+    document.querySelectorAll('[data-worker]').forEach(b=>b.onclick=async()=>{
+      const u=users[b.dataset.worker]; if(!u?.ownerUid)return;
+      try{
+        const active=!!workers[u.ownerUid]&&workers[u.ownerUid].active!==false;
+        if(active) await SpeedyCafe.removeWorker(u.ownerUid);
+        else await SpeedyCafe.addWorker(u.ownerUid,u.nickname||u.username||u.name);
+      }catch(e){alert(e.message)}
+    });
+    $('s-users').textContent=String(rows.length);
+    $('s-workers').textContent=String(Object.values(workers).filter(x=>x&&x.active!==false).length);
+  }
+  function drawMenu(raw){
+    const items=Object.values(raw||{}).filter(x=>x&&x.active!==false);
+    $('menu-list').innerHTML=items.map(i=>`<article class="row"><div class="avatar">☕</div><div><div class="name">${esc(i.name)}</div><div class="small">${Number(i.price||0).toLocaleString()} RINGS · ${esc(i.description||'')}</div></div><button class="btn red" data-del="${esc(i.id)}">QUITAR</button></article>`).join('')||'<p class="intro">Carta vacía.</p>';
+    document.querySelectorAll('[data-del]').forEach(b=>b.onclick=async()=>{try{await SpeedyCafe.deleteMenu(b.dataset.del)}catch(e){alert(e.message)}});
+  }
+  function drawMusic(raw){
+    const items=Object.values(raw||{}).filter(x=>x&&x.active!==false);
+    $('music-list').innerHTML=items.map(i=>`<article class="row"><div class="avatar">♫</div><div><div class="name">${esc(i.title||'TRACK')}</div><div class="small">${esc(i.artist||'SPEEDY RECORDS')}</div></div><button class="btn red" data-music="${esc(i.id)}">QUITAR</button></article>`).join('')||'<p class="intro">Disquera vacía.</p>';
+    document.querySelectorAll('[data-music]').forEach(b=>b.onclick=async()=>{try{await SpeedyCafe.deleteMusic(b.dataset.music)}catch(e){alert(e.message)}});
+  }
+  function drawOrders(raw){
+    orders=raw||{};
+    const items=Object.values(orders).sort((a,b)=>(a.createdAt||0)-(b.createdAt||0));
+    $('orders-list').innerHTML=items.map(o=>`<article class="row"><div class="avatar">${esc(String(o.username||'SF').slice(0,2).toUpperCase())}</div><div><div class="name">${esc(o.itemName)}</div><div class="small">${esc(o.username)} ${o.nickname?'· '+esc(o.nickname):''} · ${o.qty} ud. · ${Number(o.totalRings||0).toLocaleString()} R</div><span class="order-state">${esc(String(o.status||'pendiente').toUpperCase())} · ${Number(o.statusChanges||0)}/3</span></div><div class="order-actions">${['preparando','listo','agotado','cancelado','servido'].map(s=>`<button class="btn" data-status="${esc(o.id)}:${s}">${s.toUpperCase()}</button>`).join('')}</div></article>`).join('')||'<p class="intro">No hay pedidos activos.</p>';
+    $('s-orders').textContent=String(items.length);
+    document.querySelectorAll('[data-status]').forEach(b=>b.onclick=async()=>{const [id,st]=b.dataset.status.split(':');try{await SpeedyCafe.setOrderStatus(id,st)}catch(e){alert(e.message)}});
+  }
+  function drawHistory(raw){
+    const items=Object.values(raw||{}).sort((a,b)=>(b.completedAt||0)-(a.completedAt||0));
+    $('history-list').innerHTML=items.map(h=>`<article class="history-row"><div class="avatar" ${h.servedByAvatar?`style="background-image:url('${esc(h.servedByAvatar)}')"`:''}>${h.servedByAvatar?'':'☕'}</div><div><div class="name">${esc(h.itemName||'Pedido')}</div><div class="small">CLIENTE: ${esc(h.username||'')} ${h.nickname?'· '+esc(h.nickname):''}<br>ATENDIÓ: ${esc(h.servedByUsername||h.servedByName||'—')} ${h.servedByNickname?'· '+esc(h.servedByNickname):''}<br>ESTADO: ${esc(String(h.status||'').toUpperCase())}<br>${new Date(h.completedAt||Date.now()).toLocaleString('es-PE')}</div></div><b>${Number(h.chargeRings||0).toLocaleString()} R</b></article>`).join('')||'<p class="intro">Todavía no hay pedidos finalizados.</p>';
+    $('s-history').textContent=String(items.length);
+  }
+  function drawSpecial(s){
+    s=s||{};$('sp-title').textContent=s.title||'GREEN BOOST';$('sp-tag').textContent=s.tag||'HOUSE SPECIAL / 01';$('sp-sub').textContent=s.subtitle||'Especialidad de la casa.';if(s.image)$('sp-img').src=s.image;
+    $('spt').value=s.title||'';$('sptag').value=s.tag||'';$('spsub').value=s.subtitle||'';$('spurl').value=s.image||'';
+  }
+
+  $('w-search').addEventListener('input',drawWorkers);
+  $('menu-form').onsubmit=async e=>{e.preventDefault();try{let image=$('mu').value.trim();const f=$('mi').files?.[0];if(f){if(f.size>1.5e6)throw new Error('Imagen demasiado grande');image=await toData(f)}await SpeedyCafe.saveMenu({name:$('mn').value.trim(),price:Number($('mp').value)||0,description:$('md').value.trim(),image,active:true});e.target.reset()}catch(err){alert(err.message)}};
+  $('music-form').onsubmit=async e=>{e.preventDefault();const b=e.target.querySelector('button');try{const f=$('mf').files?.[0];if(!f)throw new Error('Selecciona un audio');b.disabled=true;b.textContent='SUBIENDO…';const up=await SpeedyCafe.uploadCafeAudio(f);await SpeedyCafe.saveMusic({title:$('mt').value.trim(),artist:$('ma').value.trim(),url:up.url,originalName:f.name,duration:up.duration||0,active:true});e.target.reset()}catch(err){alert(err.message)}finally{b.disabled=false;b.textContent='SUBIR AUDIO'}};
+  $('sp-form').onsubmit=async e=>{e.preventDefault();try{let image=$('spurl').value.trim();const f=$('spfile').files?.[0];if(f){if(f.size>1.5e6)throw new Error('Imagen demasiado grande');image=await toData(f)}await SpeedyCafe.saveSpecial({title:$('spt').value.trim(),tag:$('sptag').value.trim(),subtitle:$('spsub').value.trim(),image});alert('Especialidad actualizada ✓')}catch(err){alert(err.message)}};
+
+  let bootStarted=false;
+
+  const boot=async()=>{
+    if(bootStarted) return;
+    bootStarted=true;
+
+    try{
+      const s=await window.SpeedyFirebase.resolve();
+
+      if(!s?.uid){
+        bootStarted=false;
+        $('deny').style.display='block';
+        $('deny').innerHTML='<h2>INICIA SESIÓN</h2><p class="intro">No se detectó una sesión de Speedy Friends.</p>';
+        return;
+      }
+
+      if(!s.isCreator){
+        $('deny').style.display='block';
+        $('deny').innerHTML='<h2>ACCESO RESTRINGIDO</h2><p class="intro">Este panel es exclusivo de la Creadora.</p>';
+        return;
+      }
+
+      $('deny').style.display='none';
+      $('layout').style.display='grid';
+
+      // Realtime data for the dedicated Cafetería control panel.
+      window.SpeedyFirebase.watchPublicUsers(raw=>{
+        users=raw||{};
+        drawWorkers();
+      });
+
+      SpeedyCafe.watchWorkers(raw=>{
+        workers=raw||{};
+        drawWorkers();
+      });
+
+      SpeedyCafe.watchMenu(drawMenu);
+      SpeedyCafe.watchMusic(drawMusic);
+      SpeedyCafe.watchSpecial(drawSpecial);
+      SpeedyCafe.watchOrders(drawOrders);
+      SpeedyCafe.watchHistory(drawHistory);
+
+      // Start on the creator dashboard.
+      document.querySelector('[data-tab="dash"]')?.click();
+
+    }catch(error){
+      bootStarted=false;
+      console.error('[Café Creadora]',error);
+      $('deny').style.display='block';
+      $('deny').innerHTML=`<h2>ERROR AL CARGAR</h2><p class="intro">${esc(error?.message||'No se pudo inicializar el panel.')}</p>`;
+    }
+  };
+
+  const tryBoot=()=>{
+    if(window.SpeedyFirebase?.current?.ready && window.SpeedyFirebase?.current?.uid && window.SpeedyCafe){
+      boot();
+      return;
+    }
+    window.setTimeout(tryBoot,250);
+  };
+
+  document.addEventListener('speedy:firebase-ready',tryBoot);
+  document.addEventListener('speedy:cafe-ready',tryBoot);
+
+  // Handles the case where both events were dispatched before this HTML
+  // registered its listeners.
+  tryBoot();
+});</script>
+<div id="sf-cafe-role-wallet" aria-live="polite">
+  <div class="sf-cafe-rw-kicker">SPEEDY CAFÉ / ACCESO</div>
+  <div class="sf-cafe-rw-top">
+    <div><strong id="sf-cafe-rw-role">CAFETERÍA</strong><span id="sf-cafe-rw-user">—</span></div>
+    <button id="sf-cafe-rw-close" aria-label="Cerrar">×</button>
+  </div>
+  <div class="sf-cafe-rw-wallet">
+    <span>MI CARTERA</span>
+    <b id="sf-cafe-rw-rings">0</b>
+    <small>RINGS</small>
+  </div>
+  <div class="sf-cafe-rw-actions">
+    <a id="sf-cafe-rw-cafe" href="cafeteria.html">☕ CAFETERÍA</a>
+    <a id="sf-cafe-rw-panel" href="cafeteria.html">PANEL</a>
+  </div>
+</div>
+<button id="sf-cafe-rw-fab" aria-label="Abrir panel de Cafetería">☕</button>
+<style id="sf-cafe-role-wallet-style">
+#sf-cafe-role-wallet{position:fixed;left:16px;bottom:16px;z-index:120;width:min(285px,calc(100vw - 32px));background:rgba(255,250,241,.97);color:#28221e;border:1px solid rgba(40,34,30,.14);box-shadow:0 24px 80px rgba(38,22,15,.19);padding:13px;backdrop-filter:blur(12px);transform:translateY(0);transition:transform .35s cubic-bezier(.16,1,.3,1),opacity .35s ease}
+#sf-cafe-role-wallet.is-hidden{transform:translateY(calc(100% + 24px));opacity:0;pointer-events:none}
+.sf-cafe-rw-kicker{font-size:6px;font-weight:1000;letter-spacing:.18em;color:#c9573f;text-transform:uppercase}
+.sf-cafe-rw-top{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;margin-top:5px}
+.sf-cafe-rw-top strong{font-family:SFDisplay,Arial Black,sans-serif;font-size:27px;line-height:.75;letter-spacing:-.06em}
+.sf-cafe-rw-top span{display:block;font-size:6px;color:#756b62;margin-top:6px}
+#sf-cafe-rw-close{border:0;background:none;font-size:20px;cursor:pointer;color:#28221e}
+.sf-cafe-rw-wallet{margin-top:10px;padding:12px;background:#17110f;color:#fff;position:relative;overflow:hidden}
+.sf-cafe-rw-wallet:after{content:"";position:absolute;width:90px;height:90px;border:1px solid rgba(232,196,93,.26);border-radius:50%;right:-22px;top:-45px;animation:sfcafeRingSpin 10s linear infinite}
+.sf-cafe-rw-wallet span{font-size:5px;font-weight:900;letter-spacing:.16em;opacity:.6}
+.sf-cafe-rw-wallet b{display:block;font-family:SFDisplay,Arial Black,sans-serif;font-size:45px;line-height:.68;margin-top:7px}
+.sf-cafe-rw-wallet small{display:block;font-size:5px;letter-spacing:.14em;color:#e8c45d;margin-top:7px}
+.sf-cafe-rw-actions{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-top:7px}
+.sf-cafe-rw-actions a{display:block;padding:10px;background:#c9573f;color:#fff;text-decoration:none;text-align:center;font-size:6px;font-weight:1000;letter-spacing:.12em;text-transform:uppercase}
+.sf-cafe-rw-actions a:last-child{background:#71836d}
+#sf-cafe-rw-fab{position:fixed;left:16px;bottom:16px;z-index:119;width:48px;height:48px;border:0;border-radius:50%;background:#c9573f;color:#fff;display:none;box-shadow:0 16px 45px rgba(38,22,15,.25);cursor:pointer}
+@keyframes sfcafeRingSpin{to{transform:rotate(360deg)}}
+@media(max-width:560px){#sf-cafe-role-wallet{left:9px;bottom:9px;width:calc(100vw - 18px)}#sf-cafe-rw-fab{left:9px;bottom:9px}}
+</style>
+<script id="sf-cafe-role-wallet-js">
+(() => {
+  const panel=document.getElementById('sf-cafe-role-wallet');
+  const fab=document.getElementById('sf-cafe-rw-fab');
+  const close=document.getElementById('sf-cafe-rw-close');
+  const roleEl=document.getElementById('sf-cafe-rw-role');
+  const userEl=document.getElementById('sf-cafe-rw-user');
+  const ringsEl=document.getElementById('sf-cafe-rw-rings');
+  const cafeLink=document.getElementById('sf-cafe-rw-cafe');
+  const panelLink=document.getElementById('sf-cafe-rw-panel');
+  if(!panel)return;
+
+  const hide=()=>{panel.classList.add('is-hidden');fab.style.display='block'};
+  const show=()=>{panel.classList.remove('is-hidden');fab.style.display='none'};
+  close.onclick=hide; fab.onclick=show;
+
+  const apply=async()=>{
+    try{
+      const sf=window.SpeedyFirebase;
+      if(!sf?.resolve || !window.SpeedyCafe) return;
+      const state=await sf.resolve();
+      if(!state?.uid){hide();return}
+      let role='';
+      if(state.isCreator)role='creator';
+      else role=await SpeedyCafe.role();
+
+      if(!['creator','worker'].includes(role)){hide();return}
+
+      panel.classList.remove('is-hidden');
+      fab.style.display='none';
+      roleEl.textContent=role==='creator'?'CAFÉ · CREADORA':'CAFÉ · TRABAJADOR';
+      const profile=state.profile||SpeedyCafe.profile()||{};
+      userEl.textContent=profile.nickname||profile.username||profile.name||state.email||'Cuenta activa';
+
+      if(role==='creator'){
+        panelLink.href='cafe-creator.html';
+        panelLink.textContent='⚙ MI PANEL';
+      }else{
+        panelLink.href='cafe-worker.html';
+        panelLink.textContent='☕ MI PANEL';
+      }
+      cafeLink.href='cafeteria.html';
+
+      // Read the same profile ring balance used by the existing wallet.
+      const profileId=state.profileId||profile.id;
+      let rings=Number(state.rings||0);
+      if(profileId && sf.refs?.rings){
+        const snap=await sf.refs.rings.child(profileId).once('value');
+        if(snap.exists())rings=Number(snap.val()||0);
+      }
+      ringsEl.textContent=Number.isFinite(rings)?rings.toLocaleString('en-US'):'0';
+    }catch(error){
+      console.warn('[Café role wallet]',error);
+      hide();
+    }
+  };
+
+  document.addEventListener('speedy:firebase-ready',apply);
+  document.addEventListener('speedy:cafe-ready',apply);
+  apply();
+  setTimeout(apply,700);
+  setTimeout(apply,1800);
+})();
+</script>
+</body></html>

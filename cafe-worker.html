@@ -1,0 +1,230 @@
+<!doctype html><html lang="es"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Café Club · Trabajador</title><link rel="stylesheet" href="styles.css"><style>
+:root{--e:#17110f;--p:#fffaf1;--c:#f2e8d7;--r:#c9573f;--s:#71836d;--b:#e8c45d;--l:#8d7ca8;--ink:#28221e;--m:#756b62;--line:#28221e1e}
+*{box-sizing:border-box}body{margin:0;background:var(--c);color:var(--ink);font-family:Arial,sans-serif}.top{height:65px;position:sticky;top:0;z-index:20;background:#f2e8d7ee;backdrop-filter:blur(13px);border-bottom:1px solid var(--line);display:flex;justify-content:space-between;align-items:center;padding:0 4vw}.brand{font-size:17px;font-weight:1000;letter-spacing:-.06em}.brand b{color:var(--r);font-style:italic}.top a{font-size:6px;font-weight:900;letter-spacing:.12em;text-decoration:none;color:inherit}.wrap{padding:25px 4vw 70px}.k{font-size:6px;font-weight:900;letter-spacing:.2em;color:var(--r);text-transform:uppercase}h1,h2{font-family:SFDisplay,Arial Black,sans-serif;letter-spacing:-.06em}h1{font-size:clamp(64px,9vw,115px);line-height:.63;margin:8px 0}h2{font-size:42px;line-height:.72;margin:0 0 12px;text-transform:uppercase}.intro{font-size:8px;line-height:1.6;color:var(--m);max-width:720px}.grid{display:grid;grid-template-columns:1.25fr .75fr;gap:11px;margin-top:27px}.panel{background:var(--p);border:1px solid var(--line);padding:16px}.orders{display:grid;gap:8px}.order{background:#fff;border:1px solid var(--line);padding:13px}.who{display:flex;justify-content:space-between;gap:10px}.strong{font-family:SFDisplay,Arial Black,sans-serif;font-size:27px;line-height:.75}.small{display:block;margin-top:6px;font-size:6px;line-height:1.5;color:var(--m)}.pill{display:inline-block;margin-top:7px;padding:7px 8px;background:var(--b);font-size:5px;font-weight:900;letter-spacing:.11em}.actions{display:flex;gap:5px;flex-wrap:wrap;margin-top:10px}.actions button,.btn{border:0;background:var(--e);color:#fff;padding:8px 9px;font-size:6px;font-weight:900;letter-spacing:.1em;cursor:pointer}.actions button[data-s="preparando"]{background:var(--l)}.actions button[data-s="listo"]{background:var(--s)}.actions button[data-s="servido"]{background:var(--r)}.stats{display:grid;grid-template-columns:1fr 1fr;gap:7px}.stat{padding:13px;background:#eee3d1;min-height:95px}.stat:nth-child(2){background:#dce7da}.stat:nth-child(3){background:#ebe2ee}.stat:nth-child(4){background:#f0d8cf}.stat b{display:block;font-family:SFDisplay,Arial Black,sans-serif;font-size:38px;line-height:.72}.stat span{display:block;margin-top:8px;font-size:5px;font-weight:900;letter-spacing:.11em;color:var(--m)}.form{display:grid;grid-template-columns:1fr 1fr;gap:7px}.form input,.form textarea{width:100%;padding:9px;border:1px solid var(--line);background:#fff;font:inherit;font-size:8px}.form textarea{grid-column:1/-1;min-height:75px}.form .full{grid-column:1/-1}.list{display:grid;gap:7px;margin-top:12px}.row,.history-row{background:#fff;border:1px solid var(--line);padding:10px;display:grid;grid-template-columns:auto 1fr auto;gap:10px;align-items:center}.avatar{width:44px;height:44px;border-radius:50%;background:#eee7db;display:grid;place-items:center;font-size:8px;font-weight:900;background-size:cover;background-position:center}.name{font-family:SFDisplay,Arial Black,sans-serif;font-size:20px;line-height:.8}.small{font-size:6px;line-height:1.5}.deny{margin-top:22px;background:#fff;border:1px solid var(--line);padding:20px}@media(max-width:850px){.grid{grid-template-columns:1fr}}@media(max-width:570px){.wrap{padding:20px 12px 55px}.form,.stats{grid-template-columns:1fr}.who{flex-direction:column}.row,.history-row{grid-template-columns:auto 1fr}.row .btn,.history-row>b{grid-column:2}}
+</style><script src="https://www.gstatic.com/firebasejs/12.1.0/firebase-app-compat.js"></script><script src="https://www.gstatic.com/firebasejs/12.1.0/firebase-auth-compat.js"></script><script src="https://www.gstatic.com/firebasejs/12.1.0/firebase-database-compat.js"></script><script src="firebase-legacy.js"></script><script src="cafeteria-core.js"></script>
+</head><body><header class="top"><a class="brand" href="cafeteria.html"><b>SPEEDY</b> FRIENDS · CAFÉ</a><nav><a href="cafeteria.html">CAFETERÍA</a> · <a href="index.html">INICIO</a></nav></header>
+<main class="wrap"><p class="k">Café Club / Workspace</p><h1>PANEL<br>TRABAJADOR</h1><p class="intro">Aquí ves pedidos, cambias sus estados, editas la carta y la disquera. Tu historial contiene solamente lo que tú atendiste.</p><div id="deny" class="deny" style="display:none"><h2>ACCESO RESTRINGIDO</h2></div>
+<div id="app" class="grid" style="display:none"><section>
+<div class="panel"><p class="k">Barra</p><h2>PEDIDOS</h2><div class="orders" id="orders"></div></div>
+<div class="panel" style="margin-top:11px"><p class="k">Carta</p><h2>MENÚ</h2><form id="menu-form" class="form"><input id="mn" required placeholder="Nombre"><input id="mp" type="number" min="0" required placeholder="Rings"><textarea id="md" placeholder="Descripción"></textarea><input id="mi" type="file" accept="image/*"><input id="mu" placeholder="URL / ruta imagen"><button class="btn full" style="background:var(--r)">AGREGAR BEBIDA / COMIDA</button></form><div id="menu-list" class="list"></div></div>
+<div class="panel" style="margin-top:11px"><p class="k">Featured</p><h2>ESPECIALIDAD DE LA CASA</h2><p class="intro">Los trabajadores también pueden actualizar la especialidad.</p><form id="worker-special-form" class="form"><input id="ws-title" placeholder="Título"><input id="ws-tag" placeholder="Etiqueta"><textarea id="ws-sub" placeholder="Descripción"></textarea><input id="ws-file" type="file" accept="image/*"><input id="ws-url" placeholder="URL / ruta de imagen"><button class="btn full" style="background:var(--r)">ACTUALIZAR ESPECIALIDAD</button></form></div>
+</section><aside>
+<div class="panel"><p class="k">Tu actividad</p><h2>HOY</h2><div class="stats"><div class="stat"><b id="pending">0</b><span>EN COLA</span></div><div class="stat"><b id="served">0</b><span>ATENDIDOS</span></div><div class="stat"><b id="rings">0</b><span>RINGS COBRADOS</span></div><div class="stat"><b id="changes">0</b><span>CAMBIOS</span></div></div></div>
+<div class="panel" style="margin-top:11px"><p class="k">Solo tú</p><h2>MI HISTORIAL</h2><div id="history" class="list"></div></div>
+</aside></div></main>
+<script>
+document.addEventListener('DOMContentLoaded',()=>{
+ const $=id=>document.getElementById(id),esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[c]));
+ const toData=f=>new Promise((res,rej)=>{const r=new FileReader();r.onload=()=>res(String(r.result||''));r.onerror=()=>rej(new Error('No se pudo leer'));r.readAsDataURL(f)});
+
+ $('worker-special-form').onsubmit=async e=>{
+   e.preventDefault();
+   try{
+     let image=$('ws-url').value.trim();
+     const f=$('ws-file').files?.[0];
+     if(f){
+       if(f.size>1.5e6)throw new Error('Imagen demasiado grande');
+       image=await toData(f);
+     }
+     await SpeedyCafe.saveSpecial({
+       title:$('ws-title').value.trim(),
+       tag:$('ws-tag').value.trim(),
+       subtitle:$('ws-sub').value.trim(),
+       image
+     });
+     alert('Especialidad actualizada ✓');
+   }catch(err){alert(err.message)}
+ };
+ const fillSpecial=s=>{
+   s=s||{};
+   $('ws-title').value=s.title||'';
+   $('ws-tag').value=s.tag||'';
+   $('ws-sub').value=s.subtitle||'';
+   $('ws-url').value=s.image||'';
+ };
+ let bootStarted=false;
+
+ const boot=async()=>{
+  if(bootStarted)return;
+  bootStarted=true;
+  try{
+    const state=await window.SpeedyFirebase.resolve();
+    const role=await SpeedyCafe.role();
+
+    if(!state?.uid){
+      bootStarted=false;
+      $('deny').style.display='block';
+      $('deny').innerHTML='<h2>INICIA SESIÓN</h2><p class="intro">No se detectó una sesión activa.</p>';
+      return;
+    }
+
+    if(!['worker','creator'].includes(role)){
+      $('deny').style.display='block';
+      $('deny').innerHTML='<h2>ACCESO RESTRINGIDO</h2><p class="intro">Este panel es solo para trabajadores de Cafetería.</p>';
+      return;
+    }
+
+    $('deny').style.display='none';
+    $('app').style.display='grid';
+
+    SpeedyCafe.watchOrders(raw=>{
+      const items=Object.values(raw||{}).sort((a,b)=>(a.createdAt||0)-(b.createdAt||0));
+      $('orders').innerHTML=items.map(o=>`<article class="order"><div class="who"><div><b class="strong">${esc(o.itemName)}</b><span class="small">${esc(o.username)}${o.nickname?' · '+esc(o.nickname):''} · ${o.qty} ud. · ${Number(o.totalRings||0).toLocaleString()} R</span><span class="pill">${esc(String(o.status||'pendiente').toUpperCase())} · ${Number(o.statusChanges||0)}/3</span></div></div><div class="actions">${['preparando','listo','agotado','cancelado','servido'].map(s=>`<button data-id="${esc(o.id)}" data-s="${s}">${s.toUpperCase()}</button>`).join('')}</div></article>`).join('')||'<p class="intro">NO HAY PEDIDOS ACTIVOS.</p>';
+      $('pending').textContent=String(items.filter(x=>['pendiente','preparando','listo'].includes(x.status)).length);
+
+      document.querySelectorAll('[data-id]').forEach(b=>b.onclick=async()=>{
+        try{
+          const ticket=items.find(x=>x.id===b.dataset.id);
+          if(ticket&&Number(ticket.statusChanges||0)>=3)throw new Error('Límite de 3 cambios alcanzado');
+          await SpeedyCafe.setOrderStatus(b.dataset.id,b.dataset.s);
+        }catch(e){alert(e.message)}
+      });
+    });
+
+    SpeedyCafe.watchMenu(raw=>{
+      const items=Object.values(raw||{}).filter(x=>x&&x.active!==false);
+      $('menu-list').innerHTML=items.map(i=>`<article class="row"><div class="avatar">☕</div><div><div class="name">${esc(i.name)}</div><div class="small">${Number(i.price||0).toLocaleString()} R · ${esc(i.description||'')}</div></div><button class="btn" data-del="${esc(i.id)}" style="background:var(--r)">QUITAR</button></article>`).join('')||'<p class="intro">Carta vacía.</p>';
+      document.querySelectorAll('[data-del]').forEach(b=>b.onclick=async()=>{try{await SpeedyCafe.deleteMenu(b.dataset.del)}catch(e){alert(e.message)}});
+    });
+
+    SpeedyCafe.watchSpecial(fillSpecial);
+
+    // Music is intentionally not editable from this panel.
+    $('music-form')?.remove();
+
+    SpeedyCafe.workerHistoryRef.child(SpeedyCafe.uid()).on('value',snap=>{
+      const items=Object.values(snap.val()||{}).sort((a,b)=>(b.completedAt||0)-(a.completedAt||0));
+      $('history').innerHTML=items.map(h=>`<article class="history-row"><div class="avatar" ${h.servedByAvatar?`style="background-image:url('${esc(h.servedByAvatar)}')"`:''}>${h.servedByAvatar?'':'☕'}</div><div><div class="name">${esc(h.itemName)}</div><div class="small">Cliente: ${esc(h.username||'')} ${h.nickname?'· '+esc(h.nickname):''}<br>${esc(String(h.status||'').toUpperCase())}<br>${new Date(h.completedAt||Date.now()).toLocaleString('es-PE')}</span></div></div><b>${Number(h.chargeRings||0).toLocaleString()} R</b></article>`).join('')||'<p class="intro">AÚN NO HAS ATENDIDO PEDIDOS.</p>';
+      $('served').textContent=String(items.filter(x=>x.status==='servido').length);
+      $('rings').textContent=String(items.reduce((a,x)=>a+Number(x.chargeRings||0),0).toLocaleString('en-US'));
+      $('changes').textContent=String(items.reduce((a,x)=>a+Number(x.statusChanges||0),0));
+    });
+
+  }catch(error){
+    bootStarted=false;
+    console.error('[Café Trabajador]',error);
+    $('deny').style.display='block';
+    $('deny').innerHTML=`<h2>ERROR AL CARGAR</h2><p class="intro">${esc(error?.message||'No se pudo cargar el panel.')}</p>`;
+  }
+ };
+
+ const tryBoot=()=>{
+   if(window.SpeedyFirebase?.current?.uid && window.SpeedyCafe){
+     boot();
+   }else{
+     window.setTimeout(tryBoot,250);
+   }
+ };
+
+ document.addEventListener('speedy:firebase-ready',tryBoot);
+ document.addEventListener('speedy:cafe-ready',tryBoot);
+ tryBoot();
+
+ $('menu-form').onsubmit=async e=>{e.preventDefault();try{let image=$('mu').value.trim();const f=$('mi').files?.[0];if(f){if(f.size>1.5e6)throw new Error('Imagen demasiado grande');image=await toData(f)}await SpeedyCafe.saveMenu({name:$('mn').value.trim(),price:Number($('mp').value)||0,description:$('md').value.trim(),image,active:true});e.target.reset()}catch(err){alert(err.message)}};
+ $('music-form').onsubmit=async e=>{e.preventDefault();const b=e.target.querySelector('button');try{const f=$('mf').files?.[0];if(!f)throw new Error('Selecciona un audio');b.disabled=true;const up=await SpeedyCafe.uploadCafeAudio(f);await SpeedyCafe.saveMusic({title:$('mt').value.trim(),artist:$('ma').value.trim(),url:up.url,originalName:f.name,duration:up.duration||0,active:true});e.target.reset()}catch(err){alert(err.message)}finally{b.disabled=false}};
+ document.addEventListener('speedy:cafe-ready',boot,{once:true});if(window.SpeedyFirebase?.current?.uid)boot();
+});
+</script>
+<div id="sf-cafe-role-wallet" aria-live="polite">
+  <div class="sf-cafe-rw-kicker">SPEEDY CAFÉ / ACCESO</div>
+  <div class="sf-cafe-rw-top">
+    <div><strong id="sf-cafe-rw-role">CAFETERÍA</strong><span id="sf-cafe-rw-user">—</span></div>
+    <button id="sf-cafe-rw-close" aria-label="Cerrar">×</button>
+  </div>
+  <div class="sf-cafe-rw-wallet">
+    <span>MI CARTERA</span>
+    <b id="sf-cafe-rw-rings">0</b>
+    <small>RINGS</small>
+  </div>
+  <div class="sf-cafe-rw-actions">
+    <a id="sf-cafe-rw-cafe" href="cafeteria.html">☕ CAFETERÍA</a>
+    <a id="sf-cafe-rw-panel" href="cafeteria.html">PANEL</a>
+  </div>
+</div>
+<button id="sf-cafe-rw-fab" aria-label="Abrir panel de Cafetería">☕</button>
+<style id="sf-cafe-role-wallet-style">
+#sf-cafe-role-wallet{position:fixed;left:16px;bottom:16px;z-index:120;width:min(285px,calc(100vw - 32px));background:rgba(255,250,241,.97);color:#28221e;border:1px solid rgba(40,34,30,.14);box-shadow:0 24px 80px rgba(38,22,15,.19);padding:13px;backdrop-filter:blur(12px);transform:translateY(0);transition:transform .35s cubic-bezier(.16,1,.3,1),opacity .35s ease}
+#sf-cafe-role-wallet.is-hidden{transform:translateY(calc(100% + 24px));opacity:0;pointer-events:none}
+.sf-cafe-rw-kicker{font-size:6px;font-weight:1000;letter-spacing:.18em;color:#c9573f;text-transform:uppercase}
+.sf-cafe-rw-top{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;margin-top:5px}
+.sf-cafe-rw-top strong{font-family:SFDisplay,Arial Black,sans-serif;font-size:27px;line-height:.75;letter-spacing:-.06em}
+.sf-cafe-rw-top span{display:block;font-size:6px;color:#756b62;margin-top:6px}
+#sf-cafe-rw-close{border:0;background:none;font-size:20px;cursor:pointer;color:#28221e}
+.sf-cafe-rw-wallet{margin-top:10px;padding:12px;background:#17110f;color:#fff;position:relative;overflow:hidden}
+.sf-cafe-rw-wallet:after{content:"";position:absolute;width:90px;height:90px;border:1px solid rgba(232,196,93,.26);border-radius:50%;right:-22px;top:-45px;animation:sfcafeRingSpin 10s linear infinite}
+.sf-cafe-rw-wallet span{font-size:5px;font-weight:900;letter-spacing:.16em;opacity:.6}
+.sf-cafe-rw-wallet b{display:block;font-family:SFDisplay,Arial Black,sans-serif;font-size:45px;line-height:.68;margin-top:7px}
+.sf-cafe-rw-wallet small{display:block;font-size:5px;letter-spacing:.14em;color:#e8c45d;margin-top:7px}
+.sf-cafe-rw-actions{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-top:7px}
+.sf-cafe-rw-actions a{display:block;padding:10px;background:#c9573f;color:#fff;text-decoration:none;text-align:center;font-size:6px;font-weight:1000;letter-spacing:.12em;text-transform:uppercase}
+.sf-cafe-rw-actions a:last-child{background:#71836d}
+#sf-cafe-rw-fab{position:fixed;left:16px;bottom:16px;z-index:119;width:48px;height:48px;border:0;border-radius:50%;background:#c9573f;color:#fff;display:none;box-shadow:0 16px 45px rgba(38,22,15,.25);cursor:pointer}
+@keyframes sfcafeRingSpin{to{transform:rotate(360deg)}}
+@media(max-width:560px){#sf-cafe-role-wallet{left:9px;bottom:9px;width:calc(100vw - 18px)}#sf-cafe-rw-fab{left:9px;bottom:9px}}
+</style>
+<script id="sf-cafe-role-wallet-js">
+(() => {
+  const panel=document.getElementById('sf-cafe-role-wallet');
+  const fab=document.getElementById('sf-cafe-rw-fab');
+  const close=document.getElementById('sf-cafe-rw-close');
+  const roleEl=document.getElementById('sf-cafe-rw-role');
+  const userEl=document.getElementById('sf-cafe-rw-user');
+  const ringsEl=document.getElementById('sf-cafe-rw-rings');
+  const cafeLink=document.getElementById('sf-cafe-rw-cafe');
+  const panelLink=document.getElementById('sf-cafe-rw-panel');
+  if(!panel)return;
+
+  const hide=()=>{panel.classList.add('is-hidden');fab.style.display='block'};
+  const show=()=>{panel.classList.remove('is-hidden');fab.style.display='none'};
+  close.onclick=hide; fab.onclick=show;
+
+  const apply=async()=>{
+    try{
+      const sf=window.SpeedyFirebase;
+      if(!sf?.resolve || !window.SpeedyCafe) return;
+      const state=await sf.resolve();
+      if(!state?.uid){hide();return}
+      let role='';
+      if(state.isCreator)role='creator';
+      else role=await SpeedyCafe.role();
+
+      if(!['creator','worker'].includes(role)){hide();return}
+
+      panel.classList.remove('is-hidden');
+      fab.style.display='none';
+      roleEl.textContent=role==='creator'?'CAFÉ · CREADORA':'CAFÉ · TRABAJADOR';
+      const profile=state.profile||SpeedyCafe.profile()||{};
+      userEl.textContent=profile.nickname||profile.username||profile.name||state.email||'Cuenta activa';
+
+      if(role==='creator'){
+        panelLink.href='cafe-creator.html';
+        panelLink.textContent='⚙ MI PANEL';
+      }else{
+        panelLink.href='cafe-worker.html';
+        panelLink.textContent='☕ MI PANEL';
+      }
+      cafeLink.href='cafeteria.html';
+
+      // Read the same profile ring balance used by the existing wallet.
+      const profileId=state.profileId||profile.id;
+      let rings=Number(state.rings||0);
+      if(profileId && sf.refs?.rings){
+        const snap=await sf.refs.rings.child(profileId).once('value');
+        if(snap.exists())rings=Number(snap.val()||0);
+      }
+      ringsEl.textContent=Number.isFinite(rings)?rings.toLocaleString('en-US'):'0';
+    }catch(error){
+      console.warn('[Café role wallet]',error);
+      hide();
+    }
+  };
+
+  document.addEventListener('speedy:firebase-ready',apply);
+  document.addEventListener('speedy:cafe-ready',apply);
+  apply();
+  setTimeout(apply,700);
+  setTimeout(apply,1800);
+})();
+</script>
+</body></html>

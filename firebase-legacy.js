@@ -71,8 +71,33 @@
     return ownerUid===String(uid||"") || (!!email && ownerEmail===String(email).toLowerCase());
   }
 
+  async function waitForAuthUser(timeoutMs=8000){
+    if(auth.currentUser)return auth.currentUser;
+    return await new Promise((resolve,reject)=>{
+      let done=false;
+      const timer=setTimeout(()=>{
+        if(done)return;
+        done=true;
+        unsub();
+        reject(new Error("Firebase tardó demasiado en recuperar la sesión"));
+      },timeoutMs);
+      const unsub=auth.onAuthStateChanged(user=>{
+        if(done)return;
+        if(!user)return;
+        done=true;
+        clearTimeout(timer);
+        unsub();
+        resolve(user);
+      });
+    });
+  }
+
   async function resolve(){
-    const user=auth.currentUser;
+    const user=await waitForAuthUser().catch(error=>{
+      console.warn("[Speedy Firebase] auth wait:",error.message);
+      return null;
+    });
+
     if(!user){
       Object.assign(state,{ready:false,uid:"",email:"",role:"guest",isCreator:false,isAdmin:false,profileId:null,profile:null,permissions:{},rings:0});
       return state;
@@ -87,67 +112,66 @@
     const users=usersSnap.val()||{};
     let profileId=null,profile=null;
 
-    // Existing project may use generated profile IDs. Match them first.
     for(const [id,data] of Object.entries(users)){
       if(profileMatches(data,uid,email)){profileId=id;profile=data||{};break;}
     }
 
-    // Only create a new profile when there is truly no existing record.
     if(!profileId){
       profileId=`user-${uid}`;
       let suffix=1;
-      while(Object.prototype.hasOwnProperty.call(users,profileId)) profileId=`user-${uid}-${suffix++}`;
+      while(Object.prototype.hasOwnProperty.call(users,profileId))profileId=`user-${uid}-${suffix++}`;
       profile={
         id:profileId,
         name:(email.split("@")[0]||"integrante").slice(0,32),
         username:(email.split("@")[0]||"integrante").slice(0,32),
-        nickname:"",
-        title:"Runner",
-        role:"Runner",
-        description:"",
-        bio:"",
-        rings:0,level:1,xp:0,
-        ownerUid:uid,ownerEmail:email,
-        avatar:"",cover:"",iconPosition:"50% 50%",iconZoom:100,coverPosition:"50% 50%",coverZoom:100,
-        ostName:"",hasOst:false,ostUrl:""
+        nickname:"",title:"Runner",role:"Runner",description:"",bio:"",
+        rings:0,level:1,xp:0,ownerUid:uid,ownerEmail:email,
+        avatar:"",cover:"",iconPosition:"50% 50%",iconZoom:100,
+        coverPosition:"50% 50%",coverZoom:100,ostName:"",hasOst:false,ostUrl:""
       };
-      // Write only this account's new record under the existing rules.
       await refs.users.child(profileId).set(profile);
     }else{
-      // Repair owner binding on the already-existing record; no duplicate creation.
       const patch={};
-      if(!profile.ownerUid) patch.ownerUid=uid;
-      if(!profile.ownerEmail && email) patch.ownerEmail=email;
-      if(Object.keys(patch).length) await refs.users.child(profileId).update(patch);
+      if(!profile.ownerUid)patch.ownerUid=uid;
+      if(!profile.ownerEmail&&email)patch.ownerEmail=email;
+      if(Object.keys(patch).length)await refs.users.child(profileId).update(patch);
     }
 
     const perms=permSnap.val()||{};
     let rings=Number(profile.rings||0);
     const ringSnap=await refs.rings.child(profileId).once("value");
-    if(ringSnap.exists()) rings=Number(ringSnap.val()||0);
+    if(ringSnap.exists())rings=Number(ringSnap.val()||0);
 
-    const role=creator ? "creator" : (String(profile.role||perms.role||"").toLowerCase()==="admin" ? "admin":"member");
-    Object.assign(state,{uid,email,role,isCreator:creator,isAdmin:creator||role==="admin",profileId,profile,permissions:perms,rings});
+    const role=creator?"creator":(String(profile.role||perms.role||"").toLowerCase()==="admin"?"admin":"member");
+    Object.assign(state,{ready:true,uid,email,role,isCreator:creator,isAdmin:creator||role==="admin",profileId,profile,permissions:perms,rings});
     return state;
   }
 
+
   async function saveProfile(data){
-    await resolve();
-    if(!state.uid) throw new Error("Inicia sesión con Google");
-    const id=state.profileId||state.uid;
+    const user=auth.currentUser;
+    if(!user)throw new Error("Inicia sesión con Google");
+
+    const id=state.profileId||state.uid||user.uid;
+    if(!id)throw new Error("No se encontró tu perfil");
+
     const existing=state.profile||{};
     const safe={
-      ...existing,...data,
+      ...existing,...(data||{}),
       id,
-      ownerUid:existing.ownerUid||state.uid,
-      ownerEmail:existing.ownerEmail||state.email
+      ownerUid:existing.ownerUid||state.uid||user.uid,
+      ownerEmail:existing.ownerEmail||state.email||user.email||""
     };
+
     await refs.users.child(id).update(safe);
-    const verify=await refs.users.child(id).once("value");
-    if(!verify.exists()) throw new Error("Firebase no confirmó el guardado");
-    state.profile=verify.val()||safe;
-    return state.profile;
+    state.profile=safe;
+    state.profileId=id;
+    state.uid=user.uid;
+    state.email=String(user.email||state.email||"");
+    state.ready=true;
+    return safe;
   }
+
 
   async function uploadProfileAsset(uid,kind,file){
     if(!storage) throw new Error("Firebase Storage no está disponible");
@@ -173,6 +197,34 @@
     const provider=new firebase.auth.GoogleAuthProvider();
     provider.setCustomParameters({prompt:"select_account"});
     return auth.signInWithPopup(provider);
+  }
+
+  async function setCafeWorkerRole(profileId,enabled){
+    await resolve();
+    if(String(state.email||'').toLowerCase()!==creatorEmail) throw new Error("Solo la Creadora puede administrar trabajadores de Cafetería");
+    const snap=await refs.users.child(profileId).once("value");
+    if(!snap.exists()) throw new Error("Usuario no encontrado");
+    const u=snap.val()||{};
+    const uid=String(u.ownerUid||"");
+    if(!uid) throw new Error("El integrante debe tener una cuenta vinculada");
+    const ref=teamRoot().child("cafeteria").child("workers").child(uid);
+    if(enabled){
+      await ref.set({
+        uid,
+        role:"worker",
+        active:true,
+        displayName:u.nickname||u.username||u.name||"Trabajador",
+        createdBy:state.uid,
+        createdAt:firebase.database.ServerValue.TIMESTAMP
+      });
+    }else{
+      await ref.update({
+        active:false,
+        updatedBy:state.uid,
+        updatedAt:firebase.database.ServerValue.TIMESTAMP
+      });
+    }
+    return true;
   }
 
   function adminHref(){
@@ -245,7 +297,7 @@
     auth,db,storage,CloudinaryOST,CLOUDINARY_CONFIG,REALTIME_CONFIG,refs,current:state,
     resolve,saveProfile,signInGoogle,signOut:()=>auth.signOut(),adminHref,
     uploadProfileAsset,uploadOst:(uid,file,trackId)=>CloudinaryOST.upload(file,uid),
-    watchPublicUsers,watchUserRings,setRingAmount,grantRingsPermission,setAdminRole,setRating,
+    watchPublicUsers,watchUserRings,setRingAmount,grantRingsPermission,setAdminRole,setCafeWorkerRole,setRating,
     isCreator:()=>state.isCreator,isAdmin:()=>state.isAdmin
   };
 })();

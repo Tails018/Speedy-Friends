@@ -1,0 +1,48 @@
+{
+  "rules": {
+    "speedy-friends-teams": {
+      "$teamId": {
+        "cafeteria": {
+          ".read": "auth != null",
+          "menu": {
+            ".read": "auth != null",
+            "$id": {
+              ".write": "auth != null && (auth.token.email == 't89886464@gmail.com' || root.child('speedy-friends-teams').child($teamId).child('cafeteria').child('workers').child(auth.uid).child('role').val() == 'worker')"
+            }
+          },
+          "workers": {
+            ".read": "auth != null && auth.token.email == 't89886464@gmail.com'",
+            "$uid": {
+              ".write": "auth != null && auth.token.email == 't89886464@gmail.com'",
+              ".read": "auth != null && (auth.token.email == 't89886464@gmail.com' || auth.uid == $uid)"
+            }
+          },
+          "orders": {
+            ".read": "auth != null && (auth.token.email == 't89886464@gmail.com' || data.child('ownerUid').val() == auth.uid || root.child('speedy-friends-teams').child($teamId).child('cafeteria').child('workers').child(auth.uid).child('role').val() == 'worker')",
+            "$id": {
+              ".write": "auth != null && ((!data.exists() && newData.child('ownerUid').val() == auth.uid) || auth.token.email == 't89886464@gmail.com' || root.child('speedy-friends-teams').child($teamId).child('cafeteria').child('workers').child(auth.uid).child('role').val() == 'worker')"
+            }
+          },
+          "ticketHistory": {
+            ".read": "auth != null && (auth.token.email == 't89886464@gmail.com' || root.child('speedy-friends-teams').child($teamId).child('cafeteria').child('workers').child(auth.uid).child('role').val() == 'worker')",
+            "$id": {
+              ".write": "auth != null && (auth.token.email == 't89886464@gmail.com' || root.child('speedy-friends-teams').child($teamId).child('cafeteria').child('workers').child(auth.uid).child('role').val() == 'worker')"
+            }
+          },
+          "activity": {
+            ".read": "auth != null && (auth.token.email == 't89886464@gmail.com' || root.child('speedy-friends-teams').child($teamId).child('cafeteria').child('workers').child(auth.uid).child('role').val() == 'worker')",
+            "$id": {
+              ".write": "auth != null && (auth.token.email == 't89886464@gmail.com' || root.child('speedy-friends-teams').child($teamId).child('cafeteria').child('workers').child(auth.uid).child('role').val() == 'worker')"
+            }
+          },
+          "music": {
+            ".read": "auth != null",
+            "$id": {
+              ".write": "auth != null && (auth.token.email == 't89886464@gmail.com' || root.child('speedy-friends-teams').child($teamId).child('cafeteria').child('workers').child(auth.uid).child('role').val() == 'worker')"
+            }
+          }
+        }
+      }
+    }
+  }
+}
