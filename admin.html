@@ -616,6 +616,46 @@ body.admin-profile-open{overflow:hidden}
 @media(max-width:900px){.rings-filter-row{grid-template-columns:1fr}.rings-actions-row{grid-template-columns:1fr 1fr}}
 @media(max-width:560px){.rings-toolbar-head{align-items:start;flex-direction:column}.rings-actions-row{grid-template-columns:1fr}}
 </style><script src="global-ost-player.js"></script>
+
+<style id="admin-news-manager-style">
+#news-manager .news-manager-surface{background:linear-gradient(145deg,#fff,#f5f5f0)}
+#news-manager .admin-news-row{display:grid;grid-template-columns:92px 1fr auto;gap:12px;align-items:center;background:#fff;border:1px solid rgba(18,18,18,.08);padding:9px;transform:translateY(7px);opacity:0;animation:newsAdminIn .45s cubic-bezier(.16,1,.3,1) forwards}
+#news-manager .admin-news-thumb{width:92px;height:70px;object-fit:cover;background:#ecebe5}
+#news-manager .admin-news-title{font-family:SFDisplay,Arial Black,Arial,sans-serif;font-size:21px;line-height:.8;letter-spacing:-.045em}
+#news-manager .admin-news-meta{font-size:6px;letter-spacing:.1em;font-weight:900;opacity:.48;margin-top:5px}
+#news-manager .admin-news-actions{display:flex;gap:5px;flex-wrap:wrap;justify-content:flex-end}
+#news-manager .admin-news-actions button{border:1px solid rgba(18,18,18,.12);background:#fff;padding:8px 9px;font-size:6px;font-weight:900;letter-spacing:.1em;cursor:pointer}
+#news-manager .admin-news-actions button:hover{background:#171717;color:#fff}
+#news-manager .admin-news-actions .danger{background:#d6533f;border-color:#d6533f;color:#fff}
+#news-manager .admin-news-empty{padding:25px;background:#fff;border:1px dashed rgba(18,18,18,.15);font-size:7px;color:#777}
+@keyframes newsAdminIn{to{opacity:1;transform:none}}
+@media(max-width:650px){#news-manager .admin-news-row{grid-template-columns:1fr}.admin-news-thumb{width:100%!important;height:150px!important}.admin-news-actions{justify-content:flex-start!important}}
+</style>
+
+<style id="visual-picks-creator-style">
+#visual-picks .vp-row{display:grid;grid-template-columns:84px 1fr auto;gap:11px;align-items:center;background:#fff;border:1px solid rgba(18,18,18,.08);padding:8px}
+#visual-picks .vp-thumb{width:84px;height:62px;object-fit:cover;background:#ecebe5}
+#visual-picks .vp-title{font-family:SFDisplay,Arial Black,Arial,sans-serif;font-size:19px;line-height:.82}
+#visual-picks .vp-meta{font-size:6px;margin-top:5px;opacity:.5;letter-spacing:.1em}
+#visual-picks .vp-actions{display:flex;gap:5px}
+#visual-picks .vp-actions button{border:1px solid rgba(18,18,18,.12);background:#fff;padding:8px;font-size:6px;font-weight:900;cursor:pointer}
+#visual-picks .vp-actions .danger{background:#d6533f;color:#fff;border-color:#d6533f}
+</style>
+<style id="admin-news-route-style">#news-manager{display:none!important}</style>
+<style id="vp-image-upload-style">
+.vp-upload-box{padding:11px;border:1px dashed rgba(18,18,18,.16);background:#fffaf1}
+.vp-upload-head{display:flex;justify-content:space-between;align-items:center;gap:10px}
+.vp-upload-head b{display:block;font-size:7px;letter-spacing:.12em}.vp-upload-head span{display:block;font-size:5px;color:#746e69;margin-top:3px}
+.vp-upload-btn{padding:9px 10px;background:#171717;color:#fff;font:1000 6px/1 Arial;letter-spacing:.11em;cursor:pointer}
+#vp-image-file{position:absolute;left:-9999px;width:1px;height:1px;opacity:0}
+.vp-upload-name{margin-top:8px;font-size:6px;color:#6e6863}.vp-upload-status{margin-top:5px;min-height:10px;font-size:6px;font-weight:900;color:#2e67a6}.vp-upload-status.error{color:#d6533f}.vp-upload-status.ok{color:#6f8870}
+.vp-upload-preview{margin-top:8px;width:100%;height:115px;background:#ecebe5;overflow:hidden}.vp-upload-preview img{width:100%;height:100%;object-fit:cover;display:block}
+@media(max-width:600px){.vp-upload-head{display:block}.vp-upload-btn{display:inline-block;margin-top:8px}}
+</style>
+<style id="vp-v39-admin-style">
+.vp-slots{display:grid;grid-template-columns:repeat(2,1fr);gap:8px;margin-top:15px}.vp-slot{display:grid;grid-template-columns:120px 1fr;gap:10px;align-items:center;background:#fff;border:1px solid rgba(18,18,18,.08);padding:8px}.vp-slot-img{width:120px;height:82px;object-fit:cover;background:#ecebe5}.vp-slot-title{font-family:SFDisplay,Arial Black,Arial,sans-serif;font-size:19px;line-height:.82}.vp-slot-meta{font-size:5px;letter-spacing:.1em;color:#777;margin-top:5px}.vp-slot-btn{margin-top:8px;border:1px solid rgba(18,18,18,.12);background:#fff;padding:8px 9px;font-size:6px;font-weight:900;letter-spacing:.1em;cursor:pointer}.vp-slot-btn:hover{background:#171717;color:#fff}.vp-editor{margin-top:15px;padding:14px;background:#f1ece3;border:1px solid rgba(18,18,18,.08)}.vp-editor[hidden]{display:none}.vp-editor-head{display:flex;justify-content:space-between;align-items:end;margin-bottom:10px}.vp-editor-head span{font-size:5px;letter-spacing:.15em;color:#d6533f;font-weight:1000}.vp-editor-head h3{margin:5px 0 0;font-family:SFDisplay,Arial Black,Arial,sans-serif;font-size:28px;line-height:.8}.vp-editor-preview{margin-top:8px;height:130px;background:#17181d;overflow:hidden}.vp-editor-preview img{width:100%;height:100%;object-fit:cover}.vp-upload-box{padding:11px;border:1px dashed rgba(18,18,18,.16);background:#fffaf1}.vp-upload-head{display:flex;justify-content:space-between;align-items:center;gap:10px}.vp-upload-head b{display:block;font-size:7px;letter-spacing:.12em}.vp-upload-head span{display:block;font-size:5px;color:#746e69;margin-top:3px}.vp-upload-btn{padding:9px 10px;background:#171717;color:#fff;font:1000 6px/1 Arial;letter-spacing:.11em;cursor:pointer}.vp-upload-box input[type=file]{position:absolute;left:-9999px}.vp-upload-name{margin-top:7px;font-size:6px;color:#6f6964}.vp-upload-status{margin-top:5px;min-height:10px;font-size:6px;font-weight:900;color:#2e67a6}.vp-upload-status.error{color:#d6533f}.vp-upload-status.ok{color:#6f8870}
+@media(max-width:700px){.vp-slots{grid-template-columns:1fr}.vp-slot{grid-template-columns:100px 1fr}.vp-slot-img{width:100px;height:75px}.vp-upload-head{display:block}.vp-upload-btn{display:inline-block;margin-top:7px}}
+</style>
 </head>
 <body data-admin-mode="creator" class="admin-page">
 <main class="admin-shell">
@@ -631,7 +671,7 @@ body.admin-profile-open{overflow:hidden}
 <div class="admin-side-nav">
 <button class="admin-side-btn active" data-panel="overview">Resumen</button>
 <button class="admin-side-btn" data-panel="users">Integrantes</button>
-<button class="admin-side-btn" data-panel="rings">Rings</button>
+<button class="admin-side-btn" data-panel="rings">Rings</button><button class="admin-side-btn" data-panel="news-manager">Novedades</button><button class="admin-side-btn" data-panel="visual-picks">Visual Picks</button>
 <button class="admin-side-btn" data-panel="permissions">Permisos</button>
 <button class="admin-side-btn" data-panel="identity">Identidad</button>
 <button class="admin-side-btn" data-panel="audit">Actividad</button><button class="admin-side-btn" data-panel="cafe-workers">Cafetería</button>
@@ -668,6 +708,39 @@ body.admin-profile-open{overflow:hidden}
 </div>
 </section>
 
+
+<section class="admin-section" id="news-manager">
+  <div class="admin-section-head">
+    <div><p class="admin-kicker">Community Editorial</p><h2>Novedades</h2></div>
+    <p>Agregar / quitar · Tiempo real</p>
+  </div>
+  <div class="admin-surface news-manager-surface">
+    <div class="rings-toolbar-head">
+      <div><h3>Publicaciones del team</h3><span>LIVE · FIREBASE</span></div>
+      <button class="admin-btn" id="news-new-btn" type="button">＋ Nueva</button>
+    </div>
+
+    <form id="admin-news-form" class="admin-form" style="grid-template-columns:1fr 1fr">
+      <input type="hidden" id="admin-news-id">
+      <input class="admin-input" id="admin-news-title" placeholder="Título de la novedad" required>
+      <select class="admin-select" id="admin-news-category">
+        <option>EVENTO</option><option>INFO</option><option>COMUNIDAD</option><option>ACTUALIZACIÓN</option><option>ANUNCIO</option>
+      </select>
+      <input class="admin-input" id="admin-news-date" type="date" required>
+      <input class="admin-input" id="admin-news-image" placeholder="URL / ruta de imagen">
+      <textarea class="admin-input" id="admin-news-summary" placeholder="Resumen" style="grid-column:1/-1;min-height:80px"></textarea>
+      <textarea class="admin-input" id="admin-news-body" placeholder="Contenido completo" style="grid-column:1/-1;min-height:130px"></textarea>
+      <label style="font-size:7px;font-weight:900;letter-spacing:.1em"><input id="admin-news-featured" type="checkbox"> DESTACADA EN INICIO</label>
+      <label style="font-size:7px;font-weight:900;letter-spacing:.1em"><input id="admin-news-published" type="checkbox" checked> PUBLICADA</label>
+      <div style="display:flex;gap:7px;flex-wrap:wrap;grid-column:1/-1">
+        <button class="admin-btn primary" type="submit">GUARDAR NOVEDAD</button>
+        <button class="admin-btn" id="admin-news-cancel" type="button">CANCELAR</button>
+      </div>
+    </form>
+
+    <div id="admin-news-list" class="user-list" style="margin-top:16px"></div>
+  </div>
+</section>
 <section class="admin-section" id="permissions"><div class="admin-section-head"><div><p class="admin-kicker">Access Control</p><h2>Permisos</h2></div><p>Roles / Rings</p></div>
 <div class="permission-grid"><article class="permission-card"><h3>Rol Admin</h3><p>Acceso al panel de administración completo.</p><div class="toggle"><span>Runner</span><button class="perm-toggle on" type="button">ACTIVO</button></div><div class="toggle"><span>Nova</span><button class="perm-toggle" type="button">INACTIVO</button></div></article><article class="permission-card"><h3>Permiso Rings</h3><p>Puede modificar Rings sin recibir acceso completo.</p><div class="toggle"><span>Dash</span><button class="perm-toggle on" type="button">ACTIVO</button></div><div class="toggle"><span>Kiro</span><button class="perm-toggle" type="button">INACTIVO</button></div></article></div>
 <div class="admin-surface"><h3>Protección de la creadora</h3><p>La cuenta creadora permanece protegida frente a cambios de otros administradores.</p></div>
@@ -688,6 +761,42 @@ body.admin-profile-open{overflow:hidden}
       <button class="admin-btn" id="cafe-worker-clear" type="button">Limpiar</button>
     </div>
     <div id="cafe-worker-list" class="user-list"></div>
+  </div>
+</section>
+
+
+<section class="admin-section" id="visual-picks">
+  <div class="admin-section-head">
+    <div><p class="admin-kicker">Creator Studio</p><h2>Visual Picks</h2></div>
+    <p>4 espacios · Exclusivo de la Creadora</p>
+  </div>
+  <div class="admin-surface">
+    <div class="rings-toolbar-head">
+      <div><h3>Selección actual</h3><span>EDITA CADA ESPACIO · TIEMPO REAL</span></div>
+    </div>
+    <p style="font-size:7px;line-height:1.6;opacity:.55">Estas son las imágenes que ya aparecen en Visual Picks. Editar una reemplaza únicamente esa imagen; no se acumulan selecciones.</p>
+    <div id="vp-slots" class="vp-slots"></div>
+
+    <div class="vp-editor" id="vp-editor" hidden>
+      <div class="vp-editor-head"><div><span>EDITANDO</span><h3 id="vp-edit-label">Visual Pick</h3></div><button class="admin-btn" id="vp-edit-close" type="button">CERRAR</button></div>
+      <form id="vp-edit-form" class="admin-form" style="grid-template-columns:1fr 1fr">
+        <input type="hidden" id="vp-edit-id">
+        <input class="admin-input" id="vp-edit-title" placeholder="Título / etiqueta">
+        <input class="admin-input" id="vp-edit-tag" placeholder="Etiqueta pequeña">
+        <input class="admin-input wide" id="vp-edit-image" placeholder="URL o ruta de imagen" style="grid-column:1/-1">
+        <div class="vp-upload-box" style="grid-column:1/-1">
+          <div class="vp-upload-head"><div><b>SUBIR IMAGEN</b><span>PNG · JPG · WEBP · GIF · sin Firebase Storage</span></div><label for="vp-edit-file" class="vp-upload-btn">ELEGIR IMAGEN</label></div>
+          <input id="vp-edit-file" type="file" accept="image/png,image/jpeg,image/webp,image/gif">
+          <div id="vp-edit-file-name" class="vp-upload-name">Ningún archivo seleccionado</div>
+          <div id="vp-edit-file-status" class="vp-upload-status"></div>
+          <div class="vp-editor-preview"><img id="vp-edit-preview" src="assets/section-replacement.png" alt=""></div>
+        </div>
+        <div style="grid-column:1/-1;display:flex;gap:7px;flex-wrap:wrap">
+          <button class="admin-btn primary" type="submit">REEMPLAZAR Y GUARDAR</button>
+          <button class="admin-btn" id="vp-remove-current" type="button">VOLVER AL ORIGINAL</button>
+        </div>
+      </form>
+    </div>
   </div>
 </section>
 <section class="admin-section" id="audit"><div class="admin-section-head"><div><p class="admin-kicker">Team Log</p><h2>Actividad</h2></div><p>Historial de cambios</p></div>
@@ -1163,6 +1272,308 @@ document.addEventListener("DOMContentLoaded",()=>{
   };
   sf.auth.onAuthStateChanged(check);
   if(sf.auth.currentUser)check(sf.auth.currentUser);
+})();
+</script>
+
+<script id="admin-news-manager-script">
+(() => {
+  const sf=window.SpeedyFirebase;
+  const $=id=>document.getElementById(id);
+  if(!sf)return;
+  const ref=()=>sf.db.ref('speedy-friends-teams/speedy-friends/news');
+  let cache={};
+
+  const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[c]));
+
+  const canEdit=async()=>{
+    const s=await sf.resolve();
+    return !!s?.isCreator || String(s?.role||'').toLowerCase()==='admin';
+  };
+
+  function clear(){
+    $('admin-news-id').value='';
+    $('admin-news-title').value='';
+    $('admin-news-category').value='EVENTO';
+    $('admin-news-date').value=new Date().toISOString().slice(0,10);
+    $('admin-news-image').value='';
+    $('admin-news-summary').value='';
+    $('admin-news-body').value='';
+    $('admin-news-featured').checked=false;
+    $('admin-news-published').checked=true;
+  }
+
+  function fill(n){
+    $('admin-news-id').value=n.id||'';
+    $('admin-news-title').value=n.title||'';
+    $('admin-news-category').value=n.category||'INFO';
+    $('admin-news-date').value=n.date||'';
+    $('admin-news-image').value=n.image||'';
+    $('admin-news-summary').value=n.summary||'';
+    $('admin-news-body').value=n.body||'';
+    $('admin-news-featured').checked=!!n.featured;
+    $('admin-news-published').checked=n.published!==false;
+    $('news-manager')?.scrollIntoView({behavior:'smooth',block:'start'});
+  }
+
+  function render(){
+    const list=$('admin-news-list'); if(!list)return;
+    const items=Object.values(cache).sort((a,b)=>(b.createdAt||0)-(a.createdAt||0));
+    if(!items.length){list.innerHTML='<div class="admin-news-empty">No hay novedades todavía.</div>';return;}
+    list.innerHTML=items.map((n,i)=>`
+      <article class="admin-news-row" style="animation-delay:${Math.min(i,10)*45}ms">
+        <img class="admin-news-thumb" src="${esc(n.image||'assets/section-replacement.png')}" alt="">
+        <div>
+          <div class="admin-news-title">${esc(n.title||'Sin título')}</div>
+          <div class="admin-news-meta">${esc(n.date||'')} · ${esc(n.category||'INFO')} · ${n.published===false?'OCULTA':'PUBLICADA'}${n.featured?' · DESTACADA':''}</div>
+          <div style="font-size:6px;line-height:1.4;color:#67625e;margin-top:5px">${esc(n.summary||'')}</div>
+        </div>
+        <div class="admin-news-actions">
+          <button type="button" data-news-edit="${esc(n.id)}">EDITAR</button>
+          <button type="button" class="danger" data-news-delete="${esc(n.id)}">QUITAR</button>
+        </div>
+      </article>`).join('');
+    list.querySelectorAll('[data-news-edit]').forEach(b=>b.onclick=()=>fill(cache[b.dataset.newsEdit]));
+    list.querySelectorAll('[data-news-delete]').forEach(b=>b.onclick=async()=>{
+      try{
+        if(!(await canEdit())) throw new Error('Sin permiso');
+        const n=cache[b.dataset.newsDelete];
+        if(!n)return;
+        if(!confirm(`¿Quitar la novedad "${n.title||'Sin título'}"?`))return;
+        await ref().child(b.dataset.newsDelete).remove();
+      }catch(e){alert(e.message||'No se pudo quitar');}
+    });
+  }
+
+  $('admin-news-form')?.addEventListener('submit',async e=>{
+    e.preventDefault();
+    try{
+      const s=await sf.resolve();
+      if(!(s?.isCreator||String(s?.role||'').toLowerCase()==='admin')) throw new Error('Sin permiso para administrar Novedades');
+      const id=$('admin-news-id').value||ref().push().key;
+      const existing=cache[id]||{};
+      const payload={
+        id,
+        title:$('admin-news-title').value.trim(),
+        category:$('admin-news-category').value,
+        date:$('admin-news-date').value,
+        image:$('admin-news-image').value.trim(),
+        summary:$('admin-news-summary').value.trim(),
+        body:$('admin-news-body').value.trim(),
+        featured:$('admin-news-featured').checked,
+        published:$('admin-news-published').checked,
+        createdAt:existing.createdAt||firebase.database.ServerValue.TIMESTAMP,
+        updatedAt:firebase.database.ServerValue.TIMESTAMP,
+        updatedByUid:s.uid
+      };
+      if(!payload.title)throw new Error('Escribe un título');
+      await ref().child(id).set(payload);
+      clear();
+    }catch(e){alert(e.message||'No se pudo guardar');}
+  });
+
+  $('news-new-btn')?.addEventListener('click',clear);
+  $('admin-news-cancel')?.addEventListener('click',clear);
+
+  const boot=async()=>{
+    try{
+      if(!(await canEdit()))return;
+      const navBtn=document.querySelector('[data-panel="news-manager"]');
+      if(navBtn)navBtn.style.display='';
+      ref().on('value',s=>{cache=s.val()||{};render()});
+      clear();
+    }catch(e){console.warn('[Admin Novedades]',e)}
+  };
+  document.addEventListener('speedy:firebase-ready',boot,{once:true});
+  if(sf.current?.uid)boot();
+})();
+</script>
+
+<script id="visual-picks-creator-script">
+(() => {
+  const sf=window.SpeedyFirebase;
+  const $=id=>document.getElementById(id);
+  if(!sf)return;
+  const path='speedy-friends-teams/speedy-friends/visualPicks';
+  const ref=()=>sf.db.ref(path);
+  let cache={};
+
+  const canUse=async()=>{
+    const s=await sf.resolve();
+    return !!s?.isCreator || String(s?.email||'').toLowerCase()==='t89886464@gmail.com';
+  };
+  const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[c]));
+
+  function clear(){ $('vp-id').value=''; $('vp-title').value=''; $('vp-image').value=''; $('vp-tag').value=''; $('vp-order').value='0'; }
+  function fill(n){ $('vp-id').value=n.id||''; $('vp-title').value=n.title||''; $('vp-image').value=n.image||''; $('vp-tag').value=n.tag||''; $('vp-order').value=Number(n.order||0); document.getElementById('visual-picks')?.scrollIntoView({behavior:'smooth'}); }
+
+  function render(){
+    const list=$('vp-list'); if(!list)return;
+    const items=Object.values(cache).sort((a,b)=>Number(a.order||0)-Number(b.order||0));
+    list.innerHTML=items.length?items.map((n,i)=>`
+      <article class="vp-row">
+        <img class="vp-thumb" src="${esc(n.image||'assets/section-replacement.png')}" alt="">
+        <div><div class="vp-title">${esc(n.title||'Sin título')}</div><div class="vp-meta">${esc(n.tag||'')} · ORDEN ${Number(n.order||0)}</div></div>
+        <div class="vp-actions"><button type="button" data-vp-edit="${esc(n.id)}">EDITAR</button><button type="button" class="danger" data-vp-del="${esc(n.id)}">QUITAR</button></div>
+      </article>`).join(''):'<div class="admin-news-empty">No hay Visual Picks configurados.</div>';
+    list.querySelectorAll('[data-vp-edit]').forEach(b=>b.onclick=()=>fill(cache[b.dataset.vpEdit]));
+    list.querySelectorAll('[data-vp-del]').forEach(b=>b.onclick=async()=>{
+      if(!(await canUse()))return;
+      if(confirm('¿Quitar este Visual Pick?'))await ref().child(b.dataset.vpDel).remove();
+    });
+  }
+
+  $('vp-form')?.addEventListener('submit',async e=>{
+    e.preventDefault();
+    try{
+      if(!(await canUse()))throw new Error('Esta función es exclusiva de la Creadora');
+      const id=$('vp-id').value||ref().push().key;
+      await ref().child(id).set({
+        id,
+        title:$('vp-title').value.trim(),
+        image:$('vp-image').value.trim(),
+        tag:$('vp-tag').value.trim(),
+        order:Number($('vp-order').value||0),
+        updatedAt:firebase.database.ServerValue.TIMESTAMP,
+        updatedByUid:sf.current?.uid||''
+      });
+      clear();
+    }catch(err){alert(err.message||'No se pudo guardar')}
+  });
+  $('vp-new')?.addEventListener('click',clear);
+  $('vp-cancel')?.addEventListener('click',clear);
+
+  const boot=async()=>{
+    try{
+      if(!(await canUse())){
+        const b=document.querySelector('[data-panel="visual-picks"]');
+        if(b)b.remove();
+        $('visual-picks')?.remove();
+        return;
+      }
+      ref().on('value',s=>{cache=s.val()||{};render()});
+      clear();
+    }catch(e){console.warn('[Visual Picks]',e)}
+  };
+  document.addEventListener('speedy:firebase-ready',boot,{once:true});
+  if(sf.current?.uid)boot();
+})();
+</script>
+
+<script id="admin-news-route-script">
+(() => {
+  const btn=document.querySelector('[data-panel="news-manager"]');
+  if(!btn)return;
+  btn.addEventListener('click',e=>{
+    e.preventDefault();
+    window.location.assign('novedades-admin.html');
+  });
+})();
+</script>
+
+<script id="vp-image-upload-script">
+(() => {
+  const file=document.getElementById('vp-image-file');
+  if(!file)return;
+  const name=document.getElementById('vp-image-name');
+  const status=document.getElementById('vp-image-status');
+  const preview=document.getElementById('vp-upload-preview');
+  const url=document.getElementById('vp-image');
+  file.addEventListener('change',()=>{
+    const f=file.files?.[0];
+    if(!f)return;
+    name.textContent=f.name;
+    status.className='vp-upload-status';
+    status.textContent='Procesando…';
+    const allowed=['image/png','image/jpeg','image/webp','image/gif'];
+    if(!allowed.includes(f.type)){
+      status.className='vp-upload-status error';
+      status.textContent='Usa PNG, JPG, WEBP o GIF.';
+      file.value='';return;
+    }
+    if(f.size>1200*1024){
+      status.className='vp-upload-status error';
+      status.textContent='La imagen debe pesar 1.2 MB o menos.';
+      file.value='';return;
+    }
+    const reader=new FileReader();
+    reader.onload=()=>{
+      const data=String(reader.result||'');
+      url.value=data;
+      preview.src=data;
+      status.className='vp-upload-status ok';
+      status.textContent='Imagen lista ✓';
+    };
+    reader.onerror=()=>{
+      status.className='vp-upload-status error';
+      status.textContent='No se pudo leer la imagen.';
+    };
+    reader.readAsDataURL(f);
+  });
+})();
+</script>
+
+<script id="vp-v39-admin-script">
+(() => {
+  const sf=window.SpeedyFirebase;if(!sf)return;
+  const defaults=[
+    {id:'pick1',title:'SHADOW / NOW',tag:'SHADOW / NOW',image:'assets/gametitle_SonicShadowGenerations_square.webp',order:1},
+    {id:'pick2',title:'EVENT / 2026',tag:'EVENT / 2026',image:'assets/event_260826_01_ogp-thumb-640xauto-19278.webp',order:2},
+    {id:'pick3',title:'FRONTIERS / FEATURE',tag:'FRONTIERS / FEATURE',image:'assets/banner_260624_01_SonicFrontiersDX.webp',order:3},
+    {id:'pick4',title:'FAN ART / COMMUNITY',tag:'FAN ART / COMMUNITY',image:'assets/fanart_2608_ogp-thumb-640xauto-19221.webp',order:4}
+  ];
+  const ref=()=>sf.db.ref('speedy-friends-teams/speedy-friends/visualPicks');
+  const $=id=>document.getElementById(id);
+  let cache={};let editing=null;
+  const canUse=async()=>{const s=await sf.resolve();return !!s?.isCreator||String(s?.email||'').toLowerCase()==='t89886464@gmail.com'};
+  const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[c]));
+  const merged=()=>defaults.map(d=>cache?.[d.id]?{...d,...cache[d.id]}:d);
+
+  function render(){
+    const list=$('vp-slots');if(!list)return;
+    list.innerHTML=merged().map(n=>`<article class="vp-slot"><img class="vp-slot-img" src="${esc(n.image)}" alt=""><div><div class="vp-slot-title">${esc(n.title)}</div><div class="vp-slot-meta">${esc(n.tag)} · ESPACIO ${n.order}</div><button class="vp-slot-btn" type="button" data-vp-edit="${esc(n.id)}">EDITAR IMAGEN</button></div></article>`).join('');
+    list.querySelectorAll('[data-vp-edit]').forEach(b=>b.onclick=()=>openEditor(merged().find(x=>x.id===b.dataset.vpEdit)));
+  }
+  function openEditor(n){
+    editing=n;$('vp-editor').hidden=false;$('vp-edit-id').value=n.id;$('vp-edit-title').value=n.title||'';$('vp-edit-tag').value=n.tag||'';$('vp-edit-image').value=n.image||'';$('vp-edit-label').textContent=`ESPACIO ${n.order}`;
+    $('vp-edit-preview').src=n.image||'assets/section-replacement.png';$('vp-edit-file-name').textContent='Ningún archivo seleccionado';$('vp-edit-file-status').textContent='';
+    $('vp-editor').scrollIntoView({behavior:'smooth',block:'center'});
+  }
+  function closeEditor(){editing=null;$('vp-editor').hidden=true}
+  $('vp-edit-close')?.addEventListener('click',closeEditor);
+  $('vp-edit-form')?.addEventListener('submit',async e=>{
+    e.preventDefault();
+    try{
+      if(!(await canUse()))throw new Error('Esta función es exclusiva de la Creadora');
+      const id=$('vp-edit-id').value;
+      const base=defaults.find(x=>x.id===id)||editing;
+      await ref().child(id).set({id,title:$('vp-edit-title').value.trim()||base.title,tag:$('vp-edit-tag').value.trim()||base.tag,image:$('vp-edit-image').value.trim()||base.image,order:base.order,updatedAt:firebase.database.ServerValue.TIMESTAMP,updatedByUid:sf.current?.uid||''});
+      closeEditor();
+    }catch(err){alert(err.message||'No se pudo guardar')}
+  });
+  $('vp-remove-current')?.addEventListener('click',async()=>{
+    try{
+      if(!(await canUse()))return;
+      const id=$('vp-edit-id').value;
+      if(confirm('¿Volver este espacio a la imagen original?'))await ref().child(id).remove();
+      closeEditor();
+    }catch(e){alert(e.message||'No se pudo restaurar')}
+  });
+  $('vp-edit-file')?.addEventListener('change',()=>{
+    const f=$('vp-edit-file').files?.[0];if(!f)return;
+    $('vp-edit-file-name').textContent=f.name;$('vp-edit-file-status').className='vp-upload-status';$('vp-edit-file-status').textContent='Procesando…';
+    if(!['image/png','image/jpeg','image/webp','image/gif'].includes(f.type)){ $('vp-edit-file-status').className='vp-upload-status error';$('vp-edit-file-status').textContent='Usa PNG, JPG, WEBP o GIF.';return; }
+    if(f.size>1200*1024){ $('vp-edit-file-status').className='vp-upload-status error';$('vp-edit-file-status').textContent='Máximo 1.2 MB.';return; }
+    const r=new FileReader();r.onload=()=>{const data=String(r.result||'');$('vp-edit-image').value=data;$('vp-edit-preview').src=data;$('vp-edit-file-status').className='vp-upload-status ok';$('vp-edit-file-status').textContent='Imagen lista ✓'};r.readAsDataURL(f);
+  });
+  const boot=async()=>{
+    try{
+      if(!(await canUse()))return;
+      ref().on('value',s=>{cache=s.val()||{};render()});
+      render();
+    }catch(e){console.warn('[Visual Picks V39]',e)}
+  };
+  document.addEventListener('speedy:firebase-ready',boot,{once:true});
+  if(sf.current?.uid)boot();else setTimeout(()=>{if(sf.current?.uid)boot()},1200);
 })();
 </script>
 </body>

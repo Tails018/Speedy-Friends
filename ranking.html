@@ -865,10 +865,11 @@ document.addEventListener('DOMContentLoaded',()=>{
     iconPosition:u?.iconPosition||'50% 50%',iconZoom:num(u?.iconZoom)||100,
     ost:u?.ostName||u?.ostTitle||'',ostUrl:u?.ostUrl||''
   }));
+  const CREATOR_EMAIL='t89886464@gmail.com';
   const isCreator=u=>{
     const r=String(u.role||'').toLowerCase();
-    const me=String(window.SpeedyFirebase?.current?.email||'').toLowerCase();
-    return r==='creator'||(me && String(u.ownerEmail||'').toLowerCase()===me);
+    const ownerEmail=String(u.ownerEmail||'').toLowerCase();
+    return r==='creator' || ownerEmail===CREATOR_EMAIL;
   };
   const isAdmin=u=>String(u.role||'').toLowerCase()==='admin';
 

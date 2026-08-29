@@ -1,0 +1,45 @@
+{
+  "rules": {
+    "speedy-friends-teams": {
+      "$teamId": {
+        "siteSettings": {
+          ".read": "auth != null",
+          ".write": "auth != null && auth.token.email == 't89886464@gmail.com'"
+        },
+        "users": {
+          ".read": "auth != null",
+          "$profileId": {
+            ".write": "auth != null && (auth.token.email == 't89886464@gmail.com' || newData.child('ownerUid').val() == auth.uid || (!newData.exists() && data.child('ownerUid').val() == auth.uid))"
+          }
+        },
+        "permissions": {
+          ".read": "auth != null && auth.token.email == 't89886464@gmail.com'",
+          "$uid": {
+            ".read": "auth != null && (auth.token.email == 't89886464@gmail.com' || auth.uid == $uid)",
+            ".write": "auth != null && auth.token.email == 't89886464@gmail.com'"
+          }
+        },
+        "rings": {
+          ".read": "auth != null",
+          "$profileId": {
+            ".write": "auth != null && (auth.token.email == 't89886464@gmail.com' || root.child('speedy-friends-teams').child($teamId).child('permissions').child(auth.uid).child('rings').val() == true)"
+          }
+        },
+        "news": {
+          ".read": "auth != null",
+          "$id": {
+            ".write": "auth != null && (auth.token.email == 't89886464@gmail.com' || auth.token.admin == true || auth.token.role == 'admin' || root.child('speedy-friends-teams').child($teamId).child('users').child(auth.uid).child('role').val() == 'admin')",
+            ".validate": "newData.hasChildren(['id','title','category','date','summary','body','published']) && newData.child('id').isString() && newData.child('title').isString() && newData.child('category').isString() && newData.child('date').isString() && newData.child('summary').isString() && newData.child('body').isString() && newData.child('published').isBoolean()"
+          }
+        },
+        "visualPicks": {
+          ".read": "auth != null",
+          "$id": {
+            ".write": "auth != null && auth.token.email == 't89886464@gmail.com'",
+            ".validate": "newData.hasChildren(['id','title','image','tag','order']) && newData.child('id').isString() && newData.child('title').isString() && newData.child('image').isString() && newData.child('tag').isString() && newData.child('order').isNumber()"
+          }
+        }
+      }
+    }
+  }
+}

@@ -638,7 +638,22 @@ body.admin-profile-open{overflow:hidden}
 @media(max-width:900px){.rings-filter-row{grid-template-columns:1fr}.rings-actions-row{grid-template-columns:1fr 1fr}}
 @media(max-width:560px){.rings-toolbar-head{align-items:start;flex-direction:column}.rings-actions-row{grid-template-columns:1fr}}
 </style><script src="global-ost-player.js"></script>
-</head>
+
+<style id="admin-news-manager-style">
+#news-manager .news-manager-surface{background:linear-gradient(145deg,#fff,#f5f5f0)}
+#news-manager .admin-news-row{display:grid;grid-template-columns:92px 1fr auto;gap:12px;align-items:center;background:#fff;border:1px solid rgba(18,18,18,.08);padding:9px;transform:translateY(7px);opacity:0;animation:newsAdminIn .45s cubic-bezier(.16,1,.3,1) forwards}
+#news-manager .admin-news-thumb{width:92px;height:70px;object-fit:cover;background:#ecebe5}
+#news-manager .admin-news-title{font-family:SFDisplay,Arial Black,Arial,sans-serif;font-size:21px;line-height:.8;letter-spacing:-.045em}
+#news-manager .admin-news-meta{font-size:6px;letter-spacing:.1em;font-weight:900;opacity:.48;margin-top:5px}
+#news-manager .admin-news-actions{display:flex;gap:5px;flex-wrap:wrap;justify-content:flex-end}
+#news-manager .admin-news-actions button{border:1px solid rgba(18,18,18,.12);background:#fff;padding:8px 9px;font-size:6px;font-weight:900;letter-spacing:.1em;cursor:pointer}
+#news-manager .admin-news-actions button:hover{background:#171717;color:#fff}
+#news-manager .admin-news-actions .danger{background:#d6533f;border-color:#d6533f;color:#fff}
+#news-manager .admin-news-empty{padding:25px;background:#fff;border:1px dashed rgba(18,18,18,.15);font-size:7px;color:#777}
+@keyframes newsAdminIn{to{opacity:1;transform:none}}
+@media(max-width:650px){#news-manager .admin-news-row{grid-template-columns:1fr}.admin-news-thumb{width:100%!important;height:150px!important}.admin-news-actions{justify-content:flex-start!important}}
+</style>
+<style id="admin-news-route-style">#news-manager{display:none!important}</style></head>
 <body data-admin-mode="staff" class="admin-page staff-admin">
 <main class="admin-shell"><div class="admin-role-badge">ROLE ADMIN</div>
 <div class="admin-ghost" aria-hidden="true">ADMIN</div>
@@ -653,7 +668,7 @@ body.admin-profile-open{overflow:hidden}
 <div class="admin-side-nav">
 <button class="admin-side-btn active" data-panel="overview">Resumen</button>
 <button class="admin-side-btn" data-panel="users">Integrantes</button>
-<button class="admin-side-btn" data-panel="rings">Rings</button>
+<button class="admin-side-btn" data-panel="rings">Rings</button><button class="admin-side-btn" data-panel="news-manager">Novedades</button>
 <button class="admin-side-btn" data-panel="audit">Actividad</button>
 </div>
 <div class="admin-side-links"><a href="cafe-worker.html">☕ PANEL DE TRABAJADOR</a><a href="cafeteria.html">CAFETERÍA</a></div><div class="admin-side-note">Espacio preparado para miembros con rol administrativo. Las reglas reales de acceso se conectarán con Firebase al finalizar la interfaz.</div>
@@ -688,6 +703,39 @@ body.admin-profile-open{overflow:hidden}
 </div>
 </section>
 
+
+<section class="admin-section" id="news-manager">
+  <div class="admin-section-head">
+    <div><p class="admin-kicker">Community Editorial</p><h2>Novedades</h2></div>
+    <p>Agregar / quitar · Tiempo real</p>
+  </div>
+  <div class="admin-surface news-manager-surface">
+    <div class="rings-toolbar-head">
+      <div><h3>Publicaciones del team</h3><span>LIVE · FIREBASE</span></div>
+      <button class="admin-btn" id="news-new-btn" type="button">＋ Nueva</button>
+    </div>
+
+    <form id="admin-news-form" class="admin-form" style="grid-template-columns:1fr 1fr">
+      <input type="hidden" id="admin-news-id">
+      <input class="admin-input" id="admin-news-title" placeholder="Título de la novedad" required>
+      <select class="admin-select" id="admin-news-category">
+        <option>EVENTO</option><option>INFO</option><option>COMUNIDAD</option><option>ACTUALIZACIÓN</option><option>ANUNCIO</option>
+      </select>
+      <input class="admin-input" id="admin-news-date" type="date" required>
+      <input class="admin-input" id="admin-news-image" placeholder="URL / ruta de imagen">
+      <textarea class="admin-input" id="admin-news-summary" placeholder="Resumen" style="grid-column:1/-1;min-height:80px"></textarea>
+      <textarea class="admin-input" id="admin-news-body" placeholder="Contenido completo" style="grid-column:1/-1;min-height:130px"></textarea>
+      <label style="font-size:7px;font-weight:900;letter-spacing:.1em"><input id="admin-news-featured" type="checkbox"> DESTACADA EN INICIO</label>
+      <label style="font-size:7px;font-weight:900;letter-spacing:.1em"><input id="admin-news-published" type="checkbox" checked> PUBLICADA</label>
+      <div style="display:flex;gap:7px;flex-wrap:wrap;grid-column:1/-1">
+        <button class="admin-btn primary" type="submit">GUARDAR NOVEDAD</button>
+        <button class="admin-btn" id="admin-news-cancel" type="button">CANCELAR</button>
+      </div>
+    </form>
+
+    <div id="admin-news-list" class="user-list" style="margin-top:16px"></div>
+  </div>
+</section>
 <section class="admin-section" id="audit"><div class="admin-section-head"><div><p class="admin-kicker">Team Log</p><h2>Actividad</h2></div><p>Historial de cambios</p></div>
 <div class="audit-list"><div class="audit-row"><div class="audit-time">18:42</div><div class="audit-main"><strong>Runner</strong><span>permiso Rings activado</span></div><div class="audit-delta">✓</div></div><div class="audit-row"><div class="audit-time">18:31</div><div class="audit-main"><strong>Dash</strong><span>+250 Rings · evento semanal</span></div><div class="audit-delta">+250</div></div><div class="audit-row"><div class="audit-time">17:58</div><div class="audit-main"><strong>Nova</strong><span>nuevo integrante registrado</span></div><div class="audit-delta">NEW</div></div></div>
 </section>
@@ -1121,6 +1169,130 @@ document.addEventListener("DOMContentLoaded",()=>{
   };
   sf.auth.onAuthStateChanged(check);
   if(sf.auth.currentUser)check(sf.auth.currentUser);
+})();
+</script>
+
+<script id="admin-news-manager-script">
+(() => {
+  const sf=window.SpeedyFirebase;
+  const $=id=>document.getElementById(id);
+  if(!sf)return;
+  const ref=()=>sf.db.ref('speedy-friends-teams/speedy-friends/news');
+  let cache={};
+
+  const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[c]));
+
+  const canEdit=async()=>{
+    const s=await sf.resolve();
+    return !!s?.isCreator || String(s?.role||'').toLowerCase()==='admin';
+  };
+
+  function clear(){
+    $('admin-news-id').value='';
+    $('admin-news-title').value='';
+    $('admin-news-category').value='EVENTO';
+    $('admin-news-date').value=new Date().toISOString().slice(0,10);
+    $('admin-news-image').value='';
+    $('admin-news-summary').value='';
+    $('admin-news-body').value='';
+    $('admin-news-featured').checked=false;
+    $('admin-news-published').checked=true;
+  }
+
+  function fill(n){
+    $('admin-news-id').value=n.id||'';
+    $('admin-news-title').value=n.title||'';
+    $('admin-news-category').value=n.category||'INFO';
+    $('admin-news-date').value=n.date||'';
+    $('admin-news-image').value=n.image||'';
+    $('admin-news-summary').value=n.summary||'';
+    $('admin-news-body').value=n.body||'';
+    $('admin-news-featured').checked=!!n.featured;
+    $('admin-news-published').checked=n.published!==false;
+    $('news-manager')?.scrollIntoView({behavior:'smooth',block:'start'});
+  }
+
+  function render(){
+    const list=$('admin-news-list'); if(!list)return;
+    const items=Object.values(cache).sort((a,b)=>(b.createdAt||0)-(a.createdAt||0));
+    if(!items.length){list.innerHTML='<div class="admin-news-empty">No hay novedades todavía.</div>';return;}
+    list.innerHTML=items.map((n,i)=>`
+      <article class="admin-news-row" style="animation-delay:${Math.min(i,10)*45}ms">
+        <img class="admin-news-thumb" src="${esc(n.image||'assets/section-replacement.png')}" alt="">
+        <div>
+          <div class="admin-news-title">${esc(n.title||'Sin título')}</div>
+          <div class="admin-news-meta">${esc(n.date||'')} · ${esc(n.category||'INFO')} · ${n.published===false?'OCULTA':'PUBLICADA'}${n.featured?' · DESTACADA':''}</div>
+          <div style="font-size:6px;line-height:1.4;color:#67625e;margin-top:5px">${esc(n.summary||'')}</div>
+        </div>
+        <div class="admin-news-actions">
+          <button type="button" data-news-edit="${esc(n.id)}">EDITAR</button>
+          <button type="button" class="danger" data-news-delete="${esc(n.id)}">QUITAR</button>
+        </div>
+      </article>`).join('');
+    list.querySelectorAll('[data-news-edit]').forEach(b=>b.onclick=()=>fill(cache[b.dataset.newsEdit]));
+    list.querySelectorAll('[data-news-delete]').forEach(b=>b.onclick=async()=>{
+      try{
+        if(!(await canEdit())) throw new Error('Sin permiso');
+        const n=cache[b.dataset.newsDelete];
+        if(!n)return;
+        if(!confirm(`¿Quitar la novedad "${n.title||'Sin título'}"?`))return;
+        await ref().child(b.dataset.newsDelete).remove();
+      }catch(e){alert(e.message||'No se pudo quitar');}
+    });
+  }
+
+  $('admin-news-form')?.addEventListener('submit',async e=>{
+    e.preventDefault();
+    try{
+      const s=await sf.resolve();
+      if(!(s?.isCreator||String(s?.role||'').toLowerCase()==='admin')) throw new Error('Sin permiso para administrar Novedades');
+      const id=$('admin-news-id').value||ref().push().key;
+      const existing=cache[id]||{};
+      const payload={
+        id,
+        title:$('admin-news-title').value.trim(),
+        category:$('admin-news-category').value,
+        date:$('admin-news-date').value,
+        image:$('admin-news-image').value.trim(),
+        summary:$('admin-news-summary').value.trim(),
+        body:$('admin-news-body').value.trim(),
+        featured:$('admin-news-featured').checked,
+        published:$('admin-news-published').checked,
+        createdAt:existing.createdAt||firebase.database.ServerValue.TIMESTAMP,
+        updatedAt:firebase.database.ServerValue.TIMESTAMP,
+        updatedByUid:s.uid
+      };
+      if(!payload.title)throw new Error('Escribe un título');
+      await ref().child(id).set(payload);
+      clear();
+    }catch(e){alert(e.message||'No se pudo guardar');}
+  });
+
+  $('news-new-btn')?.addEventListener('click',clear);
+  $('admin-news-cancel')?.addEventListener('click',clear);
+
+  const boot=async()=>{
+    try{
+      if(!(await canEdit()))return;
+      const navBtn=document.querySelector('[data-panel="news-manager"]');
+      if(navBtn)navBtn.style.display='';
+      ref().on('value',s=>{cache=s.val()||{};render()});
+      clear();
+    }catch(e){console.warn('[Admin Novedades]',e)}
+  };
+  document.addEventListener('speedy:firebase-ready',boot,{once:true});
+  if(sf.current?.uid)boot();
+})();
+</script>
+
+<script id="admin-news-route-script">
+(() => {
+  const btn=document.querySelector('[data-panel="news-manager"]');
+  if(!btn)return;
+  btn.addEventListener('click',e=>{
+    e.preventDefault();
+    window.location.assign('novedades-admin.html');
+  });
 })();
 </script>
 </body>
