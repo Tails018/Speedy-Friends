@@ -1,7 +1,6 @@
 # Speedy Friends — Sonic-style Animated Portal
 
-Reconstrucción visual de Speedy Friends inspirada en la arquitectura de interacción de Sonic Channel.
-
+Reconstrucción visual de Speedy Friends
 ### Integración añadida
 - Sección **Accesos rápidos** colocada inmediatamente después de **Descargas**.
 - Misma tipografía display, ritmo de espaciado y sistema de `reveal`/stagger.
