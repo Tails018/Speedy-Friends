@@ -1,4 +1,4 @@
-<!doctype html><html lang="es"><head>
+<!doctype html><html lang="es"><head><script id="sf-theme-prepaint-v47">(function(){try{var v=localStorage.getItem('sfTheme');if(v==='dark')document.documentElement.setAttribute('data-sf-theme','dark')}catch(e){}})();</script>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Café Club · Speedy Friends</title><link rel="stylesheet" href="styles.css">
 <style>
@@ -153,7 +153,7 @@
 @keyframes ticketBlink{50%{opacity:.25}}
 @media(max-width:560px){.ticket-v4{min-height:380px;padding:23px 18px 18px}.ticket-v4:after{inset:18px}.ticket-v4-title{font-size:26px}}
 </style>
-</head><body>
+</head><body class="cafeteria-page">
 <style id="sf-loader-style">
 .sf-page-loader{position:fixed;inset:0;z-index:99999;display:grid;place-items:center;background:radial-gradient(circle at 50% 44%,rgba(34,34,34,.98),rgba(5,5,5,.99) 72%);backdrop-filter:blur(14px);pointer-events:none;opacity:1;visibility:visible;transition:opacity .34s ease,visibility .34s ease;pointer-events:auto}
 .sf-page-loader.is-hidden{opacity:0;visibility:hidden;pointer-events:none}
@@ -659,4 +659,11 @@ document.addEventListener('DOMContentLoaded',()=>{
   setTimeout(apply,1800);
 })();
 </script>
-</body></html>
+
+<style id="sf-theme-toggle-global-v45">
+.sf-theme-toggle-global{position:fixed;right:14px;bottom:14px;z-index:5000;display:inline-flex;align-items:center;gap:7px;padding:9px 11px;background:#171717;color:#fff;border:1px solid rgba(255,255,255,.12);font:1000 6px/1 Arial;letter-spacing:.1em;cursor:pointer;border-radius:999px;box-shadow:0 12px 28px rgba(0,0,0,.16);transition:transform .25s ease}
+.sf-theme-toggle-global:hover{transform:translateY(-3px)}
+html[data-sf-theme="dark"] .sf-theme-toggle-global{background:#f3f0e8;color:#171717}
+</style>
+<button class="sf-theme-toggle-global" type="button" data-theme-toggle><span>◐</span><b data-theme-label>MODO OSCURO</b></button>
+<script src="app.js"></script></body></html>

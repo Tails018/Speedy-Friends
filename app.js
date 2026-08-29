@@ -396,3 +396,24 @@
       window.__sfLoaderHideTimer = null;
     }
   });
+
+/* ===== Global Dark Mode controller v45 ===== */
+(() => {
+  const root=document.documentElement;
+  const KEY='sfTheme';
+  const read=()=>{try{return localStorage.getItem(KEY)||'light'}catch{return'light'}};
+  const apply=value=>{
+    const v=value==='dark'?'dark':'light';
+    root.setAttribute('data-sf-theme',v);
+    document.body?.classList.toggle('theme-dark',v==='dark');
+    document.querySelectorAll('[data-theme-label],#quick-theme-label,#index-theme-label').forEach(el=>el.textContent=v==='dark'?'MODO CLARO':'MODO OSCURO');
+    try{localStorage.setItem(KEY,v)}catch{}
+  };
+  const toggle=()=>apply(root.getAttribute('data-sf-theme')==='dark'?'light':'dark');
+  apply(read());
+  window.sfDarkMode={apply,toggle,get:()=>root.getAttribute('data-sf-theme')||'light'};
+  document.addEventListener('click',e=>{
+    const b=e.target.closest('[data-theme-toggle],#theme-toggle,.theme-toggle,[data-action="theme"]');
+    if(b){e.preventDefault();toggle();}
+  });
+})();

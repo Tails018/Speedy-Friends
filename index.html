@@ -195,7 +195,20 @@ html[data-sf-theme="dark"] .sf-utility-backdrop{background:rgba(0,0,0,.63)}
 #topics:after{content:"";position:absolute;left:-70px;bottom:10px;width:190px;height:190px;background:url("assets/sonicforces2.gif") center/cover no-repeat;opacity:.08;mix-blend-mode:multiply;pointer-events:none}
 @keyframes sfNewsRingFloat{50%{transform:translateY(-12px) rotate(12deg)}}
 </style>
-</head>
+
+<style id="sf-theme-toggle-v45">
+.sf-theme-toggle{display:inline-flex;align-items:center;gap:8px;padding:9px 11px;border:1px solid rgba(18,18,18,.12);background:#fff;color:#171717;cursor:pointer;font:1000 6px/1 Arial;letter-spacing:.12em;transition:transform .3s ease}
+.sf-theme-toggle:hover{transform:translateY(-3px)}
+html[data-sf-theme="dark"] .sf-theme-toggle{background:#171c24;color:#fff;border-color:rgba(255,255,255,.1)}
+@media(max-width:600px){.sf-theme-toggle{margin-top:9px}}
+</style>
+<style id="sf-theme-toggle-v46-style">
+.sf-theme-toggle{border-radius:999px!important;background:rgba(255,255,255,.78)!important;backdrop-filter:blur(10px);box-shadow:0 10px 30px rgba(0,0,0,.08);font-size:6px!important}
+html[data-sf-theme="dark"] .sf-theme-toggle{background:rgba(18,24,32,.92)!important;box-shadow:0 12px 30px rgba(0,0,0,.25)}
+</style><style id="sf-see-friends-v48-style">
+.sf-see-friends-wrap{display:flex;justify-content:flex-end;margin-top:15px}.sf-see-friends{display:inline-flex;align-items:center;gap:10px;padding:11px 14px;background:#171717;color:#fff!important;text-decoration:none;font:1000 7px/1 Arial;letter-spacing:.12em;box-shadow:8px 8px 0 rgba(46,103,166,.12);transition:transform .3s ease,background .25s}.sf-see-friends:hover{transform:translateY(-3px);background:#ef263f}.sf-see-friends span{color:#e7c66b;font-size:13px}html[data-sf-theme="dark"] .sf-see-friends{background:#18212b!important;border:1px solid rgba(255,255,255,.1);box-shadow:8px 8px 0 rgba(86,119,215,.08)}html[data-sf-theme="dark"] .sf-see-friends:hover{background:#ef4056!important}
+@media(max-width:520px){.sf-see-friends-wrap{justify-content:flex-start}.sf-see-friends{width:100%;justify-content:space-between}}
+</style></head>
 <body>
 
 <style id="sf-loader-style">
@@ -362,6 +375,7 @@ html[data-sf-theme="dark"] .sf-utility-backdrop{background:rgba(0,0,0,.63)}
         <article class="friend-card"><div class="friend-img"><img src="assets/section-replacement.png" alt="Amigo 03"></div><div class="friend-info"><span>#03</span><h3>Nova</h3><p>Creator · Builder</p><b>AWAY</b></div></article>
         <article class="friend-card"><div class="friend-img"><img src="assets/section-replacement.png" alt="Amigo 04"></div><div class="friend-info"><span>#04</span><h3>Rin</h3><p>Artist · Chaser</p><b>ONLINE</b></div></article>
       </div>
+      <div id="sf-see-friends-v48" class="sf-see-friends-wrap"><a class="sf-see-friends" href="index.html#friends">VER AMIGOS <span>→</span></a></div>
     </section>
 
     <section id="special" class="sf-section sf-special reveal">
@@ -378,9 +392,11 @@ html[data-sf-theme="dark"] .sf-utility-backdrop{background:rgba(0,0,0,.63)}
       </div>
     </section>
 
-    <section id="quick-actions" class="sf-section sf-section-light sf-quick-actions reveal">
+    
+
+<section id="quick-actions" class="sf-section sf-section-light sf-quick-actions reveal">
       <div class="sf-section-head">
-        <div><p class="eyebrow">05 / QUICK ACCESS</p><h2>Accesos rápidos</h2></div>
+        <div><p class="eyebrow">05 / QUICK ACCESS</p><h2>Accesos rápidos</h2></div><button class="sf-theme-toggle" type="button" data-theme-toggle><span>◐</span><b id="index-theme-label">MODO OSCURO</b></button>
         <span class="sf-more sf-more-static">Controles del portal</span>
       </div>
       <div class="quick-action-grid">
@@ -988,4 +1004,5 @@ document.addEventListener('DOMContentLoaded',()=>{
   },true);
 })();
 </script>
+
 </body></html>

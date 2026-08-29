@@ -1,6 +1,6 @@
 <!doctype html>
 <html lang="es">
-<head>
+<head><script id="sf-theme-prepaint-v47">(function(){try{var v=localStorage.getItem('sfTheme');if(v==='dark')document.documentElement.setAttribute('data-sf-theme','dark')}catch(e){}})();</script>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Speedy Friends · Editor de Novedades</title>
 <link rel="stylesheet" href="styles.css">
@@ -39,8 +39,57 @@ body{background:linear-gradient(135deg,#f5efe4,#eef1f5 56%,#f8eee8);font-family:
 .news-local-status.error{color:#d6533f}.news-local-status.ok{color:#6f8870}
 @media(max-width:600px){.news-local-head{display:block}.news-local-btn{display:inline-block;margin-top:8px}}
 </style>
+
+<style id="news-admin-mobile-v42">
+@media(max-width:720px){
+  body{overflow-x:hidden}
+  .wrap{padding:20px 12px 50px}
+  .shell{grid-template-columns:1fr!important}
+  .side{position:relative!important;top:auto!important;display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-bottom:10px}
+  .side button,.side a{min-height:42px}
+  .preview-wrap{grid-template-columns:1fr!important;gap:10px}
+  .form{grid-template-columns:1fr!important}
+  .form .full{grid-column:1!important}
+  .preview-card{min-height:300px}
+  .preview-card img{height:185px}
+  .preview-card h3{font-size:38px!important}
+  .news-preview-public{padding:11px!important}
+  .npp-card{grid-template-columns:1fr!important}
+  .npp-media,.npp-media img{min-height:210px;height:210px}
+  .npp-copy{padding:18px!important}
+  .npp-copy h4{font-size:39px!important}
+  .news-local-head{display:block!important}
+  .news-local-btn{display:inline-block;margin-top:8px}
+}
+@media(max-width:430px){
+  .side{grid-template-columns:1fr}
+  .preview-card h3{font-size:33px!important}
+  .npp-copy h4{font-size:35px!important}
+}
+</style>
+
+<style id="sf-npp-title-contrast-v50">
+/* Preview title: keep it readable in both themes */
+#news-preview-public .npp-copy h4#npp-title{
+  position:relative;
+  z-index:3;
+  display:block;
+  color:#ffffff !important;
+  text-shadow:0 3px 14px rgba(0,0,0,.28);
+  opacity:1 !important;
+}
+html[data-sf-theme="dark"] #news-preview-public .npp-copy h4#npp-title{
+  color:#ffffff !important;
+  text-shadow:0 4px 18px rgba(0,0,0,.38);
+}
+/* Make long titles wrap cleanly without disappearing into the preview background. */
+#news-preview-public .npp-copy h4#npp-title{
+  overflow-wrap:anywhere;
+  word-break:normal;
+}
+</style>
 </head>
-<body>
+<body class="novedades-admin-page">
 <header class="top"><a class="brand" href="index.html"><b>SPEEDY</b> FRIENDS</a><div><a href="index.html">INICIO</a> · <a href="novedades.html">VER NOVEDADES</a></div></header>
 <div class="editor-bg" aria-hidden="true"></div>
 
@@ -206,13 +255,14 @@ async function boot(){
  try{
   const state=await window.SpeedyFirebase.resolve();
   const allowed=!!state?.uid && (!!state.isCreator || String(state.email||'').toLowerCase()==='t89886464@gmail.com' || String(state.role||'').toLowerCase()==='admin');
-  if(!allowed){ return; }
-  $('app').style.display='block';
+  if(!allowed){$('app').style.display='none';$('denied').style.display='block';return}
   $('denied').style.display='none';
-  newsRef().off();
+  $('app').style.display='block';
+  newsRef().off('value');
   newsRef().on('value',s=>{all=s.val()||{};drawList()});
   clearForm();
- }catch(err){console.warn('[Novedades editor]',err)}
+  updatePreview();
+ }catch(err){console.warn('[Novedades admin]',err)}
 }
 document.addEventListener('speedy:firebase-ready',boot);
 if(window.SpeedyFirebase?.current?.uid)boot();
@@ -220,93 +270,6 @@ if(window.SpeedyFirebase?.auth)window.SpeedyFirebase.auth.onAuthStateChanged(()=
 })();
 </script>
 
-
-<script id="news-admin-live-preview-sync-v34">
-(() => {
-  const $=id=>document.getElementById(id);
-  const fields=['news-title','news-category','news-date','news-summary','news-body','news-image-url','news-published'];
-  const sync=()=>{
-    const title=$('news-title')?.value.trim()||'Tu próxima novedad';
-    const cat=$('news-category')?.value||'EVENTO';
-    const date=$('news-date')?.value||'FECHA';
-    const summary=$('news-summary')?.value.trim()||'Escribe un resumen para ver cómo aparecerá la novedad.';
-    const body=$('news-body')?.value.trim()||'El contenido completo aparecerá aquí en tiempo real.';
-    const image=$('news-image-url')?.value.trim();
-
-    if($('npp-title'))$('npp-title').textContent=title;
-    if($('npp-category'))$('npp-category').textContent=cat;
-    if($('npp-date'))$('npp-date').textContent=date;
-    if($('npp-summary'))$('npp-summary').textContent=summary;
-    if($('npp-body'))$('npp-body').textContent=body;
-    if($('npp-status'))$('npp-status').textContent=($('news-published')?.checked===false?'OCULTA':'BORRADOR / PUBLICABLE');
-
-    if($('npp-image') && image) $('npp-image').src=image;
-  };
-
-  fields.forEach(id=>{
-    const el=$(id);
-    if(!el)return;
-    ['input','change','keyup'].forEach(evt=>el.addEventListener(evt,sync));
-  });
-
-  $('news-image-file')?.addEventListener('change',()=>{
-    const f=$('news-image-file').files?.[0];
-    if(!f)return;
-    const reader=new FileReader();
-    reader.onload=()=>{ if($('news-image-url'))$('news-image-url').value=String(reader.result||''); sync(); };
-    reader.readAsDataURL(f);
-  });
-
-  // Initial synchronization, then small retries to survive Firebase/editor load order.
-  sync();
-  setTimeout(sync,200);
-  setTimeout(sync,700);
-})();
-</script>
-
-<script id="news-local-image-v36">
-(() => {
-  const fileInput=document.getElementById('news-image-file');
-  if(!fileInput)return;
-  const nameEl=document.getElementById('news-local-name');
-  const statusEl=document.getElementById('news-local-status');
-  const urlInput=document.getElementById('news-image-url');
-  const preview=document.getElementById('preview-image');
-  const npp=document.getElementById('npp-image');
-
-  fileInput.addEventListener('change',()=>{
-    const file=fileInput.files?.[0];
-    if(!file)return;
-    nameEl.textContent=file.name;
-    statusEl.className='news-local-status';
-    statusEl.textContent='Procesando imagen…';
-
-    const ok=['image/png','image/jpeg','image/webp','image/gif'].includes(file.type);
-    if(!ok){statusEl.className='news-local-status error';statusEl.textContent='Usa PNG, JPG, WEBP o GIF.';fileInput.value='';return;}
-    // Keep the stored payload reasonable for Realtime Database.
-    if(file.size>1200*1024){
-      statusEl.className='news-local-status error';
-      statusEl.textContent='Esta imagen supera 1.2 MB. Reduce su tamaño antes de publicarla.';
-      fileInput.value='';return;
-    }
-
-    const reader=new FileReader();
-    reader.onload=()=>{
-      const dataUrl=String(reader.result||'');
-      urlInput.value=dataUrl;
-      if(preview)preview.src=dataUrl;
-      if(npp)npp.src=dataUrl;
-      statusEl.className='news-local-status ok';
-      statusEl.textContent='Imagen lista para publicar ✓';
-    };
-    reader.onerror=()=>{
-      statusEl.className='news-local-status error';
-      statusEl.textContent='No se pudo leer la imagen.';
-    };
-    reader.readAsDataURL(file);
-  });
-})();
-</script>
 
 <script id="news-admin-boot-retry">
 (() => {
@@ -319,4 +282,53 @@ if(window.SpeedyFirebase?.auth)window.SpeedyFirebase.auth.onAuthStateChanged(()=
   attempt();
 })();
 </script>
-</body></html>
+
+<script id="v40-editor-auth-retry">
+(() => {
+  const test=async()=>{try{if(window.SpeedyFirebase?.resolve)await window.SpeedyFirebase.resolve()}catch(_){}}; 
+  document.addEventListener('speedy:firebase-ready',test);
+  if(window.SpeedyFirebase?.auth)window.SpeedyFirebase.auth.onAuthStateChanged(()=>test());
+  let n=0;const timer=setInterval(()=>{if(window.SpeedyFirebase?.current?.uid||++n>30){clearInterval(timer);if(window.SpeedyFirebase?.current?.uid)test()}},400);
+})();
+</script>
+<script id="news-admin-preview-sync-v41">
+(() => {
+ const $=id=>document.getElementById(id);
+ const sync=()=>{
+   const title=$('news-title')?.value.trim()||'Tu próxima novedad';
+   const cat=$('news-category')?.value||'EVENTO';
+   const date=$('news-date')?.value||'FECHA';
+   const summary=$('news-summary')?.value.trim()||'Escribe un resumen para ver cómo aparecerá la novedad.';
+   const body=$('news-body')?.value.trim()||'El contenido completo aparecerá aquí.';
+   if($('npp-title')){ $('npp-title').textContent=title; $('npp-title').style.color='#fff'; }
+   if($('npp-category'))$('npp-category').textContent=cat;
+   if($('npp-date'))$('npp-date').textContent=date;
+   if($('npp-summary'))$('npp-summary').textContent=summary;
+   if($('npp-body'))$('npp-body').textContent=body;
+   if($('npp-status'))$('npp-status').textContent=$('news-published')?.checked===false?'OCULTA':'BORRADOR / PUBLICABLE';
+   const src=$('news-image-url')?.value.trim();
+   if(src){if($('preview-image'))$('preview-image').src=src;if($('npp-image'))$('npp-image').src=src}
+ };
+ ['news-title','news-category','news-date','news-summary','news-body','news-image-url','news-published'].forEach(id=>{
+   $(id)?.addEventListener('input',sync);$(id)?.addEventListener('change',sync);$(id)?.addEventListener('keyup',sync);
+ });
+ $('news-image-file')?.addEventListener('change',()=>{
+   const f=$('news-image-file').files?.[0];if(!f)return;
+   $('news-local-name')?.replaceChildren(document.createTextNode(f.name));
+   const status=$('news-local-status');if(status){status.className='news-local-status';status.textContent='Procesando imagen…'}
+   if(!['image/png','image/jpeg','image/webp','image/gif'].includes(f.type)){if(status){status.className='news-local-status error';status.textContent='Usa PNG, JPG, WEBP o GIF.'}return}
+   if(f.size>1200*1024){if(status){status.className='news-local-status error';status.textContent='Máximo 1.2 MB.'}return}
+   const r=new FileReader();
+   r.onload=()=>{const d=String(r.result||'');if($('news-image-url'))$('news-image-url').value=d;if($('preview-image'))$('preview-image').src=d;if($('npp-image'))$('npp-image').src=d;if(status){status.className='news-local-status ok';status.textContent='Imagen lista ✓'}sync()};
+   r.readAsDataURL(f);
+ });
+ sync();setTimeout(sync,300);
+})();
+</script>
+<style id="sf-theme-toggle-global-v45">
+.sf-theme-toggle-global{position:fixed;right:14px;bottom:14px;z-index:5000;display:inline-flex;align-items:center;gap:7px;padding:9px 11px;background:#171717;color:#fff;border:1px solid rgba(255,255,255,.12);font:1000 6px/1 Arial;letter-spacing:.1em;cursor:pointer;border-radius:999px;box-shadow:0 12px 28px rgba(0,0,0,.16);transition:transform .25s ease}
+.sf-theme-toggle-global:hover{transform:translateY(-3px)}
+html[data-sf-theme="dark"] .sf-theme-toggle-global{background:#f3f0e8;color:#171717}
+</style>
+<button class="sf-theme-toggle-global" type="button" data-theme-toggle><span>◐</span><b data-theme-label>MODO OSCURO</b></button>
+<script src="app.js"></script></body></html>

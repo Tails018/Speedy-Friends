@@ -203,7 +203,7 @@
 
 
 <html lang="es">
-<head>
+<head><script id="sf-theme-prepaint-v47">(function(){try{var v=localStorage.getItem('sfTheme');if(v==='dark')document.documentElement.setAttribute('data-sf-theme','dark')}catch(e){}})();</script>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Administración · Speedy Friends</title>
 <link rel="stylesheet" href="styles.css">
@@ -1388,74 +1388,27 @@ document.addEventListener("DOMContentLoaded",()=>{
 })();
 </script>
 
-<script id="visual-picks-creator-script">
+<script id="visual-picks-creator-v40">
 (() => {
-  const sf=window.SpeedyFirebase;
-  const $=id=>document.getElementById(id);
-  if(!sf)return;
-  const path='speedy-friends-teams/speedy-friends/visualPicks';
-  const ref=()=>sf.db.ref(path);
-  let cache={};
-
-  const canUse=async()=>{
-    const s=await sf.resolve();
-    return !!s?.isCreator || String(s?.email||'').toLowerCase()==='t89886464@gmail.com';
-  };
-  const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[c]));
-
-  function clear(){ $('vp-id').value=''; $('vp-title').value=''; $('vp-image').value=''; $('vp-tag').value=''; $('vp-order').value='0'; }
-  function fill(n){ $('vp-id').value=n.id||''; $('vp-title').value=n.title||''; $('vp-image').value=n.image||''; $('vp-tag').value=n.tag||''; $('vp-order').value=Number(n.order||0); document.getElementById('visual-picks')?.scrollIntoView({behavior:'smooth'}); }
-
-  function render(){
-    const list=$('vp-list'); if(!list)return;
-    const items=Object.values(cache).sort((a,b)=>Number(a.order||0)-Number(b.order||0));
-    list.innerHTML=items.length?items.map((n,i)=>`
-      <article class="vp-row">
-        <img class="vp-thumb" src="${esc(n.image||'assets/section-replacement.png')}" alt="">
-        <div><div class="vp-title">${esc(n.title||'Sin título')}</div><div class="vp-meta">${esc(n.tag||'')} · ORDEN ${Number(n.order||0)}</div></div>
-        <div class="vp-actions"><button type="button" data-vp-edit="${esc(n.id)}">EDITAR</button><button type="button" class="danger" data-vp-del="${esc(n.id)}">QUITAR</button></div>
-      </article>`).join(''):'<div class="admin-news-empty">No hay Visual Picks configurados.</div>';
-    list.querySelectorAll('[data-vp-edit]').forEach(b=>b.onclick=()=>fill(cache[b.dataset.vpEdit]));
-    list.querySelectorAll('[data-vp-del]').forEach(b=>b.onclick=async()=>{
-      if(!(await canUse()))return;
-      if(confirm('¿Quitar este Visual Pick?'))await ref().child(b.dataset.vpDel).remove();
-    });
-  }
-
-  $('vp-form')?.addEventListener('submit',async e=>{
-    e.preventDefault();
-    try{
-      if(!(await canUse()))throw new Error('Esta función es exclusiva de la Creadora');
-      const id=$('vp-id').value||ref().push().key;
-      await ref().child(id).set({
-        id,
-        title:$('vp-title').value.trim(),
-        image:$('vp-image').value.trim(),
-        tag:$('vp-tag').value.trim(),
-        order:Number($('vp-order').value||0),
-        updatedAt:firebase.database.ServerValue.TIMESTAMP,
-        updatedByUid:sf.current?.uid||''
-      });
-      clear();
-    }catch(err){alert(err.message||'No se pudo guardar')}
-  });
-  $('vp-new')?.addEventListener('click',clear);
-  $('vp-cancel')?.addEventListener('click',clear);
-
-  const boot=async()=>{
-    try{
-      if(!(await canUse())){
-        const b=document.querySelector('[data-panel="visual-picks"]');
-        if(b)b.remove();
-        $('visual-picks')?.remove();
-        return;
-      }
-      ref().on('value',s=>{cache=s.val()||{};render()});
-      clear();
-    }catch(e){console.warn('[Visual Picks]',e)}
-  };
-  document.addEventListener('speedy:firebase-ready',boot,{once:true});
-  if(sf.current?.uid)boot();
+ const sf=window.SpeedyFirebase;if(!sf)return;
+ const defaults=[
+  {id:'pick1',title:'SHADOW / NOW',tag:'SHADOW / NOW',image:'assets/gametitle_SonicShadowGenerations_square.webp',order:1},
+  {id:'pick2',title:'EVENT / 2026',tag:'EVENT / 2026',image:'assets/event_260826_01_ogp-thumb-640xauto-19278.webp',order:2},
+  {id:'pick3',title:'FRONTIERS / FEATURE',tag:'FRONTIERS / FEATURE',image:'assets/banner_260624_01_SonicFrontiersDX.webp',order:3},
+  {id:'pick4',title:'FAN ART / COMMUNITY',tag:'FAN ART / COMMUNITY',image:'assets/fanart_2608_ogp-thumb-640xauto-19221.webp',order:4}
+ ];
+ const ref=()=>sf.db.ref('speedy-friends-teams/speedy-friends/visualPicks'),$=id=>document.getElementById(id),esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[c]));
+ let cache={},editing=null;
+ const canUse=async()=>{const s=await sf.resolve();return !!s?.isCreator||String(s?.email||'').toLowerCase()==='t89886464@gmail.com'};
+ const merged=()=>defaults.map(d=>cache?.[d.id]?{...d,...cache[d.id]}:d);
+ const render=()=>{const list=$('vp-slots');if(!list)return;list.innerHTML=merged().map(n=>`<article class="vp-slot"><img class="vp-slot-img" src="${esc(n.image)}" alt=""><div><div class="vp-slot-title">${esc(n.title)}</div><div class="vp-slot-meta">${esc(n.tag)} · ESPACIO ${n.order}</div><button class="vp-slot-btn" type="button" data-vp-edit="${n.id}">EDITAR IMAGEN</button></div></article>`).join('');list.querySelectorAll('[data-vp-edit]').forEach(b=>b.onclick=()=>open(merged().find(x=>x.id===b.dataset.vpEdit)))};
+ const open=n=>{if(!n)return;editing=n;$('vp-editor').hidden=false;$('vp-edit-id').value=n.id;$('vp-edit-title').value=n.title||'';$('vp-edit-tag').value=n.tag||'';$('vp-edit-image').value=n.image||'';$('vp-edit-label').textContent=`ESPACIO ${n.order}`;$('vp-edit-preview').src=n.image;$('vp-edit-file-name').textContent='Ningún archivo seleccionado';$('vp-edit-file-status').textContent='';$('vp-editor').scrollIntoView({behavior:'smooth',block:'center'})};
+ $('vp-edit-close')?.addEventListener('click',()=>{$('vp-editor').hidden=true;editing=null});
+ $('vp-edit-form')?.addEventListener('submit',async e=>{e.preventDefault();try{if(!(await canUse()))throw new Error('Esta función es exclusiva de la Creadora');const id=$('vp-edit-id').value,base=defaults.find(x=>x.id===id)||editing;await ref().child(id).set({id,title:$('vp-edit-title').value.trim()||base.title,tag:$('vp-edit-tag').value.trim()||base.tag,image:$('vp-edit-image').value.trim()||base.image,order:base.order,updatedAt:firebase.database.ServerValue.TIMESTAMP,updatedByUid:sf.current?.uid||''});$('vp-editor').hidden=true}catch(err){alert(err.message||'No se pudo guardar')}});
+ $('vp-remove-current')?.addEventListener('click',async()=>{try{if(!(await canUse()))return;const id=$('vp-edit-id').value;if(confirm('¿Restaurar este espacio a su imagen original?'))await ref().child(id).remove();$('vp-editor').hidden=true}catch(e){alert(e.message||'No se pudo restaurar')}});
+ $('vp-edit-file')?.addEventListener('change',()=>{const f=$('vp-edit-file').files?.[0];if(!f)return;$('vp-edit-file-name').textContent=f.name;if(!['image/png','image/jpeg','image/webp','image/gif'].includes(f.type)){ $('vp-edit-file-status').className='vp-upload-status error';$('vp-edit-file-status').textContent='Usa PNG, JPG, WEBP o GIF.';return}if(f.size>1200*1024){$('vp-edit-file-status').className='vp-upload-status error';$('vp-edit-file-status').textContent='Máximo 1.2 MB.';return}const r=new FileReader();r.onload=()=>{const d=String(r.result||'');$('vp-edit-image').value=d;$('vp-edit-preview').src=d;$('vp-edit-file-status').className='vp-upload-status ok';$('vp-edit-file-status').textContent='Imagen lista ✓'};r.readAsDataURL(f)});
+ const boot=()=>{ref().once('value').then(s=>{cache=s.val()||{};render()}).catch(()=>render());ref().on('value',s=>{cache=s.val()||{};render()})};
+ if(sf.current?.uid)boot();else{let tries=0;const timer=setInterval(()=>{if(sf.current?.uid){clearInterval(timer);boot()}else if(++tries>30)clearInterval(timer)},400)}
 })();
 </script>
 
@@ -1576,5 +1529,12 @@ document.addEventListener("DOMContentLoaded",()=>{
   if(sf.current?.uid)boot();else setTimeout(()=>{if(sf.current?.uid)boot()},1200);
 })();
 </script>
-</body>
+
+<style id="sf-theme-toggle-global-v45">
+.sf-theme-toggle-global{position:fixed;right:14px;bottom:14px;z-index:5000;display:inline-flex;align-items:center;gap:7px;padding:9px 11px;background:#171717;color:#fff;border:1px solid rgba(255,255,255,.12);font:1000 6px/1 Arial;letter-spacing:.1em;cursor:pointer;border-radius:999px;box-shadow:0 12px 28px rgba(0,0,0,.16);transition:transform .25s ease}
+.sf-theme-toggle-global:hover{transform:translateY(-3px)}
+html[data-sf-theme="dark"] .sf-theme-toggle-global{background:#f3f0e8;color:#171717}
+</style>
+<button class="sf-theme-toggle-global" type="button" data-theme-toggle><span>◐</span><b data-theme-label>MODO OSCURO</b></button>
+<script src="app.js"></script></body>
 </html>

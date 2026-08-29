@@ -203,7 +203,7 @@
 
 
 <html lang="es">
-<head>
+<head><script id="sf-theme-prepaint-v47">(function(){try{var v=localStorage.getItem('sfTheme');if(v==='dark')document.documentElement.setAttribute('data-sf-theme','dark')}catch(e){}})();</script>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Administración · Speedy Friends / Staff</title>
 <link rel="stylesheet" href="styles.css">
@@ -653,7 +653,14 @@ body.admin-profile-open{overflow:hidden}
 @keyframes newsAdminIn{to{opacity:1;transform:none}}
 @media(max-width:650px){#news-manager .admin-news-row{grid-template-columns:1fr}.admin-news-thumb{width:100%!important;height:150px!important}.admin-news-actions{justify-content:flex-start!important}}
 </style>
-<style id="admin-news-route-style">#news-manager{display:none!important}</style></head>
+<style id="admin-news-route-style">#news-manager{display:none!important}</style>
+<style id="admin-role-rings-v42">
+.admin-quick-rings{display:grid;grid-template-columns:minmax(130px,.7fr) minmax(180px,1fr) 120px minmax(160px,1fr) auto auto;gap:8px;align-items:end;margin:0 0 14px;padding:14px;background:linear-gradient(110deg,#fff,#f1f3fb);border:1px solid rgba(18,18,18,.08);box-shadow:8px 8px 0 rgba(35,61,143,.06)}
+.admin-quick-rings>div{display:flex;flex-direction:column}.admin-quick-rings strong{font-family:SFDisplay,Arial Black,Arial,sans-serif;font-size:34px;line-height:.75}.admin-quick-rings span{font-size:5px;font-weight:900;letter-spacing:.12em;opacity:.45;margin-top:5px}
+@media(max-width:1000px){.admin-quick-rings{grid-template-columns:1fr 1fr}.admin-quick-rings>div{grid-column:1/-1}.admin-quick-rings .admin-btn{min-height:44px}}
+@media(max-width:680px){.admin-quick-rings{grid-template-columns:1fr 1fr;padding:11px}.admin-quick-rings select,.admin-quick-rings input{grid-column:1/-1}.admin-quick-rings .admin-btn{width:100%;min-height:46px}.admin-quick-rings strong{font-size:31px}}
+</style>
+</head>
 <body data-admin-mode="staff" class="admin-page staff-admin">
 <main class="admin-shell"><div class="admin-role-badge">ROLE ADMIN</div>
 <div class="admin-ghost" aria-hidden="true">ADMIN</div>
@@ -1295,5 +1302,12 @@ document.addEventListener("DOMContentLoaded",()=>{
   });
 })();
 </script>
-</body>
+
+<style id="sf-theme-toggle-global-v45">
+.sf-theme-toggle-global{position:fixed;right:14px;bottom:14px;z-index:5000;display:inline-flex;align-items:center;gap:7px;padding:9px 11px;background:#171717;color:#fff;border:1px solid rgba(255,255,255,.12);font:1000 6px/1 Arial;letter-spacing:.1em;cursor:pointer;border-radius:999px;box-shadow:0 12px 28px rgba(0,0,0,.16);transition:transform .25s ease}
+.sf-theme-toggle-global:hover{transform:translateY(-3px)}
+html[data-sf-theme="dark"] .sf-theme-toggle-global{background:#f3f0e8;color:#171717}
+</style>
+<button class="sf-theme-toggle-global" type="button" data-theme-toggle><span>◐</span><b data-theme-label>MODO OSCURO</b></button>
+<script src="app.js"></script></body>
 </html>

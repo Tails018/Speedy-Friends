@@ -148,6 +148,23 @@
   }
 
 
+
+  async function logActivity(title,detail,meta={}){
+    try{
+      if(!state.uid)return;
+      const data={
+        title:String(title||"Actividad del team"),
+        detail:String(detail||""),
+        avatar:String(meta.avatar||state.profile?.avatar||""),
+        actorUid:state.uid,
+        actorName:String(meta.actorName||state.profile?.nickname||state.profile?.username||state.email.split("@")[0]||"Integrante"),
+        type:String(meta.type||"general"),
+        at:firebase.database.ServerValue.TIMESTAMP
+      };
+      await teamRoot().child("activity").push(data);
+    }catch(e){console.warn("[Activity log]",e)}
+  }
+
   async function saveProfile(data){
     const user=auth.currentUser;
     if(!user)throw new Error("Inicia sesión con Google");
@@ -233,7 +250,7 @@
 
   async function setRingAmount(profileId,delta,reason=""){
     await resolve();
-    if(!state.isAdmin && !state.permissions?.rings) throw new Error("Sin permiso para modificar Rings");
+    if(!state.isAdmin && String(state.role||"").toLowerCase()!=="admin" && !state.permissions?.rings) throw new Error("Sin permiso para modificar Rings");
     const userSnap=await refs.users.child(profileId).once("value");
     if(!userSnap.exists()) throw new Error("Usuario no encontrado");
     const target=userSnap.val()||{};
@@ -245,6 +262,8 @@
     const total=Number(result.snapshot.val()||0);
     await refs.users.child(profileId).update({rings:total});
     await refs.ringHistory.push({userId:profileId,delta:Math.trunc(Number(delta)),reason:String(reason||""),byUid:state.uid,byEmail:state.email,at:firebase.database.ServerValue.TIMESTAMP});
+    const action=Math.trunc(Number(delta))>=0?"sumó":"quitó";
+    await logActivity("Rings modificados", `${state.profile?.nickname||state.profile?.username||state.email.split("@")[0]} ${action} ${Math.abs(Math.trunc(Number(delta)))} Rings`, {type:"rings"});
     return total;
   }
 

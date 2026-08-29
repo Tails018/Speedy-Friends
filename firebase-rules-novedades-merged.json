@@ -22,7 +22,7 @@
         "rings": {
           ".read": "auth != null",
           "$profileId": {
-            ".write": "auth != null && (auth.token.email == 't89886464@gmail.com' || root.child('speedy-friends-teams').child($teamId).child('permissions').child(auth.uid).child('rings').val() == true)"
+            ".write": "auth != null && (auth.token.email == 't89886464@gmail.com' || root.child('speedy-friends-teams').child($teamId).child('permissions').child(auth.uid).child('rings').val() == true || root.child('speedy-friends-teams').child($teamId).child('permissions').child(auth.uid).child('role').val() == 'admin' || (root.child('speedy-friends-teams').child($teamId).child('cafeteria').child('workers').child(auth.uid).child('role').val() == 'worker' && newData.val() <= data.val()))"
           }
         },
         "news": {
@@ -37,6 +37,16 @@
           "$id": {
             ".write": "auth != null && auth.token.email == 't89886464@gmail.com'",
             ".validate": "newData.hasChildren(['id','title','image','tag','order']) && newData.child('id').isString() && newData.child('title').isString() && newData.child('image').isString() && newData.child('tag').isString() && newData.child('order').isNumber()"
+          }
+        },
+        "activity": {
+          ".read": "auth != null",
+          ".indexOn": [
+            "at"
+          ],
+          "$id": {
+            ".write": "auth != null",
+            ".validate": "newData.hasChildren(['title','detail','actorUid','type','at']) && newData.child('title').isString() && newData.child('detail').isString() && newData.child('actorUid').val() == auth.uid && newData.child('type').isString()"
           }
         }
       }
