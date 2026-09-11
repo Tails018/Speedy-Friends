@@ -326,6 +326,94 @@
 })();
 
 
+/* Account access: guests must authenticate before opening their profile. */
+(() => {
+  const getFirebase = () => window.SpeedyFirebase;
+  const getAuthUser = () => getFirebase()?.auth?.currentUser || null;
+  const goProfile = () => {
+    const href = 'profile.html';
+    if (typeof window.sfShowLoader === 'function') {
+      window.sfShowLoader('PERFIL', 'Cargando tu perfil…');
+    }
+    window.setTimeout(() => window.location.assign(href), 120);
+  };
+
+  const signInThenProfile = async (trigger) => {
+    const sf = getFirebase();
+    if (!sf?.signInGoogle) {
+      console.error('[Speedy Friends] Firebase no está disponible para iniciar sesión.');
+      return;
+    }
+
+    if (trigger) {
+      trigger.dataset.authBusy = 'true';
+      trigger.setAttribute('aria-busy', 'true');
+      trigger.classList.add('is-auth-loading');
+      trigger.querySelector('strong')?.replaceChildren(document.createTextNode('Iniciando sesión…'));
+    }
+
+    try {
+      const result = await sf.signInGoogle();
+      if (result?.user || getAuthUser()) {
+        if (typeof sf.resolve === 'function') await sf.resolve().catch(() => {});
+        goProfile();
+      }
+    } catch (error) {
+      console.error('[Speedy Friends] Google Sign-In:', error);
+      if (trigger) {
+        trigger.querySelector('strong')?.replaceChildren(document.createTextNode('Mi cuenta'));
+      }
+    } finally {
+      if (trigger) {
+        delete trigger.dataset.authBusy;
+        trigger.removeAttribute('aria-busy');
+        trigger.classList.remove('is-auth-loading');
+      }
+    }
+  };
+
+  const handleAccountAccess = async (trigger) => {
+    if (!trigger || trigger.dataset.authBusy === 'true') return;
+    if (getAuthUser()) {
+      goProfile();
+      return;
+    }
+    await signInThenProfile(trigger);
+  };
+
+  document.addEventListener('click', async event => {
+    const account = event.target.closest('[data-action="account"]');
+    if (account) {
+      event.preventDefault();
+      event.stopImmediatePropagation();
+      await handleAccountAccess(account);
+      return;
+    }
+
+    const route = event.target.closest('[data-route]');
+    if (!route) return;
+    const href = route.getAttribute('data-route');
+    if (!href) return;
+    if (href === 'profile.html') {
+      event.preventDefault();
+      event.stopImmediatePropagation();
+      await handleAccountAccess(route);
+      return;
+    }
+    if (href.startsWith('#')) {
+      const target = document.querySelector(href);
+      if (target) {
+        event.preventDefault();
+        target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
+    } else {
+      event.preventDefault();
+      if (typeof window.sfShowLoader === 'function') window.sfShowLoader('PÁGINA', 'Preparando la página…');
+      window.setTimeout(() => window.location.assign(href), 120);
+    }
+  }, true);
+})();
+
 /* Hero CTA interactions — shared motion, no transform conflicts with the page. */
 (() => {
   const buttons = [...document.querySelectorAll('.sf-btn-animated')];

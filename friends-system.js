@@ -724,7 +724,7 @@
       const preview = GUEST_FRIENDS.slice(0, 4);
       track.innerHTML = preview.map((p, i) => {
         const img = `<span class="sf-home-f-avatar-fallback">${esc(initials(nameFor(p)))}</span>`;
-        return `<article class="friend-card${i === 0 ? ' active' : ''} sf-home-guest-card">
+        return `<article class="friend-card card-visible${i === 0 ? ' active' : ''} sf-home-guest-card">
           <div class="friend-img">${img}<span class="sf-home-presence is-offline" aria-hidden="true"></span></div>
           <div class="friend-info"><span>#${String(i+1).padStart(2,'0')}</span><h3>${esc(nameFor(p))}</h3><p>${esc(p.title)}</p><b class="sf-home-status is-offline">VISTA PREVIA</b></div>
           <div class="sf-home-ring-mini">${Number(p.__rings).toLocaleString('es-PE')} RINGS</div>
@@ -733,20 +733,42 @@
       return;
     }
     if (!profiles.length) {
-      track.innerHTML = `<article class="friend-card active sf-home-friends-empty"><div class="friend-img"><span class="sf-home-f-avatar-fallback">+</span></div><div class="friend-info"><span>01</span><h3>Aún sin amigos</h3><p>Agrega integrantes desde Amigos</p><b>BUSCAR AMIGOS</b></div></article>`;
+      track.innerHTML = `<article class="friend-card card-visible active sf-home-friends-empty"><div class="friend-img"><span class="sf-home-f-avatar-fallback">+</span></div><div class="friend-info"><span>01</span><h3>Aún sin amigos</h3><p>Agrega integrantes desde Amigos</p><b>BUSCAR AMIGOS</b></div></article>`;
       return;
     }
 
     track.innerHTML = profiles.map((p, i) => {
       const rings = Number(p.__rings || p.rings || 0);
-      const role = p.title || p.role || 'Integrante';
-      const img = p.avatar ? `<img src="${esc(p.avatar)}" alt="${esc(nameFor(p))}" loading="lazy">` : `<span class="sf-home-f-avatar-fallback">${esc(initials(nameFor(p)))}</span>`;
-      const online = presenceFor(p.ownerUid).online;
-      return `<a class="friend-card${i === 0 ? ' active' : ''}" href="${profileHref(p)}">
-        <div class="friend-img">${img}<span class="sf-home-presence ${online ? 'is-online' : 'is-offline'}" aria-label="${online ? 'En línea' : 'Offline'}"></span></div>
-        <div class="friend-info"><span>#${String(i+1).padStart(2,'0')}</span><h3>${esc(nameFor(p))}</h3><p>${esc(role)}</p><b class="sf-home-status ${online ? 'is-online' : 'is-offline'}">${presenceLabel(p.ownerUid)}</b></div>
-        <div class="sf-home-ring-mini">${rings.toLocaleString('es-PE')} RINGS</div>
-      </a>`;
+      const displayName = nameFor(p);
+      const username = p.username || p.userName || p.name || displayName;
+      const description = String(p.description || p.bio || 'Sin descripción por ahora.').trim();
+      const online = Boolean(presenceFor(p.ownerUid).online);
+      const status = online ? 'EN LÍNEA' : 'OFFLINE';
+      const img = p.avatar ? `<img src="${esc(p.avatar)}" alt="${esc(displayName)}" loading="lazy">` : `<span class="sf-home-f-avatar-fallback">${esc(initials(displayName))}</span>`;
+      const ostUrl = String(p.ostUrl || '').trim();
+      const ostName = String(p.ostName || 'OST personal').trim();
+      const ost = ostUrl
+        ? `<div class="sf-home-ost" onclick="event.stopPropagation()">
+             <div class="sf-home-ost-head"><span>OST</span><strong title="${esc(ostName)}">${esc(ostName)}</strong></div>
+             <audio controls preload="none" src="${esc(ostUrl)}" aria-label="OST de ${esc(displayName)}"></audio>
+           </div>`
+        : `<div class="sf-home-ost sf-home-ost-empty"><span>OST</span><strong>Sin OST publicado</strong></div>`;
+
+      return `<article class="friend-card card-visible${i === 0 ? ' active' : ''} sf-home-friend-rich">
+        <a class="sf-home-friend-main" href="${profileHref(p)}" aria-label="Ver perfil de ${esc(displayName)}">
+          <div class="friend-img">${img}<span class="sf-home-presence ${online ? 'is-online' : 'is-offline'}" aria-label="${online ? 'En línea' : 'Offline'}"></span></div>
+          <div class="friend-info">
+            <span>#${String(i+1).padStart(2,'0')} · @${esc(username)}</span>
+            <h3>${esc(displayName)}</h3>
+            <p>${esc(description)}</p>
+            <b class="sf-home-status ${online ? 'is-online' : 'is-offline'}">${status}</b>
+          </div>
+        </a>
+        <div class="sf-home-friend-bottom">
+          <div class="sf-home-ring-mini">${rings.toLocaleString('es-PE')} RINGS</div>
+          ${ost}
+        </div>
+      </article>`;
     }).join('');
   }
 
@@ -766,6 +788,7 @@
     renderProfileFriends();
     injectProfileSection();
     updateFriendCountOnProfile();
+    renderHomeFriends();
   }
 
   let bootedUid = '';
