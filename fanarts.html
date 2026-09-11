@@ -1,0 +1,64 @@
+<!doctype html>
+<html lang="es" data-sf-theme="dark">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Speedy Friends · Fanarts</title>
+<link rel="stylesheet" href="styles.css">
+<link rel="stylesheet" href="friends-system.css">
+<link rel="stylesheet" href="fanarts.css">
+<script src="https://www.gstatic.com/firebasejs/12.1.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/12.1.0/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/12.1.0/firebase-database-compat.js"></script>
+<script src="firebase-legacy.js"></script>
+<script src="friends-system.js"></script>
+</head>
+<body class="fanart-page">
+<div class="fanart-atmosphere" aria-hidden="true"><i></i><i></i><i></i><span></span><span></span><span></span></div>
+<header class="sf-header fanart-header">
+  <a class="sf-brand" href="index.html" aria-label="Speedy Friends inicio"><span class="sf-brand-speedy">SPEEDY</span><strong class="sf-brand-friends">FRIENDS</strong></a>
+  <nav class="sf-desktop-nav" aria-label="Navegación principal">
+    <a href="index.html">INICIO</a><a href="novedades.html">NOVEDADES</a><a href="friends.html">AMIGOS</a><a href="ranking.html">RANKING</a><a class="is-active" href="fanarts.html">FANARTS</a><a href="cafeteria.html">CAFETERÍA</a>
+  </nav>
+  <div class="sf-socials fanart-user-actions"><a href="profile.html" class="fanart-profile-link">PERFIL ↗</a><button class="sf-menu fanart-menu" id="fanartMenu" type="button" aria-label="Abrir menú"><span></span><span></span><span></span></button></div>
+</header>
+<div class="fanart-mobile" id="fanartMobile" aria-hidden="true"><button type="button" id="fanartMobileClose">×</button><p class="eyebrow">SPEEDY FRIENDS</p><a href="index.html">Inicio</a><a href="novedades.html">Novedades</a><a href="friends.html">Amigos</a><a href="ranking.html">Ranking</a><a href="fanarts.html">Fanarts</a><a href="cafeteria.html">Cafetería</a></div>
+
+<main>
+<section class="fanart-hero">
+  <div class="hero-noise"></div><div class="hero-orbit orbit-a"></div><div class="hero-orbit orbit-b"></div><div class="hero-orbit orbit-c"></div>
+  <div class="fanart-hero-copy reveal-fa">
+    <div class="fanart-eyebrow"><span class="live-dot"></span> 07 / COMMUNITY ART · SPEEDY FRIENDS</div>
+    <h1 class="fanart-title"><span>FAN</span><b>ARTS</b></h1>
+    <p class="fanart-lead">Tu galería. Tu estilo. Tu mundo. Comparte ilustraciones, renders, edits y animaciones con el team.</p>
+    <div class="fanart-hero-pills"><span>CREA</span><span>COMPARTE</span><span>DEJA TU HUELLA</span></div>
+  </div>
+  <div class="fanart-showcase reveal-fa delay-1">
+    <div class="showcase-card showcase-back"><span>COMMUNITY</span></div>
+    <div class="showcase-card showcase-mid"><span>ART · 02</span></div>
+    <div class="showcase-card showcase-main"><div class="showcase-art"><div class="speed-lines"></div><strong>SHOW<br>YOUR<br>STYLE.</strong><small>ONLY IN SPEEDY FRIENDS</small></div></div>
+    <div class="showcase-badge"><b>♥</b><span>Tu arte puede<br>ser el siguiente.</span></div>
+  </div>
+</section>
+
+<section class="fanart-upload-zone reveal-fa delay-2">
+  <div class="upload-intro"><span class="section-number">01</span><div><p class="mini-label">SUBE TU CREACIÓN</p><h2>Hazlo <em>tu estilo.</em></h2><p>Arrastra una imagen o un video para convertirlo en una publicación del team. Elige el apartado que corresponda y, en <b>Edits</b>, también puedes subir video.</p></div></div>
+  <form class="fanart-form" id="fanartUploadForm">
+    <label class="fanart-drop" id="fanartDrop" for="fanartFile"><input id="fanartFile" type="file" accept="image/png,image/jpeg,image/webp,video/mp4,video/webm,video/quicktime"><span class="drop-icon">＋</span><strong id="fanartFileLabel">ARRASTRA TU ARTE AQUÍ</strong><small>PNG · JPG · WEBP · MP4 · WEBM · MOV</small><span class="drop-preview" id="fanartFilePreview"></span></label>
+    <div class="fanart-fields"><input id="fanartTitle" maxlength="70" placeholder="Título del fanart" required><textarea id="fanartDescription" maxlength="220" placeholder="Cuenta algo sobre tu creación…"></textarea><div class="fanart-category-picker"><span>ELIGE EL APARTADO DE TU ARTE</span><select id="fanartCategory" required><option value="Digital">Digital</option><option value="Dibujos">Dibujos</option><option value="Renders">Renders</option><option value="Edits">Edits · imagen o video</option><option value="Tradicional">Tradicional</option></select></div><div class="fanart-field-row"><button class="fanart-submit" type="submit"><span>PUBLICAR</span><b>↗</b></button></div><div class="fanart-upload-hint">Máx. 10 MB en imagen · 40 MB en video · Los videos se habilitan en <b>Edits</b>.</div><div class="fanart-status" id="fanartUploadStatus"></div></div>
+  </form>
+</section>
+
+<section class="fanart-gallery-wrap">
+  <div class="fanart-toolbar reveal-fa">
+    <div><p class="mini-label">02 · GALERÍA</p><h2>Últimas <em>creaciones.</em></h2></div>
+    <div class="fanart-tools"><label class="search-box"><span>⌕</span><input id="fanartSearch" placeholder="Buscar por título, autor o categoría…"></label><select id="fanartSort"><option value="likes">Más likes</option><option value="recent">Más recientes</option></select></div>
+  </div>
+  <div class="fanart-filter-row reveal-fa"><div class="fanart-filters"><button class="fanart-filter is-active" data-filter="Todos">Todos</button><button class="fanart-filter" data-filter="Dibujos">Dibujos</button><button class="fanart-filter" data-filter="Renders">Renders</button><button class="fanart-filter" data-filter="Edits">Edits</button><button class="fanart-filter" data-filter="Tradicional">Tradicional</button><button class="fanart-filter" data-filter="Digital">Digital</button></div><span class="gallery-signal"><i></i> FEED EN TIEMPO REAL</span></div>
+  <div class="fanart-grid" id="fanartGrid"></div>
+</section>
+</main>
+<footer class="sf-footer fanart-footer"><div class="sf-footer-brand">SPEEDY <strong>FRIENDS</strong></div><div>COMMUNITY ART · 2026</div><a href="#top">TOP ↑</a></footer>
+
+<div class="fanart-modal" id="fanartModal" aria-hidden="true"><div class="fanart-modal-backdrop" data-fanart-close></div><div class="fanart-modal-dialog" role="dialog" aria-modal="true" aria-labelledby="modalTitle"><button class="fanart-modal-close" data-fanart-close type="button">×</button><div class="fanart-modal-media" id="modalMedia"></div><div class="fanart-modal-info"><div class="modal-topline"><span id="modalCategory"></span><small id="modalFormat"></small></div><h2 id="modalTitle"></h2><p id="modalDescription"></p><div class="fanart-modal-author"><div class="fanart-modal-avatar" id="modalAvatar"></div><div><strong id="modalAuthor"></strong><span>ARTISTA DEL TEAM</span></div></div><div class="fanart-modal-likes"><span>♥</span><b id="modalLikes">0</b><small>LIKES</small></div></div></div></div>
+<script src="fanarts-system.js"></script>
+</body></html>

@@ -57,7 +57,8 @@
     rings:teamRoot().child("rings"),
     ratings:teamRoot().child("ratings"),
     ringHistory:teamRoot().child("ringHistory"),
-    siteSettings:teamRoot().child("siteSettings")
+    siteSettings:teamRoot().child("siteSettings"),
+    presence:teamRoot().child("presence")
   };
 
   const state={
@@ -260,7 +261,9 @@
     const result=await refs.rings.child(profileId).transaction(v=>Math.max(0,Number(v||target.rings||0)+Math.trunc(Number(delta))));
     if(!result.committed) throw new Error("Firebase no confirmó el cambio de Rings");
     const total=Number(result.snapshot.val()||0);
-    await refs.users.child(profileId).update({rings:total});
+    // El saldo oficial de Rings vive en /rings. La UI administrativa escucha ese nodo en tiempo real.
+    // No actualizamos /users aquí: las reglas protegen el perfil para evitar que un Admin altere otros campos.
+    if(state.isCreator){ try{ await refs.users.child(profileId).update({rings:total}); }catch(e){ console.warn("[Speedy Firebase] sync users.rings:",e); } }
     await refs.ringHistory.push({userId:profileId,delta:Math.trunc(Number(delta)),reason:String(reason||""),byUid:state.uid,byEmail:state.email,at:firebase.database.ServerValue.TIMESTAMP});
     const action=Math.trunc(Number(delta))>=0?"sumó":"quitó";
     await logActivity("Rings modificados", `${state.profile?.nickname||state.profile?.username||state.email.split("@")[0]} ${action} ${Math.abs(Math.trunc(Number(delta)))} Rings`, {type:"rings"});
@@ -283,9 +286,14 @@
     const u=snap.val()||{};
     if(!u.ownerUid) throw new Error("El integrante debe iniciar sesión primero");
     if(String(u.ownerEmail||"").toLowerCase()===creatorEmail) throw new Error("La creadora está protegida");
-    return enabled
-      ? refs.permissions.child(u.ownerUid).update({role:"admin",rings:true})
-      : refs.permissions.child(u.ownerUid).remove();
+    if(enabled){
+      await refs.permissions.child(u.ownerUid).update({role:"admin",rings:true});
+      await refs.users.child(profileId).update({role:"admin"});
+    }else{
+      await refs.permissions.child(u.ownerUid).remove();
+      await refs.users.child(profileId).update({role:"member"});
+    }
+    return true;
   }
 
   async function setRating(profileId,score){
@@ -301,10 +309,53 @@
     return r.set(score);
   }
 
+  let presenceUnsub = null;
+  let presenceConnectedRef = null;
+
+  async function startPresence(uid){
+    uid=String(uid||"");
+    if(!uid || !db) return;
+    try{
+      if(presenceUnsub) presenceUnsub();
+      if(presenceConnectedRef) presenceConnectedRef.off();
+      const myPresence=refs.presence.child(uid);
+      const connectedRef=db.ref(".info/connected");
+      const connectedHandler=snap=>{
+        if(snap.val()!==true) return;
+        myPresence.onDisconnect().set({online:false,lastSeen:firebase.database.ServerValue.TIMESTAMP});
+        myPresence.set({online:true,lastSeen:firebase.database.ServerValue.TIMESTAMP});
+      };
+      presenceConnectedRef=connectedRef;
+      connectedRef.on("value",connectedHandler);
+      presenceUnsub=()=>{
+        connectedRef.off("value",connectedHandler);
+        presenceUnsub=null;
+      };
+      await myPresence.set({online:true,lastSeen:firebase.database.ServerValue.TIMESTAMP});
+    }catch(e){ console.warn("[Speedy Firebase] presence:",e); }
+  }
+
+  async function stopPresence(uid){
+    uid=String(uid||"");
+    try{
+      if(uid) await refs.presence.child(uid).set({online:false,lastSeen:firebase.database.ServerValue.TIMESTAMP});
+    }catch(e){ console.warn("[Speedy Firebase] presence stop:",e); }
+  }
+
+  function watchUserPresence(uid,callback){
+    uid=String(uid||"");
+    if(!uid){ callback?.({online:false,lastSeen:null}); return ()=>{}; }
+    const ref=refs.presence.child(uid);
+    const handler=snap=>callback?.(snap.val()||{online:false,lastSeen:null});
+    ref.on("value",handler);
+    return ()=>ref.off("value",handler);
+  }
+
   auth.onAuthStateChanged(async ()=>{
     try{
       await resolve();
       state.ready=Boolean(state.uid);
+      if(state.uid) await startPresence(state.uid);
       document.dispatchEvent(new CustomEvent("speedy:firebase-ready",{detail:{...state}}));
     }catch(error){
       console.error("[Speedy Firebase]",error);
@@ -314,9 +365,9 @@
 
   window.SpeedyFirebase={
     auth,db,storage,CloudinaryOST,CLOUDINARY_CONFIG,REALTIME_CONFIG,refs,current:state,
-    resolve,saveProfile,signInGoogle,signOut:()=>auth.signOut(),adminHref,
+    resolve,saveProfile,signInGoogle,signOut:async()=>{ try{ if(state.uid) await stopPresence(state.uid); }catch(e){} return auth.signOut(); },adminHref,
     uploadProfileAsset,uploadOst:(uid,file,trackId)=>CloudinaryOST.upload(file,uid),
-    watchPublicUsers,watchUserRings,setRingAmount,grantRingsPermission,setAdminRole,setCafeWorkerRole,setRating,
+    watchPublicUsers,watchUserRings,watchUserPresence,setRingAmount,grantRingsPermission,setAdminRole,setCafeWorkerRole,setRating,
     isCreator:()=>state.isCreator,isAdmin:()=>state.isAdmin
   };
 })();

@@ -1,0 +1,1057 @@
+<!doctype html>
+
+<style id="sf-loader-style">
+.sf-page-loader{
+  position:fixed;inset:0;z-index:99999;
+  display:grid;place-items:center;
+  background:radial-gradient(circle at 50% 44%,rgba(34,34,34,.98),rgba(5,5,5,.99) 72%);
+  backdrop-filter:blur(14px);pointer-events:none;
+  opacity:1;visibility:visible;
+  transition:opacity .34s ease,visibility .34s ease;
+  pointer-events:auto;
+}
+.sf-page-loader.is-hidden{opacity:0;visibility:hidden;pointer-events:none}
+.sf-loader-orbit{
+  position:absolute;
+  width:clamp(170px,22vw,260px);
+  aspect-ratio:1;
+  border-radius:50%;
+  border:1px solid rgba(18,18,18,.08);
+  animation:sfLoaderOrbit 6s linear infinite;
+}
+.sf-loader-orbit::before,
+.sf-loader-orbit::after{
+  content:"";
+  position:absolute;
+  border-radius:50%;
+  border:1px dashed rgba(35,61,143,.16);
+}
+.sf-loader-orbit::before{inset:13px}
+.sf-loader-orbit::after{inset:29px}
+@keyframes sfLoaderOrbit{to{transform:rotate(360deg)}}
+.sf-loader-card{
+  position:relative;
+  width:min(330px,82vw);
+  padding:28px 28px 24px;
+  background:rgba(18,18,18,.96);
+  border:1px solid rgba(18,18,18,.08);
+  box-shadow:0 25px 80px rgba(0,0,0,.1);
+  text-align:center;
+  overflow:hidden;
+  transform:translateY(12px) scale(.975);
+  animation:sfLoaderCardIn .55s cubic-bezier(.16,1,.3,1) forwards;
+}
+@keyframes sfLoaderCardIn{to{transform:none}}
+.sf-loader-card::before{
+  content:"";position:absolute;left:-35%;top:0;width:24%;height:100%;
+  background:linear-gradient(90deg,transparent,rgba(255,255,255,.65),transparent);
+  transform:skewX(-16deg);
+  animation:sfLoaderSweep 1.65s cubic-bezier(.16,1,.3,1) infinite;
+}
+@keyframes sfLoaderSweep{
+  0%,28%{opacity:0;transform:skewX(-16deg) translateX(0)}
+  44%{opacity:.9}
+  67%,100%{opacity:0;transform:skewX(-16deg) translateX(560%)}
+}
+.sf-loader-gif{
+  position:relative;z-index:2;
+  width:112px;height:112px;object-fit:contain;
+  display:block;margin:0 auto 11px;
+  filter:drop-shadow(0 12px 22px rgba(0,0,0,.1));
+  animation:sfLoaderBob 1.9s ease-in-out infinite;
+}
+@keyframes sfLoaderBob{
+  0%,100%{transform:translateY(0) scale(1)}
+  50%{transform:translateY(-5px) scale(1.025)}
+}
+.sf-loader-kicker{
+  position:relative;z-index:2;
+  margin:0 0 6px;
+  color:#ef263f;
+  font-size:6px;font-weight:900;letter-spacing:.19em;
+  text-transform:uppercase;
+}
+.sf-loader-title{
+  position:relative;z-index:2;
+  margin:0;
+  font-family:SFDisplay,Arial Black,Arial,sans-serif;
+  font-size:clamp(27px,5vw,42px);
+  line-height:.8;
+  letter-spacing:-.055em;
+  text-transform:uppercase;
+}
+.sf-loader-subtitle{
+  position:relative;z-index:2;
+  margin:10px 0 0;
+  font-size:7px;font-weight:900;letter-spacing:.12em;
+  text-transform:uppercase;opacity:.46;
+}
+.sf-loader-line{
+  position:relative;z-index:2;
+  height:3px;margin:17px auto 0;max-width:230px;
+  background:rgba(18,18,18,.08);overflow:hidden;
+}
+.sf-loader-line::after{
+  content:"";display:block;height:100%;width:36%;
+  background:linear-gradient(90deg,#ef263f,#233d8f);
+  animation:sfLoaderBar 1.1s ease-in-out infinite;
+}
+@keyframes sfLoaderBar{
+  0%{transform:translateX(-115%)}
+  100%{transform:translateX(420%)}
+}
+@media(prefers-reduced-motion:reduce){
+  .sf-loader-orbit,.sf-loader-gif,.sf-loader-card,.sf-loader-card::before,.sf-loader-line::after{
+    animation:none!important
+  }
+}
+</style>
+<div class="sf-page-loader" id="sf-page-loader" aria-live="polite" aria-busy="true">
+  <div class="sf-loader-orbit" aria-hidden="true"></div>
+  <div class="sf-loader-card">
+    <img class="sf-loader-gif" src="assets/loader.gif" alt="" aria-hidden="true">
+    <p class="sf-loader-kicker" id="sf-loader-kicker">Speedy Friends / Navigation</p>
+    <h2 class="sf-loader-title" id="sf-loader-title">CARGANDO</h2>
+    <p class="sf-loader-subtitle" id="sf-loader-subtitle">Preparando la página…</p>
+    <div class="sf-loader-line" aria-hidden="true"></div>
+  </div>
+</div>
+<script>
+(() => {
+  const loader = document.getElementById('sf-page-loader');
+  const title = document.getElementById('sf-loader-title');
+  const subtitle = document.getElementById('sf-loader-subtitle');
+  const kicker = document.getElementById('sf-loader-kicker');
+  if (!loader) return;
+
+  let shownAt = performance.now();
+  let hideTimer = null;
+  const minVisible = 520;
+
+  const routeName = href => {
+    try {
+      const u = new URL(href, window.location.href);
+      const file = (u.pathname.split('/').pop() || 'index.html').toLowerCase();
+      const names = {
+        'index.html':'INICIO',
+        'profile.html':'PERFIL',
+        'ost.html':'AUDIO / OST',
+        'ranking.html':'RANKING',
+        'admin.html':'ADMIN',
+        'admin-role.html':'STAFF ADMIN'
+      };
+      return names[file] || (file ? file.replace('.html','').replace(/[-_]/g,' ').toUpperCase() : 'PÁGINA');
+    } catch { return 'PÁGINA'; }
+  };
+
+  const show = (page = 'PÁGINA', sub = 'Preparando la página…') => {
+    if (!loader.classList.contains('is-hidden')) {
+      shownAt = performance.now();
+    } else {
+      loader.classList.remove('is-hidden');
+      loader.setAttribute('aria-hidden','false');
+      loader.setAttribute('aria-busy','true');
+      shownAt = performance.now();
+    }
+    if (kicker) kicker.textContent = 'SPEEDY FRIENDS / NAVEGACIÓN';
+    if (title) title.textContent = page;
+    if (subtitle) subtitle.textContent = sub;
+  };
+
+  const hide = () => {
+    const wait = Math.max(0, minVisible - (performance.now() - shownAt));
+    clearTimeout(hideTimer);
+    hideTimer = setTimeout(() => {
+      loader.classList.add('is-hidden');
+      loader.setAttribute('aria-hidden','true');
+      loader.setAttribute('aria-busy','false');
+    }, wait);
+  };
+
+  window.addEventListener('load', hide, {once:true});
+  if (document.readyState === 'complete') hide();
+
+  document.addEventListener('click', event => {
+    const link = event.target.closest('a[href]');
+    if (!link) return;
+
+    const raw = link.getAttribute('href') || '';
+    if (!raw || raw.startsWith('#') || raw.startsWith('mailto:') || raw.startsWith('tel:') ||
+        link.target === '_blank' || event.ctrlKey || event.metaKey || event.shiftKey || event.altKey) return;
+
+    let target;
+    try { target = new URL(raw, window.location.href); } catch { return; }
+    if (target.origin !== window.location.origin) return;
+
+    const page = routeName(target.href);
+    const isSameDocument = target.pathname === window.location.pathname && target.hash;
+    if (isSameDocument) {
+      show(page, 'Navegando a la sección…');
+      setTimeout(() => { window.location.href = target.href; }, 250);
+      return;
+    }
+
+    // Full page navigation: display loader before the browser leaves.
+    show(page, page === 'RANKING' ? 'Cargando clasificación…' :
+               page === 'AUDIO / OST' ? 'Cargando biblioteca OST…' :
+               page === 'PERFIL' ? 'Cargando perfil…' :
+               page === 'ADMIN' || page === 'STAFF ADMIN' ? 'Cargando panel…' :
+               'Preparando la página…');
+  });
+})();
+</script>
+
+
+<html lang="es">
+<head><script id="sf-theme-prepaint-v47">(function(){try{var v=localStorage.getItem('sfTheme');if(v==='dark')document.documentElement.setAttribute('data-sf-theme','dark')}catch(e){}})();</script>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Ranking · Speedy Friends</title>
+<link rel="stylesheet" href="styles.css">
+<link rel="stylesheet" href="friends-system.css">
+<style>
+:root{--rbg:#f4f3ee;--rink:#151515;--ra:#ef263f;--rblue:#233d8f}
+body.ranking-page{margin:0;background:var(--rbg);color:var(--rink);overflow-x:hidden}
+.ranking-shell{min-height:100vh;padding:0 clamp(20px,4vw,68px) 70px;position:relative;overflow:clip}
+.ranking-ghost{position:absolute;left:-4%;top:14%;z-index:0;font-family:SFDisplay,Arial Black,Arial,sans-serif;font-size:clamp(150px,28vw,430px);line-height:.64;letter-spacing:-.1em;opacity:.045;filter:blur(1.2px);transform:skewX(-9deg);pointer-events:none;animation:rankGhost 13s ease-in-out infinite alternate}
+@keyframes rankGhost{from{transform:skewX(-9deg) translateX(-1%)}to{transform:skewX(-9deg) translate(4%,2%) scale(1.025)}}
+.ranking-topbar{position:relative;z-index:10;display:flex;align-items:center;gap:24px;min-height:76px;border-bottom:1px solid rgba(18,18,18,.09)}
+.ranking-brand{color:#171717;text-decoration:none;font-size:21px;font-weight:900;letter-spacing:-.05em;white-space:nowrap}.ranking-brand span{color:var(--ra);font-style:italic}
+.ranking-nav{display:flex;align-items:center;justify-content:center;gap:clamp(14px,2.4vw,34px);flex:1;overflow:auto}
+.ranking-nav a{position:relative;color:#171717;text-decoration:none;font-size:10px;font-weight:900;letter-spacing:.14em;padding:8px 0;transition:.3s}.ranking-nav a:hover{transform:translateY(-2px);color:var(--ra)}.ranking-nav a::after{content:"";position:absolute;left:0;right:100%;bottom:1px;height:2px;background:var(--ra);transition:right .35s}.ranking-nav a:hover::after{right:0}.ranking-nav a.current{color:var(--ra)}.ranking-nav a.current::after{right:0}
+.ranking-menu{width:46px;height:46px;display:grid;place-items:center;border-radius:50%;text-decoration:none;color:#fff;background:#666;box-shadow:0 10px 24px rgba(0,0,0,.12);transition:.3s}.ranking-menu:hover{transform:scale(1.05) rotate(4deg)}
+
+.ranking-hero{position:relative;z-index:2;padding:clamp(48px,6vw,88px) 0 28px}
+.ranking-kicker{margin:0 0 9px;font-size:9px;letter-spacing:.2em;font-weight:900;text-transform:uppercase;opacity:.55}
+.ranking-title{margin:0;font-family:SFDisplay,Arial Black,Arial,sans-serif;font-size:clamp(72px,11vw,154px);line-height:.7;letter-spacing:-.08em;text-transform:uppercase}
+.ranking-title em{font-style:normal;color:var(--ra)}
+.ranking-lead{max-width:560px;margin:22px 0 0;font-size:11px;line-height:1.75;opacity:.55}
+.ranking-switches{display:flex;gap:8px;margin-top:24px;flex-wrap:wrap}
+.ranking-filter{appearance:none;border:1px solid rgba(18,18,18,.12);background:#fff;color:#171717;padding:11px 15px;font-size:8px;font-weight:900;letter-spacing:.13em;text-transform:uppercase;cursor:pointer;transition:.32s cubic-bezier(.16,1,.3,1)}
+.ranking-filter:hover{transform:translateY(-3px)}
+.ranking-filter.active{background:#171717;color:#fff}
+
+.ranking-board{position:relative;z-index:2}
+.podium-grid{display:grid;grid-template-columns:1fr 1.08fr 1fr;gap:12px;align-items:end}
+.podium-card{position:relative;min-height:300px;padding:22px 20px;background:#fff;border:1px solid rgba(18,18,18,.07);overflow:hidden;box-shadow:0 18px 50px rgba(0,0,0,.06);transform:translateY(28px);opacity:0}
+.podium-card.visible{animation:podiumIn .72s cubic-bezier(.16,1,.3,1) forwards}
+.podium-card:nth-child(1){animation-delay:.16s}.podium-card:nth-child(2){animation-delay:0s;min-height:360px}.podium-card:nth-child(3){animation-delay:.28s}
+@keyframes podiumIn{to{opacity:1;transform:translateY(0)}}
+.podium-card::after{content:"";position:absolute;left:-35%;top:0;width:18%;height:100%;background:linear-gradient(90deg,transparent,rgba(255,255,255,.58),transparent);transform:skewX(-16deg);animation:podiumSweep 6.5s cubic-bezier(.16,1,.3,1) infinite;pointer-events:none}
+.podium-card:nth-child(2)::before{content:"1";position:absolute;right:10px;bottom:-12px;font-family:SFDisplay,Arial Black,Arial,sans-serif;font-size:170px;line-height:.7;color:#111;opacity:.035;pointer-events:none}
+.podium-card:nth-child(1)::before{content:"2";position:absolute;right:10px;bottom:-10px;font-family:SFDisplay,Arial Black,Arial,sans-serif;font-size:145px;line-height:.7;color:#111;opacity:.035;pointer-events:none}
+.podium-card:nth-child(3)::before{content:"3";position:absolute;right:10px;bottom:-10px;font-family:SFDisplay,Arial Black,Arial,sans-serif;font-size:145px;line-height:.7;color:#111;opacity:.035;pointer-events:none}
+@keyframes podiumSweep{0%,57%{opacity:0;transform:skewX(-16deg) translateX(0)}64%{opacity:.75}78%,100%{opacity:0;transform:skewX(-16deg) translateX(820%)}}
+.podium-rank{font-family:SFDisplay,Arial Black,Arial,sans-serif;font-size:clamp(36px,4vw,60px);line-height:.76;letter-spacing:-.06em}
+.podium-avatar{width:88px;height:88px;border-radius:50%;display:grid;place-items:center;margin:22px 0 16px;background:radial-gradient(circle at 42% 36%,rgba(239,38,63,.16),transparent 58%),#ecebe5;font-family:SFDisplay,Arial Black,Arial,sans-serif;font-size:31px;font-weight:900;transition:transform .48s cubic-bezier(.16,1,.3,1),box-shadow .35s ease}
+.podium-card:nth-child(2) .podium-avatar{width:108px;height:108px;font-size:38px}
+.podium-card:hover .podium-avatar{transform:translateY(-7px) scale(1.04) rotate(-3deg);box-shadow:0 20px 34px rgba(239,38,63,.12)}
+.podium-name{margin:0;font-family:SFDisplay,Arial Black,Arial,sans-serif;font-size:clamp(27px,3vw,46px);line-height:.83;letter-spacing:-.055em;text-transform:uppercase}
+.podium-sub{margin:7px 0 18px;font-size:7px;font-weight:900;letter-spacing:.12em;text-transform:uppercase;opacity:.44}
+.podium-score{font-family:SFDisplay,Arial Black,Arial,sans-serif;font-size:clamp(42px,5vw,68px);line-height:.76;letter-spacing:-.065em}
+.podium-score small{font-family:inherit;font-size:12px;letter-spacing:.06em}
+.podium-bar{height:4px;background:rgba(18,18,18,.08);margin-top:13px;overflow:hidden}.podium-bar span{display:block;height:100%;background:linear-gradient(90deg,var(--ra),var(--rblue));transform:scaleX(0);transform-origin:left}.podium-card.visible .podium-bar span{animation:barIn 1.1s .35s cubic-bezier(.16,1,.3,1) forwards}@keyframes barIn{to{transform:scaleX(1)}}
+
+.rank-table-wrap{margin-top:18px;background:rgba(255,255,255,.62);border:1px solid rgba(18,18,18,.07);padding:18px;box-shadow:0 18px 52px rgba(0,0,0,.05)}
+.rank-table-head{display:flex;align-items:end;justify-content:space-between;gap:16px;margin-bottom:10px}.rank-table-head h2{margin:0;font-family:SFDisplay,Arial Black,Arial,sans-serif;font-size:clamp(30px,4vw,52px);line-height:.8;letter-spacing:-.055em;text-transform:uppercase}.rank-table-head p{margin:0;font-size:7px;letter-spacing:.1em;text-transform:uppercase;opacity:.48}
+.rank-list{display:grid;gap:7px}
+.rank-row{display:grid;grid-template-columns:54px minmax(0,1fr) 100px 95px;gap:12px;align-items:center;min-height:66px;padding:9px 11px;background:#fff;border:1px solid rgba(18,18,18,.06);transform:translateX(-20px);opacity:0}
+.rank-row.visible{animation:rankRowIn .54s cubic-bezier(.16,1,.3,1) forwards;animation-delay:var(--delay)}
+@keyframes rankRowIn{to{transform:translateX(0);opacity:1}}
+.rank-row:hover{transform:translateX(5px);box-shadow:0 10px 24px rgba(0,0,0,.05)}
+.rank-no{font-family:SFDisplay,Arial Black,Arial,sans-serif;font-size:27px;line-height:.8;letter-spacing:-.05em}
+.rank-user{display:flex;align-items:center;gap:10px;min-width:0}.rank-avatar{width:38px;height:38px;border-radius:50%;display:grid;place-items:center;background:#ecebe5;font-size:12px;font-weight:900;flex:0 0 auto}.rank-user strong{font-family:SFDisplay,Arial Black,Arial,sans-serif;font-size:20px;line-height:.85;letter-spacing:-.045em;text-transform:uppercase;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.rank-user small{display:block;margin-top:4px;font-size:6px;letter-spacing:.11em;text-transform:uppercase;opacity:.45}
+.rank-rings strong{font-family:SFDisplay,Arial Black,Arial,sans-serif;font-size:23px;line-height:.8}.rank-rings span,.rank-move span{display:block;margin-top:4px;font-size:6px;letter-spacing:.11em;text-transform:uppercase;opacity:.45}
+.rank-move{font-size:11px;font-weight:900}.rank-move.up{color:#2a7655}.rank-move.down{color:var(--ra)}
+.ranking-footer{display:flex;flex-wrap:wrap;gap:9px;margin-top:14px}.rank-btn{appearance:none;border:1px solid rgba(18,18,18,.12);background:#fff;color:#171717;padding:12px 16px;font-size:8px;font-weight:900;letter-spacing:.13em;text-transform:uppercase;text-decoration:none;cursor:pointer;transition:.32s}.rank-btn:hover{transform:translateY(-4px)}.rank-btn.primary{background:var(--ra);color:#fff;border-color:var(--ra)}
+
+@media(max-width:980px){.podium-grid{grid-template-columns:1fr 1fr}.podium-card:nth-child(2){grid-column:1/-1;order:-1}.rank-row{grid-template-columns:50px minmax(0,1fr) 80px 70px}}
+@media(max-width:680px){.ranking-topbar{min-height:64px;gap:12px}.ranking-brand{font-size:18px}.ranking-nav{justify-content:flex-start}.ranking-nav a{font-size:8px}.podium-grid{grid-template-columns:1fr}.podium-card:nth-child(2){grid-column:auto}.podium-card{min-height:260px!important}.rank-row{grid-template-columns:40px minmax(0,1fr) 68px}.rank-move{display:none}.rank-table-wrap{padding:12px}.rank-table-head{align-items:flex-start;flex-direction:column}}
+@media(prefers-reduced-motion:reduce){.ranking-ghost,.podium-card,.podium-card::after,.podium-bar span,.rank-row,.podium-avatar{animation:none!important;transition:none!important}.podium-card,.rank-row{opacity:1;transform:none}.podium-bar span{transform:scaleX(1)}}
+</style>
+
+<style>
+.rank-profile-backdrop{
+  position:fixed;inset:0;z-index:180;
+  background:rgba(9,12,18,.48);
+  backdrop-filter:blur(5px);
+  opacity:0;visibility:hidden;pointer-events:none;
+  transition:opacity .38s ease,visibility .38s ease;
+}
+.rank-profile-backdrop.is-open{
+  opacity:1;visibility:visible;pointer-events:auto;
+}
+.rank-profile-modal{
+  position:fixed;top:0;right:0;bottom:0;z-index:181;
+  width:min(470px,94vw);
+  padding:clamp(28px,4vw,46px);
+  box-sizing:border-box;
+  background:rgba(244,243,238,.98);
+  border-left:1px solid rgba(18,18,18,.1);
+  box-shadow:-25px 0 65px rgba(0,0,0,.16);
+  transform:translateX(104%);
+  transition:transform .55s cubic-bezier(.77,0,.18,1);
+  overflow:hidden;
+  isolation:isolate;
+}
+.rank-profile-modal.is-open{transform:translateX(0)}
+.rank-profile-close{
+  position:absolute;right:22px;top:20px;
+  width:42px;height:42px;border-radius:50%;
+  border:1px solid rgba(18,18,18,.12);
+  background:#fff;color:#111;
+  font-size:25px;line-height:1;
+  cursor:pointer;z-index:4;
+  transition:transform .3s ease,background .25s ease;
+}
+.rank-profile-close:hover{transform:rotate(90deg);background:#111;color:#fff}
+.rank-profile-ghost{
+  position:absolute;right:-9%;top:18%;
+  font-family:SFDisplay,Arial Black,Arial,sans-serif;
+  font-size:clamp(100px,21vw,220px);
+  line-height:.72;letter-spacing:-.09em;
+  opacity:.045;filter:blur(1px);
+  transform:skewX(-9deg);
+  pointer-events:none;
+  animation:rankPreviewGhost 8s ease-in-out infinite alternate;
+}
+@keyframes rankPreviewGhost{
+  from{transform:skewX(-9deg) translateX(0)}
+  to{transform:skewX(-9deg) translateX(-4%) scale(1.02)}
+}
+.rank-preview-kicker,.rank-preview-label{
+  position:relative;z-index:2;
+  margin:0;
+  font-size:8px;font-weight:900;
+  letter-spacing:.18em;
+  text-transform:uppercase;
+  opacity:.5;
+}
+.rank-preview-kicker{color:#ef263f;margin-bottom:30px}
+.rank-preview-head{
+  position:relative;z-index:2;
+  display:flex;align-items:center;gap:20px;
+}
+.rank-preview-avatar{
+  width:100px;height:100px;border-radius:50%;
+  display:grid;place-items:center;
+  background:radial-gradient(circle at 42% 36%,rgba(239,38,63,.17),transparent 58%),#ecebe5;
+  font-family:SFDisplay,Arial Black,Arial,sans-serif;
+  font-size:34px;font-weight:900;
+  box-shadow:0 18px 36px rgba(0,0,0,.08);
+  transition:transform .5s cubic-bezier(.16,1,.3,1),box-shadow .35s ease;
+  animation:rankAvatarFloat 4s ease-in-out infinite;
+}
+@keyframes rankAvatarFloat{
+  0%,100%{transform:translateY(0)}
+  50%{transform:translateY(-6px)}
+}
+.rank-preview-avatar:hover{transform:translateY(-7px) scale(1.04) rotate(-3deg);box-shadow:0 23px 40px rgba(239,38,63,.13)}
+.rank-preview-head h2{
+  margin:4px 0 4px;
+  font-family:SFDisplay,Arial Black,Arial,sans-serif;
+  font-size:clamp(34px,5vw,58px);
+  line-height:.82;letter-spacing:-.06em;
+  text-transform:uppercase;
+}
+.rank-preview-head p:last-child{
+  margin:0;font-size:8px;font-weight:900;letter-spacing:.1em;
+  text-transform:uppercase;opacity:.46;
+}
+.rank-preview-stats{
+  position:relative;z-index:2;
+  display:grid;grid-template-columns:repeat(3,1fr);
+  gap:8px;margin-top:34px;
+}
+.rank-preview-stats div{
+  padding:16px 12px;background:#fff;
+  border:1px solid rgba(18,18,18,.07);
+  transition:transform .32s cubic-bezier(.16,1,.3,1),box-shadow .3s ease;
+}
+.rank-preview-stats div:hover{transform:translateY(-4px);box-shadow:0 12px 22px rgba(0,0,0,.06)}
+.rank-preview-stats strong{
+  display:block;
+  font-family:SFDisplay,Arial Black,Arial,sans-serif;
+  font-size:26px;line-height:.82;letter-spacing:-.045em;
+}
+.rank-preview-stats span{
+  display:block;margin-top:7px;font-size:6px;font-weight:900;
+  letter-spacing:.14em;text-transform:uppercase;opacity:.46;
+}
+.rank-preview-line{
+  position:relative;z-index:2;
+  width:100%;height:3px;background:linear-gradient(90deg,#ef263f,#233d8f);
+  margin:24px 0 18px;transform-origin:left;
+  animation:rankLineIn .75s cubic-bezier(.16,1,.3,1) both;
+}
+@keyframes rankLineIn{from{transform:scaleX(0)}to{transform:scaleX(1)}}
+.rank-preview-about{
+  position:relative;z-index:2;
+  margin:0;max-width:390px;
+  font-size:10px;line-height:1.7;opacity:.56;
+}
+.rank-preview-actions{
+  position:relative;z-index:2;
+  display:grid;grid-template-columns:1fr 1fr;
+  gap:9px;margin-top:28px;
+}
+.rank-preview-actions button{
+  appearance:none;border:1px solid rgba(18,18,18,.12);
+  background:#fff;color:#111;
+  padding:13px 12px;
+  font-size:8px;font-weight:900;letter-spacing:.12em;
+  text-transform:uppercase;cursor:pointer;
+  transition:transform .32s cubic-bezier(.16,1,.3,1),background .25s,color .25s;
+}
+.rank-preview-actions button:hover{transform:translateY(-4px);background:#111;color:#fff}
+.rank-preview-actions button:first-child{background:#ef263f;border-color:#ef263f;color:#fff}
+.podium-card,.rank-row{cursor:pointer}
+.podium-card::marker,.rank-row::marker{content:""}
+.podium-card:hover .podium-name,.rank-row:hover .rank-user strong{color:#ef263f}
+@media(max-width:600px){
+  .rank-profile-modal{width:100%;padding:26px 20px}
+  .rank-preview-actions{grid-template-columns:1fr}
+}
+@media(prefers-reduced-motion:reduce){
+  .rank-profile-backdrop,.rank-profile-modal,.rank-profile-close,.rank-preview-avatar,
+  .rank-preview-line,.rank-profile-ghost{animation:none!important;transition:none!important}
+}
+</style>
+
+
+<style>
+.rank-preview-avatar-wrap{
+  position:relative;width:112px;height:112px;display:grid;place-items:center;flex:0 0 auto;
+}
+.rank-preview-avatar{position:relative;z-index:2}
+.rank-preview-ring{
+  position:absolute;inset:-7px;border-radius:50%;
+  border:5px solid rgba(255,196,44,.9);
+  box-shadow:0 0 0 2px rgba(255,238,146,.25),0 0 26px rgba(239,180,25,.25);
+  display:grid;place-items:center;
+  animation:ringOrbit 3.6s linear infinite;
+}
+.rank-preview-ring::before,
+.rank-preview-ring::after{
+  content:"";position:absolute;border-radius:50%;
+  border:2px dashed rgba(255,244,173,.72);
+}
+.rank-preview-ring::before{inset:-9px}
+.rank-preview-ring::after{inset:8px;opacity:.32}
+.rank-preview-ring span{
+  position:absolute;right:-4px;top:-8px;
+  width:25px;height:25px;border-radius:50%;
+  display:grid;place-items:center;
+  background:#efb51f;color:#5d4200;
+  font-size:9px;font-weight:1000;
+  box-shadow:0 5px 12px rgba(239,181,31,.3);
+}
+@keyframes ringOrbit{to{transform:rotate(360deg)}}
+
+.podium-score-row{
+  display:flex;align-items:center;gap:10px;
+  position:relative;z-index:2;
+}
+.rank-ost-btn{
+  width:38px;height:38px;border-radius:50%;
+  appearance:none;border:1px solid rgba(18,18,18,.12);
+  background:#fff;color:#171717;display:grid;place-items:center;
+  cursor:pointer;font-size:15px;font-weight:900;
+  transition:transform .35s cubic-bezier(.16,1,.3,1),background .25s ease,color .25s ease,box-shadow .3s ease;
+  flex:0 0 auto;
+}
+.rank-ost-btn:hover{
+  transform:translateY(-3px) rotate(-7deg) scale(1.06);
+  background:#171717;color:#fff;
+  box-shadow:0 10px 22px rgba(0,0,0,.12);
+}
+.rank-ost-btn.is-playing{
+  background:#ef263f;color:#fff;border-color:#ef263f;
+  animation:ostPulse 1.1s ease-in-out infinite;
+}
+@keyframes ostPulse{
+  0%,100%{box-shadow:0 0 0 0 rgba(239,38,63,.25)}
+  50%{box-shadow:0 0 0 8px rgba(239,38,63,0)}
+}
+.rank-row-ost{
+  grid-column:4;
+  grid-row:1;
+  justify-self:end;
+  margin-left:auto;
+}
+.rank-row{
+  position:relative;
+}
+.rank-row-ost + *{}
+.rank-preview-ost{
+  position:relative;z-index:2;
+  display:grid;grid-template-columns:44px minmax(0,1fr) auto;
+  gap:12px;align-items:center;
+  margin-top:22px;padding:11px 12px;
+  background:#fff;border:1px solid rgba(18,18,18,.07);
+}
+.rank-preview-ost-btn{
+  width:44px;height:44px;border-radius:50%;
+  appearance:none;border:0;background:#ef263f;color:#fff;
+  cursor:pointer;font-size:17px;
+  transition:transform .32s cubic-bezier(.16,1,.3,1),box-shadow .3s ease;
+}
+.rank-preview-ost-btn:hover{transform:scale(1.07) rotate(-5deg);box-shadow:0 12px 24px rgba(239,38,63,.2)}
+.rank-preview-ost-btn.is-playing{animation:ostPulse 1.1s ease-in-out infinite}
+.rank-preview-ost span{
+  display:block;font-size:6px;font-weight:900;letter-spacing:.14em;opacity:.45;text-transform:uppercase
+}
+.rank-preview-ost strong{
+  display:block;margin-top:4px;font-family:SFDisplay,Arial Black,Arial,sans-serif;
+  font-size:22px;line-height:.85;letter-spacing:-.045em;text-transform:uppercase
+}
+.rank-preview-ost>b{
+  font-size:7px;font-weight:900;letter-spacing:.13em;text-transform:uppercase;
+  color:#ef263f;
+}
+body.rank-ost-playing .rank-profile-modal{box-shadow:-25px 0 65px rgba(239,38,63,.13)}
+@media(max-width:600px){
+  .rank-preview-avatar-wrap{width:98px;height:98px}
+  .rank-row-ost{grid-column:3}
+}
+@media(prefers-reduced-motion:reduce){
+  .rank-preview-ring,.rank-ost-btn.is-playing,.rank-preview-ost-btn.is-playing{animation:none!important}
+}
+</style>
+
+
+<style>
+.ranking-refresh{animation:rankingRefresh .48s cubic-bezier(.16,1,.3,1)}
+@keyframes rankingRefresh{
+  0%{opacity:.45;transform:translateY(9px)}
+  100%{opacity:1;transform:none}
+}
+.ranking-filter{position:relative;overflow:hidden}
+.ranking-filter::after{
+  content:"";position:absolute;left:-40%;top:0;width:25%;height:100%;
+  background:linear-gradient(90deg,transparent,rgba(255,255,255,.34),transparent);
+  transform:skewX(-18deg);
+  transition:transform .58s cubic-bezier(.16,1,.3,1);
+  pointer-events:none;
+}
+.ranking-filter:hover::after{transform:skewX(-18deg) translateX(520%)}
+@media(prefers-reduced-motion:reduce){
+  .ranking-refresh{animation:none!important}
+  .ranking-filter::after{transition:none!important}
+}
+</style>
+
+
+<style>
+/* REAL USER-PROVIDED RING ASSET */
+.ring-icon{
+  width:26px;
+  height:26px;
+  object-fit:contain;
+  display:inline-block;
+  vertical-align:middle;
+  flex:0 0 auto;
+  filter:drop-shadow(0 5px 9px rgba(219,168,21,.22));
+  will-change:transform;
+  animation:ringAssetFloat 2.2s ease-in-out infinite;
+}
+.podium-score-row .ring-icon{
+  width:30px;
+  height:30px;
+  margin-left:1px;
+}
+.rank-preview-stats .ring-icon{
+  width:23px;
+  height:23px;
+  margin:7px 0 0;
+}
+.rank-rings{
+  display:flex !important;
+  align-items:center;
+  gap:7px;
+}
+.rank-rings .ring-icon{
+  width:21px;
+  height:21px;
+  animation-duration:2.4s;
+}
+@keyframes ringAssetFloat{
+  0%,100%{transform:translateY(0) rotate(-2deg) scale(1)}
+  50%{transform:translateY(-3px) rotate(2deg) scale(1.045)}
+}
+.rank-preview-stats > div:first-child{
+  position:relative;
+}
+@media(max-width:600px){
+  .ring-icon{width:21px;height:21px}
+  .podium-score-row .ring-icon{width:24px;height:24px}
+}
+@media(prefers-reduced-motion:reduce){
+  .ring-icon{animation:none!important}
+}
+</style>
+
+
+<script src="https://unpkg.com/@phosphor-icons/web"></script>
+<script src="https://www.gstatic.com/firebasejs/12.1.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/12.1.0/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/12.1.0/firebase-database-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/12.1.0/firebase-storage-compat.js"></script>
+<script src="firebase-legacy.js"></script>
+<script src="friends-system.js"></script>
+
+
+<style id="ranking-polish-clean">
+.podium-card,.rank-row{opacity:1!important;transform:none!important}
+.podium-avatar,.rank-avatar,#rank-preview-avatar{background-position:center!important;background-size:cover!important;background-repeat:no-repeat!important}
+.podium-avatar.has-photo,.rank-avatar.has-photo,#rank-preview-avatar.has-photo{color:transparent!important}
+.rank-preview-cover{position:absolute;left:0;right:0;top:0;height:145px;background-position:center;background-size:cover;opacity:0;z-index:0}
+.rank-preview-cover.has-cover{opacity:1}
+.rank-preview-cover::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(0,0,0,.04),rgba(0,0,0,.8))}
+.rank-preview-head{padding-top:92px}
+.rank-profile-modal{overflow:auto!important}
+</style>
+
+<script src="global-ost-player.js"></script>
+
+<style id="ranking-mobile-name-fix">
+.rank-row,.rank-user,.rank-user>div{min-width:0;max-width:100%}
+.rank-user strong,.rank-user small{
+  display:block;
+  max-width:100%;
+  min-width:0;
+  overflow:hidden;
+  text-overflow:ellipsis;
+  white-space:nowrap;
+}
+@media(max-width:680px){
+  .rank-row{
+    grid-template-columns:32px minmax(0,1fr) 58px!important;
+    gap:7px!important;
+    min-width:0!important;
+    width:100%!important;
+    overflow:hidden!important;
+  }
+  .rank-user{min-width:0!important;gap:7px!important}
+  .rank-avatar{width:34px!important;height:34px!important}
+  .rank-user strong{font-size:15px!important;line-height:.92!important}
+  .rank-user small{font-size:5px!important;letter-spacing:.08em!important}
+  .rank-rings{min-width:0!important;text-align:right}
+  .rank-rings strong{font-size:18px!important}
+  .rank-rings span{font-size:5px!important}
+  .rank-move{display:block!important;min-width:0!important;text-align:right}
+  .rank-ost-btn{max-width:34px!important;overflow:hidden!important}
+}
+</style>
+
+<style id="ranking-mobile-harmony-final">
+.rank-row,
+.rank-user,
+.rank-user>div,
+.rank-rings,
+.rank-rings>strong,
+.rank-rings>span{
+  min-width:0!important;
+  max-width:100%!important;
+  box-sizing:border-box;
+}
+.rank-user strong{
+  min-width:0!important;
+  max-width:100%!important;
+  overflow:hidden!important;
+  text-overflow:ellipsis!important;
+  white-space:nowrap!important;
+}
+@media(max-width:680px){
+  .rank-table-wrap{width:100%!important;box-sizing:border-box!important;overflow:hidden!important}
+  .rank-list{width:100%!important;min-width:0!important}
+  .rank-row{
+    width:100%!important;
+    max-width:100%!important;
+    grid-template-columns:34px minmax(0,1fr) 76px!important;
+    gap:8px!important;
+    padding:10px 9px!important;
+    overflow:hidden!important;
+  }
+  .rank-no{font-size:22px!important}
+  .rank-user{gap:7px!important;overflow:hidden!important}
+  .rank-avatar{width:34px!important;height:34px!important}
+  .rank-user>div{overflow:hidden!important}
+  .rank-user strong{
+    font-size:15px!important;
+    line-height:.92!important;
+    display:block!important;
+    overflow:hidden!important;
+    text-overflow:ellipsis!important;
+    white-space:nowrap!important;
+  }
+  .rank-user small{
+    max-width:100%!important;
+    overflow:hidden!important;
+    text-overflow:ellipsis!important;
+    white-space:nowrap!important;
+  }
+  .rank-rings{
+    width:76px!important;
+    overflow:hidden!important;
+    display:flex!important;
+    align-items:center!important;
+    justify-content:flex-end!important;
+    gap:4px!important;
+    white-space:nowrap!important;
+  }
+  .rank-rings strong{
+    max-width:51px!important;
+    overflow:hidden!important;
+    text-overflow:ellipsis!important;
+    white-space:nowrap!important;
+    font-size:16px!important;
+    line-height:.9!important;
+  }
+  .rank-rings span{display:none!important}
+  .rank-rings .ring-icon{
+    width:19px!important;height:19px!important;flex:0 0 19px!important;
+  }
+}
+@media(max-width:380px){
+  .rank-row{grid-template-columns:30px minmax(0,1fr) 66px!important;gap:6px!important;padding-inline:7px!important}
+  .rank-avatar{width:31px!important;height:31px!important}
+  .rank-user strong{font-size:13px!important}
+  .rank-rings{width:66px!important}
+  .rank-rings strong{max-width:43px!important;font-size:14px!important}
+  .rank-rings .ring-icon{width:17px!important;height:17px!important;flex-basis:17px!important}
+}
+</style>
+
+<style id="ranking-special-role-sections">
+.podium-grid[aria-hidden="true"]{display:none!important}
+.special-ranking-section{margin:0 0 26px;position:relative;z-index:2}
+.special-ranking-head{display:flex;justify-content:space-between;align-items:end;gap:16px;margin:0 0 10px;padding-bottom:10px;border-bottom:1px solid rgba(18,18,18,.10)}
+.special-ranking-head p{margin:0 0 4px;font-size:7px;font-weight:900;letter-spacing:.18em;text-transform:uppercase;opacity:.48}
+.special-ranking-head h2{margin:0;font-family:SFDisplay,Arial Black,Arial,sans-serif;font-size:clamp(34px,5vw,64px);line-height:.78;letter-spacing:-.06em}
+.special-ranking-head>span{font-size:7px;font-weight:900;letter-spacing:.14em;opacity:.45}
+.special-ranking-list{display:grid;gap:9px}
+.creator-rank-card{display:grid;grid-template-columns:70px minmax(0,1fr) auto;align-items:center;gap:18px;padding:20px 22px;background:#171717;color:#fff;border:1px solid rgba(18,18,18,.08);box-shadow:0 18px 48px rgba(0,0,0,.10);cursor:pointer;position:relative;overflow:hidden}
+.creator-rank-card::before{content:"";position:absolute;inset:0;background:linear-gradient(105deg,transparent 35%,rgba(255,255,255,.08) 50%,transparent 65%);transform:translateX(-100%);animation:creatorSweep 5.5s ease-in-out infinite;pointer-events:none}
+@keyframes creatorSweep{55%,100%{transform:translateX(100%)}}
+.creator-rank-number{font-family:SFDisplay,Arial Black,Arial,sans-serif;font-size:54px;line-height:.7;letter-spacing:-.06em;color:#ef263f}
+.creator-rank-user{display:flex;align-items:center;gap:14px;min-width:0}
+.creator-rank-user>div:last-child{min-width:0}
+.creator-rank-user strong{display:block;font-family:SFDisplay,Arial Black,Arial,sans-serif;font-size:clamp(25px,4vw,48px);line-height:.82;letter-spacing:-.06em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.creator-rank-user small{display:block;margin-top:6px;font-size:6px;font-weight:900;letter-spacing:.16em;color:#ef263f}
+.creator-rank-avatar{width:68px;height:68px;flex:0 0 68px;border-radius:50%;display:grid;place-items:center;background:#eee;color:#171717;font-weight:900;background-position:center;background-repeat:no-repeat;background-size:cover}
+.creator-rank-badge{font-size:7px;font-weight:900;letter-spacing:.14em;color:#fff;border:1px solid rgba(255,255,255,.22);padding:10px 12px;white-space:nowrap}
+.admin-ranking-section .rank-row{cursor:pointer}
+.admin-rank-row{border-left:4px solid #233d8f}
+.special-empty{padding:25px;background:#fff;border:1px solid rgba(18,18,18,.08);font-size:8px;font-weight:900;letter-spacing:.14em;opacity:.5}
+@media(max-width:680px){
+ .special-ranking-head{align-items:start;flex-direction:column;gap:5px}
+ .creator-rank-card{grid-template-columns:35px minmax(0,1fr);gap:9px;padding:13px}
+ .creator-rank-number{font-size:30px}
+ .creator-rank-avatar{width:44px;height:44px;flex-basis:44px}
+ .creator-rank-user{gap:8px}
+ .creator-rank-user strong{font-size:18px}
+ .creator-rank-badge{grid-column:2;justify-self:start;padding:7px 9px;font-size:6px}
+ .special-ranking-list .rank-row{grid-template-columns:30px minmax(0,1fr) 68px!important}
+}
+</style>
+
+<style id="friends-only-ranking-v58">
+/* V58: la página Ranking muestra exclusivamente a los amigos del usuario actual. */
+.ranking-switches{display:none!important}
+#creator-ranking-section,#admin-ranking-section,#member-ranking-section{display:none!important}
+#sf-friends-ranking-embed{position:relative;z-index:3;margin:0 0 24px}
+#sf-friends-ranking-embed .sf-friends-ranking-head{display:flex;justify-content:space-between;align-items:end;gap:18px;margin:0 0 14px;padding-bottom:12px;border-bottom:1px solid rgba(18,18,18,.10)}
+#sf-friends-ranking-embed .sf-friends-ranking-head p{margin:0 0 5px;font-size:7px;font-weight:900;letter-spacing:.18em;text-transform:uppercase;opacity:.48}
+#sf-friends-ranking-embed .sf-friends-ranking-head h2{margin:0;font-family:SFDisplay,Arial Black,Arial,sans-serif;font-size:clamp(38px,6vw,78px);line-height:.78;letter-spacing:-.06em}
+#sf-friends-ranking-embed .sf-friends-ranking-head h2 em{font-style:normal;color:var(--ra)}
+#sf-friends-ranking-embed .sf-friends-ranking-head span{display:block;margin-top:7px;font-size:8px;line-height:1.5;opacity:.5}
+@media(max-width:680px){#sf-friends-ranking-embed .sf-friends-ranking-head{align-items:start;flex-direction:column}}
+</style>
+<style id="ranking-special-cleanup">
+.ranking-board>.podium-grid{display:none!important}
+.ranking-board>.rank-table-wrap{display:none!important}
+.ranking-board>.special-ranking-section{display:block!important}
+.special-ranking-section[hidden]{display:none!important}
+.creator-ranking-section{margin-bottom:30px}
+.admin-ranking-section{margin-bottom:30px}
+.member-ranking-section{margin-bottom:20px}
+.special-ranking-section .rank-list{display:grid;gap:8px}
+.special-ranking-section .rank-row{opacity:1!important;transform:none!important;animation:none!important}
+.special-ranking-section .rank-row:hover{transform:translateX(3px)!important}
+</style>
+</head>
+<body class="ranking-page">
+<main class="ranking-shell">
+  <div class="ranking-ghost">RANK</div>
+
+  <nav class="ranking-topbar">
+    <a class="ranking-brand" href="index.html"><span>SPEEDY</span> FRIENDS</a>
+    <div class="ranking-nav">
+      <a href="index.html#topics">NOVEDADES</a>
+      <a href="index.html#friends">AMIGOS</a>
+      <a href="index.html#special">ESPECIAL</a>
+      <a href="index.html#download">DESCARGAS</a>
+      <a href="index.html#quick-actions">ACCESOS</a>
+      <a class="current" href="ranking.html">RANKING</a>
+      <a href="index.html#videos">VIDEOS</a>
+    </div>
+    <a class="ranking-menu" href="index.html#quick-actions">☰</a>
+  </nav>
+
+  <header class="ranking-hero">
+    <p class="ranking-kicker">Speedy Friends / Tu círculo</p>
+    <h1 class="ranking-title">Mis <em>Amigos</em></h1>
+    <p class="ranking-lead">Ranking personal: solo aparecen los amigos que tienes agregados y se ordenan por Rings en tiempo real.</p>
+  </header>
+
+  <section class="ranking-board" aria-label="Ranking de amigos">
+  <section class="special-ranking-section creator-ranking-section" id="creator-ranking-section" hidden>
+    <div class="special-ranking-head">
+      <div><p>Speedy Friends / Creator</p><h2>CREADORA</h2></div>
+      <span>01 · SPECIAL CARD</span>
+    </div>
+    <div class="special-ranking-list" id="creator-ranking-list"></div>
+  </section>
+
+  <section class="special-ranking-section admin-ranking-section" id="admin-ranking-section" hidden>
+    <div class="special-ranking-head">
+      <div><p>Speedy Friends / Staff</p><h2>ADMINISTRADORES</h2></div>
+      <span id="admin-ranking-count">0 MOSTRADOS</span>
+    </div>
+    <div class="special-ranking-list" id="admin-ranking-list"></div>
+  </section>
+
+  <section class="special-ranking-section member-ranking-section" id="member-ranking-section" hidden>
+    <div class="special-ranking-head">
+      <div><p>Speedy Friends / Community</p><h2>MIEMBROS</h2></div>
+      <span id="member-ranking-count">0 MOSTRADOS</span>
+    </div>
+    <div class="rank-table-head" style="margin-bottom:10px">
+      <div></div>
+      <p>RINGS TOTALES · ADMINISTRADORES Y MIEMBROS</p>
+    </div>
+    <div class="rank-list" id="member-ranking-list"></div>
+  </section>
+
+  <footer class="ranking-footer">
+    <a class="rank-btn primary" href="index.html">← Volver a Speedy Friends</a>
+    <button class="rank-btn" type="button" id="shuffle">Actualizar muestra</button>
+  </footer>
+</section>
+</main>
+
+
+
+<script>
+document.addEventListener('DOMContentLoaded',()=>{
+  // V58: el ranking global queda deshabilitado. friends-system.js inyecta el ranking personal.
+});
+</script>
+
+
+<div class="rank-profile-backdrop" id="rank-profile-backdrop" aria-hidden="true"></div>
+<aside class="rank-profile-modal" id="rank-profile-modal" aria-hidden="true" role="dialog" aria-modal="true" aria-labelledby="rank-preview-name">
+  <button class="rank-profile-close" id="rank-profile-close" type="button" aria-label="Cerrar vista previa">×</button>
+  <div class="rank-profile-ghost" aria-hidden="true">PROFILE</div>
+  <div class="rank-preview-cover" id="rank-preview-cover"></div><div class="rank-preview-kicker">Speedy Friends / Member Preview</div>
+  <div class="rank-preview-head">
+    <div class="rank-preview-avatar-wrap">
+      <div class="rank-preview-ring" aria-hidden="true"><span>R</span></div>
+      <div class="rank-preview-avatar" id="rank-preview-avatar">SF</div>
+    </div>
+    <div>
+      <p class="rank-preview-label">INTEGRANTE</p>
+      <h2 id="rank-preview-name">Speedy</h2>
+      <p id="rank-preview-role">Community Leader</p>
+    </div>
+  </div>
+  <div class="rank-preview-stats">
+    <div><strong id="rank-preview-rings">12,840</strong><img class="ring-icon" src="assets/ring-animated.png" alt="" aria-hidden="true"><span>RINGS</span></div>
+    <div><strong id="rank-preview-position">01</strong><span>POSICIÓN</span></div>
+    <div><strong id="rank-preview-friends">—</strong><span>AMIGOS</span></div>
+  </div>
+  <div class="rank-preview-ost">
+      <button class="rank-preview-ost-btn" id="rank-preview-ost-btn" type="button" aria-label="Escuchar OST del integrante">♫</button>
+      <div><span>MEMBER OST</span><strong id="rank-preview-ost-track">Main Theme</strong></div>
+      <b id="rank-preview-ost-state">PLAY</b>
+    </div>
+    <div class="rank-preview-line"></div>
+  <p class="rank-preview-about" id="rank-preview-about">
+    Vista previa del perfil público del integrante. Aquí aparecerán sus datos y estadísticas cuando conectemos Firebase.
+  </p>
+  <div class="rank-preview-actions">
+    <button type="button" id="rank-preview-profile">VER PERFIL</button>
+    <button type="button" id="rank-preview-add">AGREGAR AMIGO</button>
+  </div>
+</aside>
+
+
+
+
+<script>
+
+(() => {
+ const backdrop=document.getElementById('rank-profile-backdrop'),modal=document.getElementById('rank-profile-modal');
+ const close=document.getElementById('rank-profile-close'),avatar=document.getElementById('rank-preview-avatar');
+ const name=document.getElementById('rank-preview-name'),role=document.getElementById('rank-preview-role');
+ const rings=document.getElementById('rank-preview-rings'),position=document.getElementById('rank-preview-position');
+ const friends=document.getElementById('rank-preview-friends'),about=document.getElementById('rank-preview-about');
+ const cover=document.getElementById('rank-preview-cover'),profileBtn=document.getElementById('rank-preview-profile');
+ const addBtn=document.getElementById('rank-preview-add'),ostBtn=document.getElementById('rank-preview-ost-btn');
+ const ostTrack=document.getElementById('rank-preview-ost-track'),ostState=document.getElementById('rank-preview-ost-state');
+ let selected=null,timer=null,ctx=null;
+ const publicAudio=window.__sfGlobalAudio || (window.__sfGlobalAudio=new Audio()); publicAudio.preload='metadata';
+
+ const stop=()=>{if(timer)clearTimeout(timer);timer=null;publicAudio.pause();publicAudio.currentTime=0;document.querySelectorAll('.rank-ost-btn,.rank-preview-ost-btn').forEach(b=>b.classList.remove('is-playing'));if(ostState)ostState.textContent='PLAY'};
+ const open=el=>{
+   selected=el;
+   name.textContent=el.dataset.profile||'Integrante';
+   role.textContent=el.dataset.nickname||el.dataset.role||'Integrante';
+   rings.textContent=el.dataset.rings||'0';
+   position.textContent=el.dataset.position||'—';
+   friends.textContent=el.dataset.friends||'—';
+   about.textContent=el.dataset.description||'Vista previa del perfil público actual del integrante.';
+   const av=el.dataset.avatar||'';
+   avatar.style.backgroundImage=av?`url("${av}")`:'';
+   avatar.style.backgroundPosition='center';
+   avatar.style.backgroundSize='cover';
+   avatar.textContent=av?'':(el.dataset.initials||'SF');
+   avatar.classList.toggle('has-photo',Boolean(av));
+   const cv=el.dataset.cover||'';
+   if(cover){cover.style.backgroundImage=cv?`url("${cv}")`:'';cover.classList.toggle('has-cover',Boolean(cv))}
+   const track=el.dataset.ostTrack||''; const ostUrl=el.dataset.ostUrl||''; modal?.setAttribute('data-ost-url',ostUrl); if(ostBtn)ostBtn.setAttribute('data-ost-url',ostUrl);
+   if(ostTrack)ostTrack.textContent=track||'SIN OST';
+   if(ostBtn)ostBtn.disabled=!(track||ostUrl);
+   backdrop?.classList.add('is-open');modal?.classList.add('is-open');document.body.classList.add('rank-preview-open');
+ };
+ const closeModal=()=>{stop();backdrop?.classList.remove('is-open');modal?.classList.remove('is-open');document.body.classList.remove('rank-preview-open')};
+
+ document.addEventListener('ranking:profile-select',e=>open(e.detail));
+ document.addEventListener('ranking:ost-play',e=>{
+   const b=e.detail;
+   const track=b?.dataset?.ostTrack||'';
+   const url=b?.dataset?.ostUrl||selected?.dataset?.ostUrl||'';
+   if(!track && !url)return;
+   stop();
+   if(ostTrack)ostTrack.textContent=track||'OST';
+   if(url){
+     publicAudio.src=url;
+     publicAudio.currentTime=0;
+     publicAudio.play().then(()=>{
+       b?.classList?.add?.('is-playing');
+       if(ostState)ostState.textContent='PLAYING';
+     }).catch(err=>{
+       console.error('[Ranking OST]',err);
+       if(ostState)ostState.textContent='NO DISPONIBLE';
+     });
+     publicAudio.onended=stop;
+     return;
+   }
+   try{
+     const C=window.AudioContext||window.webkitAudioContext;if(!C)return;
+     ctx=ctx||new C();const now=ctx.currentTime,o=ctx.createOscillator(),g=ctx.createGain();
+     o.frequency.value=track.includes('Neon')?330:track.includes('Final')?440:261.63;o.type='sine';
+     g.gain.setValueAtTime(.0001,now);g.gain.exponentialRampToValueAtTime(.04,now+.02);g.gain.exponentialRampToValueAtTime(.0001,now+1.05);
+     o.connect(g).connect(ctx.destination);o.start(now);o.stop(now+1.1);
+     b?.classList?.add?.('is-playing');if(ostState)ostState.textContent='PREVIEW';timer=setTimeout(stop,1100);
+   }catch{}
+ });
+ ostBtn?.addEventListener('click',()=>{if(!selected)return;const fake={dataset:{ostTrack:selected.dataset.ostTrack||'',ostUrl:selected.dataset.ostUrl||''},classList:ostBtn.classList};document.dispatchEvent(new CustomEvent('ranking:ost-play',{detail:fake}))});
+ close?.addEventListener('click',closeModal);backdrop?.addEventListener('click',closeModal);
+ document.addEventListener('keydown',e=>{if(e.key==='Escape')closeModal()});
+ profileBtn?.addEventListener('click',()=>{if(selected)location.assign(`profile.html?user=${encodeURIComponent(selected.dataset.profileId||selected.dataset.profile)}`)});
+ addBtn?.addEventListener('click',()=>{if(selected&&window.showToast)window.showToast(`Solicitud preparada para ${selected.dataset.profile}`)});
+})();
+
+</script>
+
+
+
+
+
+
+<script id="ranking-cloudinary-player">
+(() => {
+  const audio=window.__sfGlobalAudio || (window.__sfGlobalAudio=new Audio());
+  audio.preload='metadata';
+  let currentButton=null;
+
+  function playUrl(url,button){
+    if(!url)return;
+    audio.pause();
+    audio.currentTime=0;
+    audio.src=url;
+    audio.load();
+    audio.play().then(()=>{
+      currentButton?.classList.remove('is-playing');
+      currentButton=button;
+      button?.classList.add('is-playing');
+    }).catch(error=>console.error('[Ranking Cloudinary OST]',error));
+  }
+
+  audio.addEventListener('ended',()=>{
+    currentButton?.classList.remove('is-playing');
+    currentButton=null;
+  });
+
+  // Direct row button.
+  document.addEventListener('click',event=>{
+    const button=event.target.closest('.rank-ost-btn');
+    if(!button)return;
+    const url=button.dataset.ostUrl||'';
+    if(!url)return;
+    event.preventDefault();
+    event.stopImmediatePropagation();
+    playUrl(url,button);
+  },true);
+
+  // Preview modal button.
+  document.getElementById('rank-profile-modal')?.addEventListener('click',event=>{
+    const button=event.target.closest('#rank-preview-ost-btn,.rank-preview-ost-btn');
+    if(!button)return;
+    const url=button.dataset.ostUrl||document.getElementById('rank-profile-modal')?.dataset?.ostUrl||'';
+    if(!url)return;
+    event.preventDefault();
+    event.stopImmediatePropagation();
+    playUrl(url,button);
+  },true);
+})();
+</script>
+
+<style id="sf-theme-toggle-global-v45">
+.sf-theme-toggle-global{position:fixed;right:14px;bottom:14px;z-index:5000;display:inline-flex;align-items:center;gap:7px;padding:9px 11px;background:#171717;color:#fff;border:1px solid rgba(255,255,255,.12);font:1000 6px/1 Arial;letter-spacing:.1em;cursor:pointer;border-radius:999px;box-shadow:0 12px 28px rgba(0,0,0,.16);transition:transform .25s ease}
+.sf-theme-toggle-global:hover{transform:translateY(-3px)}
+html[data-sf-theme="dark"] .sf-theme-toggle-global{background:#f3f0e8;color:#171717}
+</style>
+<button class="sf-theme-toggle-global" type="button" data-theme-toggle><span>◐</span><b data-theme-label>MODO OSCURO</b></button>
+<script src="app.js"></script></body>
+</html>
+
+<style id="ranking-firebase-stability">
+.podium-card,.rank-row{opacity:1!important;transform:none!important}
+.podium-grid,.rank-list{min-height:60px}
+.ranking-loading-state{
+  padding:24px 18px;background:#fff;border:1px solid rgba(18,18,18,.07);
+  font-size:7px;font-weight:900;letter-spacing:.14em;text-transform:uppercase;opacity:.52
+}
+.ranking-empty-state{
+  padding:28px 18px;background:#fff;border:1px solid rgba(18,18,18,.07);
+  text-align:center;font-size:8px;font-weight:900;letter-spacing:.12em;text-transform:uppercase;opacity:.52
+}
+.profile-edit-fields{
+  display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:4px
+}
+.profile-edit-fields .full{grid-column:1/-1}
+.profile-edit-field label{display:block;font-size:6px;font-weight:900;letter-spacing:.13em;text-transform:uppercase;opacity:.48;margin-bottom:6px}
+.profile-edit-field input,.profile-edit-field textarea{
+  width:100%;box-sizing:border-box;border:1px solid rgba(18,18,18,.1);
+  background:#f7f6f1;color:#111;padding:11px 10px;outline:none;
+  font:600 10px/1.4 system-ui,sans-serif;transition:border-color .25s,box-shadow .25s,transform .25s
+}
+.profile-edit-field textarea{min-height:84px;resize:vertical}
+.profile-edit-field input:focus,.profile-edit-field textarea:focus{
+  border-color:rgba(239,38,63,.5);box-shadow:0 0 0 3px rgba(239,38,63,.08);transform:translateY(-1px)
+}
+@media(max-width:650px){.profile-edit-fields{grid-template-columns:1fr}.profile-edit-fields .full{grid-column:auto}}
+</style>

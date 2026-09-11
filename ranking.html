@@ -208,6 +208,7 @@
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Ranking · Speedy Friends</title>
 <link rel="stylesheet" href="styles.css">
+<link rel="stylesheet" href="friends-system.css">
 <style>
 :root{--rbg:#f4f3ee;--rink:#151515;--ra:#ef263f;--rblue:#233d8f}
 body.ranking-page{margin:0;background:var(--rbg);color:var(--rink);overflow-x:hidden}
@@ -591,11 +592,13 @@ body.rank-ost-playing .rank-profile-modal{box-shadow:-25px 0 65px rgba(239,38,63
 </style>
 
 
+<script src="https://unpkg.com/@phosphor-icons/web"></script>
 <script src="https://www.gstatic.com/firebasejs/12.1.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/12.1.0/firebase-auth-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/12.1.0/firebase-database-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/12.1.0/firebase-storage-compat.js"></script>
 <script src="firebase-legacy.js"></script>
+<script src="friends-system.js"></script>
 
 
 <style id="ranking-polish-clean">
@@ -753,18 +756,8 @@ body.rank-ost-playing .rank-profile-modal{box-shadow:-25px 0 65px rgba(239,38,63
 }
 </style>
 
-<style id="ranking-special-cleanup">
-.ranking-board>.podium-grid{display:none!important}
-.ranking-board>.rank-table-wrap{display:none!important}
-.ranking-board>.special-ranking-section{display:block!important}
-.special-ranking-section[hidden]{display:none!important}
-.creator-ranking-section{margin-bottom:30px}
-.admin-ranking-section{margin-bottom:30px}
-.member-ranking-section{margin-bottom:20px}
-.special-ranking-section .rank-list{display:grid;gap:8px}
-.special-ranking-section .rank-row{opacity:1!important;transform:none!important;animation:none!important}
-.special-ranking-section .rank-row:hover{transform:translateX(3px)!important}
-</style>
+
+
 </head>
 <body class="ranking-page">
 <main class="ranking-shell">
@@ -787,7 +780,7 @@ body.rank-ost-playing .rank-profile-modal{box-shadow:-25px 0 65px rgba(239,38,63
   <header class="ranking-hero">
     <p class="ranking-kicker">Speedy Friends / Community Board</p>
     <h1 class="ranking-title">Top <em>Integrantes</em></h1>
-    <p class="ranking-lead">El marcador de la comunidad: Rings, posición y progreso. Más adelante estos datos se alimentarán automáticamente desde Firebase.</p>
+    <p class="ranking-lead">El marcador de la comunidad: Rings, posición y progreso. Usa "AMIGOS" para ver únicamente tu círculo personal.</p>
     <div class="ranking-switches" aria-label="Filtros">
       <button class="ranking-filter active" type="button" data-mode="rings">RINGS</button>
       <button class="ranking-filter" type="button" data-mode="level">NIVEL</button>
@@ -842,14 +835,22 @@ document.addEventListener('DOMContentLoaded',()=>{
   const memberList=document.getElementById('member-ranking-list');
   const adminCount=document.getElementById('admin-ranking-count');
   const memberCount=document.getElementById('member-ranking-count');
-  const hint=document.querySelector('.member-ranking-section .rank-table-head p');
-  let mode='rings',users=[];
+  const creatorSection=document.getElementById('creator-ranking-section');
+  const adminSection=document.getElementById('admin-ranking-section');
+  const memberSection=document.getElementById('member-ranking-section');
+  const memberTitle=memberSection?.querySelector('.special-ranking-head h2');
+  const memberKicker=memberSection?.querySelector('.special-ranking-head p');
+  const memberMeta=memberSection?.querySelector('.rank-table-head p');
+  const heroTitle=document.querySelector('.ranking-title');
+  const heroLead=document.querySelector('.ranking-lead');
+  let mode='rings',users=[],friendsMap={},ringMap={};
 
   const esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[c]));
   const num=v=>Number(v||0);
   const init=u=>(u.username||u.name||u.nickname||'SF').trim().slice(0,2).toUpperCase();
   const normalize=raw=>Object.entries(raw||{}).map(([id,u])=>({
     id,...(u||{}),
+    ownerUid:u?.ownerUid||u?.uid||u?.userUid||u?.authUid||id,
     name:u?.name||u?.username||u?.nickname||'Integrante',
     username:u?.username||u?.name||u?.nickname||'Integrante',
     nickname:u?.nickname||'',
@@ -866,31 +867,22 @@ document.addEventListener('DOMContentLoaded',()=>{
     ost:u?.ostName||u?.ostTitle||'',ostUrl:u?.ostUrl||''
   }));
   const CREATOR_EMAIL='t89886464@gmail.com';
-  const isCreator=u=>{
-    const r=String(u.role||'').toLowerCase();
-    const ownerEmail=String(u.ownerEmail||'').toLowerCase();
-    return r==='creator' || ownerEmail===CREATOR_EMAIL;
-  };
+  const isCreator=u=>{const r=String(u.role||'').toLowerCase();const e=String(u.ownerEmail||'').toLowerCase();return r==='creator'||e===CREATOR_EMAIL};
   const isAdmin=u=>String(u.role||'').toLowerCase()==='admin';
-
-  function sortGroup(list){
+  const sortGroup=list=>{
     const a=list.slice();
     if(mode==='level')a.sort((x,y)=>y.level-x.level||y.rings-x.rings);
     else if(mode==='week')a.sort((x,y)=>y.weekly-x.weekly||y.rings-x.rings);
     else a.sort((x,y)=>y.rings-x.rings);
     return a;
-  }
-
+  };
   const avatarStyle=u=>u.avatar?`style="background-image:url('${esc(u.avatar)}');background-position:${esc(u.iconPosition)};background-size:${u.iconZoom}%"`:'';
-
   const card=(u,pos,type)=>{
-    const score=mode==='level'?`${u.level} <small>LVL</small>`:
-      mode==='week'?`${u.weekly.toLocaleString('en-US')} <small>R</small>`:
-      `${u.rings.toLocaleString('en-US')} <small>R</small>`;
+    const score=mode==='level'?`${u.level} <small>LVL</small>`:mode==='week'?`${u.weekly.toLocaleString('en-US')} <small>R</small>`:`${u.rings.toLocaleString('en-US')} <small>R</small>`;
     const roleLabel=type==='creator'?'CREADORA':type==='admin'?'ADMIN':'INTEGRANTE';
     const rings=type==='creator'?'':`<div class="rank-rings"><strong>${mode==='level'?u.level:mode==='week'?u.weekly.toLocaleString('en-US'):u.rings.toLocaleString('en-US')}</strong>${mode==='level'?'':'<img class="ring-icon" src="assets/ring-animated.png" alt="" aria-hidden="true">'}<span>${mode==='level'?'LVL':'RINGS'}</span></div>`;
     return `<article class="${type==='creator'?'creator-rank-card':'rank-row'} visible ${type==='admin'?'admin-rank-row':''}" style="--delay:${Math.min(14,pos)*35}ms"
-      data-profile-id="${esc(u.id)}" data-profile="${esc(u.username)}" data-role="${esc(u.title||roleLabel)}"
+      data-profile-id="${esc(u.id)}" data-owner-uid="${esc(u.ownerUid||'')}" data-profile="${esc(u.username)}" data-role="${esc(u.title||roleLabel)}"
       data-rings="${u.rings.toLocaleString('en-US')}" data-position="${String(pos+1).padStart(2,'0')}"
       data-initials="${esc(init(u))}" data-avatar="${esc(u.avatar)}" data-cover="${esc(u.cover)}"
       data-description="${esc(u.description)}" data-nickname="${esc(u.nickname)}" data-friends="${u.friends}"
@@ -904,54 +896,74 @@ document.addEventListener('DOMContentLoaded',()=>{
       ${type!=='creator'?`<div class="rank-move">${u.ostUrl?`<button class="rank-ost-btn rank-row-ost" type="button" data-ost-track="${esc(u.ost)}" data-ost-url="${esc(u.ostUrl)}" aria-label="Escuchar OST de ${esc(u.username)}">♫</button>`:`<span>${roleLabel}</span>`}</div>`:''}
     </article>`;
   };
-
   function bindCards(root){
-    root.querySelectorAll('.rank-row,.creator-rank-card').forEach(card=>{
-      card.addEventListener('click',e=>{
-        if(e.target.closest('button,a'))return;
-        document.dispatchEvent(new CustomEvent('ranking:profile-select',{detail:card}));
-      });
-    });
-    root.querySelectorAll('.rank-ost-btn').forEach(btn=>btn.addEventListener('click',e=>{
-      e.stopPropagation();
-      document.dispatchEvent(new CustomEvent('ranking:ost-play',{detail:btn}));
+    root.querySelectorAll('.rank-row,.creator-rank-card').forEach(el=>el.addEventListener('click',e=>{
+      if(e.target.closest('button,a'))return;
+      document.dispatchEvent(new CustomEvent('ranking:profile-select',{detail:el}));
     }));
+    root.querySelectorAll('.rank-ost-btn').forEach(btn=>btn.addEventListener('click',e=>{e.stopPropagation();document.dispatchEvent(new CustomEvent('ranking:ost-play',{detail:btn}));}));
   }
-
-  function render(){
-    const creators=users.filter(isCreator).slice(0,1);
-    const admins=sortGroup(users.filter(u=>!isCreator(u)&&isAdmin(u)));
-    const members=sortGroup(users.filter(u=>!isCreator(u)&&!isAdmin(u)));
-
-    filters.forEach(f=>f.classList.toggle('active',f.dataset.mode===mode));
-    if(hint)hint.textContent=mode==='level'?'NIVEL ACTUAL · ADMINISTRADORES Y MIEMBROS':
-      mode==='week'?'PROGRESO SEMANAL · ADMINISTRADORES Y MIEMBROS':'RINGS TOTALES · ADMINISTRADORES Y MIEMBROS';
-
+  function applyFriendsFilter(){
+    const currentUid=window.SpeedyFirebase?.current?.uid || window.SpeedyFirebase?.state?.uid || null;
+    const friendIds=Object.keys(friendsMap||{});
+    const friendUsers=friendIds.map(uid=>{
+      const relation=friendsMap?.[uid]||{};
+      const found=users.find(u=>String(u.ownerUid||'')===String(uid) || String(u.id||'')===String(relation.profileId||''));
+      if(found) found.rings=Number(ringMap?.[found.id] ?? found.rings ?? 0);
+      return found;
+    }).filter(Boolean);
+    creatorSection.hidden=true; adminSection.hidden=true;
+    memberSection.hidden=false;
+    if(memberTitle)memberTitle.textContent='AMIGOS';
+    if(memberKicker)memberKicker.textContent='Speedy Friends / Tu círculo';
+    if(memberMeta)memberMeta.textContent='RINGS TOTALES · SOLO TUS AMIGOS';
+    if(heroTitle)heroTitle.innerHTML='Top <em>Amigos</em>';
+    if(heroLead)heroLead.textContent=currentUid?'Solo aparecen los amigos que tienes agregados, ordenados por Rings.':'Inicia sesión para ver tu ranking personal de amigos.';
+    const sorted=friendUsers.slice().sort((a,b)=>b.rings-a.rings||String(a.username).localeCompare(String(b.username),'es'));
+    memberCount.textContent=`${sorted.length} MOSTRADOS`;
+    memberList.innerHTML=sorted.length?sorted.map((u,i)=>card(u,i,'member')).join(''):`<div class="ranking-empty-state">${currentUid?'AÚN NO TIENES AMIGOS AGREGADOS':'INICIA SESIÓN PARA VER TU RANKING DE AMIGOS'}</div>`;
+    bindCards(memberList);
+  }
+  function applyGlobal(){
+    const creators=users.filter(isCreator).slice(0,1); const admins=sortGroup(users.filter(u=>!isCreator(u)&&isAdmin(u))); const members=sortGroup(users.filter(u=>!isCreator(u)&&!isAdmin(u)));
+    creatorSection.hidden=!creators.length; adminSection.hidden=!admins.length; memberSection.hidden=false;
+    if(memberTitle)memberTitle.textContent='MIEMBROS';
+    if(memberKicker)memberKicker.textContent='Speedy Friends / Community';
+    if(memberMeta)memberMeta.textContent='RINGS TOTALES · ADMINISTRADORES Y MIEMBROS';
+    if(heroTitle)heroTitle.innerHTML='Top <em>Integrantes</em>';
+    if(heroLead)heroLead.textContent='El marcador de la comunidad: Rings, posición y progreso. Usa "AMIGOS" para ver únicamente tu círculo personal.';
     creatorList.innerHTML=creators.length?creators.map((u,i)=>card(u,i,'creator')).join(''):'<div class="special-empty">CUENTA CREADORA NO ENCONTRADA</div>';
     adminList.innerHTML=admins.length?admins.map((u,i)=>card(u,i,'admin')).join(''):'<div class="special-empty">AÚN NO HAY ADMINISTRADORES</div>';
     memberList.innerHTML=members.length?members.map((u,i)=>card(u,i,'member')).join(''):'<div class="ranking-empty-state">AÚN NO HAY INTEGRANTES REGISTRADOS</div>';
-
-    const creatorSection=document.getElementById('creator-ranking-section');
-    const adminSection=document.getElementById('admin-ranking-section');
-    creatorSection.hidden=!creators.length;
-    adminSection.hidden=!admins.length;
-    memberCount.textContent=`${members.length} MOSTRADOS`;
-    adminCount.textContent=`${admins.length} MOSTRADOS`;
+    memberCount.textContent=`${members.length} MOSTRADOS`; adminCount.textContent=`${admins.length} MOSTRADOS`;
     bindCards(creatorList);bindCards(adminList);bindCards(memberList);
   }
-
-  document.getElementById('shuffle')?.addEventListener('click',()=>render());
-  filters.forEach(f=>f.addEventListener('click',()=>{mode=f.dataset.mode||'rings';render()}));
-  const bindFirebase=()=>{
+  function render(){
+    filters.forEach(f=>f.classList.toggle('active',f.dataset.mode===mode));
+    if(mode==='friends')applyFriendsFilter();else applyGlobal();
+  }
+  function loadFriends(uid){
+    if(!uid || !window.SpeedyFirebase?.db || !window.SpeedyFirebase?.refs?.root) return;
+    const teamRef=window.SpeedyFirebase.refs.root;
+    teamRef.child('friends').child(uid).on('value',snap=>{friendsMap=snap.val()||{}; if(mode==='friends')render();});
+    teamRef.child('rings').on('value',snap=>{ringMap=snap.val()||{}; if(mode==='friends')render();});
+  }
+  function bindFirebase(){
     if(!window.SpeedyFirebase?.watchPublicUsers)return;
-    window.SpeedyFirebase.watchPublicUsers(raw=>{users=normalize(raw);render()});
-  };
-  document.addEventListener('speedy:firebase-ready',bindFirebase,{once:true});
-  if(window.SpeedyFirebase?.current?.uid)bindFirebase();
+    window.SpeedyFirebase.watchPublicUsers(raw=>{users=normalize(raw);render();});
+    const uid=window.SpeedyFirebase?.current?.uid || window.SpeedyFirebase?.state?.uid;
+    if(uid)loadFriends(uid);
+  }
+  filters.forEach(f=>f.addEventListener('click',()=>{mode=f.dataset.mode||'rings';render();}));
+  document.getElementById('shuffle')?.addEventListener('click',render);
+  document.addEventListener('speedy:firebase-ready',()=>{bindFirebase();},{once:true});
+  if(window.SpeedyFirebase?.current?.uid || window.SpeedyFirebase?.watchPublicUsers)bindFirebase();
+  if(window.SpeedyFirebase?.auth){
+    window.SpeedyFirebase.auth.onAuthStateChanged(user=>{ if(user) loadFriends(user.uid); else { friendsMap={}; ringMap={}; if(mode==='friends')render(); } });
+  }
   render();
 });
 </script>
-
 
 
 <div class="rank-profile-backdrop" id="rank-profile-backdrop" aria-hidden="true"></div>
@@ -1028,6 +1040,7 @@ document.addEventListener('DOMContentLoaded',()=>{
    if(ostTrack)ostTrack.textContent=track||'SIN OST';
    if(ostBtn)ostBtn.disabled=!(track||ostUrl);
    backdrop?.classList.add('is-open');modal?.classList.add('is-open');document.body.classList.add('rank-preview-open');
+   syncRankAddButton();
  };
  const closeModal=()=>{stop();backdrop?.classList.remove('is-open');modal?.classList.remove('is-open');document.body.classList.remove('rank-preview-open')};
 
@@ -1065,7 +1078,65 @@ document.addEventListener('DOMContentLoaded',()=>{
  close?.addEventListener('click',closeModal);backdrop?.addEventListener('click',closeModal);
  document.addEventListener('keydown',e=>{if(e.key==='Escape')closeModal()});
  profileBtn?.addEventListener('click',()=>{if(selected)location.assign(`profile.html?user=${encodeURIComponent(selected.dataset.profileId||selected.dataset.profile)}`)});
- addBtn?.addEventListener('click',()=>{if(selected&&window.showToast)window.showToast(`Solicitud preparada para ${selected.dataset.profile}`)});
+ async function resolveRankTargetUid(){
+   if(!selected) return '';
+   const direct=String(selected.dataset.ownerUid||'').trim();
+   if(direct && direct!==String(window.SpeedyFirebase?.current?.uid||'')) return direct;
+   const profileId=String(selected.dataset.profileId||'').trim();
+   if(!profileId || !window.SpeedyFirebase?.refs?.users) return direct;
+   try{
+     const snap=await window.SpeedyFirebase.refs.users.child(profileId).once('value');
+     const p=snap.val()||{};
+     return String(p.ownerUid||p.uid||p.userUid||p.authUid||direct||'').trim();
+   }catch(e){ return direct; }
+ }
+ async function syncRankAddButton(){
+   if(!addBtn || !selected) return;
+   const uid=await resolveRankTargetUid();
+   selected.dataset.ownerUid=uid;
+   if(!uid){ addBtn.disabled=true; addBtn.textContent='SIN CUENTA'; return; }
+   const sf=window.SpeedyFriends;
+   try{
+     await sf?.ensureReady?.(4000);
+     const rel=sf?.state ? (sf.state.friends?.[uid]?'friend':sf.state.incoming?.[uid]?'incoming':sf.state.outgoing?.[uid]?'outgoing':'none') : 'none';
+     if(rel==='friend'){ addBtn.disabled=true; addBtn.textContent='YA SON AMIGOS'; }
+     else if(rel==='outgoing'){ addBtn.disabled=true; addBtn.textContent='SOLICITUD ENVIADA'; }
+     else if(rel==='incoming'){ addBtn.disabled=false; addBtn.textContent='ACEPTAR SOLICITUD'; }
+     else if(uid === String(sf?.state?.uid||'')){ addBtn.disabled=true; addBtn.textContent='ESTE ERES TÚ'; }
+     else { addBtn.disabled=false; addBtn.textContent='AGREGAR AMIGO'; }
+   }catch{
+     addBtn.disabled=false; addBtn.textContent='AGREGAR AMIGO';
+   }
+ }
+ addBtn?.addEventListener('click',async()=>{
+   if(!selected) return;
+   const uid=await resolveRankTargetUid();
+   if(!uid){ window.showToast?.('Este perfil no tiene una cuenta vinculada.'); return; }
+   selected.dataset.ownerUid=uid;
+   const sf=window.SpeedyFriends;
+   if(!sf?.sendRequest){ window.showToast?.('No se pudo cargar el sistema de Amigos.'); return; }
+   addBtn.disabled=true;
+   addBtn.textContent='ENVIANDO…';
+   try{
+     await sf.ensureReady?.(5000);
+     const rel=sf.state?.friends?.[uid]?'friend':sf.state?.incoming?.[uid]?'incoming':sf.state?.outgoing?.[uid]?'outgoing':'none';
+     if(rel==='incoming'){
+       await sf.acceptRequest(uid);
+       addBtn.textContent='YA SON AMIGOS';
+     }else if(rel==='friend'){
+       addBtn.textContent='YA SON AMIGOS';
+     }else if(rel==='outgoing'){
+       addBtn.textContent='SOLICITUD ENVIADA';
+     }else{
+       await sf.sendRequest(uid);
+       addBtn.textContent='SOLICITUD ENVIADA';
+     }
+   }catch(err){
+     window.showToast?.(err?.message||'No se pudo enviar la solicitud.');
+     await syncRankAddButton();
+   }
+ });
+ document.addEventListener('speedy:firebase-ready',()=>syncRankAddButton());
 })();
 
 </script>

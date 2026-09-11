@@ -76,7 +76,6 @@
       return;
     }
 
-    // Full page navigation: display loader before the browser leaves.
     show(page, page === 'RANKING' ? 'Cargando clasificación…' :
                page === 'AUDIO / OST' ? 'Cargando biblioteca OST…' :
                page === 'PERFIL' ? 'Cargando perfil…' :
@@ -97,6 +96,8 @@
 <link rel="stylesheet" href="vendor/top.min.css">
 <link rel="stylesheet" href="vendor/oldStyle.min.css">
 <link rel="stylesheet" href="styles.css">
+<link rel="stylesheet" href="fanarts.css">
+
 
 <style id="sf-navigation-fixes">
 html[data-sf-theme="dark"] .hero-utility-rail,
@@ -127,6 +128,7 @@ html[data-sf-theme="dark"] .sf-utility-backdrop{background:rgba(0,0,0,.63)}
 <script src="https://www.gstatic.com/firebasejs/12.1.0/firebase-database-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/12.1.0/firebase-storage-compat.js"></script>
 <script src="firebase-legacy.js"></script>
+<script src="friends-system.js"></script>
 
 
 <style id="sf-selection-stability">
@@ -208,9 +210,17 @@ html[data-sf-theme="dark"] .sf-theme-toggle{background:rgba(18,24,32,.92)!import
 </style><style id="sf-see-friends-v48-style">
 .sf-see-friends-wrap{display:flex;justify-content:flex-end;margin-top:15px}.sf-see-friends{display:inline-flex;align-items:center;gap:10px;padding:11px 14px;background:#171717;color:#fff!important;text-decoration:none;font:1000 7px/1 Arial;letter-spacing:.12em;box-shadow:8px 8px 0 rgba(46,103,166,.12);transition:transform .3s ease,background .25s}.sf-see-friends:hover{transform:translateY(-3px);background:#ef263f}.sf-see-friends span{color:#e7c66b;font-size:13px}html[data-sf-theme="dark"] .sf-see-friends{background:#18212b!important;border:1px solid rgba(255,255,255,.1);box-shadow:8px 8px 0 rgba(86,119,215,.08)}html[data-sf-theme="dark"] .sf-see-friends:hover{background:#ef4056!important}
 @media(max-width:520px){.sf-see-friends-wrap{justify-content:flex-start}.sf-see-friends{width:100%;justify-content:space-between}}
-</style></head>
+</style>
+<style id="sf-home-friends-live-v56">
+.friend-img .sf-home-f-avatar-fallback{display:grid;place-items:center;width:100%;height:100%;font:900 34px/1 Arial,sans-serif;color:#fff;background:linear-gradient(145deg,#18395a,#6d1728)}
+</style>
+</head>
 <body>
 
+
+<style id="sf-home-friends-presence-v57">
+.friend-card{display:block;text-decoration:none;color:inherit}.friend-card .friend-img{position:relative}.sf-home-presence{position:absolute;right:15px;top:15px;width:11px;height:11px;border-radius:50%;border:3px solid #111;box-shadow:0 0 0 4px rgba(255,255,255,.05)}.sf-home-presence.is-online{background:#35e68c;box-shadow:0 0 0 4px rgba(53,230,140,.13),0 0 18px rgba(53,230,140,.65)}.sf-home-presence.is-offline{background:#70757d}.sf-home-status{display:inline-flex;align-items:center;gap:7px}.sf-home-status::before{content:"";width:6px;height:6px;border-radius:50%;background:#70757d}.sf-home-status.is-online{color:#65e7a1}.sf-home-status.is-online::before{background:#35e68c;box-shadow:0 0 10px rgba(53,230,140,.75)}.sf-home-status.is-offline{color:#8d9299}.sf-home-ring-mini{padding:0 22px 18px;color:#e7c66b;font:900 9px/1 Arial,sans-serif;letter-spacing:.14em}.sf-home-friends-empty{cursor:default}.sf-home-friends-empty .friend-info b{color:#e7c66b}
+</style>
 <style id="sf-loader-style">
 .sf-page-loader{position:fixed;inset:0;z-index:99999;display:grid;place-items:center;background:radial-gradient(circle at 50% 44%,rgba(34,34,34,.98),rgba(5,5,5,.99) 72%);backdrop-filter:blur(14px);pointer-events:none;opacity:1;visibility:visible;transition:opacity .34s ease,visibility .34s ease;pointer-events:auto}
 .sf-page-loader.is-hidden{opacity:0;visibility:hidden;pointer-events:none}
@@ -258,7 +268,7 @@ html[data-sf-theme="dark"] .sf-theme-toggle{background:rgba(18,24,32,.92)!import
       <span class="sf-brand-speedy">SPEEDY</span><span class="sf-brand-friends">FRIENDS</span>
     </a>
     <nav class="sf-desktop-nav" aria-label="Navegación principal">
-      <a href="#topics">Novedades</a><a href="#friends">Amigos</a><a href="#special">Especial</a><a href="#downloads">Descargas</a><a href="#quick-actions" data-open-quick-panel>Accesos</a><a href="#videos">Videos</a>
+      <a href="#topics">Novedades</a><a href="#friends">Amigos</a><a href="#fanarts">Fanarts</a><a href="#special">Especial</a><a href="#downloads">Descargas</a><a href="#quick-actions" data-open-quick-panel>Accesos</a><a href="#videos">Videos</a>
     </nav>
     <div class="sf-socials"><button aria-label="X">X</button><button aria-label="Discord">D</button><button aria-label="Facebook">f</button></div>
     <button id="menuBtn" class="sf-menu" aria-label="Abrir menú"><span></span><span></span><span></span></button>
@@ -368,14 +378,14 @@ html[data-sf-theme="dark"] .sf-theme-toggle{background:rgba(18,24,32,.92)!import
 
     <section id="friends" class="sf-section sf-dark reveal">
       <div class="sf-diagonal"></div>
-      <div class="sf-section-head on-dark"><div><p class="eyebrow">02 / COMMUNITY</p><h2>Amigos</h2></div><a class="sf-more" href="#">Todos los perfiles <span>→</span></a></div>
+      <div class="sf-section-head on-dark"><div><p class="eyebrow">02 / COMMUNITY</p><h2>Amigos</h2></div><a class="sf-more" href="friends.html">Todos los perfiles <span>→</span></a></div>
       <div class="friends-track">
         <article class="friend-card active"><div class="friend-img"><img src="assets/section-replacement.png" alt="Amigo 01"></div><div class="friend-info"><span>#01</span><h3>Blaze</h3><p>Racer · Explorer</p><b>ONLINE</b></div></article>
         <article class="friend-card"><div class="friend-img"><img src="assets/section-replacement.png" alt="Amigo 02"></div><div class="friend-info"><span>#02</span><h3>Espio</h3><p>Stealth · Speed</p><b>ONLINE</b></div></article>
         <article class="friend-card"><div class="friend-img"><img src="assets/section-replacement.png" alt="Amigo 03"></div><div class="friend-info"><span>#03</span><h3>Nova</h3><p>Creator · Builder</p><b>AWAY</b></div></article>
         <article class="friend-card"><div class="friend-img"><img src="assets/section-replacement.png" alt="Amigo 04"></div><div class="friend-info"><span>#04</span><h3>Rin</h3><p>Artist · Chaser</p><b>ONLINE</b></div></article>
       </div>
-      <div id="sf-see-friends-v48" class="sf-see-friends-wrap"><a class="sf-see-friends" href="index.html#friends">VER AMIGOS <span>→</span></a></div>
+      <div id="sf-see-friends-v48" class="sf-see-friends-wrap"><a class="sf-see-friends" href="friends.html">VER AMIGOS <span>→</span></a></div>
     </section>
 
     <section id="special" class="sf-section sf-special reveal">
@@ -480,20 +490,95 @@ html[data-sf-theme="dark"] .sf-theme-toggle{background:rgba(18,24,32,.92)!import
       <div class="video-preview"><img src="assets/section-replacement.png" alt="Video preview"><span>WATCH NOW</span></div>
     </section>
 
-    <section class="sf-section sf-section-light reveal">
-      <div class="sf-section-head"><div><p class="eyebrow">06 / FAN GALLERY</p><h2>Galería</h2></div><a class="sf-more" href="#">Ver galería <span>→</span></a></div>
-      <div class="gallery-grid"><img src="assets/section-replacement.png" alt="Fanart"><img src="assets/section-replacement.png" alt="Captura"><img src="assets/section-replacement.png" alt="Creación"><img src="assets/section-replacement.png" alt="Contenido"></div>
+    <section class="sf-section sf-section-light reveal" id="fanarts">
+      <div class="sf-section-head"><div><p class="eyebrow">06 / FAN GALLERY</p><h2>Galería</h2></div><a class="sf-more" href="fanarts.html">Ver galería <span>→</span></a></div>
+      <div class="home-fanart-showcase" aria-live="polite">
+        <div class="home-fanart-rail" id="homeFanartGrid">
+          <article class="home-fanart-card is-demo"><a href="fanarts.html" class="home-fanart-open"><img src="assets/fanart-demo/neon-rush.svg" alt="Fanart de muestra"><span>01</span><i class="home-fanart-like-glow">♥</i></a><div class="home-fanart-copy"><small>FANART · DIGITAL</small><h3>Neon Rush</h3><div class="home-fanart-bottom"><div class="home-fanart-person"><div>NR</div><b>Speedy Friends</b></div><strong>♥ 248</strong></div></div></article>
+          <article class="home-fanart-card is-demo"><a href="fanarts.html" class="home-fanart-open"><img src="assets/fanart-demo/eclipse.svg" alt="Fanart de muestra"><span>02</span><i class="home-fanart-like-glow">♥</i></a><div class="home-fanart-copy"><small>FANART · DIBUJOS</small><h3>Eclipse</h3><div class="home-fanart-bottom"><div class="home-fanart-person"><div>EC</div><b>Speedy Friends</b></div><strong>♥ 211</strong></div></div></article>
+          <article class="home-fanart-card is-demo"><a href="fanarts.html" class="home-fanart-open"><img src="assets/fanart-demo/cyber-team.svg" alt="Fanart de muestra"><span>03</span><i class="home-fanart-like-glow">♥</i></a><div class="home-fanart-copy"><small>FANART · RENDERS</small><h3>Cyber Team</h3><div class="home-fanart-bottom"><div class="home-fanart-person"><div>CT</div><b>Speedy Friends</b></div><strong>♥ 184</strong></div></div></article>
+          <article class="home-fanart-card is-demo"><a href="fanarts.html" class="home-fanart-open"><img src="assets/fanart-demo/rose-drive.svg" alt="Fanart de muestra"><span>04</span><i class="home-fanart-like-glow">♥</i></a><div class="home-fanart-copy"><small>FANART · EDITS</small><h3>Rose Drive</h3><div class="home-fanart-bottom"><div class="home-fanart-person"><div>RD</div><b>Speedy Friends</b></div><strong>♥ 162</strong></div></div></div></article>
+        </div>
+        <button class="home-fanart-arrow home-fanart-prev" type="button" aria-label="Anterior">←</button>
+        <button class="home-fanart-arrow home-fanart-next" type="button" aria-label="Siguiente">→</button>
+        <div class="home-fanart-status"><span>LOS MÁS VOTADOS</span><b id="homeFanartStatus">01 / 04</b></div>
+      </div>
     </section>
 
-    <section class="sf-lineup reveal"><div class="lineup-inner"><div><p class="eyebrow">07 / LATEST</p><h2>Últimos<br><em>momentos.</em></h2></div><div class="lineup-cards"><article><img src="assets/section-replacement.png" alt=""><b>FRONTIER</b><span>New chapter</span></article><article><img src="assets/section-replacement.png" alt=""><b>SHADOW</b><span>Night mode</span></article><article><img src="assets/section-replacement.png" alt=""><b>RACING</b><span>Cross worlds</span></article></div></div></section>
+    <section class="sf-lineup sf-last-moments reveal" id="ultimos-momentos">
+  <div class="last-moments-noise" aria-hidden="true"></div>
+  <div class="lineup-inner last-moments-inner">
+    <div class="last-moments-heading">
+      <p class="eyebrow">07 / LATEST STORIES</p>
+      <h2>Últimos<br><em>momentos.</em></h2>
+      <p class="last-moments-intro">Historias creadas por el team. Tres mundos, tres amenazas y tres capítulos que recién comienzan.</p>
+      <div class="last-moments-rule"><span></span><b>TEAM ARCHIVE / 2026</b></div>
+    </div>
+
+    <div class="story-showcase">
+      <article class="team-story-card" data-story="sonic-wars">
+        <div class="story-index">01</div>
+        <div class="story-image-wrap"><img src="assets/ultimos-momentos/sonic-wars.jpeg" alt="Ilustración de Sonic Wars" loading="lazy"><div class="story-gloss"></div></div>
+        <div class="story-meta"><span>SONIC WARS</span><i></i><small>MULTIVERSO</small></div>
+        <h3>El caos cruza las líneas del tiempo.</h3>
+        <p>Robonkin descubre otros mundos y reúne versiones oscuras del erizo para desatar una guerra imposible de contener.</p>
+        <button class="story-read" type="button">Leer historia <span>↗</span></button>
+      </article>
+
+      <article class="team-story-card" data-story="metal-virus">
+        <div class="story-index">02</div>
+        <div class="story-image-wrap"><img src="assets/ultimos-momentos/metal-virus.jpeg" alt="Ilustración del Metal Virus" loading="lazy"><div class="story-gloss"></div></div>
+        <div class="story-meta"><span>METAL VIRUS RENACIMIENTO</span><i></i><small>SUPERVIVENCIA</small></div>
+        <h3>El virus volvió más inteligente.</h3>
+        <p>Los zombots conservan conciencia, las ciudades caen y una Sally infectada intenta destruir la última esperanza de cura.</p>
+        <button class="story-read" type="button">Leer historia <span>↗</span></button>
+      </article>
+
+      <article class="team-story-card" data-story="execution">
+        <div class="story-index">03</div>
+        <div class="story-image-wrap"><img src="assets/ultimos-momentos/execution.jpeg" alt="Ilustración de Execution" loading="lazy"><div class="story-gloss"></div></div>
+        <div class="story-meta"><span>EXECUTION</span><i></i><small>TERROR CÓSMICO</small></div>
+        <h3>Cuando el vacío reclama el show.</h3>
+        <p>X deja de ser un intruso y convierte el cosmo de Sonic en un escenario de absoluto terror, expansión y agonía.</p>
+        <button class="story-read" type="button">Leer historia <span>↗</span></button>
+      </article>
+    </div>
+  </div>
+</section>
+
+<div class="story-modal" id="storyModal" aria-hidden="true">
+  <div class="story-modal-backdrop" data-story-close></div>
+  <div class="story-modal-dialog" role="dialog" aria-modal="true" aria-labelledby="storyModalTitle">
+    <button class="story-modal-close" type="button" aria-label="Cerrar historia" data-story-close>×</button>
+    <div class="story-modal-progress" aria-hidden="true"><span id="storyModalProgress"></span></div>
+    <div class="story-modal-visual">
+      <img id="storyModalImage" src="" alt="">
+      <div class="story-modal-visual-label"><span id="storyModalCounter">01 / 03</span><i></i><span>HISTORIA DEL TEAM</span></div>
+    </div>
+    <div class="story-modal-copy" id="storyModalCopy">
+      <div class="story-modal-head">
+        <p class="eyebrow" id="storyModalEyebrow"></p>
+        <h3 id="storyModalTitle"></h3>
+      </div>
+      <div class="story-modal-divider"></div>
+      <div id="storyModalBody" class="story-modal-body"></div>
+      <div class="story-modal-foot">
+        <button type="button" class="story-nav-button" id="storyPrev">← Anterior</button>
+        <span id="storyScrollHint">Desplázate para leer</span>
+        <button type="button" class="story-nav-button" id="storyNext">Siguiente →</button>
+      </div>
+    </div>
+  </div>
+</div>
   </main>
 
   <footer class="sf-footer"><div class="sf-footer-brand">SPEEDY <strong>FRIENDS</strong></div><div>© 2026 Speedy Friends · Visual rebuild</div><div><a href="#top">TOP ↑</a></div></footer>
 </div>
 
-<div id="mobileNav" class="mobile-nav"><div class="mobile-nav-inner"><button id="closeMenu">×</button><p class="eyebrow">SPEEDY FRIENDS</p><a href="#topics">Novedades</a><a href="#friends">Amigos</a><a href="#special">Especial</a><a href="#downloads">Descargas</a><a href="#quick-actions" data-open-quick-panel>Accesos</a><a href="#videos">Videos</a><a href="#top">Inicio</a></div></div>
+<div id="mobileNav" class="mobile-nav"><div class="mobile-nav-inner"><button id="closeMenu">×</button><p class="eyebrow">SPEEDY FRIENDS</p><a href="#topics">Novedades</a><a href="#friends">Amigos</a><a href="#fanarts">Fanarts</a><a href="#special">Especial</a><a href="#downloads">Descargas</a><a href="#quick-actions" data-open-quick-panel>Accesos</a><a href="#videos">Videos</a><a href="#top">Inicio</a></div></div>
 <div id="toast" class="toast">Demo visual activa</div>
-<script src="vendor/jquery-3.7.1.min.js"></script><script src="vendor/swiper-bundle.min.js"></script><script src="app.js"></script>
+<script src="vendor/jquery-3.7.1.min.js"></script><script src="vendor/swiper-bundle.min.js"></script><script src="fanarts-system.js"></script><script src="app.js"></script>
+<script src="ultimos-momentos.js"></script>
 
 <script>
 document.addEventListener("DOMContentLoaded", () => {
@@ -638,7 +723,6 @@ document.addEventListener("DOMContentLoaded",()=>{
         return;
       }
 
-      // Only route buttons navigate. Hover never does.
       const label=(card.getAttribute("aria-label")||"PÁGINA").toUpperCase();
       const subtitle=label==="RANKING"?"Cargando clasificación…":
         label.includes("OST")?"Cargando biblioteca OST…":
@@ -812,7 +896,7 @@ document.addEventListener('DOMContentLoaded',()=>{
 </script>
 
 <style id="sf-final-admin-gate-style">
-/* Admin controls start hidden. The gate below reveals them only after auth. */
+
 [data-firebase-admin][data-sf-admin-hidden="true"]{display:none !important}
 </style>
 <script id="sf-final-admin-gate">
@@ -1002,6 +1086,54 @@ document.addEventListener('DOMContentLoaded',()=>{
     const parts=meta.split('·').map(s=>s.trim());
     window.sfOpenNewsModal({id:'',title,summary,body:summary,image:img,date:parts[0]||'',category:parts[1]||'INFO'});
   },true);
+})();
+</script>
+
+
+<script id="sf-home-fanarts-live">
+(() => {
+  const $ = (s,r=document) => r.querySelector(s);
+  const $$ = (s,r=document) => [...r.querySelectorAll(s)];
+  const safe = v => String(v ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+  const demo = [
+    {id:'demo-1',title:'Neon Rush',image:'assets/fanart-demo/neon-rush.svg',authorName:'Speedy Friends',likes:248,category:'Digital'},
+    {id:'demo-2',title:'Eclipse',image:'assets/fanart-demo/eclipse.svg',authorName:'Speedy Friends',likes:211,category:'Dibujos'},
+    {id:'demo-3',title:'Cyber Team',image:'assets/fanart-demo/cyber-team.svg',authorName:'Speedy Friends',likes:184,category:'Renders'},
+    {id:'demo-4',title:'Rose Drive',image:'assets/fanart-demo/rose-drive.svg',authorName:'Speedy Friends',likes:162,category:'Edits'}
+  ];
+  const root = () => window.SpeedyFirebase?.refs?.root;
+  const count = a => a.likes && typeof a.likes === 'object' ? Object.keys(a.likes).length : Number(a.likeCount || 0);
+  function render(list, live){
+    const rail=$('#homeFanartGrid'); if(!rail)return;
+    const top=[...(list.length?list:demo)].sort((a,b)=>count(b)-count(a)).slice(0,4);
+    rail.innerHTML=top.map((a,i)=>{
+      const avatar=a.avatar?`<img src="${safe(a.avatar)}" alt="">`:safe((a.authorName||'SF').split(/\s+/).map(x=>x[0]).slice(0,2).join('').toUpperCase());
+      const media=a.mediaType==='video'?`<video src="${safe(a.image)}" muted loop autoplay playsinline></video>`:`<img src="${safe(a.image)}" alt="${safe(a.title)}" loading="lazy">`;
+      return `<article class="home-fanart-card ${live?'is-live':'is-demo'}" data-home-index="${i}"><a href="fanarts.html" class="home-fanart-open">${media}<span>${String(i+1).padStart(2,'0')}</span><i class="home-fanart-like-glow">♥</i></a><div class="home-fanart-copy"><small>FANART · ${safe((a.category||'Digital').toUpperCase())}${live?' · POPULAR':''}</small><h3>${safe(a.title||'Fanart')}</h3><div class="home-fanart-bottom"><div class="home-fanart-person"><div>${avatar}</div><b>${safe(a.authorName||'Integrante')}</b></div><strong>♥ ${count(a)}</strong></div></div></article>`;
+    }).join('');
+    bindRail(top.length);
+    if(!live) return;
+    $$('.home-fanart-card',rail).forEach((c,i)=>c.style.animationDelay=`${i*80}ms`);
+  }
+  function bindRail(total){
+    const rail=$('#homeFanartGrid'), status=$('#homeFanartStatus'); if(!rail)return;
+    let idx=0; const cards=()=>$$('.home-fanart-card',rail);
+    const go=n=>{const els=cards(); if(!els.length)return; idx=(n+els.length)%els.length; els.forEach((c,i)=>c.classList.toggle('is-focus',i===idx)); status&&(status.textContent=`${String(idx+1).padStart(2,'0')} / ${String(els.length).padStart(2,'0')}`)};
+    const prev=$('.home-fanart-prev'), next=$('.home-fanart-next');
+    if(prev) prev.onclick=()=>go(idx-1); if(next) next.onclick=()=>go(idx+1); go(0);
+    rail.onpointermove=e=>{const c=e.target.closest('.home-fanart-card');if(!c)return;const r=c.getBoundingClientRect();c.style.setProperty('--rx',`${(e.clientY-r.top)/r.height-.5)*-2}deg`);c.style.setProperty('--ry',`${(e.clientX-r.left)/r.width-.5)*3}deg`)};
+    rail.onpointerleave=()=>cards().forEach(c=>{c.style.removeProperty('--rx');c.style.removeProperty('--ry')});
+  }
+  function live(){
+    const sf=window.SpeedyFirebase; if(!sf?.refs?.root || !sf?.current) return false;
+    // Visitors stay on the polished preview; authenticated users get the real most-liked fanarts.
+    if(!sf.current.uid) return false;
+    const ref=sf.refs.root.child('fanarts');
+    ref.on('value',snap=>render(Object.values(snap.val()||{}),true));
+    return true;
+  }
+  function init(){render(demo,false); const tryLive=()=>{ if(!live()){setTimeout(tryLive,900);} }; tryLive(); document.addEventListener('speedy:firebase-ready',tryLive,{once:true});}
+  if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',init); else init();
 })();
 </script>
 

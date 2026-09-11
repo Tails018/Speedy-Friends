@@ -781,6 +781,7 @@ body.admin-profile-open{overflow:hidden}
   const ringLog = document.getElementById('ring-log');
   const users=[];
   let currentUsers = {};
+  let currentRings = {};
   let currentPerms = {};
   let selected = null;
   let usersUnsub = null, permsUnsub = null, ringsUnsub = null, historyUnsub = null;
@@ -797,7 +798,7 @@ body.admin-profile-open{overflow:hidden}
     title:u?.title||u?.role||'Integrante',
     role:u?.role||'member',
     description:u?.description||u?.bio||'',
-    rings:n(u?.rings), level:n(u?.level)||1, xp:n(u?.xp),
+    rings:Object.prototype.hasOwnProperty.call(currentRings,id) ? n(currentRings[id]) : n(u?.rings), level:n(u?.level)||1, xp:n(u?.xp),
     friends:n(u?.friendsCount||u?.friends||0), week:n(u?.weeklyRings||u?.weekly?.rings||u?.weekly||0),
     items:n(u?.items||u?.inventoryCount||0),
     avatar:u?.avatar||'', cover:u?.cover||'',
@@ -808,7 +809,8 @@ body.admin-profile-open{overflow:hidden}
   function roleLabel(u){
     const r=String(u.role||'').toLowerCase();
     if (String(u.ownerEmail||'').toLowerCase() === String(sf.current?.email||'').toLowerCase()) return 'Creadora';
-    return r==='admin'?'Admin':'Integrante';
+    if (r==='admin' || String(u.ownerUid||'') && String(currentPerms?.[u.ownerUid]?.role||'').toLowerCase()==='admin') return 'Admin';
+    return 'Integrante';
   }
 
   function getUsers(){
@@ -907,16 +909,16 @@ body.admin-profile-open{overflow:hidden}
     }
   }
 
-  async function changeRings(delta){
-    if(!sf.current?.isAdmin && !sf.current?.permissions?.rings && !sf.current?.isCreator){notify('Sin permiso para modificar Rings');return;}
-    const id=ringSelect?.value; const amount=n(ringAmount?.value);
+  async function changeRings(delta, amountEl=ringAmount, reasonEl=ringReason, userEl=ringSelect){
+    const live=await sf.resolve(); if(!live?.isAdmin && String(live?.role||'').toLowerCase()!=='admin' && !live?.permissions?.rings && !live?.isCreator){notify('Sin permiso para modificar Rings');return;}
+    const id=userEl?.value; const amount=n(amountEl?.value);
     if(!id||!amount||amount<=0){notify('Introduce una cantidad válida');return;}
     const target=selectedUserById(id); if(!target){notify('Selecciona un integrante');return;}
     try{
-      const total=await sf.setRingAmount(id,delta*amount,(ringReason?.value||'').trim());
+      const total=await sf.setRingAmount(id,delta*amount,(reasonEl?.value||'').trim());
       notify(`${delta>0?'＋':'−'}${amount} Rings · ${target.username} ahora tiene ${total.toLocaleString('en-US')}`);
-      if(ringAmount)ringAmount.value='';
-      if(ringReason)ringReason.value='';
+      if(amountEl)amountEl.value='';
+      if(reasonEl)reasonEl.value='';
     }catch(err){notify(err?.message||'No se pudo actualizar Rings');}
   }
 
@@ -998,7 +1000,7 @@ body.admin-profile-open{overflow:hidden}
     if(!canManageRoles)return;
     const grid=document.querySelector('#permissions .permission-grid'); if(!grid)return;
     const all=getUsers().filter(u=>roleLabel(u)!=='Creadora');
-    const admins=all.filter(u=>String(u.role||'').toLowerCase()==='admin');
+    const admins=all.filter(u=>String(u.role||'').toLowerCase()==='admin' || String(currentPerms?.[u.ownerUid]?.role||'').toLowerCase()==='admin');
     const ringUsers=all.filter(u=>Object.values(currentPerms).some(p=>p?.rings===true && String(u.ownerUid)===String(Object.entries(currentPerms).find(([uid,p])=>p?.rings===true && String(uid)===String(u.ownerUid))?.[0])));
     const adminCards=admins.map(u=>`<div class="toggle"><span>${esc(u.username)}</span><button class="perm-toggle on" data-kind="admin" data-uid="${esc(u.id)}" type="button">ACTIVO</button></div>`).join('');
     const ringCards=getUsers().filter(u=>u.ownerUid && u.role!=='creator').map(u=>{
@@ -1038,7 +1040,7 @@ body.admin-profile-open{overflow:hidden}
   }
 
   async function bootRealtime(){
-    if(!sf?.refs?.users)return;
+    if(!sf?.refs?.users || usersUnsub)return;
     const state=await sf.resolve();
     if(!state.uid){ notify('Sesión no disponible'); return; }
     // One shared live users listener.
@@ -1046,20 +1048,23 @@ body.admin-profile-open{overflow:hidden}
       currentUsers=raw||{};
       renderOverview(); renderUsers(); renderRingResults(); if(canManageRoles)renderPermissions();
     });
+    ringsUnsub=sf.refs.rings.on('value',snap=>{
+      currentRings=snap.val()||{};
+      renderOverview(); renderUsers(); renderRingResults();
+    });
     permsUnsub=sf.refs.permissions.on('value',snap=>{
       currentPerms=snap.val()||{};
-      renderOverview(); if(canManageRoles)renderPermissions();
+      renderOverview(); renderUsers(); renderRingResults(); if(canManageRoles)renderPermissions();
     });
     historyUnsub=sf.refs.ringHistory.on('value',snap=>{
       lastHistory=Object.values(snap.val()||{}).sort((a,b)=>n(a.at)-n(b.at));
       renderAudit(lastHistory); renderAdminAudit(lastHistory);
     });
-    // Explicit rings listener refreshes the current user's displayed balance.
-    ringsUnsub=sf.watchUserRings?.(()=>{});
     renderOverview();renderUsers();renderRingResults();if(canManageRoles)renderPermissions();
   }
 
   document.addEventListener('speedy:firebase-ready',bootRealtime,{once:true});
+  if (sf?.current?.ready || sf?.auth?.currentUser) bootRealtime();
   if(sf?.current?.uid)bootRealtime();
 
 })();

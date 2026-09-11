@@ -1,0 +1,31 @@
+{
+  "friendRequests": {
+    "inbox": {
+      "$uid": {
+        ".read": "auth != null && auth.uid == $uid",
+        "$requesterUid": {
+          ".write": "auth != null && (auth.uid == $uid || auth.uid == $requesterUid)",
+          ".validate": "!newData.exists() || (newData.child('requesterUid').val() == $requesterUid && newData.child('recipientUid').val() == $uid && newData.child('status').val() == 'pending' && newData.child('requesterProfileId').isString() && newData.child('recipientProfileId').isString())"
+        }
+      }
+    },
+    "outbox": {
+      "$uid": {
+        ".read": "auth != null && auth.uid == $uid",
+        "$targetUid": {
+          ".write": "auth != null && (auth.uid == $uid || auth.uid == $targetUid)",
+          ".validate": "!newData.exists() || (newData.child('requesterUid').val() == $uid && newData.child('recipientUid').val() == $targetUid && newData.child('status').val() == 'pending' && newData.child('requesterProfileId').isString() && newData.child('recipientProfileId').isString())"
+        }
+      }
+    }
+  },
+  "friends": {
+    "$uid": {
+      ".read": "auth != null && auth.uid == $uid",
+      "$friendUid": {
+        ".write": "auth != null && (auth.uid == $uid || auth.uid == $friendUid)",
+        ".validate": "!newData.exists() || (newData.child('uid').val() == $friendUid && newData.child('profileId').isString() && newData.child('displayName').isString())"
+      }
+    }
+  }
+}

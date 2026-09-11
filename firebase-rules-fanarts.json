@@ -1,0 +1,11 @@
+{
+  "fanarts": {
+    ".read": "auth != null",
+    ".indexOn": ["createdAt", "ownerUid", "category"],
+    "$fanartId": {
+      ".read": "auth != null",
+      ".write": "auth != null && (!data.exists() ? newData.child('ownerUid').val() == auth.uid : data.child('ownerUid').val() == auth.uid)",
+      ".validate": "!newData.exists() || (newData.hasChildren(['id','ownerUid','title','description','category','mediaType','image','createdAt']) && newData.child('id').val() == $fanartId && newData.child('ownerUid').isString() && newData.child('title').isString() && newData.child('description').isString() && newData.child('category').isString() && newData.child('mediaType').isString() && (newData.child('mediaType').val() == 'image' || newData.child('mediaType').val() == 'video') && newData.child('image').isString() && newData.child('createdAt').val() != null)"
+    }
+  }
+}

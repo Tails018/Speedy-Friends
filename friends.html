@@ -1,0 +1,105 @@
+<!doctype html>
+<html lang="es" data-sf-theme="dark">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Amigos · Speedy Friends</title>
+  <meta name="description" content="Solicitudes, amigos y ranking personal de Rings de Speedy Friends.">
+  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="friends-system.css">
+  <script src="https://unpkg.com/@phosphor-icons/web"></script>
+  <script src="https://www.gstatic.com/firebasejs/12.1.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/12.1.0/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/12.1.0/firebase-database-compat.js"></script>
+  <script src="firebase-legacy.js"></script>
+</head>
+<body class="sf-friends-page">
+  <div id="sf-friends-toast" class="sf-f-toast" aria-live="polite"></div>
+
+  <main class="sf-friends-shell">
+    <header class="sf-friends-top">
+      <a class="sf-friends-brand" href="index.html">SPEEDY <em>FRIENDS</em></a>
+      <a class="sf-friends-back" href="index.html"><i class="ph ph-arrow-left"></i> Inicio</a>
+    </header>
+
+    <section class="sf-friends-hero">
+      <div>
+        <p class="sf-friends-kicker">RED SOCIAL / TEAM</p>
+        <h1>AMI<em>GOS</em></h1>
+      </div>
+      <p>Administra tus conexiones, acepta solicitudes y descubre quién de tus amigos tiene más Rings en tiempo real.</p>
+    </section>
+
+    <div id="sf-friends-app">
+      <nav class="sf-friends-tabs" aria-label="Secciones de Amigos">
+        <button class="sf-f-tab is-active" data-tab="friends">Mis amigos <span id="sf-friends-count">0</span></button>
+        <button class="sf-f-tab" data-tab="requests">Solicitudes <span id="sf-friend-request-count">0</span></button>
+        <button class="sf-f-tab" data-tab="explore">Buscar integrantes</button>
+        <button class="sf-f-tab" data-tab="ranking">Ranking de amigos</button>
+      </nav>
+
+      <section class="sf-f-panel" data-panel="friends">
+        <div class="sf-f-grid">
+          <div class="sf-f-card">
+            <div class="sf-f-card-head">
+              <div><p class="sf-friends-kicker">TU CÍRCULO</p><h2>Mis amigos</h2></div>
+              <span>Ordenados por Rings</span>
+            </div>
+            <div class="sf-friends-list" id="sf-friends-list"></div>
+          </div>
+
+          <aside class="sf-friends-ranking-card">
+            <p class="sf-friends-kicker">RANKING PERSONAL</p>
+            <h2>Top por <em>Rings</em></h2>
+            <p>Tu clasificación solo toma en cuenta a tus amigos actuales.</p>
+            <div id="sf-friends-ranking"></div>
+          </aside>
+        </div>
+      </section>
+
+      <section class="sf-f-panel" data-panel="requests" hidden>
+        <div class="sf-f-grid">
+          <div class="sf-f-card">
+            <div class="sf-f-card-head"><div><p class="sf-friends-kicker">ENTRANTES</p><h2>Solicitudes recibidas</h2></div></div>
+            <div class="sf-friends-list" id="sf-friends-incoming"></div>
+          </div>
+          <aside class="sf-friends-search-card">
+            <h3>Enviadas</h3>
+            <p>Estas solicitudes están esperando a que el otro integrante las acepte.</p>
+            <div class="sf-friends-results" id="sf-friends-outgoing"></div>
+          </aside>
+        </div>
+      </section>
+
+      <section class="sf-f-panel" data-panel="explore" hidden>
+        <div class="sf-friends-search-card">
+          <p class="sf-friends-kicker">DIRECTORIO DEL TEAM</p>
+          <h3>Busca a un integrante</h3>
+          <p>Explora los integrantes del team o escribe para filtrar por nombre, usuario o rol.</p>
+          <div class="sf-friends-search-box">
+            <input id="sf-friends-search" type="search" autocomplete="off" placeholder="Buscar integrante o filtrar…">
+          </div>
+          <div class="sf-friends-results" id="sf-friends-results">
+            <div class="sf-f-search-hint"><i class="ph ph-users-four"></i>Escribe un nombre para buscar integrantes.</div>
+          </div>
+        </div>
+      </section>
+
+      <section class="sf-f-panel" data-panel="ranking" hidden>
+        <div class="sf-f-card">
+          <div class="sf-friends-ranking-head">
+            <div>
+              <p>RANKING PERSONAL</p>
+              <h2>Amigos por <em>Rings</em></h2>
+              <span>Se actualiza cuando cambian los Rings de cualquier integrante.</span>
+            </div>
+          </div>
+          <div id="sf-friends-ranking-rows"></div>
+        </div>
+      </section>
+    </div>
+  </main>
+
+  <script src="friends-system.js"></script>
+</body>
+</html>
