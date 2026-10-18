@@ -1,97 +1,10 @@
 <!doctype html>
-
-</div>
-<script>
-(() => {
-  const loader = document.getElementById('sf-page-loader');
-  const title = document.getElementById('sf-loader-title');
-  const subtitle = document.getElementById('sf-loader-subtitle');
-  const kicker = document.getElementById('sf-loader-kicker');
-  if (!loader) return;
-
-  let shownAt = performance.now();
-  let hideTimer = null;
-  const minVisible = 520;
-
-  const routeName = href => {
-    try {
-      const u = new URL(href, window.location.href);
-      const file = (u.pathname.split('/').pop() || 'index.html').toLowerCase();
-      const names = {
-        'index.html':'INICIO',
-        'profile.html':'PERFIL',
-        'ost.html':'AUDIO / OST',
-        'ranking.html':'RANKING',
-        'admin.html':'ADMIN',
-        'admin-role.html':'STAFF ADMIN'
-      };
-      return names[file] || (file ? file.replace('.html','').replace(/[-_]/g,' ').toUpperCase() : 'PÁGINA');
-    } catch { return 'PÁGINA'; }
-  };
-
-  const show = (page = 'PÁGINA', sub = 'Preparando la página…') => {
-    if (!loader.classList.contains('is-hidden')) {
-      shownAt = performance.now();
-    } else {
-      loader.classList.remove('is-hidden');
-      loader.setAttribute('aria-hidden','false');
-      loader.setAttribute('aria-busy','true');
-      shownAt = performance.now();
-    }
-    if (kicker) kicker.textContent = 'SPEEDY FRIENDS / NAVEGACIÓN';
-    if (title) title.textContent = page;
-    if (subtitle) subtitle.textContent = sub;
-  };
-
-  const hide = () => {
-    const wait = Math.max(0, minVisible - (performance.now() - shownAt));
-    clearTimeout(hideTimer);
-    hideTimer = setTimeout(() => {
-      loader.classList.add('is-hidden');
-      loader.setAttribute('aria-hidden','true');
-      loader.setAttribute('aria-busy','false');
-    }, wait);
-  };
-
-  window.addEventListener('load', hide, {once:true});
-  if (document.readyState === 'complete') hide();
-
-  document.addEventListener('click', event => {
-    const link = event.target.closest('a[href]');
-    if (!link) return;
-
-    const raw = link.getAttribute('href') || '';
-    if (!raw || raw.startsWith('#') || raw.startsWith('mailto:') || raw.startsWith('tel:') ||
-        link.target === '_blank' || event.ctrlKey || event.metaKey || event.shiftKey || event.altKey) return;
-
-    let target;
-    try { target = new URL(raw, window.location.href); } catch { return; }
-    if (target.origin !== window.location.origin) return;
-
-    const page = routeName(target.href);
-    const isSameDocument = target.pathname === window.location.pathname && target.hash;
-    if (isSameDocument) {
-      show(page, 'Navegando a la sección…');
-      setTimeout(() => { window.location.href = target.href; }, 250);
-      return;
-    }
-
-    show(page, page === 'RANKING' ? 'Cargando clasificación…' :
-               page === 'AUDIO / OST' ? 'Cargando biblioteca OST…' :
-               page === 'PERFIL' ? 'Cargando perfil…' :
-               page === 'ADMIN' || page === 'STAFF ADMIN' ? 'Cargando panel…' :
-               'Preparando la página…');
-  });
-})();
-</script>
-
-
 <html lang="es">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Speedy Friends — Portal</title>
-<meta name="description" content="Speedy Friends — portal visual reconstruido a partir de la arquitectura de Sonic Channel.">
+<title>Speedy Friends — Rolea, juega y conoce</title>
+<meta name="description" content="La comunidad de Speedy Friends: historias, arte, juegos, música y amigos. Descubre nuestros espacios y sus reglas.">
 <link rel="stylesheet" href="vendor/common.min.css">
 <link rel="stylesheet" href="vendor/top.min.css">
 <link rel="stylesheet" href="vendor/oldStyle.min.css">
@@ -167,7 +80,7 @@ html[data-sf-theme="dark"] .sf-utility-backdrop{background:rgba(0,0,0,.63)}
 #topics .sf-news-card{position:relative;overflow:hidden;transition:transform .45s cubic-bezier(.16,1,.3,1),box-shadow .45s ease} .sf-news-card{}
 #topics .sf-news-card:before{content:"";position:absolute;inset:0;pointer-events:none;border:1px solid #17141112;z-index:3}
 #topics .sf-news-card:hover{transform:translateY(-7px);box-shadow:0 22px 55px #17141115}
-#topics .sf-news-card .thumb{overflow:hidden} 
+#topics .sf-news-card .thumb{overflow:hidden}
 #topics .sf-news-card .thumb img{transition:transform .7s cubic-bezier(.16,1,.3,1)}#topics .sf-news-card:hover .thumb img{transform:scale(1.06)}
 </style>
 <style id="news-v23-index">
@@ -272,15 +185,17 @@ body.sf-auth-gate-open{overflow:hidden!important}
 @media(max-width:520px){.sf-auth-gate-card{padding:28px 20px 24px}.sf-auth-gate-copy{font-size:8px}}
 @media(prefers-reduced-motion:reduce){.sf-auth-gate-orbit,.sf-auth-gate-ring{animation:none}}
 </style>
+<link rel="stylesheet" href="portal-polish.css">
 </head>
-<body class="sf-auth-gate-open">
+<body class="sf-home sf-auth-gate-open">
 <div id="sf-auth-gate" role="dialog" aria-modal="true" aria-labelledby="sf-auth-gate-title">
   <div class="sf-auth-gate-card">
     <div class="sf-auth-gate-orbit" aria-hidden="true"><div class="sf-auth-gate-ring"></div></div>
     <p class="sf-auth-gate-kicker">SPEEDY FRIENDS · ACCESO</p>
-    <h1 id="sf-auth-gate-title" class="sf-auth-gate-title">Inicia sesión</h1>
+    <h2 id="sf-auth-gate-title" class="sf-auth-gate-title">Inicia sesión</h2>
     <p class="sf-auth-gate-copy">Para entrar al portal primero inicia sesión con tu cuenta de Google. Solo te lo pediremos nuevamente cuando cierres sesión.</p>
-    <button id="sf-auth-login" type="button"><img class="sf-google-icon" src="assets/google-login.png" alt=""> Iniciar sesión con Google</button>
+    <button id="sf-auth-login" type="button"><img class="sf-google-icon" src="assets/google-login.png" alt="" width="94" height="96" decoding="async"> Iniciar sesión con Google</button>
+    <a class="sf-gate-community" href="comunidad.html">Conocer la comunidad y sus reglas →</a>
     <p id="sf-auth-gate-note" class="sf-auth-gate-note">Comprobando sesión guardada…</p>
   </div>
 </div>
@@ -302,7 +217,7 @@ body.sf-auth-gate-open{overflow:hidden!important}
 <div class="sf-page-loader" id="sf-page-loader" aria-live="polite" aria-busy="true">
   <div class="sf-loader-orbit" aria-hidden="true"></div>
   <div class="sf-loader-card">
-    <img class="sf-loader-gif" src="assets/loader.gif" alt="" aria-hidden="true">
+    <img class="sf-loader-gif" src="assets/loader.gif" alt="" aria-hidden="true" width="100" height="100" decoding="async">
     <p class="sf-loader-kicker" id="sf-loader-kicker">SPEEDY FRIENDS / NAVEGACIÓN</p>
     <h2 class="sf-loader-title" id="sf-loader-title">CARGANDO</h2>
     <p class="sf-loader-subtitle" id="sf-loader-subtitle">Preparando la página…</p>
@@ -318,8 +233,8 @@ body.sf-auth-gate-open{overflow:hidden!important}
   const names={'profile.html':'PERFIL','ost.html':'AUDIO / OST','ranking.html':'RANKING','admin.html':'ADMIN','admin-role.html':'STAFF ADMIN','index.html':'INICIO'};
   const routeName=href=>{try{const u=new URL(href,location.href);return names[(u.pathname.split('/').pop()||'index.html').toLowerCase()]||'PÁGINA'}catch{return 'PÁGINA'}};
   const show=(page,sub)=>{shownAt=performance.now();loader.classList.remove('is-hidden');title.textContent=page;subtitle.textContent=sub||'Preparando la página…';};
-  const hide=()=>{const wait=Math.max(0,minVisible-(performance.now()-shownAt));clearTimeout(timer);timer=setTimeout(()=>{loader.classList.add('is-hidden');loader.setAttribute('aria-busy','false')},wait)};
-  window.addEventListener('load',hide,{once:true}); if(document.readyState==='complete')hide();
+  const hide=()=>{const wait=Math.max(0,minVisible-(performance.now()-shownAt));clearTimeout(timer);timer=setTimeout(()=>{loader.classList.add('is-hidden');loader.setAttribute('aria-hidden','true');loader.setAttribute('aria-busy','false')},wait)};
+  document.addEventListener('DOMContentLoaded',hide,{once:true}); window.addEventListener('pageshow',hide); setTimeout(hide,3000); if(document.readyState!=='loading')hide();
   document.addEventListener('click',e=>{
     const link=e.target.closest('a[href]');
     if(link){return;}
@@ -337,13 +252,14 @@ body.sf-auth-gate-open{overflow:hidden!important}
       <span class="sf-brand-speedy">SPEEDY</span><span class="sf-brand-friends">FRIENDS</span>
     </a>
     <nav class="sf-desktop-nav" aria-label="Navegación principal">
-      <a href="#topics">Novedades</a><a href="#friends">Amigos</a><a href="#fanarts">Fanarts</a><a href="#special">Especial</a><a href="#downloads">Descargas</a><a href="#quick-actions" data-open-quick-panel>Accesos</a><a href="#videos">Videos</a>
+      <a href="comunidad.html">Comunidad</a><a href="#topics">Novedades</a><a href="#friends">Amigos</a><a href="#fanarts">Fanarts</a><a href="#special">Especial</a><a href="#downloads">Descargas</a><a href="#quick-actions" data-open-quick-panel>Accesos</a><a href="#videos">Videos</a>
     </nav>
-    <div class="sf-socials"><button aria-label="X">X</button><button aria-label="Discord">D</button><button aria-label="Facebook">f</button></div>
-    <button id="menuBtn" class="sf-menu" aria-label="Abrir menú"><span></span><span></span><span></span></button>
+    <a class="sf-header-community" href="comunidad.html">Nuestro team <span aria-hidden="true">↗</span></a>
+    <button id="menuBtn" class="sf-menu" aria-label="Abrir menú" aria-controls="mobileNav" aria-expanded="false"><span></span><span></span><span></span></button>
   </header>
 
-  <main id="top">
+  <a class="sf-skip-link" href="#top">Saltar al contenido</a>
+  <main id="top" tabindex="-1">
     <section class="sf-hero reveal">
 
       <div class="hero-nav-top" aria-label="Navegación rápida de Speedy Friends">
@@ -414,21 +330,21 @@ body.sf-auth-gate-open{overflow:hidden!important}
       <div class="sf-hero-copy">
         <p class="eyebrow">SPEEDY FRIENDS / COMMUNITY PORTAL</p>
         <h1>Rolea. Juega.<br><em>Conoce.</em></h1>
-        <p class="lead">Un portal dinámico para tu team: noticias, amigos, eventos, contenido y momentos destacados en un solo lugar.</p>
-        <div class="sf-actions"><a class="sf-btn primary sf-btn-animated" href="novedades.html">Explorar novedades <span>→</span></a><a class="sf-btn ghost sf-btn-animated" href="#friends"><span class="sf-btn-label">Ver amigos</span><span aria-hidden="true">→</span></a></div>
+        <p class="lead">Un lugar para crear historias, compartir lo que te gusta y encontrar amigos en el camino. Bienvenido a Speedy Friends.</p>
+        <div class="sf-actions"><a class="sf-btn primary sf-btn-animated" href="novedades.html">Explorar novedades <span>→</span></a><a class="sf-btn ghost sf-btn-animated" href="comunidad.html"><span class="sf-btn-label">Conoce el team</span><span aria-hidden="true">→</span></a></div>
       </div>
       <div class="sf-hero-art">
         <div class="hero-orbit orbit-a"></div><div class="hero-orbit orbit-b"></div>
         <div class="hero-ring ring1"></div><div class="hero-ring ring2"></div>
         <div class="sf-hero-swiper swiper">
           <div class="swiper-wrapper">
-            <div class="swiper-slide hero-slide"><div class="hero-card hero-card-main"><img src="assets/user-carousel/carousel-01.jpg" alt="Speedy Friends portada"></div></div>
-            <div class="swiper-slide hero-slide"><div class="hero-card hero-card-main"><img src="assets/user-carousel/carousel-02.jpg" alt="Evento Speedy Friends"></div></div>
-            <div class="swiper-slide hero-slide"><div class="hero-card hero-card-main"><img src="assets/user-carousel/carousel-03.jpg" alt="Especial Speedy Friends"></div></div>
+            <div class="swiper-slide hero-slide"><div class="hero-card hero-card-main"><img src="assets/user-carousel/carousel-01.webp" alt="Speedy Friends portada" width="736" height="736" decoding="async" fetchpriority="high"></div></div>
+            <div class="swiper-slide hero-slide"><div class="hero-card hero-card-main"><img src="assets/user-carousel/carousel-02.webp" alt="Evento Speedy Friends" width="307" height="445" decoding="async"></div></div>
+            <div class="swiper-slide hero-slide"><div class="hero-card hero-card-main"><img src="assets/user-carousel/carousel-03.webp" alt="Especial Speedy Friends" width="736" height="736" decoding="async"></div></div>
           </div>
-          <div class="sf-hero-dots swiper-pagination"></div>
+          <div class="sf-hero-dots swiper-pagination"></div><div class="sf-carousel-controls"><button type="button" class="sf-slide-prev" aria-label="Portada anterior">←</button><button type="button" class="sf-slide-pause" aria-label="Pausar carrusel" aria-pressed="false">Pausar</button><button type="button" class="sf-slide-next" aria-label="Portada siguiente">→</button></div>
         </div>
-        <div class="hero-card hero-card-small"><img src="assets/gametitle_SonicRacingCrossWorld_square.webp" alt="Destacado"></div>
+        <div class="hero-card hero-card-small"><img src="assets/gametitle_SonicRacingCrossWorld_square.webp" alt="Destacado" width="512" height="512" decoding="async" loading="lazy"></div>
         <div class="hero-spark spark1">✦</div><div class="hero-spark spark2">✦</div>
         <div class="hero-starfield"></div>
       </div>
@@ -438,10 +354,10 @@ body.sf-auth-gate-open{overflow:hidden!important}
     <section id="topics" class="sf-section sf-section-light reveal">
       <div class="sf-section-head"><div><p class="eyebrow">01 / NEWS</p><h2>Novedades</h2></div><a class="sf-more" href="novedades.html">Ver todo <span>→</span></a></div>
       <div class="sf-news-grid">
-        <article class="sf-news-card featured"><div class="thumb"><img src="assets/section-replacement.png" alt="Evento"></div><div class="news-meta">26.08.2026 · EVENTO</div><h3>El próximo gran encuentro de Speedy Friends ya está aquí.</h3><p>Descubre las actividades, retos y sorpresas de la comunidad.</p></article>
-        <article class="sf-news-card"><div class="thumb"><img src="assets/section-replacement.png" alt="Información"></div><div class="news-meta">25.08.2026 · INFO</div><h3>Nuevos retos y recompensas para el team.</h3></article>
-        <article class="sf-news-card"><div class="thumb"><img src="assets/section-replacement.png" alt="Colaboración"></div><div class="news-meta">21.08.2026 · COLAB</div><h3>Una nueva colaboración llega al universo Speedy Friends.</h3></article>
-        <article class="sf-news-card"><div class="thumb"><img src="assets/section-replacement.png" alt="Competencia"></div><div class="news-meta">03.08.2026 · EVENTO</div><h3>Competencia especial: demuestra tu velocidad.</h3></article>
+<article class="sf-news-card"><div class="thumb"><img src="assets/cafe-sonic-barista-cover.jpg" alt="Tu primera parada: conoce el team." width="736" height="926" decoding="async" loading="lazy"></div><div class="news-meta">COMUNIDAD · EXPLORA EL PORTAL</div><h3>Tu primera parada: conoce el team.</h3><p>Descubre nuestros espacios y las reglas para compartir a gusto.</p></article>
+<article class="sf-news-card"><div class="thumb"><img src="assets/ultimos-momentos/metal-virus.webp" alt="Un universo de historias compartidas." width="720" height="1105" decoding="async" loading="lazy"></div><div class="news-meta">HISTORIAS · EXPLORA EL PORTAL</div><h3>Un universo de historias compartidas.</h3><p>Explora los últimos momentos y las tramas del team.</p></article>
+<article class="sf-news-card"><div class="thumb"><img src="assets/fanart-demo/neon-rush.svg" alt="El arte también nos une." width="1919" height="243" decoding="async" loading="lazy"></div><div class="news-meta">CREATIVIDAD · EXPLORA EL PORTAL</div><h3>El arte también nos une.</h3><p>Conoce la galería y comparte tu creatividad.</p></article>
+<article class="sf-news-card"><div class="thumb"><img src="assets/gametitle_SonicRacingCrossWorld_square.webp" alt="La próxima partida empieza contigo." width="512" height="512" decoding="async" loading="lazy"></div><div class="news-meta">JUEGOS · EXPLORA EL PORTAL</div><h3>La próxima partida empieza contigo.</h3><p>Descubre Play & Win y encuentra con quién jugar.</p></article>
       </div>
     </section>
 
@@ -449,29 +365,29 @@ body.sf-auth-gate-open{overflow:hidden!important}
       <div class="sf-diagonal"></div>
       <div class="sf-section-head on-dark"><div><p class="eyebrow">02 / COMMUNITY</p><h2>Amigos</h2></div><a class="sf-more" href="friends.html">Todos los perfiles <span>→</span></a></div>
       <div class="friends-track">
-        <article class="friend-card active"><div class="friend-img"><img src="assets/section-replacement.png" alt="Amigo 01"></div><div class="friend-info"><span>#01</span><h3>Blaze</h3><p>Racer · Explorer</p><b>ONLINE</b></div></article>
-        <article class="friend-card"><div class="friend-img"><img src="assets/section-replacement.png" alt="Amigo 02"></div><div class="friend-info"><span>#02</span><h3>Espio</h3><p>Stealth · Speed</p><b>ONLINE</b></div></article>
-        <article class="friend-card"><div class="friend-img"><img src="assets/section-replacement.png" alt="Amigo 03"></div><div class="friend-info"><span>#03</span><h3>Nova</h3><p>Creator · Builder</p><b>AWAY</b></div></article>
-        <article class="friend-card"><div class="friend-img"><img src="assets/section-replacement.png" alt="Amigo 04"></div><div class="friend-info"><span>#04</span><h3>Rin</h3><p>Artist · Chaser</p><b>ONLINE</b></div></article>
+        <article class="friend-card active"><div class="friend-img"><img src="assets/section-replacement.png" alt="" width="1774" height="887" decoding="async" loading="lazy"></div><div class="friend-info"><span>#01</span><h3>Blaze</h3><p>Racer · Explorer</p><b>ONLINE</b></div></article>
+        <article class="friend-card"><div class="friend-img"><img src="assets/section-replacement.png" alt="" width="1774" height="887" decoding="async" loading="lazy"></div><div class="friend-info"><span>#02</span><h3>Espio</h3><p>Stealth · Speed</p><b>ONLINE</b></div></article>
+        <article class="friend-card"><div class="friend-img"><img src="assets/section-replacement.png" alt="" width="1774" height="887" decoding="async" loading="lazy"></div><div class="friend-info"><span>#03</span><h3>Nova</h3><p>Creator · Builder</p><b>AWAY</b></div></article>
+        <article class="friend-card"><div class="friend-img"><img src="assets/section-replacement.png" alt="" width="1774" height="887" decoding="async" loading="lazy"></div><div class="friend-info"><span>#04</span><h3>Rin</h3><p>Artist · Chaser</p><b>ONLINE</b></div></article>
       </div>
       <div id="sf-see-friends-v48" class="sf-see-friends-wrap"><a class="sf-see-friends" href="friends.html">VER AMIGOS <span>→</span></a></div>
     </section>
 
     <section id="special" class="sf-section sf-special reveal">
-      <div class="special-art"><img src="assets/section-replacement.png" alt="Especial"></div>
-      <div class="special-copy"><p class="eyebrow">03 / SPECIAL</p><h2>Momentos<br><em>especiales.</em></h2><p>Galerías, historias del team, celebraciones y contenido que merece quedarse en la portada.</p><a class="sf-btn dark" href="#">Entrar al especial <span>→</span></a></div>
+      <div class="special-art"><img src="assets/ultimos-momentos/sonic-wars.webp" alt="Personajes de las historias del team" width="720" height="1108" decoding="async" loading="lazy"></div>
+      <div class="special-copy"><p class="eyebrow">03 / SPECIAL</p><h2>Momentos<br><em>especiales.</em></h2><p>Galerías, historias del team, celebraciones y contenido que merece quedarse en la portada.</p><a class="sf-btn dark" href="#ultimos-momentos">Explorar historias <span>→</span></a></div>
     </section>
 
     <section id="downloads" class="sf-section sf-section-light reveal">
-      <div class="sf-section-head"><div><p class="eyebrow">04 / DOWNLOADS</p><h2>Descargas</h2></div><a class="sf-more" href="#">Biblioteca <span>→</span></a></div>
+      <div class="sf-section-head"><div><p class="eyebrow">04 / DOWNLOADS</p><h2>Descargas</h2></div><a class="sf-more" href="#downloads">Fondos disponibles <span>→</span></a></div>
       <div class="download-grid">
-        <a class="download-card" href="assets/wallpaper_261_blaze_18_pc_thm-thumb-400x400-19286.jpg"><img src="assets/section-replacement.png" alt="Wallpaper"><span>WALLPAPER</span><b>Speedy Edition <i>↓</i></b></a>
-        <a class="download-card" href="assets/wallpaper_260_espio_05_pc_thm-thumb-400x400-19097.jpg"><img src="assets/section-replacement.png" alt="Wallpaper"><span>WALLPAPER</span><b>Night Run <i>↓</i></b></a>
-        <a class="download-card" href="assets/calendar_2608_thm-thumb-220x220-19140.jpg"><img src="assets/section-replacement.png" alt="Calendario"><span>CALENDAR</span><b>Agosto 2026 <i>↓</i></b></a>
+        <a class="download-card" href="assets/wallpaper_261_blaze_18_pc_thm-thumb-400x400-19286.jpg"><img src="assets/wallpaper_261_blaze_18_pc_thm-thumb-400x400-19286.jpg" alt="Vista previa del fondo de Blaze" width="400" height="400" decoding="async" loading="lazy"><span>WALLPAPER</span><b>Blaze · vista previa <i>↓</i></b></a>
+        <a class="download-card" href="assets/wallpaper_260_espio_05_pc_thm-thumb-400x400-19097.jpg"><img src="assets/wallpaper_260_espio_05_pc_thm-thumb-400x400-19097.jpg" alt="Vista previa del fondo de Espio" width="400" height="400" decoding="async" loading="lazy"><span>WALLPAPER</span><b>Espio · vista previa <i>↓</i></b></a>
+        <a class="download-card" href="assets/calendar_2608_thm-thumb-220x220-19140.jpg"><img src="assets/calendar_2608_thm-thumb-220x220-19140.jpg" alt="Vista previa del calendario de agosto de 2026" width="220" height="220" decoding="async" loading="lazy"><span>CALENDAR</span><b>Agosto 2026 <i>↓</i></b></a>
       </div>
     </section>
 
-    
+
 
 <section id="quick-actions" class="sf-section sf-section-light sf-quick-actions reveal">
       <div class="sf-section-head">
@@ -554,9 +470,9 @@ body.sf-auth-gate-open{overflow:hidden!important}
     </section>
 
     <section id="videos" class="sf-video reveal">
-      <div class="video-bg"><img src="assets/section-replacement.png" alt=""></div><div class="video-overlay"></div>
-      <div class="video-copy"><p class="eyebrow">05 / VIDEO</p><h2>En movimiento.</h2><p>Una sección preparada para convertir tus mejores clips en parte de la portada.</p><button class="play-btn" id="playDemo">▶</button></div>
-      <div class="video-preview"><img src="assets/section-replacement.png" alt="Video preview"><span>WATCH NOW</span></div>
+      <div class="video-bg"><img src="assets/banner_250627_01_SonicRacingCrossWorld.jpg" alt="" width="1920" height="1080" decoding="async" loading="lazy"></div><div class="video-overlay"></div>
+      <div class="video-copy"><p class="eyebrow">05 / VIDEO</p><h2>En movimiento.</h2><p>Lleva la música del team contigo. Explora la biblioteca OST y elige el ambiente de tu próxima historia.</p><a class="sf-btn primary" href="ost.html">Explorar audio / OST <span aria-hidden="true">→</span></a></div>
+      <div class="video-preview"><img src="assets/gametitle_SonicShadowGenerations_square.webp" alt="Sonic y Shadow" width="512" height="512" decoding="async" loading="lazy"><span>AUDIO / OST</span></div>
     </section>
 
     <section class="sf-section sf-section-light reveal" id="fanarts">
@@ -566,7 +482,7 @@ body.sf-auth-gate-open{overflow:hidden!important}
           <article class="home-fanart-card is-demo"><a href="fanarts.html" class="home-fanart-open"><img src="assets/fanart-demo/neon-rush.svg" alt="Fanart de muestra"><span>01</span><i class="home-fanart-like-glow">♥</i></a><div class="home-fanart-copy"><small>FANART · DIGITAL</small><h3>Neon Rush</h3><div class="home-fanart-bottom"><div class="home-fanart-person"><div>NR</div><b>Speedy Friends</b></div><strong>♥ 248</strong></div></div></article>
           <article class="home-fanart-card is-demo"><a href="fanarts.html" class="home-fanart-open"><img src="assets/fanart-demo/eclipse.svg" alt="Fanart de muestra"><span>02</span><i class="home-fanart-like-glow">♥</i></a><div class="home-fanart-copy"><small>FANART · DIBUJOS</small><h3>Eclipse</h3><div class="home-fanart-bottom"><div class="home-fanart-person"><div>EC</div><b>Speedy Friends</b></div><strong>♥ 211</strong></div></div></article>
           <article class="home-fanart-card is-demo"><a href="fanarts.html" class="home-fanart-open"><img src="assets/fanart-demo/cyber-team.svg" alt="Fanart de muestra"><span>03</span><i class="home-fanart-like-glow">♥</i></a><div class="home-fanart-copy"><small>FANART · RENDERS</small><h3>Cyber Team</h3><div class="home-fanart-bottom"><div class="home-fanart-person"><div>CT</div><b>Speedy Friends</b></div><strong>♥ 184</strong></div></div></article>
-          <article class="home-fanart-card is-demo"><a href="fanarts.html" class="home-fanart-open"><img src="assets/fanart-demo/rose-drive.svg" alt="Fanart de muestra"><span>04</span><i class="home-fanart-like-glow">♥</i></a><div class="home-fanart-copy"><small>FANART · EDITS</small><h3>Rose Drive</h3><div class="home-fanart-bottom"><div class="home-fanart-person"><div>RD</div><b>Speedy Friends</b></div><strong>♥ 162</strong></div></div></div></article>
+          <article class="home-fanart-card is-demo"><a href="fanarts.html" class="home-fanart-open"><img src="assets/fanart-demo/rose-drive.svg" alt="Fanart de muestra"><span>04</span><i class="home-fanart-like-glow">♥</i></a><div class="home-fanart-copy"><small>FANART · EDITS</small><h3>Rose Drive</h3><div class="home-fanart-bottom"><div class="home-fanart-person"><div>RD</div><b>Speedy Friends</b></div><strong>♥ 162</strong></div></div></article>
         </div>
         <button class="home-fanart-arrow home-fanart-prev" type="button" aria-label="Anterior">←</button>
         <button class="home-fanart-arrow home-fanart-next" type="button" aria-label="Siguiente">→</button>
@@ -587,7 +503,7 @@ body.sf-auth-gate-open{overflow:hidden!important}
     <div class="story-showcase">
       <article class="team-story-card" data-story="sonic-wars">
         <div class="story-index">01</div>
-        <div class="story-image-wrap"><img src="assets/ultimos-momentos/sonic-wars.jpeg" alt="Ilustración de Sonic Wars" loading="lazy"><div class="story-gloss"></div></div>
+        <div class="story-image-wrap"><img src="assets/ultimos-momentos/sonic-wars.webp" alt="Ilustración de Sonic Wars" loading="lazy" width="720" height="1108" decoding="async"><div class="story-gloss"></div></div>
         <div class="story-meta"><span>SONIC WARS</span><i></i><small>MULTIVERSO</small></div>
         <h3>El caos cruza las líneas del tiempo.</h3>
         <p>Robonkin descubre otros mundos y reúne versiones oscuras del erizo para desatar una guerra imposible de contener.</p>
@@ -596,7 +512,7 @@ body.sf-auth-gate-open{overflow:hidden!important}
 
       <article class="team-story-card" data-story="metal-virus">
         <div class="story-index">02</div>
-        <div class="story-image-wrap"><img src="assets/ultimos-momentos/metal-virus.jpeg" alt="Ilustración del Metal Virus" loading="lazy"><div class="story-gloss"></div></div>
+        <div class="story-image-wrap"><img src="assets/ultimos-momentos/metal-virus.webp" alt="Ilustración del Metal Virus" loading="lazy" width="720" height="1105" decoding="async"><div class="story-gloss"></div></div>
         <div class="story-meta"><span>METAL VIRUS RENACIMIENTO</span><i></i><small>SUPERVIVENCIA</small></div>
         <h3>El virus volvió más inteligente.</h3>
         <p>Los zombots conservan conciencia, las ciudades caen y una Sally infectada intenta destruir la última esperanza de cura.</p>
@@ -605,7 +521,7 @@ body.sf-auth-gate-open{overflow:hidden!important}
 
       <article class="team-story-card" data-story="execution">
         <div class="story-index">03</div>
-        <div class="story-image-wrap"><img src="assets/ultimos-momentos/execution.jpeg" alt="Ilustración de Execution" loading="lazy"><div class="story-gloss"></div></div>
+        <div class="story-image-wrap"><img src="assets/ultimos-momentos/execution.webp" alt="Ilustración de Execution" loading="lazy" width="733" height="171" decoding="async"><div class="story-gloss"></div></div>
         <div class="story-meta"><span>EXECUTION</span><i></i><small>TERROR CÓSMICO</small></div>
         <h3>Cuando el vacío reclama el show.</h3>
         <p>X deja de ser un intruso y convierte el cosmo de Sonic en un escenario de absoluto terror, expansión y agonía.</p>
@@ -641,10 +557,10 @@ body.sf-auth-gate-open{overflow:hidden!important}
 </div>
   </main>
 
-  <footer class="sf-footer"><div class="sf-footer-brand">SPEEDY <strong>FRIENDS</strong></div><div>© 2026 Speedy Friends · Visual rebuild</div><div><a href="#top">TOP ↑</a></div></footer>
+  <footer class="sf-footer"><div class="sf-footer-brand">SPEEDY <strong>FRIENDS</strong></div><div>© 2026 Speedy Friends · Comunidad de fans</div><div><a href="comunidad.html">Comunidad y reglas</a> · <a href="#top">Volver arriba ↑</a></div></footer>
 </div>
 
-<div id="mobileNav" class="mobile-nav"><div class="mobile-nav-inner"><button id="closeMenu">×</button><p class="eyebrow">SPEEDY FRIENDS</p><a href="#topics">Novedades</a><a href="#friends">Amigos</a><a href="#fanarts">Fanarts</a><a href="#special">Especial</a><a href="#downloads">Descargas</a><a href="#quick-actions" data-open-quick-panel>Accesos</a><a href="#videos">Videos</a><a href="#top">Inicio</a></div></div>
+<div id="mobileNav" class="mobile-nav" role="dialog" aria-modal="true" aria-label="Navegación" inert><div class="mobile-nav-inner"><button id="closeMenu" aria-label="Cerrar menú">×</button><p class="eyebrow">SPEEDY FRIENDS</p><a href="comunidad.html">Comunidad</a><a href="#topics">Novedades</a><a href="#friends">Amigos</a><a href="#fanarts">Fanarts</a><a href="#special">Especial</a><a href="#downloads">Descargas</a><a href="#quick-actions" data-open-quick-panel>Accesos</a><a href="#videos">Videos</a><a href="#top">Inicio</a></div></div>
 <div id="toast" class="toast">Demo visual activa</div>
 <script src="vendor/jquery-3.7.1.min.js"></script><script src="vendor/swiper-bundle.min.js"></script><script src="fanarts-system.js"></script><script src="app.js"></script>
 <script src="ultimos-momentos.js"></script>
@@ -664,7 +580,7 @@ body.sf-auth-gate-open{overflow:hidden!important}
     gate.classList.remove('is-hidden');
     document.body.classList.add('sf-auth-gate-open');
     button.disabled = false;
-    button.innerHTML = '<img class="sf-google-icon" src="assets/google-login.png" alt=""> Iniciar sesión con Google';
+    button.innerHTML = '<img class="sf-google-icon" src="assets/google-login.png" alt="" width="94" height="96" decoding="async"> Iniciar sesión con Google';
     if (note) note.textContent = message;
   };
   const closeGate = () => {
@@ -710,7 +626,7 @@ body.sf-auth-gate-open{overflow:hidden!important}
     } catch (error) {
       console.error('[Speedy Friends] Login gate:', error);
       button.disabled = false;
-      button.innerHTML = '<img class="sf-google-icon" src="assets/google-login.png" alt=""> Iniciar sesión con Google';
+      button.innerHTML = '<img class="sf-google-icon" src="assets/google-login.png" alt="" width="94" height="96" decoding="async"> Iniciar sesión con Google';
       if (note) note.textContent = 'No se pudo completar el inicio de sesión. Inténtalo de nuevo.';
     }
   });
@@ -724,7 +640,7 @@ body.sf-auth-gate-open{overflow:hidden!important}
     }
   });
   document.addEventListener('speedy:firebase-error', () => {
-    openGate('No se pudo conectar con Firebase. Recarga la página para intentarlo de nuevo.');
+    openGate('No se pudo conectar. Puedes consultar la comunidad y sus reglas mientras tanto.');
   });
 
   // Bloquea navegación interna mientras no haya sesión. Las anclas de Inicio siguen funcionando.
@@ -744,6 +660,13 @@ body.sf-auth-gate-open{overflow:hidden!important}
     const current = getAuth()?.currentUser;
     if (current) check();
   }, 120);
+  setTimeout(() => {
+    if (!window.SpeedyFirebase) {
+      openGate('No se pudo conectar con la cuenta. Puedes conocer la comunidad y sus reglas mientras tanto.');
+      const status = document.getElementById('sf-firebase-status');
+      if (status) status.textContent = 'Cuenta sin conexión';
+    }
+  }, 4000);
 })();
 </script>
 
@@ -848,17 +771,17 @@ document.addEventListener("DOMContentLoaded", () => {
 #sf-firebase-status.ready{background:rgba(25,110,67,.88)}
 #sf-firebase-status.local{background:rgba(90,65,20,.9)}
 </style>
-<div id="sf-firebase-status" class="local">FIREBASE · CONECTANDO</div>
+<div id="sf-firebase-status" class="local">Conectando cuenta…</div>
 <script>
 document.addEventListener("speedy:firebase-ready",e=>{
   const n=document.getElementById("sf-firebase-status"); if(!n)return;
   const s=e.detail||{};
   n.className="ready";
-  n.textContent=s.isCreator?"FIREBASE · CREADORA":"FIREBASE · "+(s.role||"MEMBER").toUpperCase();
+  n.textContent=s.isCreator?"Cuenta de creadora":"Cuenta · "+(s.role||"MEMBER").toUpperCase();
 });
 document.addEventListener("speedy:firebase-error",()=>{
   const n=document.getElementById("sf-firebase-status"); if(!n)return;
-  n.className="local"; n.textContent="FIREBASE · ERROR";
+  n.className="local"; n.textContent="Sin conexión a la cuenta";
 });
 </script>
 
@@ -1058,7 +981,7 @@ document.addEventListener('DOMContentLoaded',()=>{
   document.addEventListener('speedy:firebase-ready', getCafeRole);
   document.addEventListener('speedy:cafe-ready', getCafeRole);
   getCafeRole();
-  window.setInterval(()=>{ if(window.SpeedyFirebase?.current?.uid) getCafeRole(); }, 1500);
+
 })();
 </script>
 
@@ -1152,14 +1075,14 @@ document.addEventListener('DOMContentLoaded',()=>{
   document.addEventListener('speedy:firebase-ready',init,{once:true});
   if(window.SpeedyFirebase?.current?.uid)init();
 })();
-</script></script>
+</script>
 <a id="sf-news-editor-link" href="novedades-admin.html" style="display:none">EDITAR NOVEDADES</a>
 
 <div id="sf-news-modal" class="sf-news-modal" aria-hidden="true">
   <div class="sf-news-backdrop" data-news-close></div>
   <article class="sf-news-dialog" role="dialog" aria-modal="true" aria-labelledby="sf-news-modal-title">
     <button class="sf-news-close" type="button" aria-label="Cerrar novedad" data-news-close>×</button>
-    <div class="sf-news-modal-media"><img id="sf-news-modal-image" src="assets/section-replacement.png" alt=""></div>
+    <div class="sf-news-modal-media"><img id="sf-news-modal-image" src="assets/section-replacement.png" alt="" width="1774" height="887" decoding="async" loading="lazy"></div>
     <div class="sf-news-modal-copy">
       <div class="sf-news-modal-meta"><span id="sf-news-modal-cat">NOVEDAD</span><span id="sf-news-modal-date">—</span></div>
       <h2 id="sf-news-modal-title">Novedad</h2>
@@ -1288,7 +1211,7 @@ document.addEventListener('DOMContentLoaded',()=>{
     const go=n=>{const els=cards(); if(!els.length)return; idx=(n+els.length)%els.length; els.forEach((c,i)=>c.classList.toggle('is-focus',i===idx)); status&&(status.textContent=`${String(idx+1).padStart(2,'0')} / ${String(els.length).padStart(2,'0')}`)};
     const prev=$('.home-fanart-prev'), next=$('.home-fanart-next');
     if(prev) prev.onclick=()=>go(idx-1); if(next) next.onclick=()=>go(idx+1); go(0);
-    rail.onpointermove=e=>{const c=e.target.closest('.home-fanart-card');if(!c)return;const r=c.getBoundingClientRect();c.style.setProperty('--rx',`${(e.clientY-r.top)/r.height-.5)*-2}deg`);c.style.setProperty('--ry',`${(e.clientX-r.left)/r.width-.5)*3}deg`)};
+    rail.onpointermove=e=>{const c=e.target.closest('.home-fanart-card');if(!c)return;const r=c.getBoundingClientRect();c.style.setProperty('--rx',`${((e.clientY-r.top)/r.height-.5)*-2}deg`);c.style.setProperty('--ry',`${((e.clientX-r.left)/r.width-.5)*3}deg`)};
     rail.onpointerleave=()=>cards().forEach(c=>{c.style.removeProperty('--rx');c.style.removeProperty('--ry')});
   }
   function live(){
@@ -1299,7 +1222,7 @@ document.addEventListener('DOMContentLoaded',()=>{
     ref.on('value',snap=>render(Object.values(snap.val()||{}),true));
     return true;
   }
-  function init(){render(demo,false); const tryLive=()=>{ if(!live()){setTimeout(tryLive,900);} }; tryLive(); document.addEventListener('speedy:firebase-ready',tryLive,{once:true});}
+  let liveBound=false; function init(){render(demo,false); const tryLive=()=>{if(!liveBound) liveBound=live();}; tryLive(); document.addEventListener('speedy:firebase-ready',tryLive);}
   if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',init); else init();
 })();
 </script>

@@ -1,0 +1,38 @@
+[
+  {
+    "source": "assets/user-carousel/carousel-01.jpg",
+    "optimized": "assets/user-carousel/carousel-01.webp",
+    "before": 25748,
+    "after": 13724
+  },
+  {
+    "source": "assets/user-carousel/carousel-02.jpg",
+    "optimized": "assets/user-carousel/carousel-02.webp",
+    "before": 11693,
+    "after": 7406
+  },
+  {
+    "source": "assets/user-carousel/carousel-03.jpg",
+    "optimized": "assets/user-carousel/carousel-03.webp",
+    "before": 49129,
+    "after": 29050
+  },
+  {
+    "source": "assets/ultimos-momentos/execution.jpeg",
+    "optimized": "assets/ultimos-momentos/execution.webp",
+    "before": 25289,
+    "after": 22472
+  },
+  {
+    "source": "assets/ultimos-momentos/metal-virus.jpeg",
+    "optimized": "assets/ultimos-momentos/metal-virus.webp",
+    "before": 197262,
+    "after": 177316
+  },
+  {
+    "source": "assets/ultimos-momentos/sonic-wars.jpeg",
+    "optimized": "assets/ultimos-momentos/sonic-wars.webp",
+    "before": 139929,
+    "after": 123492
+  }
+]

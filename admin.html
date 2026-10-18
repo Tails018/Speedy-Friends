@@ -109,7 +109,7 @@
 <div class="sf-page-loader" id="sf-page-loader" aria-live="polite" aria-busy="true">
   <div class="sf-loader-orbit" aria-hidden="true"></div>
   <div class="sf-loader-card">
-    <img class="sf-loader-gif" src="assets/loader.gif" alt="" aria-hidden="true">
+    <img class="sf-loader-gif" src="assets/loader.gif" alt="" aria-hidden="true" width="100" height="100" decoding="async">
     <p class="sf-loader-kicker" id="sf-loader-kicker">Speedy Friends / Navigation</p>
     <h2 class="sf-loader-title" id="sf-loader-title">CARGANDO</h2>
     <p class="sf-loader-subtitle" id="sf-loader-subtitle">Preparando la página…</p>
@@ -656,6 +656,7 @@ body.admin-profile-open{overflow:hidden}
 .vp-slots{display:grid;grid-template-columns:repeat(2,1fr);gap:8px;margin-top:15px}.vp-slot{display:grid;grid-template-columns:120px 1fr;gap:10px;align-items:center;background:#fff;border:1px solid rgba(18,18,18,.08);padding:8px}.vp-slot-img{width:120px;height:82px;object-fit:cover;background:#ecebe5}.vp-slot-title{font-family:SFDisplay,Arial Black,Arial,sans-serif;font-size:19px;line-height:.82}.vp-slot-meta{font-size:5px;letter-spacing:.1em;color:#777;margin-top:5px}.vp-slot-btn{margin-top:8px;border:1px solid rgba(18,18,18,.12);background:#fff;padding:8px 9px;font-size:6px;font-weight:900;letter-spacing:.1em;cursor:pointer}.vp-slot-btn:hover{background:#171717;color:#fff}.vp-editor{margin-top:15px;padding:14px;background:#f1ece3;border:1px solid rgba(18,18,18,.08)}.vp-editor[hidden]{display:none}.vp-editor-head{display:flex;justify-content:space-between;align-items:end;margin-bottom:10px}.vp-editor-head span{font-size:5px;letter-spacing:.15em;color:#d6533f;font-weight:1000}.vp-editor-head h3{margin:5px 0 0;font-family:SFDisplay,Arial Black,Arial,sans-serif;font-size:28px;line-height:.8}.vp-editor-preview{margin-top:8px;height:130px;background:#17181d;overflow:hidden}.vp-editor-preview img{width:100%;height:100%;object-fit:cover}.vp-upload-box{padding:11px;border:1px dashed rgba(18,18,18,.16);background:#fffaf1}.vp-upload-head{display:flex;justify-content:space-between;align-items:center;gap:10px}.vp-upload-head b{display:block;font-size:7px;letter-spacing:.12em}.vp-upload-head span{display:block;font-size:5px;color:#746e69;margin-top:3px}.vp-upload-btn{padding:9px 10px;background:#171717;color:#fff;font:1000 6px/1 Arial;letter-spacing:.11em;cursor:pointer}.vp-upload-box input[type=file]{position:absolute;left:-9999px}.vp-upload-name{margin-top:7px;font-size:6px;color:#6f6964}.vp-upload-status{margin-top:5px;min-height:10px;font-size:6px;font-weight:900;color:#2e67a6}.vp-upload-status.error{color:#d6533f}.vp-upload-status.ok{color:#6f8870}
 @media(max-width:700px){.vp-slots{grid-template-columns:1fr}.vp-slot{grid-template-columns:100px 1fr}.vp-slot-img{width:100px;height:75px}.vp-upload-head{display:block}.vp-upload-btn{display:inline-block;margin-top:7px}}
 </style>
+<link rel="stylesheet" href="portal-polish.css">
 </head>
 <body data-admin-mode="creator" class="admin-page">
 <main class="admin-shell">
@@ -789,7 +790,7 @@ body.admin-profile-open{overflow:hidden}
           <input id="vp-edit-file" type="file" accept="image/png,image/jpeg,image/webp,image/gif">
           <div id="vp-edit-file-name" class="vp-upload-name">Ningún archivo seleccionado</div>
           <div id="vp-edit-file-status" class="vp-upload-status"></div>
-          <div class="vp-editor-preview"><img id="vp-edit-preview" src="assets/section-replacement.png" alt=""></div>
+          <div class="vp-editor-preview"><img id="vp-edit-preview" src="assets/section-replacement.png" alt="" width="1774" height="887" decoding="async" loading="lazy"></div>
         </div>
         <div style="grid-column:1/-1;display:flex;gap:7px;flex-wrap:wrap">
           <button class="admin-btn primary" type="submit">REEMPLAZAR Y GUARDAR</button>

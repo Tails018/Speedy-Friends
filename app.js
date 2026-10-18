@@ -12,9 +12,10 @@
 
   // Sonic Channel-style page entrance: loader + staggered reveal.
   document.documentElement.classList.add('sf-js');
-  window.addEventListener('load', () => {
-    requestAnimationFrame(() => body.classList.add('page-ready'));
-  });
+  const ready = () => requestAnimationFrame(() => body.classList.add('page-ready'));
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', ready, {once:true});
+  else ready();
+  const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
 
   const showToast = (text) => {
     if (!toast) return;
@@ -29,29 +30,60 @@
     if (!menu) return;
     menu.classList.toggle('open', open);
     body.classList.toggle('menu-open', open);
+    menu.inert = !open;
+    menuBtn?.setAttribute('aria-expanded', String(open));
+    if (open) close?.focus({preventScroll:true});
+    else if (menu.contains(document.activeElement)) menuBtn?.focus({preventScroll:true});
     if (open) {
       $$('.mobile-nav a', menu).forEach((a, i) => {
-        a.style.setProperty('--nav-delay', `${180 + i * 55}ms`);
+      a.style.setProperty('--nav-delay', `${120 + i * 35}ms`);
       });
     }
   };
   menuBtn?.addEventListener('click', () => setMenu(true));
   close?.addEventListener('click', () => setMenu(false));
   $$('.mobile-nav a').forEach(a => a.addEventListener('click', () => setMenu(false)));
+  document.addEventListener('keydown', event => {
+    if (!menu?.classList.contains('open')) return;
+    if (event.key === 'Escape') { event.preventDefault(); setMenu(false); }
+    if (event.key === 'Tab') {
+      const items = $$('button:not([disabled]),a[href]', menu);
+      if (event.shiftKey && document.activeElement === items[0]) { event.preventDefault(); items.at(-1)?.focus(); }
+      else if (!event.shiftKey && document.activeElement === items.at(-1)) { event.preventDefault(); items[0]?.focus(); }
+    }
+  });
 
   // Swiper: the source portal uses centered looping autoplay carousels.
   if (window.Swiper && $('.sf-hero-swiper')) {
-    new Swiper('.sf-hero-swiper', {
+    const carousel = new Swiper('.sf-hero-swiper', {
       loop: true,
       centeredSlides: true,
       slidesPerView: 1,
       speed: 700,
       effect: 'slide',
       watchSlidesProgress: true,
-      autoplay: { delay: 3600, disableOnInteraction: false },
+      autoplay: reducedMotion.matches ? false : { delay: 5000, disableOnInteraction: false, pauseOnMouseEnter: true },
+      keyboard: {enabled:true, onlyInViewport:true},
+      a11y: {enabled:true, paginationBulletMessage:'Ir a portada {{index}}', prevSlideMessage:'Portada anterior', nextSlideMessage:'Portada siguiente'},
+      navigation: {prevEl:'.sf-slide-prev', nextEl:'.sf-slide-next'},
       pagination: { el: '.sf-hero-dots', clickable: true },
       breakpoints: { 900: { slidesPerView: 1.12 } }
     });
+    const pause = $('.sf-slide-pause');
+    let paused = reducedMotion.matches;
+    const syncPlayback = () => {
+      if (paused || document.hidden || reducedMotion.matches) carousel.autoplay?.stop();
+      else carousel.autoplay?.start();
+      if (pause) {
+        pause.textContent = paused ? 'Reproducir' : 'Pausar';
+        pause.setAttribute('aria-label', paused ? 'Reproducir carrusel' : 'Pausar carrusel');
+        pause.setAttribute('aria-pressed', String(paused));
+      }
+    };
+    pause?.addEventListener('click', () => { paused = !paused; syncPlayback(); });
+    document.addEventListener('visibilitychange', syncPlayback);
+    reducedMotion.addEventListener('change', () => { paused = reducedMotion.matches; syncPlayback(); });
+    syncPlayback();
   }
 
   // In-view activation, staggered like the original site's section transitions.
@@ -115,7 +147,7 @@
   // Hover depth on content cards.
   $$('.sf-news-card,.friend-card,.download-card,.lineup-cards article').forEach(card => {
     card.addEventListener('pointermove', e => {
-      if (window.matchMedia('(hover: none)').matches) return;
+      if (reducedMotion.matches || window.matchMedia('(hover: none)').matches) return;
       const r = card.getBoundingClientRect();
       const rx = ((e.clientY - r.top) / r.height - .5) * -3;
       const ry = ((e.clientX - r.left) / r.width - .5) * 4;
@@ -136,11 +168,12 @@
       showToast('Sección preparada para conectar tus funciones.');
       return;
     }
-    const target = $(id);
+    if (a.hasAttribute('data-open-quick-panel')) return;
+    const target = document.getElementById(id.slice(1));
     if (!target) return;
     e.preventDefault();
     const top = target.getBoundingClientRect().top + window.scrollY - 54;
-    window.scrollTo({ top, behavior: 'smooth' });
+    window.scrollTo({ top, behavior: reducedMotion.matches ? 'auto' : 'smooth' });
   }));
 
   $('#playDemo')?.addEventListener('click', () => showToast('Reproductor listo para conectar a tus clips.'));
@@ -152,13 +185,17 @@
   const quickAccount = $('#quick-account-label');
   const quickTheme = $('#quick-theme-label');
   const quickCart = $('#quick-cart-count');
-  let quickState = JSON.parse(localStorage.getItem('sfQuickState') || '{"rings":0,"account":false,"theme":"light","cart":0}');
+  let quickState = {rings:0,account:false,theme:'light',cart:0};
+  try {
+    const saved = JSON.parse(localStorage.getItem('sfQuickState') || 'null');
+    if (saved && typeof saved === 'object' && !Array.isArray(saved)) quickState = {...quickState, ...saved};
+  } catch { /* Storage can be unavailable or contain older malformed data. */ }
   const syncQuickState = () => {
     if (quickRings) quickRings.textContent = String(quickState.rings);
     if (quickAccount) quickAccount.textContent = quickState.account ? 'Cuenta activa' : 'Mi cuenta';
     if (quickTheme) quickTheme.textContent = quickState.theme === 'light' ? 'Modo claro' : 'Modo oscuro';
     if (quickCart) quickCart.textContent = String(quickState.cart);
-    localStorage.setItem('sfQuickState', JSON.stringify(quickState));
+    try { localStorage.setItem('sfQuickState', JSON.stringify(quickState)); } catch {}
   };
   syncQuickState();
 
@@ -172,7 +209,7 @@
   const quickButtons = $$('.quick-action-card');
   quickButtons.forEach(card => {
     card.addEventListener('pointermove', e => {
-      if (window.matchMedia('(hover: none)').matches) return;
+      if (reducedMotion.matches || window.matchMedia('(hover: none)').matches) return;
       const r = card.getBoundingClientRect();
       const rx = ((e.clientY - r.top) / r.height - .5) * -3.5;
       const ry = ((e.clientX - r.left) / r.width - .5) * 5;
@@ -194,7 +231,7 @@
   $$('.library-tab').forEach((tab, i) => {
     tab.style.setProperty('--library-stagger', `${i * 70}ms`);
     tab.addEventListener('pointermove', e => {
-      if (window.matchMedia('(hover: none)').matches) return;
+      if (reducedMotion.matches || window.matchMedia('(hover: none)').matches) return;
       const r = tab.getBoundingClientRect();
       const rx = ((e.clientY - r.top) / r.height - .5) * -2.8;
       const ry = ((e.clientX - r.left) / r.width - .5) * 4;
@@ -255,7 +292,7 @@
   toggle.className = 'sf-utility-toggle';
   toggle.setAttribute('aria-label','Abrir accesos rápidos');
   toggle.setAttribute('aria-expanded','false');
-  toggle.innerHTML = '<span></span>';
+  toggle.innerHTML = '<span aria-hidden="true">✦</span><b>Accesos</b>';
 
   const close = document.createElement('button');
   close.type = 'button';
@@ -281,13 +318,20 @@
   body.appendChild(rail);
 
   function setOpen(open){
+    const wasInside = rail.contains(document.activeElement);
     rail.classList.toggle('is-open', open);
+    rail.inert = !open;
+    rail.setAttribute('aria-hidden', String(!open));
+    rail.setAttribute('role', 'dialog');
+    rail.setAttribute('aria-label', 'Accesos rápidos');
+    rail.setAttribute('aria-modal', 'true');
     backdrop.classList.toggle('is-open', open);
     toggle.classList.toggle('is-open', open);
     toggle.setAttribute('aria-expanded', String(open));
     toggle.setAttribute('aria-label', open ? 'Cerrar accesos rápidos' : 'Abrir accesos rápidos');
     body.classList.toggle('utility-panel-open', open);
     if(open) close.focus({preventScroll:true});
+    else if(wasInside) toggle.focus({preventScroll:true});
   }
 
   toggle.addEventListener('click', () => setOpen(!rail.classList.contains('is-open')));
@@ -295,6 +339,11 @@
   backdrop.addEventListener('click', () => setOpen(false));
   document.addEventListener('keydown', e => {
     if(e.key === 'Escape' && rail.classList.contains('is-open')) setOpen(false);
+    if(e.key === 'Tab' && rail.classList.contains('is-open')) {
+      const items=[...rail.querySelectorAll('button:not([disabled]),a[href]')].filter(el=>!el.hidden&&el.getClientRects().length);
+      if(e.shiftKey&&document.activeElement===items[0]){e.preventDefault();items.at(-1)?.focus();}
+      else if(!e.shiftKey&&document.activeElement===items.at(-1)){e.preventDefault();items[0]?.focus();}
+    }
   });
 
   // Hide the original Quick Access section because its five cards now live here.
@@ -446,7 +495,7 @@
       button.classList.add('is-pulse');
 
       const targetSelector = button.getAttribute('href');
-      const target = targetSelector ? document.querySelector(targetSelector) : null;
+      const target = targetSelector?.startsWith('#') ? document.getElementById(targetSelector.slice(1)) : null;
       if (target) {
         target.classList.remove('sf-cta-focus');
         window.setTimeout(() => target.classList.add('sf-cta-focus'), 180);

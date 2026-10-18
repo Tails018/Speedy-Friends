@@ -109,7 +109,7 @@
 <div class="sf-page-loader" id="sf-page-loader" aria-live="polite" aria-busy="true">
   <div class="sf-loader-orbit" aria-hidden="true"></div>
   <div class="sf-loader-card">
-    <img class="sf-loader-gif" src="assets/loader.gif" alt="" aria-hidden="true">
+    <img class="sf-loader-gif" src="assets/loader.gif" alt="" aria-hidden="true" width="100" height="100" decoding="async">
     <p class="sf-loader-kicker" id="sf-loader-kicker">Speedy Friends / Navigation</p>
     <h2 class="sf-loader-title" id="sf-loader-title">CARGANDO</h2>
     <p class="sf-loader-subtitle" id="sf-loader-subtitle">Preparando la página…</p>
@@ -758,6 +758,7 @@ body.rank-ost-playing .rank-profile-modal{box-shadow:-25px 0 65px rgba(239,38,63
 
 
 
+<link rel="stylesheet" href="portal-polish.css">
 </head>
 <body class="ranking-page">
 <main class="ranking-shell">
@@ -880,7 +881,7 @@ document.addEventListener('DOMContentLoaded',()=>{
   const card=(u,pos,type)=>{
     const score=mode==='level'?`${u.level} <small>LVL</small>`:mode==='week'?`${u.weekly.toLocaleString('en-US')} <small>R</small>`:`${u.rings.toLocaleString('en-US')} <small>R</small>`;
     const roleLabel=type==='creator'?'CREADORA':type==='admin'?'ADMIN':'INTEGRANTE';
-    const rings=type==='creator'?'':`<div class="rank-rings"><strong>${mode==='level'?u.level:mode==='week'?u.weekly.toLocaleString('en-US'):u.rings.toLocaleString('en-US')}</strong>${mode==='level'?'':'<img class="ring-icon" src="assets/ring-animated.png" alt="" aria-hidden="true">'}<span>${mode==='level'?'LVL':'RINGS'}</span></div>`;
+    const rings=type==='creator'?'':`<div class="rank-rings"><strong>${mode==='level'?u.level:mode==='week'?u.weekly.toLocaleString('en-US'):u.rings.toLocaleString('en-US')}</strong>${mode==='level'?'':'<img class="ring-icon" src="assets/ring-animated.png" alt="" aria-hidden="true" width="100" height="100" decoding="async" loading="lazy">'}<span>${mode==='level'?'LVL':'RINGS'}</span></div>`;
     return `<article class="${type==='creator'?'creator-rank-card':'rank-row'} visible ${type==='admin'?'admin-rank-row':''}" style="--delay:${Math.min(14,pos)*35}ms"
       data-profile-id="${esc(u.id)}" data-owner-uid="${esc(u.ownerUid||'')}" data-profile="${esc(u.username)}" data-role="${esc(u.title||roleLabel)}"
       data-rings="${u.rings.toLocaleString('en-US')}" data-position="${String(pos+1).padStart(2,'0')}"
@@ -983,7 +984,7 @@ document.addEventListener('DOMContentLoaded',()=>{
     </div>
   </div>
   <div class="rank-preview-stats">
-    <div><strong id="rank-preview-rings">12,840</strong><img class="ring-icon" src="assets/ring-animated.png" alt="" aria-hidden="true"><span>RINGS</span></div>
+    <div><strong id="rank-preview-rings">12,840</strong><img class="ring-icon" src="assets/ring-animated.png" alt="" aria-hidden="true" width="100" height="100" decoding="async" loading="lazy"><span>RINGS</span></div>
     <div><strong id="rank-preview-position">01</strong><span>POSICIÓN</span></div>
     <div><strong id="rank-preview-friends">—</strong><span>AMIGOS</span></div>
   </div>
