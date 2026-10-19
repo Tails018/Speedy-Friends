@@ -34,6 +34,7 @@ const report=[];
    assert.ok(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth),`Overflow at ${width}`);
    assert.deepEqual(await page.locator('img').evaluateAll(imgs=>imgs.filter(i=>!i.complete||i.naturalWidth===0).map(i=>i.src)),[]);
   }
+  await page.locator('h1').click();
   await page.screenshot({path:output+'/community-desktop.png',fullPage:true});
   await page.setViewportSize({width:390,height:844});await page.screenshot({path:output+'/community-mobile.png',fullPage:true});
  });

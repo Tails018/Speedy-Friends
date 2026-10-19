@@ -9,8 +9,11 @@ button,a,input,select,textarea{-webkit-tap-highlight-color:transparent}
 [hidden]{display:none!important}
 .sf-skip-link{position:fixed;left:16px;top:12px;z-index:100000;background:#fff;color:#111;padding:14px 20px;transform:translateY(-160%);font-weight:800}
 .sf-skip-link:focus{transform:none}
+.sf-skip-link:not(:focus){clip-path:inset(50%);width:1px;height:1px;overflow:hidden;white-space:nowrap}
 .sf-home .sf-page{overflow:clip}
+.sf-home *{font-family:Arial,Helvetica,sans-serif!important}
 .sf-home :is(p,a,span,b,strong,small,em,button,label,input,li){font-family:inherit!important}
+.sf-home :is(h1,h2),.sf-home :is(h1,h2) em{font-family:'Arial Black',Arial,Helvetica,sans-serif!important}
 .sf-home .lead{font-weight:400!important;letter-spacing:0!important}
 .sf-home .sf-hero h1 em{font-weight:900!important}
 .sf-home .sf-utility-toggle{top:auto!important;bottom:22px!important;right:22px!important;width:auto!important;height:48px!important;border-radius:4px!important;display:flex!important;align-items:center!important;gap:10px!important;padding:0 16px!important;background:#cf263e!important;color:#fff!important;border:1px solid #ffffff40!important;box-shadow:0 8px 28px #17213625!important}
@@ -48,7 +51,7 @@ button,a,input,select,textarea{-webkit-tap-highlight-color:transparent}
 .sf-carousel-controls button{border:1px solid #17213630;background:#faf9f5;color:#172136;min-width:44px;min-height:36px;border-radius:3px;cursor:pointer;font-size:13px;padding:8px 12px}
 .sf-home .hero-nav-top{position:absolute!important;inset:auto var(--sf-gutter) 0!important;height:130px!important;display:flex!important;gap:22px!important;align-items:center!important;padding:18px 0!important;background:transparent!important;border-top:1px solid #17213625;box-shadow:none!important;overflow:visible!important;width:auto!important}
 .sf-home .hero-nav-ghosts{display:none!important}
-.sf-home .hero-nav-label{width:80px;flex-shrink:0;padding:0!important;gap:6px!important}
+.sf-home .hero-nav-label{display:none!important}
 .sf-home .hero-nav-label b{font-size:16px!important;color:#172136}
 .sf-home .hero-nav-label small{font-size:10px!important;line-height:1.4;letter-spacing:.04em}
 .sf-home .hero-nav-track{display:flex!important;gap:8px!important;overflow-x:auto!important;padding:6px 3px 10px!important;scrollbar-width:thin;width:100%;grid-template-columns:none!important;scroll-snap-type:x proximity}
