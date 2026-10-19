@@ -3,21 +3,21 @@
     'sonic-wars': {
       eyebrow: 'SONIC WARS · HISTORIA DEL TEAM',
       title: 'Sonic Wars',
-      image: 'assets/ultimos-momentos/sonic-wars.jpeg',
+      image: 'assets/ultimos-momentos/sonic-wars.webp',
       number: '01 / 03',
       body: `Dr. Ivo Robonkin, proveniente de Sonic SATAM, descubre la existencia de los multiversos y emprende una búsqueda obsesiva para encontrar formas de eliminar a su propio Sonic. Lo consigue al reunir versiones alternativas y malvadas del erizo.\n\nAnte el descubrimiento, lleva el proyecto mucho más lejos: conquistar otros mundos, derrocar a Sonic y provocar el mayor caos posible mientras satisface a varios de esos erizos oscuros con lo que buscan: destrucción.\n\nSuena a la simpleza de un villano que solo quiere destruir, pero para un héroe que vive con la libertad del mundo, no sería descabellado pensar que existe una libertad inhumana para cometer atrocidades con tal de alimentar el ego y la avaricia.`
     },
     'metal-virus': {
       eyebrow: 'METAL VIRUS RENACIMIENTO · HISTORIA DEL TEAM',
       title: 'Metal Virus Renacimiento',
-      image: 'assets/ultimos-momentos/metal-virus.jpeg',
+      image: 'assets/ultimos-momentos/metal-virus.webp',
       number: '02 / 03',
       body: `Durante los eventos de X, cuando intentó asimilar tantos mundos para obtener más poder, su derrota a manos de héroes de distintas realidades parecía ser el final. Pero mientras abría portales, zombots infectaban mobianos de esos mundos en silencio.\n\nNo eran zombots cualquiera. Conservaban intelecto, memoria y grados de consciencia inimaginables, y eso llevó a una extinción casi total de las razas mobianas. Cada día quedaban menos seres orgánicos.\n\nEn uno de esos mundos, Sally Acorn, infectada, adquirió consciencia y la capacidad de controlar a otros infectados. En su búsqueda por erradicar toda forma de resistencia reunió un ejército y buscó liberar a Neo Devil Doom, sellado por Mammoth Mogul en un desierto inhóspito.\n\nPero sus planes chocaron con una amenaza mayor: Tails estaba desarrollando una cura. Desde entonces, toda posible esperanza se convirtió en su objetivo prioritario.`
     },
     'execution': {
       eyebrow: 'EXECUTION · HISTORIA DEL TEAM',
       title: 'Execution',
-      image: 'assets/ultimos-momentos/execution.jpeg',
+      image: 'assets/ultimos-momentos/execution.webp',
       number: '03 / 03',
       body: `Un evento anómalo, fuera de lugar y de toda certeza, simplemente existió sin ser visto ni reconocido. El propio vacío y la oscuridad que siempre habían estado ajenos al mundo de Sonic lograron acceder.\n\nX tomó el lugar de un Sonic clásico y transformó su mundo en un infierno magnífico para él. Después de cansarse de torturar a las pocas almas restantes, descubrió el cosmos de Sonic y decidió expandirse por el multiverso.\n\nEnvió guardianes como conectores entre cada universo, capaces de asimilar mundos enteros para crecer de forma indefinida. El cosmos entero, al que nunca había pertenecido, reclamó a Sonic como propiedad auténtica y convirtió a cada personaje y cada mundo en parte de su espectáculo.\n\nNo era solo una invasión. Era el nacimiento de un escenario absoluto de terror y agonía.`
     }

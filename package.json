@@ -1,0 +1,13 @@
+{
+  "name": "speedy-friends",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "dev": "node scripts/serve.mjs",
+    "generate": "node scripts/generate-community.mjs",
+    "test": "node --test tests/static.test.mjs",
+    "test:browser": "node tests/browser.cjs",
+    "build": "node scripts/build.mjs"
+  },
+  "devDependencies": {"playwright": "1.62.1"}
+}
