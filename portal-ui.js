@@ -78,6 +78,11 @@
       const total=selected.reduce((sum,p)=>sum+(p.price===null?0:price(p)),0);
       content.innerHTML=`<p class="sf-tools-muted">Productos guardados en este navegador. Guardar no descuenta Rings.</p><div class="sf-cart-list">${selected.length?selected.map(p=>`<article class="sf-cart-item"><div><h3>${esc(p.name)}</h3><p>${p.price===null?'Producto del catálogo anterior':number(price(p))+' Rings'}</p></div><button type="button" data-cart-remove="${esc(p.id)}" aria-label="Quitar ${esc(p.name)}">Quitar</button></article>`).join(''):'<p>Aún no has guardado productos. Explora el catálogo para añadir tus favoritos.</p>'}</div><div class="sf-tools-footer"><strong>Total estimado: ${number(total)} Rings</strong><button type="button" class="sf-tools-primary" data-catalog-toggle>${showCatalog?'Ocultar catálogo':'Explorar catálogo'}</button></div>${showCatalog?`<div class="sf-catalog">${catalog.map(p=>`<article><span class="sf-product-mark" aria-hidden="true">${esc(p.emoji||'◈')}</span><h3>${esc(p.name)}</h3><p class="sf-tools-muted">${esc(p.description)}</p><strong>${number(price(p))} Rings</strong><button type="button" data-cart-add="${esc(p.id)}" ${ids.includes(p.id)?'disabled':''}>${ids.includes(p.id)?'Guardado ✓':'Guardar en carrito'}</button></article>`).join('')}</div>`:''}`;
     }
+    function renderInventory(){
+      title.textContent='Tu inventario local';
+      const ids=Array.isArray(read().inventory)?read().inventory.filter(id=>typeof id==='string'):[];
+      content.innerHTML='<p class="sf-tools-muted">Colección guardada en este navegador. Se conserva tu inventario anterior.</p><div class="sf-cart-list">'+(ids.length?ids.map(id=>{const product=catalog.find(p=>p.id===id);return `<article class="sf-cart-item"><div><h3>${esc(product?.name||id)}</h3><p>${esc(product?.description||'Producto del inventario anterior')}</p></div></article>`;}).join(''):'<p>Aún no hay productos guardados en tu inventario local.</p>')+'</div>';
+    }
     function watchRings(){
       unsubscribe();unsubscribe=()=>{};
       const sf=window.SpeedyFirebase,state=sf?.current;
@@ -88,12 +93,13 @@
       unsubscribe=()=>ref.off('value',update);
     }
     document.addEventListener('click',event=>{
-      const trigger=event.target.closest('[data-action="rings"],[data-action="cart"]');
+      const trigger=event.target.closest('[data-action="rings"],[data-action="cart"],[data-action="inventory"]');
       if(!trigger||trigger.dataset.authBusy==='true')return;
       event.preventDefault();opener=trigger;view=trigger.dataset.action;status.textContent='';
-      view==='rings'?renderRings():renderCart();if(!shell.open)shell.showModal();
+      if(trigger.hasAttribute('data-open-catalog'))showCatalog=true;
+      view==='rings'?renderRings():view==='inventory'?renderInventory():renderCart();if(!shell.open)shell.showModal();
       if(view==='rings')watchRings();
-    });
+    },true);
     shell.addEventListener('click',event=>{
       if(event.target.closest('[data-tool-close]'))shell.close();
       const add=event.target.closest('[data-cart-add]'),remove=event.target.closest('[data-cart-remove]');

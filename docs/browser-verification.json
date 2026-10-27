@@ -18,6 +18,10 @@
       "status": "passed"
     },
     {
+      "name": "Inventory and shop shortcuts open their actual local collections",
+      "status": "passed"
+    },
+    {
       "name": "Rings display reads a subscribed fixture and never writes a balance",
       "status": "passed"
     },

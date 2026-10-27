@@ -40,13 +40,18 @@ let activeBrowser;
  });
  await test('Quick controls: cart saves/removes without modifying Rings or unrelated data',async()=>{
   await page.evaluate(()=>localStorage.setItem('speedy-friends-steam-ui-v1',JSON.stringify({cart:[],coins:125,users:[{id:'preserved'}],inventory:['keep']})));
-  await page.locator('.sf-utility-toggle').click();await page.locator('[data-action="cart"]').click();
+  await page.locator('.sf-utility-toggle').click();await page.locator('.quick-action-card[data-action="cart"]').click();
   await page.getByRole('button',{name:'Explorar catálogo',exact:true}).click();
   await page.locator('[data-cart-add]').first().click();assert.equal(await page.locator('.sf-cart-item').count(),1);
   let saved=await page.evaluate(()=>JSON.parse(localStorage.getItem('speedy-friends-steam-ui-v1')));
   assert.equal(saved.cart.length,1);assert.equal(saved.coins,125);assert.equal(saved.users[0].id,'preserved');assert.deepEqual(saved.inventory,['keep']);
   await page.locator('[data-cart-remove]').click();assert.equal(await page.locator('.sf-cart-item').count(),0);
   assert.equal(await page.locator('#quick-cart-count').innerText(),'0');await page.keyboard.press('Escape');await page.waitForFunction(()=>!document.querySelector('.sf-tools-dialog').open);
+ });
+ await test('Inventory and shop shortcuts open their actual local collections',async()=>{
+  await page.keyboard.press('Escape');
+  await page.getByRole('button',{name:'Inventario',exact:true}).click();assert.ok((await page.locator('#sf-tools-content').innerText()).includes('keep'));await page.keyboard.press('Escape');await page.waitForFunction(()=>!document.querySelector('.sf-tools-dialog').open);
+  await page.getByRole('button',{name:'Tienda',exact:true}).click();assert.equal(await page.locator('.sf-catalog article').count(),18);await page.keyboard.press('Escape');await page.waitForFunction(()=>!document.querySelector('.sf-tools-dialog').open);
  });
  await test('Rings display reads a subscribed fixture and never writes a balance',async()=>{
   await page.evaluate(()=>{window.__ringOff=0;window.SpeedyFirebase={current:{uid:'fixture',profileId:'fixture-profile',rings:99},refs:{rings:{child:()=>({on:(event,fn)=>fn({exists:()=>true,val:()=>137}),off:()=>window.__ringOff++})}}};});

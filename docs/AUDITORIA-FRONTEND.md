@@ -24,6 +24,7 @@ No se autenticó una cuenta real ni se escribieron datos en Firebase/Cloudinary.
 | `fanarts-system.js:35` | Galería limitada a doce resultados sin continuación | Botón de carga progresiva; filtros/búsqueda reinician el límite y tienen estado accesible |
 | `cafe-worker.html` | Handler de música apunta a un formulario retirado deliberadamente | Registro condicionado, sin ampliar roles; arranque por eventos en lugar de sondeo indefinido |
 | `global-ost-player.js:61` | Se asigna posición antes de `load()`, que la reinicia | Se restaura tras metadatos; volumen válido y menos escrituras durante progreso |
+| Accesos Tienda / Inventario de portada | Dirigen a secciones Especial / Amigos que no corresponden a sus nombres | Abren el catálogo y la colección local existentes, conservando IDs y datos guardados |
 
 Las líneas de main son referencias de diagnóstico, no posiciones posteriores al cambio. Se mantienen perfiles, ranking, amistades, presencia, publicación/likes de fanarts, administración, cafetería y OST en sus módulos originales. No se cambian Firebase Rules, claves del cliente, rutas de colecciones, saldos ni roles.
 
@@ -36,6 +37,7 @@ Las líneas de main son referencias de diagnóstico, no posiciones posteriores a
 | Cuenta | Mantiene Google Sign-In y acceso obligatorio; informa fallo de carga | Login real y recuperación de sesión con cuenta de pruebas |
 | Apariencia | Cambio y persistencia verificados | Revisión visual adicional de todas las combinaciones de contenido real |
 | Carrito | Catálogo con los mismos dieciocho IDs/precios de `js/app.js`; guardar, quitar, total estimado y contador. Conserva campos desconocidos del estado original | El canje real no está conectado al portal actual. No se crea una compra ni se descuentan Rings con lógica cliente |
+| Tienda / Inventario | Accesos conectados al catálogo y al inventario local de la versión anterior; no desplazan a secciones equivocadas | Equipar o canjear contra un inventario remoto requiere un contrato de backend que el portal actual no expone |
 | Perfil | Se conservan editor, IndexedDB, encuadre, OST y sincronización; navegación y móvil comprobados | Guardado, imágenes y perfiles ajenos con sesión y reglas reales |
 | OST | Seek persistente corregido, volumen limitado, controles etiquetados, filas accesibles por teclado y mensaje al no haber pista | Reproducción de URLs reales, subida y eliminación con cuenta autorizada |
 | Ranking | Filas accionables con teclado, métricas legibles, rutas y vista móvil | Ordenación con datos reales, presencia y relaciones autenticadas |
@@ -47,6 +49,8 @@ Las líneas de main son referencias de diagnóstico, no posiciones posteriores a
 ## UI, accesibilidad y rendimiento
 
 Se conserva el lenguaje visual Sonic, los colores y los recursos actuales. La mejora es incremental: foco visible, salto al contenido, menús con Escape y devolución de foco, estados de botones, controles de reproducción, texto adaptable, contenedores que no se desbordan y objetivos táctiles legibles. El botón de accesos se separa del menú móvil para que no lo tape. El drawer no se cierra mientras hay otro diálogo abierto ni por un temporizador de una acción local.
+
+La inspección visual móvil llevó a compactar los accesos del hero en una fila desplazable, ajustar titular y fuentes de respaldo y corregir contraste del CTA secundario. Permanecen todos los accesos y los recursos originales.
 
 Las animaciones se ajustan a movimiento reducido; el contenido de secciones permanece visible en esa preferencia. El autoplay se detiene en pestaña oculta y dispone de pausa y navegación manual. Se reutiliza Swiper existente. No se añade un framework de aplicación ni se migra a React.
 
