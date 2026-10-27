@@ -153,7 +153,11 @@
 @keyframes ticketBlink{50%{opacity:.25}}
 @media(max-width:560px){.ticket-v4{min-height:380px;padding:23px 18px 18px}.ticket-v4:after{inset:18px}.ticket-v4-title{font-size:26px}}
 </style>
+<meta name="description" content="Café Club · Speedy Friends · Comunidad de Speedy Friends, perfiles, creatividad y entretenimiento.">
+<link rel="stylesheet" href="portal-ui.css">
+<script defer src="portal-ui.js"></script>
 </head><body class="cafeteria-page">
+<a class="sf-skip-link" href="#main-content">Saltar al contenido</a>
 <style id="sf-loader-style">
 .sf-page-loader{position:fixed;inset:0;z-index:99999;display:grid;place-items:center;background:radial-gradient(circle at 50% 44%,rgba(34,34,34,.98),rgba(5,5,5,.99) 72%);backdrop-filter:blur(14px);pointer-events:none;opacity:1;visibility:visible;transition:opacity .34s ease,visibility .34s ease;pointer-events:auto}
 .sf-page-loader.is-hidden{opacity:0;visibility:hidden;pointer-events:none}
@@ -166,7 +170,7 @@
 <div class="sf-page-loader" id="sf-page-loader" aria-live="polite" aria-busy="true">
   <div class="sf-loader-orbit" aria-hidden="true"></div>
   <div class="sf-loader-card">
-    <img class="sf-loader-gif" src="assets/loader.gif" alt="" aria-hidden="true">
+    <img class="sf-loader-gif" src="assets/loader.gif" alt="" aria-hidden="true" width="100" height="100" decoding="async">
     <p class="sf-loader-kicker" id="sf-loader-kicker">SPEEDY FRIENDS / NAVEGACIÓN</p>
     <h2 class="sf-loader-title" id="sf-loader-title">CARGANDO</h2>
     <p class="sf-loader-subtitle" id="sf-loader-subtitle">Preparando la página…</p>
@@ -214,7 +218,7 @@
 <button class="record-open-tab" id="record-open" aria-label="Abrir reproductor">♫</button>
 
 <header class="top"><a class="brand" href="index.html"><b>SPEEDY</b> FRIENDS</a><nav class="nav"><a href="index.html">Inicio</a><a href="#menu">Carta</a><a href="#tickets">Mis tickets</a></nav><button class="btn" id="wallet">MI CARTERA</button></header>
-<main class="main">
+<main id="main-content" class="main">
 <section class="hero"><div><p class="k">Speedy Friends / Coffee Club</p><h1>CAFÉ<br><em>CLUB</em></h1><p>Tu pedido genera un ticket personal con tu usuario y apodo. Un trabajador lo toma, lo prepara y, cuando lo marca como servido, se descuentan tus Rings y el ticket activo desaparece.</p><div class="actions"><a class="btn dark" href="index.html">← IR A INICIO</a><a class="btn" href="#menu">VER CARTA</a><button class="btn" id="heroWallet">MI CARTERA</button></div></div>
 <div class="posters">
   <div class="float f1"></div><div class="float f2"></div><div class="float f3"></div>
@@ -225,27 +229,27 @@
 
   <figure class="poster main">
     <span class="tag">CAFÉ CLUB / MAIN</span>
-    <img src="assets/cafeteria-counter-inspiration.jpg" alt="Café Club · poster principal">
+    <img src="assets/cafeteria-counter-inspiration.jpg" alt="Café Club · poster principal" width="736" height="490" decoding="async">
   </figure>
 
   <figure class="poster second">
     <span class="tag">SONIC / COFFEE</span>
-    <img src="assets/cafe-sonic-barista-cover.jpg" alt="Sonic con una taza de café">
+    <img src="assets/cafe-sonic-barista-cover.jpg" alt="Sonic con una taza de café" width="736" height="926" decoding="async">
   </figure>
 
   <figure class="poster third">
     <span class="tag">SPEED CAFÉ / FRONT</span>
-    <img src="assets/cafe-speed-cafe-storefront.jpg" alt="Entrada del Speed Cafe">
+    <img src="assets/cafe-speed-cafe-storefront.jpg" alt="Entrada del Speed Cafe" width="736" height="1308" decoding="async">
   </figure>
 
   <figure class="poster fourth">
     <span class="tag">BREAK / 04</span>
-    <img src="assets/cafe-toast-sonic.jpg" alt="Sonic con tostada">
+    <img src="assets/cafe-toast-sonic.jpg" alt="Sonic con tostada" width="736" height="981" decoding="async">
   </figure>
 
   <figure class="poster fifth">
     <span class="tag">DRINK / 05</span>
-    <img src="assets/cafe-matcha-sonic.jpg" alt="Bebida matcha de la cafetería">
+    <img src="assets/cafe-matcha-sonic.jpg" alt="Bebida matcha de la cafetería" width="736" height="981" decoding="async">
   </figure>
 </div></section>
 <section class="section" id="menu"><div class="head"><div><p class="k">Menú mural</p><h2>LA CARTA<br>DE HOY</h2></div><p>Los precios están en Rings. Puedes pedir, pero solo el trabajador puede procesar el ticket y completar el cobro.</p></div><div class="menu" id="menu-grid"></div></section>
@@ -257,7 +261,7 @@
   </div>
   <div class="house-special-grid">
     <article class="house-special-main">
-      <img src="assets/cafe-matcha-sonic.jpg" alt="Especialidad de la casa">
+      <img src="assets/cafe-matcha-sonic.jpg" alt="Especialidad de la casa" width="736" height="981" decoding="async">
       <span class="house-special-tag">HOUSE SPECIAL / 01</span>
       <div>
         <p class="k" style="margin:0 0 8px;color:#e8c45d">TODAY / FEATURE</p>

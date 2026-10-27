@@ -1,0 +1,59 @@
+{
+  "browser": "151.0.7922.34",
+  "report": [
+    {
+      "name": "Loader, repaired document and required authentication",
+      "status": "passed"
+    },
+    {
+      "name": "Corrupt local storage cannot interrupt startup",
+      "status": "passed"
+    },
+    {
+      "name": "Mobile menu, focus return and keyboard carousel",
+      "status": "passed"
+    },
+    {
+      "name": "Quick controls: cart saves/removes without modifying Rings or unrelated data",
+      "status": "passed"
+    },
+    {
+      "name": "Rings display reads a subscribed fixture and never writes a balance",
+      "status": "passed"
+    },
+    {
+      "name": "Theme persists and restores after reload",
+      "status": "passed"
+    },
+    {
+      "name": "Fanart filters, search, empty state and modal close button",
+      "status": "passed"
+    },
+    {
+      "name": "Large fanart fixture paginates and filters reset the visible limit",
+      "status": "passed"
+    },
+    {
+      "name": "All existing routes, loader recovery and responsive layouts",
+      "status": "passed"
+    },
+    {
+      "name": "Decoded local images, screenshot and reduced-motion carousel",
+      "status": "passed"
+    },
+    {
+      "name": "Carousel responds to motion preference and user pause controls",
+      "status": "passed"
+    },
+    {
+      "name": "No uncaught JavaScript errors across the audited routes",
+      "status": "passed"
+    }
+  ],
+  "errors": [],
+  "limitations": [
+    "External services blocked. Firebase login, live writes, uploads and real administrative permissions not exercised.",
+    "Rings use a read-only fixture. Home screenshots dismiss only the local presentation gate.",
+    "Chromium responsive emulation; not physical Android/iOS or cross-browser certification."
+  ]
+}

@@ -1,0 +1,3280 @@
+[
+  {
+    "path": "assets/anime-ling.webp",
+    "bytes": 14324,
+    "sha256": "558ebac1f2b3249e83634be59fc3eafc2ba5ee47f2653b5bb268fc25e08247db",
+    "format": "webp",
+    "dimensions": {
+      "width": 100,
+      "height": 100
+    },
+    "detectedFormat": "webp"
+  },
+  {
+    "path": "assets/arrow-btn01.webp",
+    "bytes": 794,
+    "sha256": "6272c1aee7f3cd28f92eb0d26f9c80380c29cb6e1411d332050718102cf85cf4",
+    "format": "webp",
+    "dimensions": {
+      "width": 330,
+      "height": 43
+    },
+    "detectedFormat": "webp"
+  },
+  {
+    "path": "assets/arrow-btn03.webp",
+    "bytes": 986,
+    "sha256": "fc7708f531f9a30cf6061ad419aa511effe75d92c4eed9c84e1e1ad3f98580f1",
+    "format": "webp",
+    "dimensions": {
+      "width": 413,
+      "height": 48
+    },
+    "detectedFormat": "webp"
+  },
+  {
+    "path": "assets/arrow-l.webp",
+    "bytes": 682,
+    "sha256": "17b2255b5b48f311d019e35dbc2387e966f63b9b6c1ad118f485ec440800e7c8",
+    "format": "webp",
+    "dimensions": {
+      "width": 54,
+      "height": 54
+    },
+    "detectedFormat": "webp"
+  },
+  {
+    "path": "assets/arrow-r.webp",
+    "bytes": 698,
+    "sha256": "6df96724ae06bc1a2020c91fa8b59ac5ef0dab48a47e439e9647fc49d56afe40",
+    "format": "webp",
+    "dimensions": {
+      "width": 54,
+      "height": 54
+    },
+    "detectedFormat": "webp"
+  },
+  {
+    "path": "assets/arrow-w.webp",
+    "bytes": 702,
+    "sha256": "295b1189b2c74886efc7cf61b14eba32286e17a0e56d5fbcc7139e7d84360a7a",
+    "format": "webp",
+    "dimensions": {
+      "width": 54,
+      "height": 54
+    },
+    "detectedFormat": "webp"
+  },
+  {
+    "path": "assets/background-logo.png",
+    "bytes": 17123,
+    "sha256": "37f83314347f4999ee8da7ba162703c89f61712ce65f71597c72b60d5371bb39",
+    "format": "png",
+    "dimensions": {
+      "width": 500,
+      "height": 500
+    },
+    "detectedFormat": "png"
+  },
+  {
+    "path": "assets/banner_250320_02_SonicChannelFuncard.jpg",
+    "bytes": 464841,
+    "sha256": "381ec385a27f5754ca840fc80e8f3c6dae758b0ccf05a0617cc7017bb4bfea5a",
+    "format": "jpg",
+    "dimensions": {
+      "width": 1280,
+      "height": 720
+    },
+    "detectedFormat": "jpeg"
+  },
+  {
+    "path": "assets/banner_250627_01_SonicRacingCrossWorld.jpg",
+    "bytes": 1018857,
+    "sha256": "0984bf3c1fee73ec0df2bbad7d406466a92de437e7566b58a57dca5fe00d93ce",
+    "format": "jpg",
+    "dimensions": {
+      "width": 1920,
+      "height": 1080
+    },
+    "detectedFormat": "jpeg"
+  },
+  {
+    "path": "assets/banner_260624_01_SonicFrontiersDX.webp",
+    "bytes": 340340,
+    "sha256": "1052f928e779ad0b00b72167152d3591c94a28730f67be3302dedc442a0a23b9",
+    "format": "webp",
+    "dimensions": {
+      "width": 1280,
+      "height": 720
+    },
+    "detectedFormat": "webp"
+  },
+  {
+    "path": "assets/bgparts-w.webp",
+    "bytes": 142148,
+    "sha256": "587ed029d777f17608f8e6b7199c73388a7f8fa6726fe36341d425e5f5065257",
+    "format": "webp",
+    "dimensions": {
+      "width": 1129,
+      "height": 7129
+    },
+    "detectedFormat": "webp"
+  },
+  {
+    "path": "assets/bgparts.webp",
+    "bytes": 142968,
+    "sha256": "a01316d595af3a93f324da4d5b036369e2d1eb68b9dcb2810466a785831c15be",
+    "format": "webp",
+    "dimensions": {
+      "width": 1129,
+      "height": 7129
+    },
+    "detectedFormat": "webp"
+  },
+  {
+    "path": "assets/broadcasting_260821_01_ogp-thumb-640xauto-19300.webp",
+    "bytes": 28654,
+    "sha256": "455d6ba6e5bf851a42d37c0ac6a9ce74ec1c635ff58363b6f99a15bb957c0e7a",
+    "format": "webp",
+    "dimensions": {
+      "width": 640,
+      "height": 360
+    },
+    "detectedFormat": "webp"
+  },
+  {
+    "path": "assets/btn-chara-on.png",
+    "bytes": 3313,
+    "sha256": "3f5033d2dd0a88ceddfa983758a50f78eac26e6b40fbc7b03b553a84bc380ae4",
+    "format": "png",
+    "dimensions": {
+      "width": 323,
+      "height": 161
+    },
+    "detectedFormat": "png"
+  },
+  {
+    "path": "assets/btn-chara.png",
+    "bytes": 3198,
+    "sha256": "52236a5c5154dde49962d1030811b792baa471f12cb6b4bc4a572312da446323",
+    "format": "png",
+    "dimensions": {
+      "width": 323,
+      "height": 160
+    },
+    "detectedFormat": "png"
+  },
+  {
+    "path": "assets/btn-fan-on.png",
+    "bytes": 3728,
+    "sha256": "3a5a925e03b65a72f18f0fe9a4365a511fa3d60f407d00789c5d4f4629880bee",
+    "format": "png",
+    "dimensions": {
+      "width": 322,
+      "height": 161
+    },
+    "detectedFormat": "png"
+  },
+  {
+    "path": "assets/btn-fan.png",
+    "bytes": 3545,
+    "sha256": "fc4d7f7c3acecbe11e840f87cd764d4138cb3d65fdfdcd4fc84770bbabe96a4b",
+    "format": "png",
+    "dimensions": {
+      "width": 322,
+      "height": 160
+    },
+    "detectedFormat": "png"
+  },
+  {
+    "path": "assets/btn-history-on.png",
+    "bytes": 3299,
+    "sha256": "7aeeb7901f02e27eb6c8655c234b182b52958993b819e0b33aaa85f9e382a5a1",
+    "format": "png",
+    "dimensions": {
+      "width": 322,
+      "height": 161
+    },
+    "detectedFormat": "png"
+  },
+  {
+    "path": "assets/btn-history.png",
+    "bytes": 3085,
+    "sha256": "0b3a4fed2e186c5adf9dd757334750839fa10d80bbe72a0c55340c9557d2f67f",
+    "format": "png",
+    "dimensions": {
+      "width": 322,
+      "height": 160
+    },
+    "detectedFormat": "png"
+  },
+  {
+    "path": "assets/btn-redicon.webp",
+    "bytes": 1742,
+    "sha256": "67890a886a15754fbcb3adff1338543d5dd7c4fc07dff9e352b7a891591c1329",
+    "format": "webp",
+    "dimensions": {
+      "width": 85,
+      "height": 85
+    },
+    "detectedFormat": "webp"
+  },
+  {
+    "path": "assets/btn-special-on.png",
+    "bytes": 3222,
+    "sha256": "461312c92c7db098e776f76b4c148bb78777c2c06582303c6f84955653a9ce80",
+    "format": "png",
+    "dimensions": {
+      "width": 323,
+      "height": 161
+    },
+    "detectedFormat": "png"
+  },
+  {
+    "path": "assets/btn-special.png",
+    "bytes": 3037,
+    "sha256": "600ac95b03386fa7626c1a96e60b43e6d441b0cb20f3022c93edff1c2be74b6c",
+    "format": "png",
+    "dimensions": {
+      "width": 323,
+      "height": 160
+    },
+    "detectedFormat": "png"
+  },
+  {
+    "path": "assets/btn-top-on.webp",
+    "bytes": 1286,
+    "sha256": "cf6655abf25715297f692bddba001d16af8921f06c4c6b407196c132c3c9f892",
+    "format": "webp",
+    "dimensions": {
+      "width": 323,
+      "height": 160
+    },
+    "detectedFormat": "webp"
+  },
+  {
+    "path": "assets/btn-top.webp",
+    "bytes": 936,
+    "sha256": "c0174f09af3c86ac0974707133fb28e600c457ec4623734de420e02a444e5d67",
+    "format": "webp",
+    "dimensions": {
+      "width": 322,
+      "height": 160
+    },
+    "detectedFormat": "webp"
+  },
+  {
+    "path": "assets/btn-topics-on.png",
+    "bytes": 3150,
+    "sha256": "c5e527b0dc551d858bb18b4745e99f3ad3978ed49ac643fc0449eb405b471493",
+    "format": "png",
+    "dimensions": {
+      "width": 321,
+      "height": 161
+    },
+    "detectedFormat": "png"
+  },
+  {
+    "path": "assets/btn-topics.png",
+    "bytes": 3001,
+    "sha256": "4087ee244edaafd2d12c973797842eac611ebb708ff1f5bb7bbc5b700e87d917",
+    "format": "png",
+    "dimensions": {
+      "width": 320,
+      "height": 160
+    },
+    "detectedFormat": "png"
+  },
+  {
+    "path": "assets/cafe-matcha-sonic.jpg",
+    "bytes": 101884,
+    "sha256": "55fda01757df65d600fd4c477a1d158036595eb8869d8d96948b8544c2bf0a5d",
+    "format": "jpg",
+    "dimensions": {
+      "width": 736,
+      "height": 981
+    },
+    "detectedFormat": "jpeg"
+  },
+  {
+    "path": "assets/cafe-sonic-barista-cover.jpg",
+    "bytes": 52818,
+    "sha256": "70f5c5b9bc613cc7c2ae65d722e8d1ab490ade6c80f33ad405a8c8c80eab7236",
+    "format": "jpg",
+    "dimensions": {
+      "width": 736,
+      "height": 926
+    },
+    "detectedFormat": "jpeg"
+  },
+  {
+    "path": "assets/cafe-sonic-dessert.jpg",
+    "bytes": 74499,
+    "sha256": "0d2d3fc1204623cbd5737fd69fa7257769ab429522dfe8859f2b250a71f6a271",
+    "format": "jpg",
+    "dimensions": {
+      "width": 720,
+      "height": 960
+    },
+    "detectedFormat": "jpeg"
+  },
+  {
+    "path": "assets/cafe-sonic-menu-board.jpg",
+    "bytes": 83808,
+    "sha256": "7c18a21799f4c65be2d17d88e566a26cfe2650093afb3a42a81de0d47bbbe530",
+    "format": "jpg",
+    "dimensions": {
+      "width": 736,
+      "height": 552
+    },
+    "detectedFormat": "jpeg"
+  },
+  {
+    "path": "assets/cafe-speed-cafe-storefront.jpg",
+    "bytes": 201326,
+    "sha256": "8f936a05f197c4e22f1a5d1c99c23c4d88b0620c9eec6490b82c705aecf1c732",
+    "format": "jpg",
+    "dimensions": {
+      "width": 736,
+      "height": 1308
+    },
+    "detectedFormat": "jpeg"
+  },
+  {
+    "path": "assets/cafe-toast-sonic.jpg",
+    "bytes": 81525,
+    "sha256": "69fd3ecb4ef9dbfaaf9d7bfdc6c65fd30874adf9224ccfb98039305df24d3c15",
+    "format": "jpg",
+    "dimensions": {
+      "width": 736,
+      "height": 981
+    },
+    "detectedFormat": "jpeg"
+  },
+  {
+    "path": "assets/cafeteria-counter-inspiration.jpg",
+    "bytes": 69127,
+    "sha256": "0c1d819b0848a0a682b61a59f9f68e20bcd8030b0df24c4c251973dfccb94c46",
+    "format": "jpg",
+    "dimensions": {
+      "width": 736,
+      "height": 490
+    },
+    "detectedFormat": "jpeg"
+  },
+  {
+    "path": "assets/calendar_2607_thm-thumb-220x220-18918.jpg",
+    "bytes": 25222,
+    "sha256": "6597638c3282aa9dd0670e49aae2988aacf4709d1b9f47184423e84bfc41fc1e",
+    "format": "jpg",
+    "dimensions": {
+      "width": 220,
+      "height": 220
+    },
+    "detectedFormat": "jpeg"
+  },
+  {
+    "path": "assets/calendar_2608_thm-thumb-220x220-19140.jpg",
+    "bytes": 33552,
+    "sha256": "60a86b24cf17da14eb7b64a1491918bedd2c4c624e5197c8dc72e63191570547",
+    "format": "jpg",
+    "dimensions": {
+      "width": 220,
+      "height": 220
+    },
+    "detectedFormat": "jpeg"
+  },
+  {
+    "path": "assets/catEnjoyCalendar.png",
+    "bytes": 2905,
+    "sha256": "8e45fe56e653638cc11422fc81bf536783a1d254547eb7da6deef475fbc207a1",
+    "format": "png",
+    "dimensions": {
+      "width": 220,
+      "height": 220
+    },
+    "detectedFormat": "png"
+  },
+  {
+    "path": "assets/catEnjoyWallpaperPc.png",
+    "bytes": 4045,
+    "sha256": "0caadcdc9d16ec94fa12e0cdd69208e718aa4646537677771d9d0b5d753cd9a7",
+    "format": "png",
+    "dimensions": {
+      "width": 220,
+      "height": 220
+    },
+    "detectedFormat": "png"
+  },
+  {
+    "path": "assets/catEnjoyWallpaperSp.png",
+    "bytes": 4283,
+    "sha256": "012e991c78e35a19397889d450467b5a3c74a39b3e8896ecec7ef759015539c9",
+    "format": "png",
+    "dimensions": {
+      "width": 220,
+      "height": 220
+    },
+    "detectedFormat": "png"
+  },
+  {
+    "path": "assets/chara.webp",
+    "bytes": 9860,
+    "sha256": "4d74c89d91e147f4d7892cfcdf26c238895693a400ced1ff0afadabd0c6a211f",
+    "format": "webp",
+    "dimensions": {
+      "width": 1919,
+      "height": 243
+    },
+    "detectedFormat": "webp"
+  },
+  {
+    "path": "assets/classic.webp",
+    "bytes": 8658,
+    "sha256": "3a41201d4b631e527d5a27cb70174a5409789a0f8088387d741805db115c85ed",
+    "format": "webp",
+    "dimensions": {
+      "width": 1919,
+      "height": 243
+    },
+    "detectedFormat": "webp"
+  },
+  {
+    "path": "assets/common1.png",
+    "bytes": 1926,
+    "sha256": "25e96d1280c4f125b918908d898841e4f639e53ef5e0e9736acbed3a0931d865",
+    "format": "png",
+    "dimensions": {
+      "width": 200,
+      "height": 200
+    },
+    "detectedFormat": "png"
+  },
+  {
+    "path": "assets/common2.png",
+    "bytes": 3231,
+    "sha256": "a3488fec0c6d37af1fd9fc45975d1213a54aad60b122706ecc1c507d82d5ec64",
+    "format": "png",
+    "dimensions": {
+      "width": 200,
+      "height": 200
+    },
+    "detectedFormat": "png"
+  },
+  {
+    "path": "assets/common3.png",
+    "bytes": 3733,
+    "sha256": "94a96083a8badd04531409083ddd3274d131545fdd95dda1c33b0ec4910f56fc",
+    "format": "png",
+    "dimensions": {
+      "width": 200,
+      "height": 200
+    },
+    "detectedFormat": "png"
+  },
+  {
+    "path": "assets/dl01.webp",
+    "bytes": 8134,
+    "sha256": "0eaed361418850bed61a106b8dff2f937f8a395cc6c28e13fcb2e3db01e07b03",
+    "format": "webp",
+    "dimensions": {
+      "width": 500,
+      "height": 500
+    },
+    "detectedFormat": "webp"
+  },
+  {
+    "path": "assets/dl02.webp",
+    "bytes": 2498,
+    "sha256": "e7dcb9cb7f1791019ae72bbf078820ef736b15b77dc61ebd21f91ca8a39a8f10",
+    "format": "webp",
+    "dimensions": {
+      "width": 500,
+      "height": 500
+    },
+    "detectedFormat": "webp"
+  },
+  {
+    "path": "assets/dl03.webp",
+    "bytes": 8060,
+    "sha256": "d2bcf9f24aa064ab3cb16894205e120cd1687a6c809b9851c1cfd4ed1d88fcf6",
+    "format": "webp",
+    "dimensions": {
+      "width": 500,
+      "height": 500
+    },
+    "detectedFormat": "webp"
+  },
+  {
+    "path": "assets/dl04.webp",
+    "bytes": 2378,
+    "sha256": "41cfcb89dd3411bf183aa91ef7d1f2aadcd76bc2bc320cd25b27052934f9ad29",
+    "format": "webp",
+    "dimensions": {
+      "width": 500,
+      "height": 500
+    },
+    "detectedFormat": "webp"
+  },
+  {
+    "path": "assets/dl05.webp",
+    "bytes": 3322,
+    "sha256": "b265d85c4fa29edb94e371cdf8055bc39525f32b2ab84466a4edf64b3c6818b5",
+    "format": "webp",
+    "dimensions": {
+      "width": 500,
+      "height": 500
+    },
+    "detectedFormat": "webp"
+  },
+  {
+    "path": "assets/dl06.webp",
+    "bytes": 3440,
+    "sha256": "0e061354fd2d06593934e6454b35f402ac683bea92a6047787b8218e28457a07",
+    "format": "webp",
+    "dimensions": {
+      "width": 500,
+      "height": 500
+    },
+    "detectedFormat": "webp"
+  },
+  {
+    "path": "assets/dl07.webp",
+    "bytes": 2214,
+    "sha256": "dc8bb72018ecee37196878b50163437a6eb7d466784a15890530387eb176dd8e",
+    "format": "webp",
+    "dimensions": {
+      "width": 500,
+      "height": 500
+    },
+    "detectedFormat": "webp"
+  },
+  {
+    "path": "assets/downloads.webp",
+    "bytes": 13568,
+    "sha256": "9b0e89d4c95ea95b4578916970a1bee63a3773e4a26eb714253c2c11f8b7b769",
+    "format": "webp",
+    "dimensions": {
+      "width": 1919,
+      "height": 243
+    },
+    "detectedFormat": "webp"
+  },
+  {
+    "path": "assets/enjoy.webp",
+    "bytes": 6096,
+    "sha256": "7c82b2d2e12215f325520789e112f1a85d4bece91bb4edd36b05cfe5ae88cc46",
+    "format": "webp",
+    "dimensions": {
+      "width": 1919,
+      "height": 243
+    },
+    "detectedFormat": "webp"
+  },
+  {
+    "path": "assets/errorMessage.png",
+    "bytes": 1574,
+    "sha256": "06d21f42bcc094837b27c71ce64377e826cb3c378d3ea478af502b7b21856df8",
+    "format": "png",
+    "dimensions": {
+      "width": 50,
+      "height": 60
+    },
+    "detectedFormat": "png"
+  },
+  {
+    "path": "assets/event_260803_01_ogp-thumb-640xauto-19259.webp",
+    "bytes": 28080,
+    "sha256": "bf69c484016e2350c7e3232f1fdee4ba8180f3a7e325705ccf702539346da84c",
+    "format": "webp",
+    "dimensions": {
+      "width": 640,
+      "height": 360
+    },
+    "detectedFormat": "webp"
+  },
+  {
+    "path": "assets/event_260826_01_ogp-thumb-640xauto-19278.webp",
+    "bytes": 68426,
+    "sha256": "2f469b41fdd6b7924cb889fd082c8490adf814aef4fb0baa29adfb6fad08c7eb",
+    "format": "webp",
+    "dimensions": {
+      "width": 640,
+      "height": 360
+    },
+    "detectedFormat": "webp"
+  },
+  {
+    "path": "assets/fan.webp",
+    "bytes": 10590,
+    "sha256": "dd141e03a1388a8b6b2d5f7b4b8ae4ac1f2bada0540c812d3d2b27b24a8ce1c6",
+    "format": "webp",
+    "dimensions": {
+      "width": 1919,
+      "height": 243
+    },
+    "detectedFormat": "webp"
+  },
+  {
+    "path": "assets/fanart-demo/avatar-1.webp",
+    "bytes": 2524570,
+    "sha256": "1cdfd07e95f6e751ad82322c8545a471afb244e8eb251a139b7249a485c3a1b2",
+    "format": "webp",
+    "dimensions": {
+      "width": 1774,
+      "height": 887
+    },
+    "detectedFormat": "png"
+  },
+  {
+    "path": "assets/fanart-demo/avatar-2.webp",
+    "bytes": 2524570,
+    "sha256": "1cdfd07e95f6e751ad82322c8545a471afb244e8eb251a139b7249a485c3a1b2",
+    "format": "webp",
+    "dimensions": {
+      "width": 1774,
+      "height": 887
+    },
+    "detectedFormat": "png"
+  },
+  {
+    "path": "assets/fanart-demo/avatar-3.webp",
+    "bytes": 2524570,
+    "sha256": "1cdfd07e95f6e751ad82322c8545a471afb244e8eb251a139b7249a485c3a1b2",
+    "format": "webp",
+    "dimensions": {
+      "width": 1774,
+      "height": 887
+    },
+    "detectedFormat": "png"
+  },
+  {
+    "path": "assets/fanart-demo/avatar-4.webp",
+    "bytes": 2524570,
+    "sha256": "1cdfd07e95f6e751ad82322c8545a471afb244e8eb251a139b7249a485c3a1b2",
+    "format": "webp",
+    "dimensions": {
+      "width": 1774,
+      "height": 887
+    },
+    "detectedFormat": "png"
+  },
+  {
+    "path": "assets/fanart-demo/blue-rush.webp",
+    "bytes": 37518,
+    "sha256": "daa77effc36e0790b1377aadb79228ab1ac065897630d01454e4967e0de5c2e9",
+    "format": "webp",
+    "dimensions": {
+      "width": 640,
+      "height": 360
+    },
+    "detectedFormat": "webp"
+  },
+  {
+    "path": "assets/fanart-demo/cyber-team.svg",
+    "bytes": 784,
+    "sha256": "b7b0d68f94a29bd68f60b8e11019a56dc18fc014957d1e8b741da27a4292204b",
+    "format": "svg",
+    "dimensions": {
+      "width": 200,
+      "height": 150
+    },
+    "detectedFormat": "svg"
+  },
+  {
+    "path": "assets/fanart-demo/eclipse.svg",
+    "bytes": 702,
+    "sha256": "4cee112dc93490d13035aa0082b024e89df84d804b06d8f833633cf1a6653d5e",
+    "format": "svg",
+    "dimensions": {
+      "width": 200,
+      "height": 150
+    },
+    "detectedFormat": "svg"
+  },
+  {
+    "path": "assets/fanart-demo/future-glow.webp",
+    "bytes": 7284,
+    "sha256": "760105d7f3e0ad02aeaf354c6e66dc927f1063b9757bacdb96c969c20f77636a",
+    "format": "webp",
+    "dimensions": {
+      "width": 1919,
+      "height": 243
+    },
+    "detectedFormat": "webp"
+  },
+  {
+    "path": "assets/fanart-demo/neon-rush.svg",
+    "bytes": 1113,
+    "sha256": "622c8f8158b4ee9409dad2c2908f7bdd863836f2759e7f87b824fa16f44c5cad",
+    "format": "svg",
+    "dimensions": {
+      "width": 200,
+      "height": 150
+    },
+    "detectedFormat": "svg"
+  },
+  {
+    "path": "assets/fanart-demo/rose-drive.svg",
+    "bytes": 931,
+    "sha256": "9e013415327ca733729254914d423e827b3fb0b8b37f0396d841a5aa2e8cea9e",
+    "format": "svg",
+    "dimensions": {
+      "width": 200,
+      "height": 150
+    },
+    "detectedFormat": "svg"
+  },
+  {
+    "path": "assets/fanart-demo/shadow-eclipse.webp",
+    "bytes": 25289,
+    "sha256": "b6fcf28e7ac284f64417090d91efa506d29967fc1dd9651de4df8278d48d41b8",
+    "format": "webp",
+    "dimensions": {
+      "width": 733,
+      "height": 171
+    },
+    "detectedFormat": "jpeg"
+  },
+  {
+    "path": "assets/fanart-demo/team-run.webp",
+    "bytes": 14682,
+    "sha256": "dd4ec086bc576500d9f82e145e3380bc446836f12370f81e051c65450862486d",
+    "format": "webp",
+    "dimensions": {
+      "width": 1919,
+      "height": 243
+    },
+    "detectedFormat": "webp"
+  },
+  {
+    "path": "assets/fanart_2608_ogp-thumb-640xauto-19221.webp",
+    "bytes": 37518,
+    "sha256": "daa77effc36e0790b1377aadb79228ab1ac065897630d01454e4967e0de5c2e9",
+    "format": "webp",
+    "dimensions": {
+      "width": 640,
+      "height": 360
+    },
+    "detectedFormat": "webp"
+  },
+  {
+    "path": "assets/gametitle.webp",
+    "bytes": 8070,
+    "sha256": "126847f0737a8a551da3493697670c4fa1959f9d98f58eccb566233ecdce52c2",
+    "format": "webp",
+    "dimensions": {
+      "width": 1919,
+      "height": 243
+    },
+    "detectedFormat": "webp"
+  },
+  {
+    "path": "assets/gametitle_SonicFrontiersDX_square-thumb-512x512-18932.webp",
+    "bytes": 105014,
+    "sha256": "b06e9b31c537438e0a9dae5a5bc5398c3ae8ab34f5e5abdf9a6f17cbc7f11ec3",
+    "format": "webp",
+    "dimensions": {
+      "width": 512,
+      "height": 512
+    },
+    "detectedFormat": "webp"
+  },
+  {
+    "path": "assets/gametitle_SonicFrontiersDX_square.webp",
+    "bytes": 105014,
+    "sha256": "b06e9b31c537438e0a9dae5a5bc5398c3ae8ab34f5e5abdf9a6f17cbc7f11ec3",
+    "format": "webp",
+    "dimensions": {
+      "width": 512,
+      "height": 512
+    },
+    "detectedFormat": "webp"
+  },
+  {
+    "path": "assets/gametitle_SonicRacingCrossWorld_square-thumb-512x512-15744.webp",
+    "bytes": 51354,
+    "sha256": "84d88f10a15675cffef04dcc21c781ecb040667c86bdfc31942a0374d62643e2",
+    "format": "webp",
+    "dimensions": {
+      "width": 512,
+      "height": 512
+    },
+    "detectedFormat": "webp"
+  },
+  {
+    "path": "assets/gametitle_SonicRacingCrossWorld_square.webp",
+    "bytes": 51354,
+    "sha256": "84d88f10a15675cffef04dcc21c781ecb040667c86bdfc31942a0374d62643e2",
+    "format": "webp",
+    "dimensions": {
+      "width": 512,
+      "height": 512
+    },
+    "detectedFormat": "webp"
+  },
+  {
+    "path": "assets/gametitle_SonicShadowGenerations_square-thumb-512x512-15742.webp",
+    "bytes": 26540,
+    "sha256": "f408e8df8b1b66289c05017a00b8dbd7495185af9eb2552280d540bd5c6c0388",
+    "format": "webp",
+    "dimensions": {
+      "width": 512,
+      "height": 512
+    },
+    "detectedFormat": "webp"
+  },
+  {
+    "path": "assets/gametitle_SonicShadowGenerations_square.webp",
+    "bytes": 26540,
+    "sha256": "f408e8df8b1b66289c05017a00b8dbd7495185af9eb2552280d540bd5c6c0388",
+    "format": "webp",
+    "dimensions": {
+      "width": 512,
+      "height": 512
+    },
+    "detectedFormat": "webp"
+  },
+  {
+    "path": "assets/goods.webp",
+    "bytes": 9024,
+    "sha256": "9e036f4e8e2db98b6c295d82e43efc2d0a612a3660ff6c2d3adbf25a0782dde2",
+    "format": "webp",
+    "dimensions": {
+      "width": 1919,
+      "height": 243
+    },
+    "detectedFormat": "webp"
+  },
+  {
+    "path": "assets/goods_260630_01_ogp-thumb-640xauto-19035.webp",
+    "bytes": 37122,
+    "sha256": "4ad028e6a46ea68a206bbcc508bf36cc63102791f1ea3a27d3eeab79ebe7b657",
+    "format": "webp",
+    "dimensions": {
+      "width": 640,
+      "height": 360
+    },
+    "detectedFormat": "webp"
+  },
+  {
+    "path": "assets/goods_260701_01_ogp-thumb-640xauto-19042.webp",
+    "bytes": 47252,
+    "sha256": "b8c6ef54fd911f07a9e93c7a73e98e72ec1ec984a044a28c5141abff9603e4d8",
+    "format": "webp",
+    "dimensions": {
+      "width": 640,
+      "height": 360
+    },
+    "detectedFormat": "webp"
+  },
+  {
+    "path": "assets/goods_260703_01_ogp-thumb-640xauto-19082.webp",
+    "bytes": 41442,
+    "sha256": "acb5ecc519b8b54653bfe807a3c239169dc9d91f4e3ff89ab6a3938dfe8d1e08",
+    "format": "webp",
+    "dimensions": {
+      "width": 640,
+      "height": 360
+    },
+    "detectedFormat": "webp"
+  },
+  {
+    "path": "assets/goods_260722_01_ogp-thumb-640xauto-19144.webp",
+    "bytes": 27510,
+    "sha256": "5c088291506f5aa40cb1cc3fea45b820e285c8019f0c1cbcb2ca258209e2baff",
+    "format": "webp",
+    "dimensions": {
+      "width": 640,
+      "height": 360
+    },
+    "detectedFormat": "webp"
+  },
+  {
+    "path": "assets/goods_260722_02_ogp-thumb-640xauto-19148.webp",
+    "bytes": 24870,
+    "sha256": "f5ea649dea7fc6fc449e9805b509222068ff9b2eab375aa7c290cbe94429dc86",
+    "format": "webp",
+    "dimensions": {
+      "width": 640,
+      "height": 360
+    },
+    "detectedFormat": "webp"
+  },
+  {
+    "path": "assets/goods_260722_03_ogp-thumb-640xauto-19153.webp",
+    "bytes": 25450,
+    "sha256": "3dab15968cd8fc63a0983f9aa3633cc67cf50ab44e0ca1d16b29ff0d2974dca2",
+    "format": "webp",
+    "dimensions": {
+      "width": 640,
+      "height": 360
+    },
+    "detectedFormat": "webp"
+  },
+  {
+    "path": "assets/goods_260722_04_ogp-thumb-640xauto-19155.webp",
+    "bytes": 40704,
+    "sha256": "16fa356fa2c6986506b9e08ea4f4ea3b80870fd635cceca046ca032882cebbf1",
+    "format": "webp",
+    "dimensions": {
+      "width": 640,
+      "height": 360
+    },
+    "detectedFormat": "webp"
+  },
+  {
+    "path": "assets/goods_260724_01_ogp-thumb-640xauto-19232.webp",
+    "bytes": 21476,
+    "sha256": "cbbf5099efcc900d6e4fb3b1aa0c6eec5068679e0cb11f557bdbdd1936477c06",
+    "format": "webp",
+    "dimensions": {
+      "width": 640,
+      "height": 360
+    },
+    "detectedFormat": "webp"
+  },
+  {
+    "path": "assets/google-login.png",
+    "bytes": 7292,
+    "sha256": "e69d430bd933ce95a6bf35df6a1f1ae14f17e61d2c4c126f9313e678414847d8",
+    "format": "png",
+    "dimensions": {
+      "width": 94,
+      "height": 96
+    },
+    "detectedFormat": "png"
+  },
+  {
+    "path": "assets/header_caution.svg",
+    "bytes": 824,
+    "sha256": "dec478458bb817e247eb5e260fa075de1cc1c63c6ef3142597fea02214c996d9",
+    "format": "svg",
+    "dimensions": {
+      "width": 150,
+      "height": 150
+    },
+    "detectedFormat": "svg"
+  },
+  {
+    "path": "assets/iconLeft.png",
+    "bytes": 1173,
+    "sha256": "4a4d823098847ccce9be637056b42919e643e871e260846f0ac956fd8ed78aae",
+    "format": "png",
+    "dimensions": {
+      "width": 26,
+      "height": 33
+    },
+    "detectedFormat": "png"
+  },
+  {
+    "path": "assets/iconLeft_white.png",
+    "bytes": 1138,
+    "sha256": "c6ef6cc48cb3218bcb8ecaa7664fab4d45a0a6ad693f5f17b2e5ba130c995e0c",
+    "format": "png",
+    "dimensions": {
+      "width": 26,
+      "height": 33
+    },
+    "detectedFormat": "png"
+  },
+  {
+    "path": "assets/iconRight.png",
+    "bytes": 1370,
+    "sha256": "5d78e3fba48ce8784f8fbfff3fe18cd32d39cc107ad0420fffd677d455f8b145",
+    "format": "png",
+    "dimensions": {
+      "width": 26,
+      "height": 33
+    },
+    "detectedFormat": "png"
+  },
+  {
+    "path": "assets/iconRight_white.png",
+    "bytes": 1177,
+    "sha256": "8415ad5775c7d6aa6b8e072229be894e5e5b986d0acf9cb763d9f4a6a77f9cd1",
+    "format": "png",
+    "dimensions": {
+      "width": 26,
+      "height": 33
+    },
+    "detectedFormat": "png"
+  },
+  {
+    "path": "assets/icons.png",
+    "bytes": 729,
+    "sha256": "1607110affa24dcaf57bb7f4db12363b391339d8b976ecc1ed00e69ad02307d5",
+    "format": "png",
+    "dimensions": {
+      "width": 120,
+      "height": 24
+    },
+    "detectedFormat": "png"
+  },
+  {
+    "path": "assets/iconUp.png",
+    "bytes": 1421,
+    "sha256": "5b2e4ac18e573eb893b1665aca5dff08906f7b2a713533c4d9d2625a096e4f06",
+    "format": "png",
+    "dimensions": {
+      "width": 33,
+      "height": 26
+    },
+    "detectedFormat": "png"
+  },
+  {
+    "path": "assets/iconUp_white.png",
+    "bytes": 1342,
+    "sha256": "9d4f32bd2501a818f9decd10c75516a8339216305c47d4529f7e14864d305cb2",
+    "format": "png",
+    "dimensions": {
+      "width": 33,
+      "height": 26
+    },
+    "detectedFormat": "png"
+  },
+  {
+    "path": "assets/iconX.png",
+    "bytes": 1612,
+    "sha256": "3294971b0f7bd8e4e8f2073bea9dcd7601d29f3f7e195a5dd9a7b84d106fd92c",
+    "format": "png",
+    "dimensions": {
+      "width": 33,
+      "height": 33
+    },
+    "detectedFormat": "png"
+  },
+  {
+    "path": "assets/iconX_white.png",
+    "bytes": 1405,
+    "sha256": "e8983df5354cdb32f5239c7c761537d5244d14ffe72288f6064ab795f4871cbe",
+    "format": "png",
+    "dimensions": {
+      "width": 33,
+      "height": 33
+    },
+    "detectedFormat": "png"
+  },
+  {
+    "path": "assets/images/anime-ling.webp",
+    "bytes": 14324,
+    "sha256": "558ebac1f2b3249e83634be59fc3eafc2ba5ee47f2653b5bb268fc25e08247db",
+    "format": "webp",
+    "dimensions": {
+      "width": 100,
+      "height": 100
+    },
+    "detectedFormat": "webp"
+  },
+  {
+    "path": "assets/images/arrow-btn01.webp",
+    "bytes": 794,
+    "sha256": "6272c1aee7f3cd28f92eb0d26f9c80380c29cb6e1411d332050718102cf85cf4",
+    "format": "webp",
+    "dimensions": {
+      "width": 330,
+      "height": 43
+    },
+    "detectedFormat": "webp"
+  },
+  {
+    "path": "assets/images/arrow-btn03.webp",
+    "bytes": 986,
+    "sha256": "fc7708f531f9a30cf6061ad419aa511effe75d92c4eed9c84e1e1ad3f98580f1",
+    "format": "webp",
+    "dimensions": {
+      "width": 413,
+      "height": 48
+    },
+    "detectedFormat": "webp"
+  },
+  {
+    "path": "assets/images/arrow-l.webp",
+    "bytes": 682,
+    "sha256": "17b2255b5b48f311d019e35dbc2387e966f63b9b6c1ad118f485ec440800e7c8",
+    "format": "webp",
+    "dimensions": {
+      "width": 54,
+      "height": 54
+    },
+    "detectedFormat": "webp"
+  },
+  {
+    "path": "assets/images/arrow-r.webp",
+    "bytes": 698,
+    "sha256": "6df96724ae06bc1a2020c91fa8b59ac5ef0dab48a47e439e9647fc49d56afe40",
+    "format": "webp",
+    "dimensions": {
+      "width": 54,
+      "height": 54
+    },
+    "detectedFormat": "webp"
+  },
+  {
+    "path": "assets/images/arrow-w.webp",
+    "bytes": 702,
+    "sha256": "295b1189b2c74886efc7cf61b14eba32286e17a0e56d5fbcc7139e7d84360a7a",
+    "format": "webp",
+    "dimensions": {
+      "width": 54,
+      "height": 54
+    },
+    "detectedFormat": "webp"
+  },
+  {
+    "path": "assets/images/background-logo.png",
+    "bytes": 17123,
+    "sha256": "37f83314347f4999ee8da7ba162703c89f61712ce65f71597c72b60d5371bb39",
+    "format": "png",
+    "dimensions": {
+      "width": 500,
+      "height": 500
+    },
+    "detectedFormat": "png"
+  },
+  {
+    "path": "assets/images/banner_250320_02_SonicChannelFuncard.jpg",
+    "bytes": 464841,
+    "sha256": "381ec385a27f5754ca840fc80e8f3c6dae758b0ccf05a0617cc7017bb4bfea5a",
+    "format": "jpg",
+    "dimensions": {
+      "width": 1280,
+      "height": 720
+    },
+    "detectedFormat": "jpeg"
+  },
+  {
+    "path": "assets/images/banner_250627_01_SonicRacingCrossWorld.jpg",
+    "bytes": 1018857,
+    "sha256": "0984bf3c1fee73ec0df2bbad7d406466a92de437e7566b58a57dca5fe00d93ce",
+    "format": "jpg",
+    "dimensions": {
+      "width": 1920,
+      "height": 1080
+    },
+    "detectedFormat": "jpeg"
+  },
+  {
+    "path": "assets/images/banner_260624_01_SonicFrontiersDX.webp",
+    "bytes": 340340,
+    "sha256": "1052f928e779ad0b00b72167152d3591c94a28730f67be3302dedc442a0a23b9",
+    "format": "webp",
+    "dimensions": {
+      "width": 1280,
+      "height": 720
+    },
+    "detectedFormat": "webp"
+  },
+  {
+    "path": "assets/images/bgparts-w.webp",
+    "bytes": 142148,
+    "sha256": "587ed029d777f17608f8e6b7199c73388a7f8fa6726fe36341d425e5f5065257",
+    "format": "webp",
+    "dimensions": {
+      "width": 1129,
+      "height": 7129
+    },
+    "detectedFormat": "webp"
+  },
+  {
+    "path": "assets/images/bgparts.webp",
+    "bytes": 142968,
+    "sha256": "a01316d595af3a93f324da4d5b036369e2d1eb68b9dcb2810466a785831c15be",
+    "format": "webp",
+    "dimensions": {
+      "width": 1129,
+      "height": 7129
+    },
+    "detectedFormat": "webp"
+  },
+  {
+    "path": "assets/images/broadcasting_260821_01_ogp-thumb-640xauto-19300.webp",
+    "bytes": 28654,
+    "sha256": "455d6ba6e5bf851a42d37c0ac6a9ce74ec1c635ff58363b6f99a15bb957c0e7a",
+    "format": "webp",
+    "dimensions": {
+      "width": 640,
+      "height": 360
+    },
+    "detectedFormat": "webp"
+  },
+  {
+    "path": "assets/images/btn-chara-on.png",
+    "bytes": 3313,
+    "sha256": "3f5033d2dd0a88ceddfa983758a50f78eac26e6b40fbc7b03b553a84bc380ae4",
+    "format": "png",
+    "dimensions": {
+      "width": 323,
+      "height": 161
+    },
+    "detectedFormat": "png"
+  },
+  {
+    "path": "assets/images/btn-chara.png",
+    "bytes": 3198,
+    "sha256": "52236a5c5154dde49962d1030811b792baa471f12cb6b4bc4a572312da446323",
+    "format": "png",
+    "dimensions": {
+      "width": 323,
+      "height": 160
+    },
+    "detectedFormat": "png"
+  },
+  {
+    "path": "assets/images/btn-fan-on.png",
+    "bytes": 3728,
+    "sha256": "3a5a925e03b65a72f18f0fe9a4365a511fa3d60f407d00789c5d4f4629880bee",
+    "format": "png",
+    "dimensions": {
+      "width": 322,
+      "height": 161
+    },
+    "detectedFormat": "png"
+  },
+  {
+    "path": "assets/images/btn-fan.png",
+    "bytes": 3545,
+    "sha256": "fc4d7f7c3acecbe11e840f87cd764d4138cb3d65fdfdcd4fc84770bbabe96a4b",
+    "format": "png",
+    "dimensions": {
+      "width": 322,
+      "height": 160
+    },
+    "detectedFormat": "png"
+  },
+  {
+    "path": "assets/images/btn-history-on.png",
+    "bytes": 3299,
+    "sha256": "7aeeb7901f02e27eb6c8655c234b182b52958993b819e0b33aaa85f9e382a5a1",
+    "format": "png",
+    "dimensions": {
+      "width": 322,
+      "height": 161
+    },
+    "detectedFormat": "png"
+  },
+  {
+    "path": "assets/images/btn-history.png",
+    "bytes": 3085,
+    "sha256": "0b3a4fed2e186c5adf9dd757334750839fa10d80bbe72a0c55340c9557d2f67f",
+    "format": "png",
+    "dimensions": {
+      "width": 322,
+      "height": 160
+    },
+    "detectedFormat": "png"
+  },
+  {
+    "path": "assets/images/btn-redicon.webp",
+    "bytes": 1742,
+    "sha256": "67890a886a15754fbcb3adff1338543d5dd7c4fc07dff9e352b7a891591c1329",
+    "format": "webp",
+    "dimensions": {
+      "width": 85,
+      "height": 85
+    },
+    "detectedFormat": "webp"
+  },
+  {
+    "path": "assets/images/btn-special-on.png",
+    "bytes": 3222,
+    "sha256": "461312c92c7db098e776f76b4c148bb78777c2c06582303c6f84955653a9ce80",
+    "format": "png",
+    "dimensions": {
+      "width": 323,
+      "height": 161
+    },
+    "detectedFormat": "png"
+  },
+  {
+    "path": "assets/images/btn-special.png",
+    "bytes": 3037,
+    "sha256": "600ac95b03386fa7626c1a96e60b43e6d441b0cb20f3022c93edff1c2be74b6c",
+    "format": "png",
+    "dimensions": {
+      "width": 323,
+      "height": 160
+    },
+    "detectedFormat": "png"
+  },
+  {
+    "path": "assets/images/btn-top-on.webp",
+    "bytes": 1286,
+    "sha256": "cf6655abf25715297f692bddba001d16af8921f06c4c6b407196c132c3c9f892",
+    "format": "webp",
+    "dimensions": {
+      "width": 323,
+      "height": 160
+    },
+    "detectedFormat": "webp"
+  },
+  {
+    "path": "assets/images/btn-top.webp",
+    "bytes": 936,
+    "sha256": "c0174f09af3c86ac0974707133fb28e600c457ec4623734de420e02a444e5d67",
+    "format": "webp",
+    "dimensions": {
+      "width": 322,
+      "height": 160
+    },
+    "detectedFormat": "webp"
+  },
+  {
+    "path": "assets/images/btn-topics-on.png",
+    "bytes": 3150,
+    "sha256": "c5e527b0dc551d858bb18b4745e99f3ad3978ed49ac643fc0449eb405b471493",
+    "format": "png",
+    "dimensions": {
+      "width": 321,
+      "height": 161
+    },
+    "detectedFormat": "png"
+  },
+  {
+    "path": "assets/images/btn-topics.png",
+    "bytes": 3001,
+    "sha256": "4087ee244edaafd2d12c973797842eac611ebb708ff1f5bb7bbc5b700e87d917",
+    "format": "png",
+    "dimensions": {
+      "width": 320,
+      "height": 160
+    },
+    "detectedFormat": "png"
+  },
+  {
+    "path": "assets/images/calendar_2607_thm-thumb-220x220-18918.jpg",
+    "bytes": 25222,
+    "sha256": "6597638c3282aa9dd0670e49aae2988aacf4709d1b9f47184423e84bfc41fc1e",
+    "format": "jpg",
+    "dimensions": {
+      "width": 220,
+      "height": 220
+    },
+    "detectedFormat": "jpeg"
+  },
+  {
+    "path": "assets/images/calendar_2608_thm-thumb-220x220-19140.jpg",
+    "bytes": 33552,
+    "sha256": "60a86b24cf17da14eb7b64a1491918bedd2c4c624e5197c8dc72e63191570547",
+    "format": "jpg",
+    "dimensions": {
+      "width": 220,
+      "height": 220
+    },
+    "detectedFormat": "jpeg"
+  },
+  {
+    "path": "assets/images/catEnjoyCalendar.png",
+    "bytes": 2905,
+    "sha256": "8e45fe56e653638cc11422fc81bf536783a1d254547eb7da6deef475fbc207a1",
+    "format": "png",
+    "dimensions": {
+      "width": 220,
+      "height": 220
+    },
+    "detectedFormat": "png"
+  },
+  {
+    "path": "assets/images/catEnjoyWallpaperPc.png",
+    "bytes": 4045,
+    "sha256": "0caadcdc9d16ec94fa12e0cdd69208e718aa4646537677771d9d0b5d753cd9a7",
+    "format": "png",
+    "dimensions": {
+      "width": 220,
+      "height": 220
+    },
+    "detectedFormat": "png"
+  },
+  {
+    "path": "assets/images/catEnjoyWallpaperSp.png",
+    "bytes": 4283,
+    "sha256": "012e991c78e35a19397889d450467b5a3c74a39b3e8896ecec7ef759015539c9",
+    "format": "png",
+    "dimensions": {
+      "width": 220,
+      "height": 220
+    },
+    "detectedFormat": "png"
+  },
+  {
+    "path": "assets/images/chara.webp",
+    "bytes": 9860,
+    "sha256": "4d74c89d91e147f4d7892cfcdf26c238895693a400ced1ff0afadabd0c6a211f",
+    "format": "webp",
+    "dimensions": {
+      "width": 1919,
+      "height": 243
+    },
+    "detectedFormat": "webp"
+  },
+  {
+    "path": "assets/images/classic.webp",
+    "bytes": 8658,
+    "sha256": "3a41201d4b631e527d5a27cb70174a5409789a0f8088387d741805db115c85ed",
+    "format": "webp",
+    "dimensions": {
+      "width": 1919,
+      "height": 243
+    },
+    "detectedFormat": "webp"
+  },
+  {
+    "path": "assets/images/common1.png",
+    "bytes": 1926,
+    "sha256": "25e96d1280c4f125b918908d898841e4f639e53ef5e0e9736acbed3a0931d865",
+    "format": "png",
+    "dimensions": {
+      "width": 200,
+      "height": 200
+    },
+    "detectedFormat": "png"
+  },
+  {
+    "path": "assets/images/common2.png",
+    "bytes": 3231,
+    "sha256": "a3488fec0c6d37af1fd9fc45975d1213a54aad60b122706ecc1c507d82d5ec64",
+    "format": "png",
+    "dimensions": {
+      "width": 200,
+      "height": 200
+    },
+    "detectedFormat": "png"
+  },
+  {
+    "path": "assets/images/common3.png",
+    "bytes": 3733,
+    "sha256": "94a96083a8badd04531409083ddd3274d131545fdd95dda1c33b0ec4910f56fc",
+    "format": "png",
+    "dimensions": {
+      "width": 200,
+      "height": 200
+    },
+    "detectedFormat": "png"
+  },
+  {
+    "path": "assets/images/dl01.webp",
+    "bytes": 8134,
+    "sha256": "0eaed361418850bed61a106b8dff2f937f8a395cc6c28e13fcb2e3db01e07b03",
+    "format": "webp",
+    "dimensions": {
+      "width": 500,
+      "height": 500
+    },
+    "detectedFormat": "webp"
+  },
+  {
+    "path": "assets/images/dl02.webp",
+    "bytes": 2498,
+    "sha256": "e7dcb9cb7f1791019ae72bbf078820ef736b15b77dc61ebd21f91ca8a39a8f10",
+    "format": "webp",
+    "dimensions": {
+      "width": 500,
+      "height": 500
+    },
+    "detectedFormat": "webp"
+  },
+  {
+    "path": "assets/images/dl03.webp",
+    "bytes": 8060,
+    "sha256": "d2bcf9f24aa064ab3cb16894205e120cd1687a6c809b9851c1cfd4ed1d88fcf6",
+    "format": "webp",
+    "dimensions": {
+      "width": 500,
+      "height": 500
+    },
+    "detectedFormat": "webp"
+  },
+  {
+    "path": "assets/images/dl04.webp",
+    "bytes": 2378,
+    "sha256": "41cfcb89dd3411bf183aa91ef7d1f2aadcd76bc2bc320cd25b27052934f9ad29",
+    "format": "webp",
+    "dimensions": {
+      "width": 500,
+      "height": 500
+    },
+    "detectedFormat": "webp"
+  },
+  {
+    "path": "assets/images/dl05.webp",
+    "bytes": 3322,
+    "sha256": "b265d85c4fa29edb94e371cdf8055bc39525f32b2ab84466a4edf64b3c6818b5",
+    "format": "webp",
+    "dimensions": {
+      "width": 500,
+      "height": 500
+    },
+    "detectedFormat": "webp"
+  },
+  {
+    "path": "assets/images/dl06.webp",
+    "bytes": 3440,
+    "sha256": "0e061354fd2d06593934e6454b35f402ac683bea92a6047787b8218e28457a07",
+    "format": "webp",
+    "dimensions": {
+      "width": 500,
+      "height": 500
+    },
+    "detectedFormat": "webp"
+  },
+  {
+    "path": "assets/images/dl07.webp",
+    "bytes": 2214,
+    "sha256": "dc8bb72018ecee37196878b50163437a6eb7d466784a15890530387eb176dd8e",
+    "format": "webp",
+    "dimensions": {
+      "width": 500,
+      "height": 500
+    },
+    "detectedFormat": "webp"
+  },
+  {
+    "path": "assets/images/downloads.webp",
+    "bytes": 13568,
+    "sha256": "9b0e89d4c95ea95b4578916970a1bee63a3773e4a26eb714253c2c11f8b7b769",
+    "format": "webp",
+    "dimensions": {
+      "width": 1919,
+      "height": 243
+    },
+    "detectedFormat": "webp"
+  },
+  {
+    "path": "assets/images/enjoy.webp",
+    "bytes": 6096,
+    "sha256": "7c82b2d2e12215f325520789e112f1a85d4bece91bb4edd36b05cfe5ae88cc46",
+    "format": "webp",
+    "dimensions": {
+      "width": 1919,
+      "height": 243
+    },
+    "detectedFormat": "webp"
+  },
+  {
+    "path": "assets/images/errorMessage.png",
+    "bytes": 1574,
+    "sha256": "06d21f42bcc094837b27c71ce64377e826cb3c378d3ea478af502b7b21856df8",
+    "format": "png",
+    "dimensions": {
+      "width": 50,
+      "height": 60
+    },
+    "detectedFormat": "png"
+  },
+  {
+    "path": "assets/images/event_260803_01_ogp-thumb-640xauto-19259.webp",
+    "bytes": 28080,
+    "sha256": "bf69c484016e2350c7e3232f1fdee4ba8180f3a7e325705ccf702539346da84c",
+    "format": "webp",
+    "dimensions": {
+      "width": 640,
+      "height": 360
+    },
+    "detectedFormat": "webp"
+  },
+  {
+    "path": "assets/images/event_260826_01_ogp-thumb-640xauto-19278.webp",
+    "bytes": 68426,
+    "sha256": "2f469b41fdd6b7924cb889fd082c8490adf814aef4fb0baa29adfb6fad08c7eb",
+    "format": "webp",
+    "dimensions": {
+      "width": 640,
+      "height": 360
+    },
+    "detectedFormat": "webp"
+  },
+  {
+    "path": "assets/images/fan.webp",
+    "bytes": 10590,
+    "sha256": "dd141e03a1388a8b6b2d5f7b4b8ae4ac1f2bada0540c812d3d2b27b24a8ce1c6",
+    "format": "webp",
+    "dimensions": {
+      "width": 1919,
+      "height": 243
+    },
+    "detectedFormat": "webp"
+  },
+  {
+    "path": "assets/images/fanart_2608_ogp-thumb-640xauto-19221.webp",
+    "bytes": 37518,
+    "sha256": "daa77effc36e0790b1377aadb79228ab1ac065897630d01454e4967e0de5c2e9",
+    "format": "webp",
+    "dimensions": {
+      "width": 640,
+      "height": 360
+    },
+    "detectedFormat": "webp"
+  },
+  {
+    "path": "assets/images/gametitle.webp",
+    "bytes": 8070,
+    "sha256": "126847f0737a8a551da3493697670c4fa1959f9d98f58eccb566233ecdce52c2",
+    "format": "webp",
+    "dimensions": {
+      "width": 1919,
+      "height": 243
+    },
+    "detectedFormat": "webp"
+  },
+  {
+    "path": "assets/images/gametitle_SonicFrontiersDX_square-thumb-512x512-18932.webp",
+    "bytes": 105014,
+    "sha256": "b06e9b31c537438e0a9dae5a5bc5398c3ae8ab34f5e5abdf9a6f17cbc7f11ec3",
+    "format": "webp",
+    "dimensions": {
+      "width": 512,
+      "height": 512
+    },
+    "detectedFormat": "webp"
+  },
+  {
+    "path": "assets/images/gametitle_SonicFrontiersDX_square.webp",
+    "bytes": 105014,
+    "sha256": "b06e9b31c537438e0a9dae5a5bc5398c3ae8ab34f5e5abdf9a6f17cbc7f11ec3",
+    "format": "webp",
+    "dimensions": {
+      "width": 512,
+      "height": 512
+    },
+    "detectedFormat": "webp"
+  },
+  {
+    "path": "assets/images/gametitle_SonicRacingCrossWorld_square-thumb-512x512-15744.webp",
+    "bytes": 51354,
+    "sha256": "84d88f10a15675cffef04dcc21c781ecb040667c86bdfc31942a0374d62643e2",
+    "format": "webp",
+    "dimensions": {
+      "width": 512,
+      "height": 512
+    },
+    "detectedFormat": "webp"
+  },
+  {
+    "path": "assets/images/gametitle_SonicRacingCrossWorld_square.webp",
+    "bytes": 51354,
+    "sha256": "84d88f10a15675cffef04dcc21c781ecb040667c86bdfc31942a0374d62643e2",
+    "format": "webp",
+    "dimensions": {
+      "width": 512,
+      "height": 512
+    },
+    "detectedFormat": "webp"
+  },
+  {
+    "path": "assets/images/gametitle_SonicShadowGenerations_square-thumb-512x512-15742.webp",
+    "bytes": 26540,
+    "sha256": "f408e8df8b1b66289c05017a00b8dbd7495185af9eb2552280d540bd5c6c0388",
+    "format": "webp",
+    "dimensions": {
+      "width": 512,
+      "height": 512
+    },
+    "detectedFormat": "webp"
+  },
+  {
+    "path": "assets/images/gametitle_SonicShadowGenerations_square.webp",
+    "bytes": 26540,
+    "sha256": "f408e8df8b1b66289c05017a00b8dbd7495185af9eb2552280d540bd5c6c0388",
+    "format": "webp",
+    "dimensions": {
+      "width": 512,
+      "height": 512
+    },
+    "detectedFormat": "webp"
+  },
+  {
+    "path": "assets/images/goods.webp",
+    "bytes": 9024,
+    "sha256": "9e036f4e8e2db98b6c295d82e43efc2d0a612a3660ff6c2d3adbf25a0782dde2",
+    "format": "webp",
+    "dimensions": {
+      "width": 1919,
+      "height": 243
+    },
+    "detectedFormat": "webp"
+  },
+  {
+    "path": "assets/images/goods_260630_01_ogp-thumb-640xauto-19035.webp",
+    "bytes": 37122,
+    "sha256": "4ad028e6a46ea68a206bbcc508bf36cc63102791f1ea3a27d3eeab79ebe7b657",
+    "format": "webp",
+    "dimensions": {
+      "width": 640,
+      "height": 360
+    },
+    "detectedFormat": "webp"
+  },
+  {
+    "path": "assets/images/goods_260701_01_ogp-thumb-640xauto-19042.webp",
+    "bytes": 47252,
+    "sha256": "b8c6ef54fd911f07a9e93c7a73e98e72ec1ec984a044a28c5141abff9603e4d8",
+    "format": "webp",
+    "dimensions": {
+      "width": 640,
+      "height": 360
+    },
+    "detectedFormat": "webp"
+  },
+  {
+    "path": "assets/images/goods_260703_01_ogp-thumb-640xauto-19082.webp",
+    "bytes": 41442,
+    "sha256": "acb5ecc519b8b54653bfe807a3c239169dc9d91f4e3ff89ab6a3938dfe8d1e08",
+    "format": "webp",
+    "dimensions": {
+      "width": 640,
+      "height": 360
+    },
+    "detectedFormat": "webp"
+  },
+  {
+    "path": "assets/images/goods_260722_01_ogp-thumb-640xauto-19144.webp",
+    "bytes": 27510,
+    "sha256": "5c088291506f5aa40cb1cc3fea45b820e285c8019f0c1cbcb2ca258209e2baff",
+    "format": "webp",
+    "dimensions": {
+      "width": 640,
+      "height": 360
+    },
+    "detectedFormat": "webp"
+  },
+  {
+    "path": "assets/images/goods_260722_02_ogp-thumb-640xauto-19148.webp",
+    "bytes": 24870,
+    "sha256": "f5ea649dea7fc6fc449e9805b509222068ff9b2eab375aa7c290cbe94429dc86",
+    "format": "webp",
+    "dimensions": {
+      "width": 640,
+      "height": 360
+    },
+    "detectedFormat": "webp"
+  },
+  {
+    "path": "assets/images/goods_260722_03_ogp-thumb-640xauto-19153.webp",
+    "bytes": 25450,
+    "sha256": "3dab15968cd8fc63a0983f9aa3633cc67cf50ab44e0ca1d16b29ff0d2974dca2",
+    "format": "webp",
+    "dimensions": {
+      "width": 640,
+      "height": 360
+    },
+    "detectedFormat": "webp"
+  },
+  {
+    "path": "assets/images/goods_260722_04_ogp-thumb-640xauto-19155.webp",
+    "bytes": 40704,
+    "sha256": "16fa356fa2c6986506b9e08ea4f4ea3b80870fd635cceca046ca032882cebbf1",
+    "format": "webp",
+    "dimensions": {
+      "width": 640,
+      "height": 360
+    },
+    "detectedFormat": "webp"
+  },
+  {
+    "path": "assets/images/goods_260724_01_ogp-thumb-640xauto-19232.webp",
+    "bytes": 21476,
+    "sha256": "cbbf5099efcc900d6e4fb3b1aa0c6eec5068679e0cb11f557bdbdd1936477c06",
+    "format": "webp",
+    "dimensions": {
+      "width": 640,
+      "height": 360
+    },
+    "detectedFormat": "webp"
+  },
+  {
+    "path": "assets/images/header_caution.svg",
+    "bytes": 824,
+    "sha256": "dec478458bb817e247eb5e260fa075de1cc1c63c6ef3142597fea02214c996d9",
+    "format": "svg",
+    "dimensions": {
+      "width": 150,
+      "height": 150
+    },
+    "detectedFormat": "svg"
+  },
+  {
+    "path": "assets/images/iconLeft.png",
+    "bytes": 1173,
+    "sha256": "4a4d823098847ccce9be637056b42919e643e871e260846f0ac956fd8ed78aae",
+    "format": "png",
+    "dimensions": {
+      "width": 26,
+      "height": 33
+    },
+    "detectedFormat": "png"
+  },
+  {
+    "path": "assets/images/iconLeft_white.png",
+    "bytes": 1138,
+    "sha256": "c6ef6cc48cb3218bcb8ecaa7664fab4d45a0a6ad693f5f17b2e5ba130c995e0c",
+    "format": "png",
+    "dimensions": {
+      "width": 26,
+      "height": 33
+    },
+    "detectedFormat": "png"
+  },
+  {
+    "path": "assets/images/iconRight.png",
+    "bytes": 1370,
+    "sha256": "5d78e3fba48ce8784f8fbfff3fe18cd32d39cc107ad0420fffd677d455f8b145",
+    "format": "png",
+    "dimensions": {
+      "width": 26,
+      "height": 33
+    },
+    "detectedFormat": "png"
+  },
+  {
+    "path": "assets/images/iconRight_white.png",
+    "bytes": 1177,
+    "sha256": "8415ad5775c7d6aa6b8e072229be894e5e5b986d0acf9cb763d9f4a6a77f9cd1",
+    "format": "png",
+    "dimensions": {
+      "width": 26,
+      "height": 33
+    },
+    "detectedFormat": "png"
+  },
+  {
+    "path": "assets/images/icons.png",
+    "bytes": 729,
+    "sha256": "1607110affa24dcaf57bb7f4db12363b391339d8b976ecc1ed00e69ad02307d5",
+    "format": "png",
+    "dimensions": {
+      "width": 120,
+      "height": 24
+    },
+    "detectedFormat": "png"
+  },
+  {
+    "path": "assets/images/iconUp.png",
+    "bytes": 1421,
+    "sha256": "5b2e4ac18e573eb893b1665aca5dff08906f7b2a713533c4d9d2625a096e4f06",
+    "format": "png",
+    "dimensions": {
+      "width": 33,
+      "height": 26
+    },
+    "detectedFormat": "png"
+  },
+  {
+    "path": "assets/images/iconUp_white.png",
+    "bytes": 1342,
+    "sha256": "9d4f32bd2501a818f9decd10c75516a8339216305c47d4529f7e14864d305cb2",
+    "format": "png",
+    "dimensions": {
+      "width": 33,
+      "height": 26
+    },
+    "detectedFormat": "png"
+  },
+  {
+    "path": "assets/images/iconX.png",
+    "bytes": 1612,
+    "sha256": "3294971b0f7bd8e4e8f2073bea9dcd7601d29f3f7e195a5dd9a7b84d106fd92c",
+    "format": "png",
+    "dimensions": {
+      "width": 33,
+      "height": 33
+    },
+    "detectedFormat": "png"
+  },
+  {
+    "path": "assets/images/iconX_white.png",
+    "bytes": 1405,
+    "sha256": "e8983df5354cdb32f5239c7c761537d5244d14ffe72288f6064ab795f4871cbe",
+    "format": "png",
+    "dimensions": {
+      "width": 33,
+      "height": 33
+    },
+    "detectedFormat": "png"
+  },
+  {
+    "path": "assets/images/information_251023_01_ogp.jpg",
+    "bytes": 871862,
+    "sha256": "38744cbfedae29ec62cc125bf7c36d179b7e84c455c662c5577dc008a6ff208b",
+    "format": "jpg",
+    "dimensions": {
+      "width": 1920,
+      "height": 1080
+    },
+    "detectedFormat": "jpeg"
+  },
+  {
+    "path": "assets/images/information_251031_01_ogp.png",
+    "bytes": 579698,
+    "sha256": "33b2112461ef475b7040ecfc5593dd64df18c1510d630868d91ea6a16858144e",
+    "format": "png",
+    "dimensions": {
+      "width": 1920,
+      "height": 1080
+    },
+    "detectedFormat": "png"
+  },
+  {
+    "path": "assets/images/information_260225_01_ogp.webp",
+    "bytes": 254710,
+    "sha256": "636cb26eb771c0cc5af297caa60583026ee289f67292fc1f8654571a31888007",
+    "format": "webp",
+    "dimensions": {
+      "width": 1280,
+      "height": 720
+    },
+    "detectedFormat": "webp"
+  },
+  {
+    "path": "assets/images/information_260818_01_ogp-thumb-640xauto-19288.webp",
+    "bytes": 43194,
+    "sha256": "5b28be830fa78ea8811621e143dd49fba40b80cfc02eba06bb40359d5c72f1d1",
+    "format": "webp",
+    "dimensions": {
+      "width": 640,
+      "height": 360
+    },
+    "detectedFormat": "webp"
+  },
+  {
+    "path": "assets/images/information_260825_01_ogp-thumb-640xauto-19316.jpg",
+    "bytes": 51556,
+    "sha256": "e713f680da5824ac7c707dca4ae745b31b37fb157a730de8eb04000f75b28b83",
+    "format": "jpg",
+    "dimensions": {
+      "width": 640,
+      "height": 360
+    },
+    "detectedFormat": "jpeg"
+  },
+  {
+    "path": "assets/images/kishimoto_260804_01_ogp-thumb-640xauto-19274.webp",
+    "bytes": 38852,
+    "sha256": "504c130bc6bcd4e8613a6c7c47f4740f89c9ec69fd7211bf407055f5c3a3a243",
+    "format": "webp",
+    "dimensions": {
+      "width": 640,
+      "height": 360
+    },
+    "detectedFormat": "webp"
+  },
+  {
+    "path": "assets/images/lineup.webp",
+    "bytes": 4674,
+    "sha256": "d5ce5980955458ceaec745b9ff3a85504c47d495e83d7443eed261da72ef61ca",
+    "format": "webp",
+    "dimensions": {
+      "width": 1919,
+      "height": 243
+    },
+    "detectedFormat": "webp"
+  },
+  {
+    "path": "assets/images/loader.gif",
+    "bytes": 7181,
+    "sha256": "c0ddc43f9add1fbff52adf741e6bd30f2215d5e63e423ee02aa845205ca4fdf1",
+    "format": "gif",
+    "dimensions": {
+      "width": 100,
+      "height": 100
+    },
+    "detectedFormat": "gif"
+  },
+  {
+    "path": "assets/images/logo_sonicchannel.png",
+    "bytes": 4407,
+    "sha256": "3bcc2694b6ce80471471362b707accea48542ada2bd2d581f439b425bc6db8a2",
+    "format": "png",
+    "dimensions": {
+      "width": 372,
+      "height": 94
+    },
+    "detectedFormat": "png"
+  },
+  {
+    "path": "assets/images/logo_sonicchannel_menu.webp",
+    "bytes": 12336,
+    "sha256": "da3f68fed75c707e967d8d413e7d62bc660dcc67152693f14af95d63f3fae3ca",
+    "format": "webp",
+    "dimensions": {
+      "width": 810,
+      "height": 210
+    },
+    "detectedFormat": "webp"
+  },
+  {
+    "path": "assets/images/logo_sonicteam.png",
+    "bytes": 4973,
+    "sha256": "c2241f61d3d4027b596e697ccb5a4a73f4324c13e3d242711e754d124d0b49c4",
+    "format": "png",
+    "dimensions": {
+      "width": 284,
+      "height": 88
+    },
+    "detectedFormat": "png"
+  },
+  {
+    "path": "assets/images/menu-arrow.webp",
+    "bytes": 2284,
+    "sha256": "f3f11ef38b755926e7007759a408e32e1995d9505dd9d30ed65111fee07eedb5",
+    "format": "webp",
+    "dimensions": {
+      "width": 62,
+      "height": 62
+    },
+    "detectedFormat": "webp"
+  },
+  {
+    "path": "assets/images/modern.webp",
+    "bytes": 8946,
+    "sha256": "8449bf9559b68b88403e35f89d5b4e1bfcd3ff53d5012dd419fcd3bb702c8b31",
+    "format": "webp",
+    "dimensions": {
+      "width": 1919,
+      "height": 243
+    },
+    "detectedFormat": "webp"
+  },
+  {
+    "path": "assets/images/newInfo.png",
+    "bytes": 2083,
+    "sha256": "61c1aa19ef6a448975572f3e40223aaca87993d5990ce256ab4598d6043b9089",
+    "format": "png",
+    "dimensions": {
+      "width": 70,
+      "height": 29
+    },
+    "detectedFormat": "png"
+  },
+  {
+    "path": "assets/images/ogp20250320.jpg",
+    "bytes": 692777,
+    "sha256": "c58d6fcc674e6308f6128d0463a5acfcf71189f3c2236a1d55f1e8cb58ce0cb9",
+    "format": "jpg",
+    "dimensions": {
+      "width": 1920,
+      "height": 1080
+    },
+    "detectedFormat": "jpeg"
+  },
+  {
+    "path": "assets/images/oshiete_260612_01_ogp-thumb-640xauto-18899.webp",
+    "bytes": 37362,
+    "sha256": "60bbd4784e6f8c0142c8cef484727070162ddf054b981e90cb18a6a11560f5aa",
+    "format": "webp",
+    "dimensions": {
+      "width": 640,
+      "height": 360
+    },
+    "detectedFormat": "webp"
+  },
+  {
+    "path": "assets/images/screenshot_2608_ogp-thumb-640xauto-19257.webp",
+    "bytes": 43084,
+    "sha256": "3198fdf2b61218e047c3ff2333506c10a657ce1a970dfe9bd6a7ddabda1721d6",
+    "format": "webp",
+    "dimensions": {
+      "width": 640,
+      "height": 360
+    },
+    "detectedFormat": "webp"
+  },
+  {
+    "path": "assets/images/sega_logo_s_b.svg",
+    "bytes": 3272,
+    "sha256": "e7ff58e90db0a265188a285e27ae828f3a86a408139fbf1c16f3cfd0c7852e19",
+    "format": "svg",
+    "dimensions": {
+      "width": 300,
+      "height": 98
+    },
+    "detectedFormat": "svg"
+  },
+  {
+    "path": "assets/images/sns_facebook.png",
+    "bytes": 885,
+    "sha256": "c9db0a8e36359f1e52891c474037bf898408f096ba6d0e95285bab575085cc1d",
+    "format": "png",
+    "dimensions": {
+      "width": 72,
+      "height": 72
+    },
+    "detectedFormat": "png"
+  },
+  {
+    "path": "assets/images/sns_line.png",
+    "bytes": 1286,
+    "sha256": "05cd5c9f5cc075789df90894a9c4e058d289865569dac4587d9039f54b19bb6c",
+    "format": "png",
+    "dimensions": {
+      "width": 72,
+      "height": 72
+    },
+    "detectedFormat": "png"
+  },
+  {
+    "path": "assets/images/sns_x.png",
+    "bytes": 1042,
+    "sha256": "6777b6ce46b0285fc4faddeca85e2f2fa6b6909f89ef12a5feb70cb001d6de40",
+    "format": "png",
+    "dimensions": {
+      "width": 72,
+      "height": 72
+    },
+    "detectedFormat": "png"
+  },
+  {
+    "path": "assets/images/sonicforces1.gif",
+    "bytes": 8178,
+    "sha256": "ce60a4456cec8dc94cbc0cfdb27e2038b30dc17a43f4c532d7f3f57fda9f1b54",
+    "format": "gif",
+    "dimensions": {
+      "width": 6000,
+      "height": 1000
+    },
+    "detectedFormat": "gif"
+  },
+  {
+    "path": "assets/images/sonicforces2.gif",
+    "bytes": 33003,
+    "sha256": "dccb09ac90bc79931449d750568024a8ea94c38f1413e04c89d3007ef2f05361",
+    "format": "gif",
+    "dimensions": {
+      "width": 1350,
+      "height": 3000
+    },
+    "detectedFormat": "gif"
+  },
+  {
+    "path": "assets/images/sonicforces3.gif",
+    "bytes": 45,
+    "sha256": "73e6b361bb0b371e17cecd1059cde75db3f800d20435ed522dc2886d9964bf08",
+    "format": "gif",
+    "dimensions": {
+      "width": 4,
+      "height": 4
+    },
+    "detectedFormat": "gif"
+  },
+  {
+    "path": "assets/images/sonicforces4.jpg",
+    "bytes": 289455,
+    "sha256": "82e387f12a6c59aec5009cb44c04ea9f3e30fda5dc253d83197dae857e4483e6",
+    "format": "jpg",
+    "dimensions": {
+      "width": 1280,
+      "height": 720
+    },
+    "detectedFormat": "jpeg"
+  },
+  {
+    "path": "assets/images/sonicmania1.png",
+    "bytes": 8612,
+    "sha256": "cc024055e11b5adaf3523c542ac7806fc2eb59abd3f9e271d6d1eb166c481897",
+    "format": "png",
+    "dimensions": {
+      "width": 1300,
+      "height": 1329
+    },
+    "detectedFormat": "png"
+  },
+  {
+    "path": "assets/images/sonicmania2.png",
+    "bytes": 10194,
+    "sha256": "db880300e5a962486ab50777dbfa165f06fcfda1342f77d0f1e21a4b99688add",
+    "format": "png",
+    "dimensions": {
+      "width": 1300,
+      "height": 1329
+    },
+    "detectedFormat": "png"
+  },
+  {
+    "path": "assets/images/sonicmania3.png",
+    "bytes": 9833,
+    "sha256": "7e3ec0fb7c10fa40c9af0471f222a5777efd60c5b057f379cd94841fab831d02",
+    "format": "png",
+    "dimensions": {
+      "width": 1300,
+      "height": 1329
+    },
+    "detectedFormat": "png"
+  },
+  {
+    "path": "assets/images/sonicteamstaff_260721_01_ogp-thumb-640xauto-19137.webp",
+    "bytes": 37984,
+    "sha256": "1d19d690629b1cbaa741d92b42492446f239f62287f8592ef3903ac5d12f72ee",
+    "format": "webp",
+    "dimensions": {
+      "width": 640,
+      "height": 360
+    },
+    "detectedFormat": "webp"
+  },
+  {
+    "path": "assets/images/sonicworldstory.webp",
+    "bytes": 14682,
+    "sha256": "dd4ec086bc576500d9f82e145e3380bc446836f12370f81e051c65450862486d",
+    "format": "webp",
+    "dimensions": {
+      "width": 1919,
+      "height": 243
+    },
+    "detectedFormat": "webp"
+  },
+  {
+    "path": "assets/images/special.webp",
+    "bytes": 7284,
+    "sha256": "760105d7f3e0ad02aeaf354c6e66dc927f1063b9757bacdb96c969c20f77636a",
+    "format": "webp",
+    "dimensions": {
+      "width": 1919,
+      "height": 243
+    },
+    "detectedFormat": "webp"
+  },
+  {
+    "path": "assets/images/staffcolumn_260807_01_ogp-thumb-640xauto-19283.jpg",
+    "bytes": 242230,
+    "sha256": "13a7485f24ddcc537bf1b4997c1d04d835ebe2f7ef55fcc144ecd5e4fe03ef6d",
+    "format": "jpg",
+    "dimensions": {
+      "width": 640,
+      "height": 360
+    },
+    "detectedFormat": "jpeg"
+  },
+  {
+    "path": "assets/images/star-circle-lb.webp",
+    "bytes": 16046,
+    "sha256": "cb28ea1a314ac1508c07da1e59426cc8eb6cb999357eda7e9d33742bf90e553f",
+    "format": "webp",
+    "dimensions": {
+      "width": 941,
+      "height": 941
+    },
+    "detectedFormat": "webp"
+  },
+  {
+    "path": "assets/images/star-circle-w.webp",
+    "bytes": 16128,
+    "sha256": "f1821ab85ac8088e8321f3345988891e721a9b60fcc60177997890e63f11d022",
+    "format": "webp",
+    "dimensions": {
+      "width": 941,
+      "height": 941
+    },
+    "detectedFormat": "webp"
+  },
+  {
+    "path": "assets/images/star-icon.webp",
+    "bytes": 5936,
+    "sha256": "f41374f8fefeb382147d9ae73369742b95b9721af3b906b52645e812fba1091e",
+    "format": "webp",
+    "dimensions": {
+      "width": 300,
+      "height": 297
+    },
+    "detectedFormat": "webp"
+  },
+  {
+    "path": "assets/images/star-icon02.webp",
+    "bytes": 5442,
+    "sha256": "6fac517155624f931d5a7633a7a154891fac5ca7888674161341a0232688f39e",
+    "format": "webp",
+    "dimensions": {
+      "width": 300,
+      "height": 297
+    },
+    "detectedFormat": "webp"
+  },
+  {
+    "path": "assets/images/topics.webp",
+    "bytes": 7302,
+    "sha256": "20e17b651f21962b48030274796a393f1ec9d67609a5be1a3ae2a257c8c6e050",
+    "format": "webp",
+    "dimensions": {
+      "width": 1919,
+      "height": 243
+    },
+    "detectedFormat": "webp"
+  },
+  {
+    "path": "assets/images/tri-bb.webp",
+    "bytes": 428,
+    "sha256": "36914bec48f9a006ac3fcb0e3f7858eeeeb02bd23f3bcfbaace7a630aae3a740",
+    "format": "webp",
+    "dimensions": {
+      "width": 63,
+      "height": 30
+    },
+    "detectedFormat": "webp"
+  },
+  {
+    "path": "assets/images/tri-bt.webp",
+    "bytes": 428,
+    "sha256": "e7375bbdaeb35712b3fdf07c1677712b5d880d391874a0c987dad89968ff25a7",
+    "format": "webp",
+    "dimensions": {
+      "width": 63,
+      "height": 30
+    },
+    "detectedFormat": "webp"
+  },
+  {
+    "path": "assets/images/tri-wb.webp",
+    "bytes": 416,
+    "sha256": "4ba7b4be4ba545144065f6582605e5d7a8eaf0a7f3787d93bc3375fcb99b4e4f",
+    "format": "webp",
+    "dimensions": {
+      "width": 63,
+      "height": 30
+    },
+    "detectedFormat": "webp"
+  },
+  {
+    "path": "assets/images/tri-wt.webp",
+    "bytes": 416,
+    "sha256": "516e30d59e24f12fef0f3a9803449a68890de43507c360d0c4fb617e1beb3ce5",
+    "format": "webp",
+    "dimensions": {
+      "width": 63,
+      "height": 30
+    },
+    "detectedFormat": "webp"
+  },
+  {
+    "path": "assets/images/video-bgb.webp",
+    "bytes": 474,
+    "sha256": "5ec17cfb0210bcfd83c76a4b762b90c19118be2edbf5d70b2f31bb09b8f38553",
+    "format": "webp",
+    "dimensions": {
+      "width": 30,
+      "height": 529
+    },
+    "detectedFormat": "webp"
+  },
+  {
+    "path": "assets/images/video-bgw.webp",
+    "bytes": 420,
+    "sha256": "eb1f656f2568c0d3556d0e577ad0d4404782f8a8a03425664e74cf65b78bce91",
+    "format": "webp",
+    "dimensions": {
+      "width": 30,
+      "height": 529
+    },
+    "detectedFormat": "webp"
+  },
+  {
+    "path": "assets/images/videos.webp",
+    "bytes": 8008,
+    "sha256": "2e796b2f8f88c15f1e1deddc495a84f63411728e4a92b49d20d12a617b7a6f14",
+    "format": "webp",
+    "dimensions": {
+      "width": 1919,
+      "height": 243
+    },
+    "detectedFormat": "webp"
+  },
+  {
+    "path": "assets/images/wallpaper_260_espio_05_pc_thm-thumb-400x400-19097.jpg",
+    "bytes": 32160,
+    "sha256": "f35361db3ac37d692bc870dd342b93d19ffc222166c4e8401542e1ebf5e44f1c",
+    "format": "jpg",
+    "dimensions": {
+      "width": 400,
+      "height": 400
+    },
+    "detectedFormat": "jpeg"
+  },
+  {
+    "path": "assets/images/wallpaper_260_espio_05_sp_thm-thumb-400x400-19098.jpg",
+    "bytes": 32454,
+    "sha256": "405ceab423d30d8b42bd09005f7ebed4cd76324bd27da5a7e86d7e22778dc884",
+    "format": "jpg",
+    "dimensions": {
+      "width": 400,
+      "height": 400
+    },
+    "detectedFormat": "jpeg"
+  },
+  {
+    "path": "assets/images/wallpaper_261_blaze_18_pc_thm-thumb-400x400-19286.jpg",
+    "bytes": 33786,
+    "sha256": "2acefa6d0c00dde0aaeda7ef807c387f74d4c72fb7b601f40fab42e2dc96c054",
+    "format": "jpg",
+    "dimensions": {
+      "width": 400,
+      "height": 400
+    },
+    "detectedFormat": "jpeg"
+  },
+  {
+    "path": "assets/images/wallpaper_261_blaze_18_sp_thm-thumb-400x400-19282.jpg",
+    "bytes": 37281,
+    "sha256": "1ba007ed12796cf95bf687ae6f4433ecd27f487c1326a38f52d9546a532e7169",
+    "format": "jpg",
+    "dimensions": {
+      "width": 400,
+      "height": 400
+    },
+    "detectedFormat": "jpeg"
+  },
+  {
+    "path": "assets/images/window.webp",
+    "bytes": 220,
+    "sha256": "643cbbcecdb695852b0dcb7091a0ee2f6b19bdeb4fa7b84b71b55066cca3764f",
+    "format": "webp",
+    "dimensions": {
+      "width": 38,
+      "height": 39
+    },
+    "detectedFormat": "webp"
+  },
+  {
+    "path": "assets/information_251023_01_ogp.jpg",
+    "bytes": 871862,
+    "sha256": "38744cbfedae29ec62cc125bf7c36d179b7e84c455c662c5577dc008a6ff208b",
+    "format": "jpg",
+    "dimensions": {
+      "width": 1920,
+      "height": 1080
+    },
+    "detectedFormat": "jpeg"
+  },
+  {
+    "path": "assets/information_251031_01_ogp.png",
+    "bytes": 579698,
+    "sha256": "33b2112461ef475b7040ecfc5593dd64df18c1510d630868d91ea6a16858144e",
+    "format": "png",
+    "dimensions": {
+      "width": 1920,
+      "height": 1080
+    },
+    "detectedFormat": "png"
+  },
+  {
+    "path": "assets/information_260225_01_ogp.webp",
+    "bytes": 254710,
+    "sha256": "636cb26eb771c0cc5af297caa60583026ee289f67292fc1f8654571a31888007",
+    "format": "webp",
+    "dimensions": {
+      "width": 1280,
+      "height": 720
+    },
+    "detectedFormat": "webp"
+  },
+  {
+    "path": "assets/information_260818_01_ogp-thumb-640xauto-19288.webp",
+    "bytes": 43194,
+    "sha256": "5b28be830fa78ea8811621e143dd49fba40b80cfc02eba06bb40359d5c72f1d1",
+    "format": "webp",
+    "dimensions": {
+      "width": 640,
+      "height": 360
+    },
+    "detectedFormat": "webp"
+  },
+  {
+    "path": "assets/information_260825_01_ogp-thumb-640xauto-19316.jpg",
+    "bytes": 51556,
+    "sha256": "e713f680da5824ac7c707dca4ae745b31b37fb157a730de8eb04000f75b28b83",
+    "format": "jpg",
+    "dimensions": {
+      "width": 640,
+      "height": 360
+    },
+    "detectedFormat": "jpeg"
+  },
+  {
+    "path": "assets/kishimoto_260804_01_ogp-thumb-640xauto-19274.webp",
+    "bytes": 38852,
+    "sha256": "504c130bc6bcd4e8613a6c7c47f4740f89c9ec69fd7211bf407055f5c3a3a243",
+    "format": "webp",
+    "dimensions": {
+      "width": 640,
+      "height": 360
+    },
+    "detectedFormat": "webp"
+  },
+  {
+    "path": "assets/lineup.webp",
+    "bytes": 4674,
+    "sha256": "d5ce5980955458ceaec745b9ff3a85504c47d495e83d7443eed261da72ef61ca",
+    "format": "webp",
+    "dimensions": {
+      "width": 1919,
+      "height": 243
+    },
+    "detectedFormat": "webp"
+  },
+  {
+    "path": "assets/loader.gif",
+    "bytes": 7181,
+    "sha256": "c0ddc43f9add1fbff52adf741e6bd30f2215d5e63e423ee02aa845205ca4fdf1",
+    "format": "gif",
+    "dimensions": {
+      "width": 100,
+      "height": 100
+    },
+    "detectedFormat": "gif"
+  },
+  {
+    "path": "assets/logo_sonicchannel.png",
+    "bytes": 4407,
+    "sha256": "3bcc2694b6ce80471471362b707accea48542ada2bd2d581f439b425bc6db8a2",
+    "format": "png",
+    "dimensions": {
+      "width": 372,
+      "height": 94
+    },
+    "detectedFormat": "png"
+  },
+  {
+    "path": "assets/logo_sonicchannel_menu.webp",
+    "bytes": 12336,
+    "sha256": "da3f68fed75c707e967d8d413e7d62bc660dcc67152693f14af95d63f3fae3ca",
+    "format": "webp",
+    "dimensions": {
+      "width": 810,
+      "height": 210
+    },
+    "detectedFormat": "webp"
+  },
+  {
+    "path": "assets/logo_sonicteam.png",
+    "bytes": 4973,
+    "sha256": "c2241f61d3d4027b596e697ccb5a4a73f4324c13e3d242711e754d124d0b49c4",
+    "format": "png",
+    "dimensions": {
+      "width": 284,
+      "height": 88
+    },
+    "detectedFormat": "png"
+  },
+  {
+    "path": "assets/menu-arrow.webp",
+    "bytes": 2284,
+    "sha256": "f3f11ef38b755926e7007759a408e32e1995d9505dd9d30ed65111fee07eedb5",
+    "format": "webp",
+    "dimensions": {
+      "width": 62,
+      "height": 62
+    },
+    "detectedFormat": "webp"
+  },
+  {
+    "path": "assets/modern.webp",
+    "bytes": 8946,
+    "sha256": "8449bf9559b68b88403e35f89d5b4e1bfcd3ff53d5012dd419fcd3bb702c8b31",
+    "format": "webp",
+    "dimensions": {
+      "width": 1919,
+      "height": 243
+    },
+    "detectedFormat": "webp"
+  },
+  {
+    "path": "assets/newInfo.png",
+    "bytes": 2083,
+    "sha256": "61c1aa19ef6a448975572f3e40223aaca87993d5990ce256ab4598d6043b9089",
+    "format": "png",
+    "dimensions": {
+      "width": 70,
+      "height": 29
+    },
+    "detectedFormat": "png"
+  },
+  {
+    "path": "assets/ogp20250320.jpg",
+    "bytes": 692777,
+    "sha256": "c58d6fcc674e6308f6128d0463a5acfcf71189f3c2236a1d55f1e8cb58ce0cb9",
+    "format": "jpg",
+    "dimensions": {
+      "width": 1920,
+      "height": 1080
+    },
+    "detectedFormat": "jpeg"
+  },
+  {
+    "path": "assets/optimized/1cdfd07e95f6-1440.webp",
+    "bytes": 99772,
+    "sha256": "02e46f778366df18e0e0aa2b167429cbc9baea5b2cd078c23a10555987e260c1",
+    "format": "webp",
+    "dimensions": {
+      "width": 1440,
+      "height": 720
+    },
+    "detectedFormat": "webp"
+  },
+  {
+    "path": "assets/optimized/1cdfd07e95f6-320.webp",
+    "bytes": 14720,
+    "sha256": "942a099bd1296619e0af3d535bf9e5c41bb97858b3db8ed9a2e605caef7c4f93",
+    "format": "webp",
+    "dimensions": {
+      "width": 320,
+      "height": 160
+    },
+    "detectedFormat": "webp"
+  },
+  {
+    "path": "assets/optimized/1cdfd07e95f6-640.webp",
+    "bytes": 37148,
+    "sha256": "9b4af817c52987ecf912d888b606a537a1c45c9db9286a7a1b7e4518abfc1112",
+    "format": "webp",
+    "dimensions": {
+      "width": 640,
+      "height": 320
+    },
+    "detectedFormat": "webp"
+  },
+  {
+    "path": "assets/optimized/1cdfd07e95f6-960.webp",
+    "bytes": 64596,
+    "sha256": "5c8da473f2fb52bc77ecb54994a7236560074cd79f2dcd7caeabbda1ee5b2974",
+    "format": "webp",
+    "dimensions": {
+      "width": 960,
+      "height": 480
+    },
+    "detectedFormat": "webp"
+  },
+  {
+    "path": "assets/optimized/7d38094202ec-320.webp",
+    "bytes": 38286,
+    "sha256": "7d93c8842266a2b8e978fa8f4fcca8781890f887b1890979fe2953388c888b6b",
+    "format": "webp",
+    "dimensions": {
+      "width": 320,
+      "height": 492
+    },
+    "detectedFormat": "webp"
+  },
+  {
+    "path": "assets/optimized/7d38094202ec-640.webp",
+    "bytes": 102296,
+    "sha256": "2e2c85b9ea1d2c5563944d7b37d2344436bcec090f10a3354ed641ebbc844975",
+    "format": "webp",
+    "dimensions": {
+      "width": 640,
+      "height": 985
+    },
+    "detectedFormat": "webp"
+  },
+  {
+    "path": "assets/optimized/7d38094202ec-720.webp",
+    "bytes": 126228,
+    "sha256": "9888a17682655010b0773f20cc17f5ab45f8b53b5164e3abb03f54024025d686",
+    "format": "webp",
+    "dimensions": {
+      "width": 720,
+      "height": 1108
+    },
+    "detectedFormat": "webp"
+  },
+  {
+    "path": "assets/optimized/80ea62c8e9aa-307.webp",
+    "bytes": 8270,
+    "sha256": "53a80df4ca7948b5bbfccd194c93de337253982ecf4d78c99ea1997f25e071b3",
+    "format": "webp",
+    "dimensions": {
+      "width": 307,
+      "height": 445
+    },
+    "detectedFormat": "webp"
+  },
+  {
+    "path": "assets/optimized/900cfb3d55be-320.webp",
+    "bytes": 11464,
+    "sha256": "38665f8e1dca83db6b39c253989e8b9460dd018820a1d2d0aa9fac8040153300",
+    "format": "webp",
+    "dimensions": {
+      "width": 320,
+      "height": 320
+    },
+    "detectedFormat": "webp"
+  },
+  {
+    "path": "assets/optimized/900cfb3d55be-640.webp",
+    "bytes": 24554,
+    "sha256": "5f970d58ab493f7c5e0e3d6deb87bcc7ba54f3d4c0b72cd90a8b53a6787fed56",
+    "format": "webp",
+    "dimensions": {
+      "width": 640,
+      "height": 640
+    },
+    "detectedFormat": "webp"
+  },
+  {
+    "path": "assets/optimized/900cfb3d55be-736.webp",
+    "bytes": 30666,
+    "sha256": "e8b2751f0512a2e45f7184809d9bda6df9b60462a8a85cdc1c9f210d7e159935",
+    "format": "webp",
+    "dimensions": {
+      "width": 736,
+      "height": 736
+    },
+    "detectedFormat": "webp"
+  },
+  {
+    "path": "assets/optimized/aa5fd1983646-320.webp",
+    "bytes": 6190,
+    "sha256": "0ed1cccb85296edf8bcba0a35d736c0d97681c7b14f9cb173f9598fe4656b22b",
+    "format": "webp",
+    "dimensions": {
+      "width": 320,
+      "height": 320
+    },
+    "detectedFormat": "webp"
+  },
+  {
+    "path": "assets/optimized/aa5fd1983646-640.webp",
+    "bytes": 12278,
+    "sha256": "909409e8822817cf1953d61b40e6b68abe2be8ab84ea159068d1d2e8e16b781d",
+    "format": "webp",
+    "dimensions": {
+      "width": 640,
+      "height": 640
+    },
+    "detectedFormat": "webp"
+  },
+  {
+    "path": "assets/optimized/aa5fd1983646-736.webp",
+    "bytes": 14540,
+    "sha256": "2f4fcae49764b3616a4c0fd54e20379ee24e90a3118222378a1aa6e216ea3383",
+    "format": "webp",
+    "dimensions": {
+      "width": 736,
+      "height": 736
+    },
+    "detectedFormat": "webp"
+  },
+  {
+    "path": "assets/optimized/b6fcf28e7ac2-320.webp",
+    "bytes": 6942,
+    "sha256": "a65feea43942cd1395e9cdbfd54c7b47ac8d722f46912024f45da8d25d746ac3",
+    "format": "webp",
+    "dimensions": {
+      "width": 320,
+      "height": 75
+    },
+    "detectedFormat": "webp"
+  },
+  {
+    "path": "assets/optimized/b6fcf28e7ac2-640.webp",
+    "bytes": 17866,
+    "sha256": "465c86fa469d9f1dedb4007b8b257cdd45072b4fac081d7cc25f53266715395a",
+    "format": "webp",
+    "dimensions": {
+      "width": 640,
+      "height": 149
+    },
+    "detectedFormat": "webp"
+  },
+  {
+    "path": "assets/optimized/b6fcf28e7ac2-733.webp",
+    "bytes": 23684,
+    "sha256": "8641ba1d0a9fc77aee70d03cd77f67732789e1b7b7192703b7d6bdf625fc3e68",
+    "format": "webp",
+    "dimensions": {
+      "width": 733,
+      "height": 171
+    },
+    "detectedFormat": "webp"
+  },
+  {
+    "path": "assets/optimized/ba3d3df36e13-320.webp",
+    "bytes": 62944,
+    "sha256": "8ea599c931f425ebd7aaac3009ce5c940ef24d4153090b56cacf233a648cf4fd",
+    "format": "webp",
+    "dimensions": {
+      "width": 320,
+      "height": 491
+    },
+    "detectedFormat": "webp"
+  },
+  {
+    "path": "assets/optimized/ba3d3df36e13-640.webp",
+    "bytes": 199092,
+    "sha256": "ca743dfbd875122b0289109402bd037b0b57dd00b638b9799eebf2b7fc97ba6d",
+    "format": "webp",
+    "dimensions": {
+      "width": 640,
+      "height": 982
+    },
+    "detectedFormat": "webp"
+  },
+  {
+    "path": "assets/optimized/ba3d3df36e13-720.webp",
+    "bytes": 237176,
+    "sha256": "a954e273aa724ff7bb183f3ce83b02f079b4dbe6e63438dc0e80e4fdce8aa6c3",
+    "format": "webp",
+    "dimensions": {
+      "width": 720,
+      "height": 1105
+    },
+    "detectedFormat": "webp"
+  },
+  {
+    "path": "assets/oshiete_260612_01_ogp-thumb-640xauto-18899.webp",
+    "bytes": 37362,
+    "sha256": "60bbd4784e6f8c0142c8cef484727070162ddf054b981e90cb18a6a11560f5aa",
+    "format": "webp",
+    "dimensions": {
+      "width": 640,
+      "height": 360
+    },
+    "detectedFormat": "webp"
+  },
+  {
+    "path": "assets/ring-animated.png",
+    "bytes": 6825,
+    "sha256": "543a12fd990fca6e08f1aa787caed4b8e11aceaf50be2db54a50df9b038aecda",
+    "format": "png",
+    "dimensions": {
+      "width": 100,
+      "height": 100
+    },
+    "detectedFormat": "png"
+  },
+  {
+    "path": "assets/screenshot_2608_ogp-thumb-640xauto-19257.webp",
+    "bytes": 43084,
+    "sha256": "3198fdf2b61218e047c3ff2333506c10a657ce1a970dfe9bd6a7ddabda1721d6",
+    "format": "webp",
+    "dimensions": {
+      "width": 640,
+      "height": 360
+    },
+    "detectedFormat": "webp"
+  },
+  {
+    "path": "assets/section-replacement.png",
+    "bytes": 2524570,
+    "sha256": "1cdfd07e95f6e751ad82322c8545a471afb244e8eb251a139b7249a485c3a1b2",
+    "format": "png",
+    "dimensions": {
+      "width": 1774,
+      "height": 887
+    },
+    "detectedFormat": "png"
+  },
+  {
+    "path": "assets/sega_logo_s_b.svg",
+    "bytes": 3272,
+    "sha256": "e7ff58e90db0a265188a285e27ae828f3a86a408139fbf1c16f3cfd0c7852e19",
+    "format": "svg",
+    "dimensions": {
+      "width": 300,
+      "height": 98
+    },
+    "detectedFormat": "svg"
+  },
+  {
+    "path": "assets/sns_facebook.png",
+    "bytes": 885,
+    "sha256": "c9db0a8e36359f1e52891c474037bf898408f096ba6d0e95285bab575085cc1d",
+    "format": "png",
+    "dimensions": {
+      "width": 72,
+      "height": 72
+    },
+    "detectedFormat": "png"
+  },
+  {
+    "path": "assets/sns_line.png",
+    "bytes": 1286,
+    "sha256": "05cd5c9f5cc075789df90894a9c4e058d289865569dac4587d9039f54b19bb6c",
+    "format": "png",
+    "dimensions": {
+      "width": 72,
+      "height": 72
+    },
+    "detectedFormat": "png"
+  },
+  {
+    "path": "assets/sns_x.png",
+    "bytes": 1042,
+    "sha256": "6777b6ce46b0285fc4faddeca85e2f2fa6b6909f89ef12a5feb70cb001d6de40",
+    "format": "png",
+    "dimensions": {
+      "width": 72,
+      "height": 72
+    },
+    "detectedFormat": "png"
+  },
+  {
+    "path": "assets/sonicforces1.gif",
+    "bytes": 8178,
+    "sha256": "ce60a4456cec8dc94cbc0cfdb27e2038b30dc17a43f4c532d7f3f57fda9f1b54",
+    "format": "gif",
+    "dimensions": {
+      "width": 6000,
+      "height": 1000
+    },
+    "detectedFormat": "gif"
+  },
+  {
+    "path": "assets/sonicforces2.gif",
+    "bytes": 33003,
+    "sha256": "dccb09ac90bc79931449d750568024a8ea94c38f1413e04c89d3007ef2f05361",
+    "format": "gif",
+    "dimensions": {
+      "width": 1350,
+      "height": 3000
+    },
+    "detectedFormat": "gif"
+  },
+  {
+    "path": "assets/sonicforces3.gif",
+    "bytes": 45,
+    "sha256": "73e6b361bb0b371e17cecd1059cde75db3f800d20435ed522dc2886d9964bf08",
+    "format": "gif",
+    "dimensions": {
+      "width": 4,
+      "height": 4
+    },
+    "detectedFormat": "gif"
+  },
+  {
+    "path": "assets/sonicforces4.jpg",
+    "bytes": 289455,
+    "sha256": "82e387f12a6c59aec5009cb44c04ea9f3e30fda5dc253d83197dae857e4483e6",
+    "format": "jpg",
+    "dimensions": {
+      "width": 1280,
+      "height": 720
+    },
+    "detectedFormat": "jpeg"
+  },
+  {
+    "path": "assets/sonicmania1.png",
+    "bytes": 8612,
+    "sha256": "cc024055e11b5adaf3523c542ac7806fc2eb59abd3f9e271d6d1eb166c481897",
+    "format": "png",
+    "dimensions": {
+      "width": 1300,
+      "height": 1329
+    },
+    "detectedFormat": "png"
+  },
+  {
+    "path": "assets/sonicmania2.png",
+    "bytes": 10194,
+    "sha256": "db880300e5a962486ab50777dbfa165f06fcfda1342f77d0f1e21a4b99688add",
+    "format": "png",
+    "dimensions": {
+      "width": 1300,
+      "height": 1329
+    },
+    "detectedFormat": "png"
+  },
+  {
+    "path": "assets/sonicmania3.png",
+    "bytes": 9833,
+    "sha256": "7e3ec0fb7c10fa40c9af0471f222a5777efd60c5b057f379cd94841fab831d02",
+    "format": "png",
+    "dimensions": {
+      "width": 1300,
+      "height": 1329
+    },
+    "detectedFormat": "png"
+  },
+  {
+    "path": "assets/sonicteamstaff_260721_01_ogp-thumb-640xauto-19137.webp",
+    "bytes": 37984,
+    "sha256": "1d19d690629b1cbaa741d92b42492446f239f62287f8592ef3903ac5d12f72ee",
+    "format": "webp",
+    "dimensions": {
+      "width": 640,
+      "height": 360
+    },
+    "detectedFormat": "webp"
+  },
+  {
+    "path": "assets/sonicworldstory.webp",
+    "bytes": 14682,
+    "sha256": "dd4ec086bc576500d9f82e145e3380bc446836f12370f81e051c65450862486d",
+    "format": "webp",
+    "dimensions": {
+      "width": 1919,
+      "height": 243
+    },
+    "detectedFormat": "webp"
+  },
+  {
+    "path": "assets/special.webp",
+    "bytes": 7284,
+    "sha256": "760105d7f3e0ad02aeaf354c6e66dc927f1063b9757bacdb96c969c20f77636a",
+    "format": "webp",
+    "dimensions": {
+      "width": 1919,
+      "height": 243
+    },
+    "detectedFormat": "webp"
+  },
+  {
+    "path": "assets/staffcolumn_260807_01_ogp-thumb-640xauto-19283.jpg",
+    "bytes": 242230,
+    "sha256": "13a7485f24ddcc537bf1b4997c1d04d835ebe2f7ef55fcc144ecd5e4fe03ef6d",
+    "format": "jpg",
+    "dimensions": {
+      "width": 640,
+      "height": 360
+    },
+    "detectedFormat": "jpeg"
+  },
+  {
+    "path": "assets/star-circle-lb.webp",
+    "bytes": 16046,
+    "sha256": "cb28ea1a314ac1508c07da1e59426cc8eb6cb999357eda7e9d33742bf90e553f",
+    "format": "webp",
+    "dimensions": {
+      "width": 941,
+      "height": 941
+    },
+    "detectedFormat": "webp"
+  },
+  {
+    "path": "assets/star-circle-w.webp",
+    "bytes": 16128,
+    "sha256": "f1821ab85ac8088e8321f3345988891e721a9b60fcc60177997890e63f11d022",
+    "format": "webp",
+    "dimensions": {
+      "width": 941,
+      "height": 941
+    },
+    "detectedFormat": "webp"
+  },
+  {
+    "path": "assets/star-icon.webp",
+    "bytes": 5936,
+    "sha256": "f41374f8fefeb382147d9ae73369742b95b9721af3b906b52645e812fba1091e",
+    "format": "webp",
+    "dimensions": {
+      "width": 300,
+      "height": 297
+    },
+    "detectedFormat": "webp"
+  },
+  {
+    "path": "assets/star-icon02.webp",
+    "bytes": 5442,
+    "sha256": "6fac517155624f931d5a7633a7a154891fac5ca7888674161341a0232688f39e",
+    "format": "webp",
+    "dimensions": {
+      "width": 300,
+      "height": 297
+    },
+    "detectedFormat": "webp"
+  },
+  {
+    "path": "assets/topics.webp",
+    "bytes": 7302,
+    "sha256": "20e17b651f21962b48030274796a393f1ec9d67609a5be1a3ae2a257c8c6e050",
+    "format": "webp",
+    "dimensions": {
+      "width": 1919,
+      "height": 243
+    },
+    "detectedFormat": "webp"
+  },
+  {
+    "path": "assets/tri-bb.webp",
+    "bytes": 428,
+    "sha256": "36914bec48f9a006ac3fcb0e3f7858eeeeb02bd23f3bcfbaace7a630aae3a740",
+    "format": "webp",
+    "dimensions": {
+      "width": 63,
+      "height": 30
+    },
+    "detectedFormat": "webp"
+  },
+  {
+    "path": "assets/tri-bt.webp",
+    "bytes": 428,
+    "sha256": "e7375bbdaeb35712b3fdf07c1677712b5d880d391874a0c987dad89968ff25a7",
+    "format": "webp",
+    "dimensions": {
+      "width": 63,
+      "height": 30
+    },
+    "detectedFormat": "webp"
+  },
+  {
+    "path": "assets/tri-wb.webp",
+    "bytes": 416,
+    "sha256": "4ba7b4be4ba545144065f6582605e5d7a8eaf0a7f3787d93bc3375fcb99b4e4f",
+    "format": "webp",
+    "dimensions": {
+      "width": 63,
+      "height": 30
+    },
+    "detectedFormat": "webp"
+  },
+  {
+    "path": "assets/tri-wt.webp",
+    "bytes": 416,
+    "sha256": "516e30d59e24f12fef0f3a9803449a68890de43507c360d0c4fb617e1beb3ce5",
+    "format": "webp",
+    "dimensions": {
+      "width": 63,
+      "height": 30
+    },
+    "detectedFormat": "webp"
+  },
+  {
+    "path": "assets/ultimos-momentos/execution.jpeg",
+    "bytes": 25289,
+    "sha256": "b6fcf28e7ac284f64417090d91efa506d29967fc1dd9651de4df8278d48d41b8",
+    "format": "jpeg",
+    "dimensions": {
+      "width": 733,
+      "height": 171
+    },
+    "detectedFormat": "jpeg"
+  },
+  {
+    "path": "assets/ultimos-momentos/metal-virus.jpeg",
+    "bytes": 197262,
+    "sha256": "ba3d3df36e1314564c4014234f6319c5bd26c32fb507e89adda1386353b03ce7",
+    "format": "jpeg",
+    "dimensions": {
+      "width": 720,
+      "height": 1105
+    },
+    "detectedFormat": "jpeg"
+  },
+  {
+    "path": "assets/ultimos-momentos/sonic-wars.jpeg",
+    "bytes": 139929,
+    "sha256": "7d38094202ec630f08e5c13bfec5d3fb79eec75110993108a9e63e2ad5bfa0dd",
+    "format": "jpeg",
+    "dimensions": {
+      "width": 720,
+      "height": 1108
+    },
+    "detectedFormat": "jpeg"
+  },
+  {
+    "path": "assets/user-carousel/carousel-01.jpg",
+    "bytes": 25748,
+    "sha256": "aa5fd19836468812d31533f7de7aba82def3585eabef46d49a12cecbfc29ad90",
+    "format": "jpg",
+    "dimensions": {
+      "width": 736,
+      "height": 736
+    },
+    "detectedFormat": "jpeg"
+  },
+  {
+    "path": "assets/user-carousel/carousel-02.jpg",
+    "bytes": 11693,
+    "sha256": "80ea62c8e9aa3030aeb24ab7d3977bc0d1fa4e8ce562f9b5e77cf58e9ef990e6",
+    "format": "jpg",
+    "dimensions": {
+      "width": 307,
+      "height": 445
+    },
+    "detectedFormat": "jpeg"
+  },
+  {
+    "path": "assets/user-carousel/carousel-03.jpg",
+    "bytes": 49129,
+    "sha256": "900cfb3d55bedaa87d12986c748d162943e17e958b42b4f3d99607f51e583d80",
+    "format": "jpg",
+    "dimensions": {
+      "width": 736,
+      "height": 736
+    },
+    "detectedFormat": "jpeg"
+  },
+  {
+    "path": "assets/video-bgb.webp",
+    "bytes": 474,
+    "sha256": "5ec17cfb0210bcfd83c76a4b762b90c19118be2edbf5d70b2f31bb09b8f38553",
+    "format": "webp",
+    "dimensions": {
+      "width": 30,
+      "height": 529
+    },
+    "detectedFormat": "webp"
+  },
+  {
+    "path": "assets/video-bgw.webp",
+    "bytes": 420,
+    "sha256": "eb1f656f2568c0d3556d0e577ad0d4404782f8a8a03425664e74cf65b78bce91",
+    "format": "webp",
+    "dimensions": {
+      "width": 30,
+      "height": 529
+    },
+    "detectedFormat": "webp"
+  },
+  {
+    "path": "assets/videos.webp",
+    "bytes": 8008,
+    "sha256": "2e796b2f8f88c15f1e1deddc495a84f63411728e4a92b49d20d12a617b7a6f14",
+    "format": "webp",
+    "dimensions": {
+      "width": 1919,
+      "height": 243
+    },
+    "detectedFormat": "webp"
+  },
+  {
+    "path": "assets/wallpaper_260_espio_05_pc_thm-thumb-400x400-19097.jpg",
+    "bytes": 32160,
+    "sha256": "f35361db3ac37d692bc870dd342b93d19ffc222166c4e8401542e1ebf5e44f1c",
+    "format": "jpg",
+    "dimensions": {
+      "width": 400,
+      "height": 400
+    },
+    "detectedFormat": "jpeg"
+  },
+  {
+    "path": "assets/wallpaper_260_espio_05_sp_thm-thumb-400x400-19098.jpg",
+    "bytes": 32454,
+    "sha256": "405ceab423d30d8b42bd09005f7ebed4cd76324bd27da5a7e86d7e22778dc884",
+    "format": "jpg",
+    "dimensions": {
+      "width": 400,
+      "height": 400
+    },
+    "detectedFormat": "jpeg"
+  },
+  {
+    "path": "assets/wallpaper_261_blaze_18_pc_thm-thumb-400x400-19286.jpg",
+    "bytes": 33786,
+    "sha256": "2acefa6d0c00dde0aaeda7ef807c387f74d4c72fb7b601f40fab42e2dc96c054",
+    "format": "jpg",
+    "dimensions": {
+      "width": 400,
+      "height": 400
+    },
+    "detectedFormat": "jpeg"
+  },
+  {
+    "path": "assets/wallpaper_261_blaze_18_sp_thm-thumb-400x400-19282.jpg",
+    "bytes": 37281,
+    "sha256": "1ba007ed12796cf95bf687ae6f4433ecd27f487c1326a38f52d9546a532e7169",
+    "format": "jpg",
+    "dimensions": {
+      "width": 400,
+      "height": 400
+    },
+    "detectedFormat": "jpeg"
+  },
+  {
+    "path": "assets/window.webp",
+    "bytes": 220,
+    "sha256": "643cbbcecdb695852b0dcb7091a0ee2f6b19bdeb4fa7b84b71b55066cca3764f",
+    "format": "webp",
+    "dimensions": {
+      "width": 38,
+      "height": 39
+    },
+    "detectedFormat": "webp"
+  }
+]

@@ -1,0 +1,853 @@
+{
+  "baseline": false,
+  "base": "e4255ff83ea278534f8312ea873bd990f6ca111d",
+  "files": 329,
+  "syntax": [],
+  "missingReferences": [],
+  "cssMissing": [],
+  "pages": [
+    {
+      "file": "admin-role.html",
+      "title": "Administración · Speedy Friends / Staff",
+      "startsWithHtml": true,
+      "hasLoader": true,
+      "scripts": [
+        "https://www.gstatic.com/firebasejs/12.1.0/firebase-app-compat.js",
+        "https://www.gstatic.com/firebasejs/12.1.0/firebase-auth-compat.js",
+        "https://www.gstatic.com/firebasejs/12.1.0/firebase-database-compat.js",
+        "firebase-legacy.js",
+        "global-ost-player.js",
+        "portal-ui.js",
+        "page-loader.js",
+        "app.js"
+      ]
+    },
+    {
+      "file": "admin.html",
+      "title": "Administración · Speedy Friends",
+      "startsWithHtml": true,
+      "hasLoader": true,
+      "scripts": [
+        "https://www.gstatic.com/firebasejs/12.1.0/firebase-app-compat.js",
+        "https://www.gstatic.com/firebasejs/12.1.0/firebase-auth-compat.js",
+        "https://www.gstatic.com/firebasejs/12.1.0/firebase-database-compat.js",
+        "firebase-legacy.js",
+        "global-ost-player.js",
+        "portal-ui.js",
+        "page-loader.js",
+        "app.js"
+      ]
+    },
+    {
+      "file": "cafe-creator.html",
+      "title": "Café Club · Panel de Creadora",
+      "startsWithHtml": true,
+      "hasLoader": false,
+      "scripts": [
+        "https://www.gstatic.com/firebasejs/12.1.0/firebase-app-compat.js",
+        "https://www.gstatic.com/firebasejs/12.1.0/firebase-auth-compat.js",
+        "https://www.gstatic.com/firebasejs/12.1.0/firebase-database-compat.js",
+        "firebase-legacy.js",
+        "cafeteria-core.js",
+        "portal-ui.js"
+      ]
+    },
+    {
+      "file": "cafe-worker.html",
+      "title": "Café Club · Trabajador",
+      "startsWithHtml": true,
+      "hasLoader": false,
+      "scripts": [
+        "https://www.gstatic.com/firebasejs/12.1.0/firebase-app-compat.js",
+        "https://www.gstatic.com/firebasejs/12.1.0/firebase-auth-compat.js",
+        "https://www.gstatic.com/firebasejs/12.1.0/firebase-database-compat.js",
+        "firebase-legacy.js",
+        "cafeteria-core.js",
+        "portal-ui.js"
+      ]
+    },
+    {
+      "file": "cafeteria.html",
+      "title": "Café Club · Speedy Friends",
+      "startsWithHtml": true,
+      "hasLoader": true,
+      "scripts": [
+        "https://www.gstatic.com/firebasejs/12.1.0/firebase-app-compat.js",
+        "https://www.gstatic.com/firebasejs/12.1.0/firebase-auth-compat.js",
+        "https://www.gstatic.com/firebasejs/12.1.0/firebase-database-compat.js",
+        "firebase-legacy.js",
+        "cafeteria-core.js",
+        "portal-ui.js",
+        "app.js"
+      ]
+    },
+    {
+      "file": "fanarts.html",
+      "title": "Speedy Friends · Fanarts",
+      "startsWithHtml": true,
+      "hasLoader": false,
+      "scripts": [
+        "https://www.gstatic.com/firebasejs/12.1.0/firebase-app-compat.js",
+        "https://www.gstatic.com/firebasejs/12.1.0/firebase-auth-compat.js",
+        "https://www.gstatic.com/firebasejs/12.1.0/firebase-database-compat.js",
+        "firebase-legacy.js",
+        "friends-system.js",
+        "portal-ui.js",
+        "fanarts-system.js"
+      ]
+    },
+    {
+      "file": "friends.html",
+      "title": "Amigos · Speedy Friends",
+      "startsWithHtml": true,
+      "hasLoader": false,
+      "scripts": [
+        "https://unpkg.com/@phosphor-icons/web",
+        "https://www.gstatic.com/firebasejs/12.1.0/firebase-app-compat.js",
+        "https://www.gstatic.com/firebasejs/12.1.0/firebase-auth-compat.js",
+        "https://www.gstatic.com/firebasejs/12.1.0/firebase-database-compat.js",
+        "firebase-legacy.js",
+        "portal-ui.js",
+        "friends-system.js"
+      ]
+    },
+    {
+      "file": "index.html",
+      "title": "Speedy Friends — Portal",
+      "startsWithHtml": true,
+      "hasLoader": true,
+      "scripts": [
+        "https://www.gstatic.com/firebasejs/12.1.0/firebase-app-compat.js",
+        "https://www.gstatic.com/firebasejs/12.1.0/firebase-auth-compat.js",
+        "https://www.gstatic.com/firebasejs/12.1.0/firebase-database-compat.js",
+        "https://www.gstatic.com/firebasejs/12.1.0/firebase-storage-compat.js",
+        "firebase-legacy.js",
+        "friends-system.js",
+        "global-ost-player.js",
+        "store-catalog.js",
+        "portal-ui.js",
+        "page-loader.js",
+        "vendor/jquery-3.7.1.min.js",
+        "vendor/swiper-bundle.min.js",
+        "fanarts-system.js",
+        "app.js",
+        "ultimos-momentos.js"
+      ]
+    },
+    {
+      "file": "novedad.html",
+      "title": "Speedy Friends · Novedad",
+      "startsWithHtml": true,
+      "hasLoader": false,
+      "scripts": [
+        "https://www.gstatic.com/firebasejs/12.1.0/firebase-app-compat.js",
+        "https://www.gstatic.com/firebasejs/12.1.0/firebase-auth-compat.js",
+        "https://www.gstatic.com/firebasejs/12.1.0/firebase-database-compat.js",
+        "firebase-legacy.js",
+        "portal-ui.js"
+      ]
+    },
+    {
+      "file": "novedades-admin.html",
+      "title": "Speedy Friends · Editor de Novedades",
+      "startsWithHtml": true,
+      "hasLoader": false,
+      "scripts": [
+        "https://www.gstatic.com/firebasejs/12.1.0/firebase-app-compat.js",
+        "https://www.gstatic.com/firebasejs/12.1.0/firebase-auth-compat.js",
+        "https://www.gstatic.com/firebasejs/12.1.0/firebase-database-compat.js",
+        "firebase-legacy.js",
+        "portal-ui.js",
+        "app.js"
+      ]
+    },
+    {
+      "file": "novedades.html",
+      "title": "Speedy Friends · Novedades",
+      "startsWithHtml": true,
+      "hasLoader": false,
+      "scripts": [
+        "https://www.gstatic.com/firebasejs/12.1.0/firebase-app-compat.js",
+        "https://www.gstatic.com/firebasejs/12.1.0/firebase-auth-compat.js",
+        "https://www.gstatic.com/firebasejs/12.1.0/firebase-database-compat.js",
+        "firebase-legacy.js",
+        "portal-ui.js",
+        "app.js"
+      ]
+    },
+    {
+      "file": "ost.html",
+      "title": "Audio / OST · Speedy Friends",
+      "startsWithHtml": true,
+      "hasLoader": true,
+      "scripts": [
+        "https://www.gstatic.com/firebasejs/12.1.0/firebase-app-compat.js",
+        "https://www.gstatic.com/firebasejs/12.1.0/firebase-auth-compat.js",
+        "https://www.gstatic.com/firebasejs/12.1.0/firebase-database-compat.js",
+        "firebase-legacy.js",
+        "global-ost-player.js",
+        "portal-ui.js",
+        "page-loader.js",
+        "app.js"
+      ]
+    },
+    {
+      "file": "profile.html",
+      "title": "Perfil · Speedy Friends",
+      "startsWithHtml": true,
+      "hasLoader": true,
+      "scripts": [
+        "https://unpkg.com/@phosphor-icons/web",
+        "https://www.gstatic.com/firebasejs/12.1.0/firebase-app-compat.js",
+        "https://www.gstatic.com/firebasejs/12.1.0/firebase-auth-compat.js",
+        "https://www.gstatic.com/firebasejs/12.1.0/firebase-database-compat.js",
+        "https://www.gstatic.com/firebasejs/12.1.0/firebase-storage-compat.js",
+        "firebase-legacy.js",
+        "friends-system.js",
+        "global-ost-player.js",
+        "portal-ui.js",
+        "page-loader.js",
+        "app.js"
+      ]
+    },
+    {
+      "file": "ranking.html",
+      "title": "Ranking · Speedy Friends",
+      "startsWithHtml": true,
+      "hasLoader": true,
+      "scripts": [
+        "https://unpkg.com/@phosphor-icons/web",
+        "https://www.gstatic.com/firebasejs/12.1.0/firebase-app-compat.js",
+        "https://www.gstatic.com/firebasejs/12.1.0/firebase-auth-compat.js",
+        "https://www.gstatic.com/firebasejs/12.1.0/firebase-database-compat.js",
+        "https://www.gstatic.com/firebasejs/12.1.0/firebase-storage-compat.js",
+        "firebase-legacy.js",
+        "friends-system.js",
+        "global-ost-player.js",
+        "portal-ui.js",
+        "page-loader.js",
+        "app.js"
+      ]
+    }
+  ],
+  "embeddedMedia": [
+    {
+      "file": "js/app.js",
+      "line": 6,
+      "bytes": 382295,
+      "type": "image"
+    },
+    {
+      "file": "js/app.js",
+      "line": 6,
+      "bytes": 519863,
+      "type": "image"
+    },
+    {
+      "file": "js/app.js",
+      "line": 6,
+      "bytes": 281119,
+      "type": "image"
+    },
+    {
+      "file": "js/app.js",
+      "line": 6,
+      "bytes": 456163,
+      "type": "image"
+    },
+    {
+      "file": "js/app.js",
+      "line": 6,
+      "bytes": 429219,
+      "type": "image"
+    }
+  ],
+  "media": {
+    "files": 298,
+    "bytes": 28356435,
+    "duplicateGroups": [
+      [
+        "assets/anime-ling.webp",
+        "assets/images/anime-ling.webp"
+      ],
+      [
+        "assets/arrow-btn01.webp",
+        "assets/images/arrow-btn01.webp"
+      ],
+      [
+        "assets/arrow-btn03.webp",
+        "assets/images/arrow-btn03.webp"
+      ],
+      [
+        "assets/arrow-l.webp",
+        "assets/images/arrow-l.webp"
+      ],
+      [
+        "assets/arrow-r.webp",
+        "assets/images/arrow-r.webp"
+      ],
+      [
+        "assets/arrow-w.webp",
+        "assets/images/arrow-w.webp"
+      ],
+      [
+        "assets/background-logo.png",
+        "assets/images/background-logo.png"
+      ],
+      [
+        "assets/banner_250320_02_SonicChannelFuncard.jpg",
+        "assets/images/banner_250320_02_SonicChannelFuncard.jpg"
+      ],
+      [
+        "assets/banner_250627_01_SonicRacingCrossWorld.jpg",
+        "assets/images/banner_250627_01_SonicRacingCrossWorld.jpg"
+      ],
+      [
+        "assets/banner_260624_01_SonicFrontiersDX.webp",
+        "assets/images/banner_260624_01_SonicFrontiersDX.webp"
+      ],
+      [
+        "assets/bgparts-w.webp",
+        "assets/images/bgparts-w.webp"
+      ],
+      [
+        "assets/bgparts.webp",
+        "assets/images/bgparts.webp"
+      ],
+      [
+        "assets/broadcasting_260821_01_ogp-thumb-640xauto-19300.webp",
+        "assets/images/broadcasting_260821_01_ogp-thumb-640xauto-19300.webp"
+      ],
+      [
+        "assets/btn-chara-on.png",
+        "assets/images/btn-chara-on.png"
+      ],
+      [
+        "assets/btn-chara.png",
+        "assets/images/btn-chara.png"
+      ],
+      [
+        "assets/btn-fan-on.png",
+        "assets/images/btn-fan-on.png"
+      ],
+      [
+        "assets/btn-fan.png",
+        "assets/images/btn-fan.png"
+      ],
+      [
+        "assets/btn-history-on.png",
+        "assets/images/btn-history-on.png"
+      ],
+      [
+        "assets/btn-history.png",
+        "assets/images/btn-history.png"
+      ],
+      [
+        "assets/btn-redicon.webp",
+        "assets/images/btn-redicon.webp"
+      ],
+      [
+        "assets/btn-special-on.png",
+        "assets/images/btn-special-on.png"
+      ],
+      [
+        "assets/btn-special.png",
+        "assets/images/btn-special.png"
+      ],
+      [
+        "assets/btn-top-on.webp",
+        "assets/images/btn-top-on.webp"
+      ],
+      [
+        "assets/btn-top.webp",
+        "assets/images/btn-top.webp"
+      ],
+      [
+        "assets/btn-topics-on.png",
+        "assets/images/btn-topics-on.png"
+      ],
+      [
+        "assets/btn-topics.png",
+        "assets/images/btn-topics.png"
+      ],
+      [
+        "assets/calendar_2607_thm-thumb-220x220-18918.jpg",
+        "assets/images/calendar_2607_thm-thumb-220x220-18918.jpg"
+      ],
+      [
+        "assets/calendar_2608_thm-thumb-220x220-19140.jpg",
+        "assets/images/calendar_2608_thm-thumb-220x220-19140.jpg"
+      ],
+      [
+        "assets/catEnjoyCalendar.png",
+        "assets/images/catEnjoyCalendar.png"
+      ],
+      [
+        "assets/catEnjoyWallpaperPc.png",
+        "assets/images/catEnjoyWallpaperPc.png"
+      ],
+      [
+        "assets/catEnjoyWallpaperSp.png",
+        "assets/images/catEnjoyWallpaperSp.png"
+      ],
+      [
+        "assets/chara.webp",
+        "assets/images/chara.webp"
+      ],
+      [
+        "assets/classic.webp",
+        "assets/images/classic.webp"
+      ],
+      [
+        "assets/common1.png",
+        "assets/images/common1.png"
+      ],
+      [
+        "assets/common2.png",
+        "assets/images/common2.png"
+      ],
+      [
+        "assets/common3.png",
+        "assets/images/common3.png"
+      ],
+      [
+        "assets/dl01.webp",
+        "assets/images/dl01.webp"
+      ],
+      [
+        "assets/dl02.webp",
+        "assets/images/dl02.webp"
+      ],
+      [
+        "assets/dl03.webp",
+        "assets/images/dl03.webp"
+      ],
+      [
+        "assets/dl04.webp",
+        "assets/images/dl04.webp"
+      ],
+      [
+        "assets/dl05.webp",
+        "assets/images/dl05.webp"
+      ],
+      [
+        "assets/dl06.webp",
+        "assets/images/dl06.webp"
+      ],
+      [
+        "assets/dl07.webp",
+        "assets/images/dl07.webp"
+      ],
+      [
+        "assets/downloads.webp",
+        "assets/images/downloads.webp"
+      ],
+      [
+        "assets/enjoy.webp",
+        "assets/images/enjoy.webp"
+      ],
+      [
+        "assets/errorMessage.png",
+        "assets/images/errorMessage.png"
+      ],
+      [
+        "assets/event_260803_01_ogp-thumb-640xauto-19259.webp",
+        "assets/images/event_260803_01_ogp-thumb-640xauto-19259.webp"
+      ],
+      [
+        "assets/event_260826_01_ogp-thumb-640xauto-19278.webp",
+        "assets/images/event_260826_01_ogp-thumb-640xauto-19278.webp"
+      ],
+      [
+        "assets/fan.webp",
+        "assets/images/fan.webp"
+      ],
+      [
+        "assets/fanart-demo/avatar-1.webp",
+        "assets/fanart-demo/avatar-2.webp",
+        "assets/fanart-demo/avatar-3.webp",
+        "assets/fanart-demo/avatar-4.webp",
+        "assets/section-replacement.png"
+      ],
+      [
+        "assets/fanart-demo/blue-rush.webp",
+        "assets/fanart_2608_ogp-thumb-640xauto-19221.webp",
+        "assets/images/fanart_2608_ogp-thumb-640xauto-19221.webp"
+      ],
+      [
+        "assets/fanart-demo/future-glow.webp",
+        "assets/images/special.webp",
+        "assets/special.webp"
+      ],
+      [
+        "assets/fanart-demo/shadow-eclipse.webp",
+        "assets/ultimos-momentos/execution.jpeg"
+      ],
+      [
+        "assets/fanart-demo/team-run.webp",
+        "assets/images/sonicworldstory.webp",
+        "assets/sonicworldstory.webp"
+      ],
+      [
+        "assets/gametitle.webp",
+        "assets/images/gametitle.webp"
+      ],
+      [
+        "assets/gametitle_SonicFrontiersDX_square-thumb-512x512-18932.webp",
+        "assets/gametitle_SonicFrontiersDX_square.webp",
+        "assets/images/gametitle_SonicFrontiersDX_square-thumb-512x512-18932.webp",
+        "assets/images/gametitle_SonicFrontiersDX_square.webp"
+      ],
+      [
+        "assets/gametitle_SonicRacingCrossWorld_square-thumb-512x512-15744.webp",
+        "assets/gametitle_SonicRacingCrossWorld_square.webp",
+        "assets/images/gametitle_SonicRacingCrossWorld_square-thumb-512x512-15744.webp",
+        "assets/images/gametitle_SonicRacingCrossWorld_square.webp"
+      ],
+      [
+        "assets/gametitle_SonicShadowGenerations_square-thumb-512x512-15742.webp",
+        "assets/gametitle_SonicShadowGenerations_square.webp",
+        "assets/images/gametitle_SonicShadowGenerations_square-thumb-512x512-15742.webp",
+        "assets/images/gametitle_SonicShadowGenerations_square.webp"
+      ],
+      [
+        "assets/goods.webp",
+        "assets/images/goods.webp"
+      ],
+      [
+        "assets/goods_260630_01_ogp-thumb-640xauto-19035.webp",
+        "assets/images/goods_260630_01_ogp-thumb-640xauto-19035.webp"
+      ],
+      [
+        "assets/goods_260701_01_ogp-thumb-640xauto-19042.webp",
+        "assets/images/goods_260701_01_ogp-thumb-640xauto-19042.webp"
+      ],
+      [
+        "assets/goods_260703_01_ogp-thumb-640xauto-19082.webp",
+        "assets/images/goods_260703_01_ogp-thumb-640xauto-19082.webp"
+      ],
+      [
+        "assets/goods_260722_01_ogp-thumb-640xauto-19144.webp",
+        "assets/images/goods_260722_01_ogp-thumb-640xauto-19144.webp"
+      ],
+      [
+        "assets/goods_260722_02_ogp-thumb-640xauto-19148.webp",
+        "assets/images/goods_260722_02_ogp-thumb-640xauto-19148.webp"
+      ],
+      [
+        "assets/goods_260722_03_ogp-thumb-640xauto-19153.webp",
+        "assets/images/goods_260722_03_ogp-thumb-640xauto-19153.webp"
+      ],
+      [
+        "assets/goods_260722_04_ogp-thumb-640xauto-19155.webp",
+        "assets/images/goods_260722_04_ogp-thumb-640xauto-19155.webp"
+      ],
+      [
+        "assets/goods_260724_01_ogp-thumb-640xauto-19232.webp",
+        "assets/images/goods_260724_01_ogp-thumb-640xauto-19232.webp"
+      ],
+      [
+        "assets/header_caution.svg",
+        "assets/images/header_caution.svg"
+      ],
+      [
+        "assets/iconLeft.png",
+        "assets/images/iconLeft.png"
+      ],
+      [
+        "assets/iconLeft_white.png",
+        "assets/images/iconLeft_white.png"
+      ],
+      [
+        "assets/iconRight.png",
+        "assets/images/iconRight.png"
+      ],
+      [
+        "assets/iconRight_white.png",
+        "assets/images/iconRight_white.png"
+      ],
+      [
+        "assets/icons.png",
+        "assets/images/icons.png"
+      ],
+      [
+        "assets/iconUp.png",
+        "assets/images/iconUp.png"
+      ],
+      [
+        "assets/iconUp_white.png",
+        "assets/images/iconUp_white.png"
+      ],
+      [
+        "assets/iconX.png",
+        "assets/images/iconX.png"
+      ],
+      [
+        "assets/iconX_white.png",
+        "assets/images/iconX_white.png"
+      ],
+      [
+        "assets/images/information_251023_01_ogp.jpg",
+        "assets/information_251023_01_ogp.jpg"
+      ],
+      [
+        "assets/images/information_251031_01_ogp.png",
+        "assets/information_251031_01_ogp.png"
+      ],
+      [
+        "assets/images/information_260225_01_ogp.webp",
+        "assets/information_260225_01_ogp.webp"
+      ],
+      [
+        "assets/images/information_260818_01_ogp-thumb-640xauto-19288.webp",
+        "assets/information_260818_01_ogp-thumb-640xauto-19288.webp"
+      ],
+      [
+        "assets/images/information_260825_01_ogp-thumb-640xauto-19316.jpg",
+        "assets/information_260825_01_ogp-thumb-640xauto-19316.jpg"
+      ],
+      [
+        "assets/images/kishimoto_260804_01_ogp-thumb-640xauto-19274.webp",
+        "assets/kishimoto_260804_01_ogp-thumb-640xauto-19274.webp"
+      ],
+      [
+        "assets/images/lineup.webp",
+        "assets/lineup.webp"
+      ],
+      [
+        "assets/images/loader.gif",
+        "assets/loader.gif"
+      ],
+      [
+        "assets/images/logo_sonicchannel.png",
+        "assets/logo_sonicchannel.png"
+      ],
+      [
+        "assets/images/logo_sonicchannel_menu.webp",
+        "assets/logo_sonicchannel_menu.webp"
+      ],
+      [
+        "assets/images/logo_sonicteam.png",
+        "assets/logo_sonicteam.png"
+      ],
+      [
+        "assets/images/menu-arrow.webp",
+        "assets/menu-arrow.webp"
+      ],
+      [
+        "assets/images/modern.webp",
+        "assets/modern.webp"
+      ],
+      [
+        "assets/images/newInfo.png",
+        "assets/newInfo.png"
+      ],
+      [
+        "assets/images/ogp20250320.jpg",
+        "assets/ogp20250320.jpg"
+      ],
+      [
+        "assets/images/oshiete_260612_01_ogp-thumb-640xauto-18899.webp",
+        "assets/oshiete_260612_01_ogp-thumb-640xauto-18899.webp"
+      ],
+      [
+        "assets/images/screenshot_2608_ogp-thumb-640xauto-19257.webp",
+        "assets/screenshot_2608_ogp-thumb-640xauto-19257.webp"
+      ],
+      [
+        "assets/images/sega_logo_s_b.svg",
+        "assets/sega_logo_s_b.svg"
+      ],
+      [
+        "assets/images/sns_facebook.png",
+        "assets/sns_facebook.png"
+      ],
+      [
+        "assets/images/sns_line.png",
+        "assets/sns_line.png"
+      ],
+      [
+        "assets/images/sns_x.png",
+        "assets/sns_x.png"
+      ],
+      [
+        "assets/images/sonicforces1.gif",
+        "assets/sonicforces1.gif"
+      ],
+      [
+        "assets/images/sonicforces2.gif",
+        "assets/sonicforces2.gif"
+      ],
+      [
+        "assets/images/sonicforces3.gif",
+        "assets/sonicforces3.gif"
+      ],
+      [
+        "assets/images/sonicforces4.jpg",
+        "assets/sonicforces4.jpg"
+      ],
+      [
+        "assets/images/sonicmania1.png",
+        "assets/sonicmania1.png"
+      ],
+      [
+        "assets/images/sonicmania2.png",
+        "assets/sonicmania2.png"
+      ],
+      [
+        "assets/images/sonicmania3.png",
+        "assets/sonicmania3.png"
+      ],
+      [
+        "assets/images/sonicteamstaff_260721_01_ogp-thumb-640xauto-19137.webp",
+        "assets/sonicteamstaff_260721_01_ogp-thumb-640xauto-19137.webp"
+      ],
+      [
+        "assets/images/staffcolumn_260807_01_ogp-thumb-640xauto-19283.jpg",
+        "assets/staffcolumn_260807_01_ogp-thumb-640xauto-19283.jpg"
+      ],
+      [
+        "assets/images/star-circle-lb.webp",
+        "assets/star-circle-lb.webp"
+      ],
+      [
+        "assets/images/star-circle-w.webp",
+        "assets/star-circle-w.webp"
+      ],
+      [
+        "assets/images/star-icon.webp",
+        "assets/star-icon.webp"
+      ],
+      [
+        "assets/images/star-icon02.webp",
+        "assets/star-icon02.webp"
+      ],
+      [
+        "assets/images/topics.webp",
+        "assets/topics.webp"
+      ],
+      [
+        "assets/images/tri-bb.webp",
+        "assets/tri-bb.webp"
+      ],
+      [
+        "assets/images/tri-bt.webp",
+        "assets/tri-bt.webp"
+      ],
+      [
+        "assets/images/tri-wb.webp",
+        "assets/tri-wb.webp"
+      ],
+      [
+        "assets/images/tri-wt.webp",
+        "assets/tri-wt.webp"
+      ],
+      [
+        "assets/images/video-bgb.webp",
+        "assets/video-bgb.webp"
+      ],
+      [
+        "assets/images/video-bgw.webp",
+        "assets/video-bgw.webp"
+      ],
+      [
+        "assets/images/videos.webp",
+        "assets/videos.webp"
+      ],
+      [
+        "assets/images/wallpaper_260_espio_05_pc_thm-thumb-400x400-19097.jpg",
+        "assets/wallpaper_260_espio_05_pc_thm-thumb-400x400-19097.jpg"
+      ],
+      [
+        "assets/images/wallpaper_260_espio_05_sp_thm-thumb-400x400-19098.jpg",
+        "assets/wallpaper_260_espio_05_sp_thm-thumb-400x400-19098.jpg"
+      ],
+      [
+        "assets/images/wallpaper_261_blaze_18_pc_thm-thumb-400x400-19286.jpg",
+        "assets/wallpaper_261_blaze_18_pc_thm-thumb-400x400-19286.jpg"
+      ],
+      [
+        "assets/images/wallpaper_261_blaze_18_sp_thm-thumb-400x400-19282.jpg",
+        "assets/wallpaper_261_blaze_18_sp_thm-thumb-400x400-19282.jpg"
+      ],
+      [
+        "assets/images/window.webp",
+        "assets/window.webp"
+      ]
+    ],
+    "largest": [
+      {
+        "path": "assets/fanart-demo/avatar-1.webp",
+        "bytes": 2524570,
+        "sha256": "1cdfd07e95f6e751ad82322c8545a471afb244e8eb251a139b7249a485c3a1b2",
+        "format": "webp"
+      },
+      {
+        "path": "assets/fanart-demo/avatar-2.webp",
+        "bytes": 2524570,
+        "sha256": "1cdfd07e95f6e751ad82322c8545a471afb244e8eb251a139b7249a485c3a1b2",
+        "format": "webp"
+      },
+      {
+        "path": "assets/fanart-demo/avatar-3.webp",
+        "bytes": 2524570,
+        "sha256": "1cdfd07e95f6e751ad82322c8545a471afb244e8eb251a139b7249a485c3a1b2",
+        "format": "webp"
+      },
+      {
+        "path": "assets/fanart-demo/avatar-4.webp",
+        "bytes": 2524570,
+        "sha256": "1cdfd07e95f6e751ad82322c8545a471afb244e8eb251a139b7249a485c3a1b2",
+        "format": "webp"
+      },
+      {
+        "path": "assets/section-replacement.png",
+        "bytes": 2524570,
+        "sha256": "1cdfd07e95f6e751ad82322c8545a471afb244e8eb251a139b7249a485c3a1b2",
+        "format": "png"
+      },
+      {
+        "path": "assets/banner_250627_01_SonicRacingCrossWorld.jpg",
+        "bytes": 1018857,
+        "sha256": "0984bf3c1fee73ec0df2bbad7d406466a92de437e7566b58a57dca5fe00d93ce",
+        "format": "jpg"
+      },
+      {
+        "path": "assets/images/banner_250627_01_SonicRacingCrossWorld.jpg",
+        "bytes": 1018857,
+        "sha256": "0984bf3c1fee73ec0df2bbad7d406466a92de437e7566b58a57dca5fe00d93ce",
+        "format": "jpg"
+      },
+      {
+        "path": "assets/images/information_251023_01_ogp.jpg",
+        "bytes": 871862,
+        "sha256": "38744cbfedae29ec62cc125bf7c36d179b7e84c455c662c5577dc008a6ff208b",
+        "format": "jpg"
+      },
+      {
+        "path": "assets/information_251023_01_ogp.jpg",
+        "bytes": 871862,
+        "sha256": "38744cbfedae29ec62cc125bf7c36d179b7e84c455c662c5577dc008a6ff208b",
+        "format": "jpg"
+      },
+      {
+        "path": "assets/images/ogp20250320.jpg",
+        "bytes": 692777,
+        "sha256": "c58d6fcc674e6308f6128d0463a5acfcf71189f3c2236a1d55f1e8cb58ce0cb9",
+        "format": "jpg"
+      },
+      {
+        "path": "assets/ogp20250320.jpg",
+        "bytes": 692777,
+        "sha256": "c58d6fcc674e6308f6128d0463a5acfcf71189f3c2236a1d55f1e8cb58ce0cb9",
+        "format": "jpg"
+      },
+      {
+        "path": "assets/images/information_251031_01_ogp.png",
+        "bytes": 579698,
+        "sha256": "33b2112461ef475b7040ecfc5593dd64df18c1510d630868d91ea6a16858144e",
+        "format": "png"
+      }
+    ]
+  }
+}

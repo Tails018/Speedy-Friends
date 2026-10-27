@@ -1,207 +1,4 @@
 <!doctype html>
-
-<style id="sf-loader-style">
-.sf-page-loader{
-  position:fixed;inset:0;z-index:99999;
-  display:grid;place-items:center;
-  background:radial-gradient(circle at 50% 44%,rgba(34,34,34,.98),rgba(5,5,5,.99) 72%);
-  backdrop-filter:blur(14px);pointer-events:none;
-  opacity:1;visibility:visible;
-  transition:opacity .34s ease,visibility .34s ease;
-  pointer-events:auto;
-}
-.sf-page-loader.is-hidden{opacity:0;visibility:hidden;pointer-events:none}
-.sf-loader-orbit{
-  position:absolute;
-  width:clamp(170px,22vw,260px);
-  aspect-ratio:1;
-  border-radius:50%;
-  border:1px solid rgba(18,18,18,.08);
-  animation:sfLoaderOrbit 6s linear infinite;
-}
-.sf-loader-orbit::before,
-.sf-loader-orbit::after{
-  content:"";
-  position:absolute;
-  border-radius:50%;
-  border:1px dashed rgba(35,61,143,.16);
-}
-.sf-loader-orbit::before{inset:13px}
-.sf-loader-orbit::after{inset:29px}
-@keyframes sfLoaderOrbit{to{transform:rotate(360deg)}}
-.sf-loader-card{
-  position:relative;
-  width:min(330px,82vw);
-  padding:28px 28px 24px;
-  background:rgba(18,18,18,.96);
-  border:1px solid rgba(18,18,18,.08);
-  box-shadow:0 25px 80px rgba(0,0,0,.1);
-  text-align:center;
-  overflow:hidden;
-  transform:translateY(12px) scale(.975);
-  animation:sfLoaderCardIn .55s cubic-bezier(.16,1,.3,1) forwards;
-}
-@keyframes sfLoaderCardIn{to{transform:none}}
-.sf-loader-card::before{
-  content:"";position:absolute;left:-35%;top:0;width:24%;height:100%;
-  background:linear-gradient(90deg,transparent,rgba(255,255,255,.65),transparent);
-  transform:skewX(-16deg);
-  animation:sfLoaderSweep 1.65s cubic-bezier(.16,1,.3,1) infinite;
-}
-@keyframes sfLoaderSweep{
-  0%,28%{opacity:0;transform:skewX(-16deg) translateX(0)}
-  44%{opacity:.9}
-  67%,100%{opacity:0;transform:skewX(-16deg) translateX(560%)}
-}
-.sf-loader-gif{
-  position:relative;z-index:2;
-  width:112px;height:112px;object-fit:contain;
-  display:block;margin:0 auto 11px;
-  filter:drop-shadow(0 12px 22px rgba(0,0,0,.1));
-  animation:sfLoaderBob 1.9s ease-in-out infinite;
-}
-@keyframes sfLoaderBob{
-  0%,100%{transform:translateY(0) scale(1)}
-  50%{transform:translateY(-5px) scale(1.025)}
-}
-.sf-loader-kicker{
-  position:relative;z-index:2;
-  margin:0 0 6px;
-  color:#ef263f;
-  font-size:6px;font-weight:900;letter-spacing:.19em;
-  text-transform:uppercase;
-}
-.sf-loader-title{
-  position:relative;z-index:2;
-  margin:0;
-  font-family:SFDisplay,Arial Black,Arial,sans-serif;
-  font-size:clamp(27px,5vw,42px);
-  line-height:.8;
-  letter-spacing:-.055em;
-  text-transform:uppercase;
-}
-.sf-loader-subtitle{
-  position:relative;z-index:2;
-  margin:10px 0 0;
-  font-size:7px;font-weight:900;letter-spacing:.12em;
-  text-transform:uppercase;opacity:.46;
-}
-.sf-loader-line{
-  position:relative;z-index:2;
-  height:3px;margin:17px auto 0;max-width:230px;
-  background:rgba(18,18,18,.08);overflow:hidden;
-}
-.sf-loader-line::after{
-  content:"";display:block;height:100%;width:36%;
-  background:linear-gradient(90deg,#ef263f,#233d8f);
-  animation:sfLoaderBar 1.1s ease-in-out infinite;
-}
-@keyframes sfLoaderBar{
-  0%{transform:translateX(-115%)}
-  100%{transform:translateX(420%)}
-}
-@media(prefers-reduced-motion:reduce){
-  .sf-loader-orbit,.sf-loader-gif,.sf-loader-card,.sf-loader-card::before,.sf-loader-line::after{
-    animation:none!important
-  }
-}
-</style>
-<div class="sf-page-loader" id="sf-page-loader" aria-live="polite" aria-busy="true">
-  <div class="sf-loader-orbit" aria-hidden="true"></div>
-  <div class="sf-loader-card">
-    <img class="sf-loader-gif" src="assets/loader.gif" alt="" aria-hidden="true">
-    <p class="sf-loader-kicker" id="sf-loader-kicker">Speedy Friends / Navigation</p>
-    <h2 class="sf-loader-title" id="sf-loader-title">CARGANDO</h2>
-    <p class="sf-loader-subtitle" id="sf-loader-subtitle">Preparando la página…</p>
-    <div class="sf-loader-line" aria-hidden="true"></div>
-  </div>
-</div>
-<script>
-(() => {
-  const loader = document.getElementById('sf-page-loader');
-  const title = document.getElementById('sf-loader-title');
-  const subtitle = document.getElementById('sf-loader-subtitle');
-  const kicker = document.getElementById('sf-loader-kicker');
-  if (!loader) return;
-
-  let shownAt = performance.now();
-  let hideTimer = null;
-  const minVisible = 520;
-
-  const routeName = href => {
-    try {
-      const u = new URL(href, window.location.href);
-      const file = (u.pathname.split('/').pop() || 'index.html').toLowerCase();
-      const names = {
-        'index.html':'INICIO',
-        'profile.html':'PERFIL',
-        'ost.html':'AUDIO / OST',
-        'ranking.html':'RANKING',
-        'admin.html':'ADMIN',
-        'admin-role.html':'STAFF ADMIN'
-      };
-      return names[file] || (file ? file.replace('.html','').replace(/[-_]/g,' ').toUpperCase() : 'PÁGINA');
-    } catch { return 'PÁGINA'; }
-  };
-
-  const show = (page = 'PÁGINA', sub = 'Preparando la página…') => {
-    if (!loader.classList.contains('is-hidden')) {
-      shownAt = performance.now();
-    } else {
-      loader.classList.remove('is-hidden');
-      loader.setAttribute('aria-hidden','false');
-      loader.setAttribute('aria-busy','true');
-      shownAt = performance.now();
-    }
-    if (kicker) kicker.textContent = 'SPEEDY FRIENDS / NAVEGACIÓN';
-    if (title) title.textContent = page;
-    if (subtitle) subtitle.textContent = sub;
-  };
-
-  const hide = () => {
-    const wait = Math.max(0, minVisible - (performance.now() - shownAt));
-    clearTimeout(hideTimer);
-    hideTimer = setTimeout(() => {
-      loader.classList.add('is-hidden');
-      loader.setAttribute('aria-hidden','true');
-      loader.setAttribute('aria-busy','false');
-    }, wait);
-  };
-
-  window.addEventListener('load', hide, {once:true});
-  if (document.readyState === 'complete') hide();
-
-  document.addEventListener('click', event => {
-    const link = event.target.closest('a[href]');
-    if (!link) return;
-
-    const raw = link.getAttribute('href') || '';
-    if (!raw || raw.startsWith('#') || raw.startsWith('mailto:') || raw.startsWith('tel:') ||
-        link.target === '_blank' || event.ctrlKey || event.metaKey || event.shiftKey || event.altKey) return;
-
-    let target;
-    try { target = new URL(raw, window.location.href); } catch { return; }
-    if (target.origin !== window.location.origin) return;
-
-    const page = routeName(target.href);
-    const isSameDocument = target.pathname === window.location.pathname && target.hash;
-    if (isSameDocument) {
-      show(page, 'Navegando a la sección…');
-      setTimeout(() => { window.location.href = target.href; }, 250);
-      return;
-    }
-
-    // Full page navigation: display loader before the browser leaves.
-    show(page, page === 'RANKING' ? 'Cargando clasificación…' :
-               page === 'AUDIO / OST' ? 'Cargando biblioteca OST…' :
-               page === 'PERFIL' ? 'Cargando perfil…' :
-               page === 'ADMIN' || page === 'STAFF ADMIN' ? 'Cargando panel…' :
-               'Preparando la página…');
-  });
-})();
-</script>
-
-
 <html lang="es">
 <head><script id="sf-theme-prepaint-v47">(function(){try{var v=localStorage.getItem('sfTheme');if(v==='dark')document.documentElement.setAttribute('data-sf-theme','dark')}catch(e){}})();</script>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
@@ -656,9 +453,131 @@ body.admin-profile-open{overflow:hidden}
 .vp-slots{display:grid;grid-template-columns:repeat(2,1fr);gap:8px;margin-top:15px}.vp-slot{display:grid;grid-template-columns:120px 1fr;gap:10px;align-items:center;background:#fff;border:1px solid rgba(18,18,18,.08);padding:8px}.vp-slot-img{width:120px;height:82px;object-fit:cover;background:#ecebe5}.vp-slot-title{font-family:SFDisplay,Arial Black,Arial,sans-serif;font-size:19px;line-height:.82}.vp-slot-meta{font-size:5px;letter-spacing:.1em;color:#777;margin-top:5px}.vp-slot-btn{margin-top:8px;border:1px solid rgba(18,18,18,.12);background:#fff;padding:8px 9px;font-size:6px;font-weight:900;letter-spacing:.1em;cursor:pointer}.vp-slot-btn:hover{background:#171717;color:#fff}.vp-editor{margin-top:15px;padding:14px;background:#f1ece3;border:1px solid rgba(18,18,18,.08)}.vp-editor[hidden]{display:none}.vp-editor-head{display:flex;justify-content:space-between;align-items:end;margin-bottom:10px}.vp-editor-head span{font-size:5px;letter-spacing:.15em;color:#d6533f;font-weight:1000}.vp-editor-head h3{margin:5px 0 0;font-family:SFDisplay,Arial Black,Arial,sans-serif;font-size:28px;line-height:.8}.vp-editor-preview{margin-top:8px;height:130px;background:#17181d;overflow:hidden}.vp-editor-preview img{width:100%;height:100%;object-fit:cover}.vp-upload-box{padding:11px;border:1px dashed rgba(18,18,18,.16);background:#fffaf1}.vp-upload-head{display:flex;justify-content:space-between;align-items:center;gap:10px}.vp-upload-head b{display:block;font-size:7px;letter-spacing:.12em}.vp-upload-head span{display:block;font-size:5px;color:#746e69;margin-top:3px}.vp-upload-btn{padding:9px 10px;background:#171717;color:#fff;font:1000 6px/1 Arial;letter-spacing:.11em;cursor:pointer}.vp-upload-box input[type=file]{position:absolute;left:-9999px}.vp-upload-name{margin-top:7px;font-size:6px;color:#6f6964}.vp-upload-status{margin-top:5px;min-height:10px;font-size:6px;font-weight:900;color:#2e67a6}.vp-upload-status.error{color:#d6533f}.vp-upload-status.ok{color:#6f8870}
 @media(max-width:700px){.vp-slots{grid-template-columns:1fr}.vp-slot{grid-template-columns:100px 1fr}.vp-slot-img{width:100px;height:75px}.vp-upload-head{display:block}.vp-upload-btn{display:inline-block;margin-top:7px}}
 </style>
+<style id="sf-loader-style">
+.sf-page-loader{
+  position:fixed;inset:0;z-index:99999;
+  display:grid;place-items:center;
+  background:radial-gradient(circle at 50% 44%,rgba(34,34,34,.98),rgba(5,5,5,.99) 72%);
+  backdrop-filter:blur(14px);pointer-events:none;
+  opacity:1;visibility:visible;
+  transition:opacity .34s ease,visibility .34s ease;
+  pointer-events:auto;
+}
+.sf-page-loader.is-hidden{opacity:0;visibility:hidden;pointer-events:none}
+.sf-loader-orbit{
+  position:absolute;
+  width:clamp(170px,22vw,260px);
+  aspect-ratio:1;
+  border-radius:50%;
+  border:1px solid rgba(18,18,18,.08);
+  animation:sfLoaderOrbit 6s linear infinite;
+}
+.sf-loader-orbit::before,
+.sf-loader-orbit::after{
+  content:"";
+  position:absolute;
+  border-radius:50%;
+  border:1px dashed rgba(35,61,143,.16);
+}
+.sf-loader-orbit::before{inset:13px}
+.sf-loader-orbit::after{inset:29px}
+@keyframes sfLoaderOrbit{to{transform:rotate(360deg)}}
+.sf-loader-card{
+  position:relative;
+  width:min(330px,82vw);
+  padding:28px 28px 24px;
+  background:rgba(18,18,18,.96);
+  border:1px solid rgba(18,18,18,.08);
+  box-shadow:0 25px 80px rgba(0,0,0,.1);
+  text-align:center;
+  overflow:hidden;
+  transform:translateY(12px) scale(.975);
+  animation:sfLoaderCardIn .55s cubic-bezier(.16,1,.3,1) forwards;
+}
+@keyframes sfLoaderCardIn{to{transform:none}}
+.sf-loader-card::before{
+  content:"";position:absolute;left:-35%;top:0;width:24%;height:100%;
+  background:linear-gradient(90deg,transparent,rgba(255,255,255,.65),transparent);
+  transform:skewX(-16deg);
+  animation:sfLoaderSweep 1.65s cubic-bezier(.16,1,.3,1) infinite;
+}
+@keyframes sfLoaderSweep{
+  0%,28%{opacity:0;transform:skewX(-16deg) translateX(0)}
+  44%{opacity:.9}
+  67%,100%{opacity:0;transform:skewX(-16deg) translateX(560%)}
+}
+.sf-loader-gif{
+  position:relative;z-index:2;
+  width:112px;height:112px;object-fit:contain;
+  display:block;margin:0 auto 11px;
+  filter:drop-shadow(0 12px 22px rgba(0,0,0,.1));
+  animation:sfLoaderBob 1.9s ease-in-out infinite;
+}
+@keyframes sfLoaderBob{
+  0%,100%{transform:translateY(0) scale(1)}
+  50%{transform:translateY(-5px) scale(1.025)}
+}
+.sf-loader-kicker{
+  position:relative;z-index:2;
+  margin:0 0 6px;
+  color:#ef263f;
+  font-size:6px;font-weight:900;letter-spacing:.19em;
+  text-transform:uppercase;
+}
+.sf-loader-title{
+  position:relative;z-index:2;
+  margin:0;
+  font-family:SFDisplay,Arial Black,Arial,sans-serif;
+  font-size:clamp(27px,5vw,42px);
+  line-height:.8;
+  letter-spacing:-.055em;
+  text-transform:uppercase;
+}
+.sf-loader-subtitle{
+  position:relative;z-index:2;
+  margin:10px 0 0;
+  font-size:7px;font-weight:900;letter-spacing:.12em;
+  text-transform:uppercase;opacity:.46;
+}
+.sf-loader-line{
+  position:relative;z-index:2;
+  height:3px;margin:17px auto 0;max-width:230px;
+  background:rgba(18,18,18,.08);overflow:hidden;
+}
+.sf-loader-line::after{
+  content:"";display:block;height:100%;width:36%;
+  background:linear-gradient(90deg,#ef263f,#233d8f);
+  animation:sfLoaderBar 1.1s ease-in-out infinite;
+}
+@keyframes sfLoaderBar{
+  0%{transform:translateX(-115%)}
+  100%{transform:translateX(420%)}
+}
+@media(prefers-reduced-motion:reduce){
+  .sf-loader-orbit,.sf-loader-gif,.sf-loader-card,.sf-loader-card::before,.sf-loader-line::after{
+    animation:none!important
+  }
+}
+</style>
+<meta name="description" content="Administración · Speedy Friends · Comunidad de Speedy Friends, perfiles, creatividad y entretenimiento.">
+<meta name="robots" content="noindex,nofollow">
+<link rel="stylesheet" href="portal-ui.css">
+<script defer src="portal-ui.js"></script>
 </head>
 <body data-admin-mode="creator" class="admin-page">
-<main class="admin-shell">
+<a class="sf-skip-link" href="#main-content">Saltar al contenido</a>
+<div class="sf-page-loader" id="sf-page-loader" aria-live="polite" aria-busy="true">
+  <div class="sf-loader-orbit" aria-hidden="true"></div>
+  <div class="sf-loader-card">
+    <img class="sf-loader-gif" src="assets/loader.gif" alt="" aria-hidden="true" width="100" height="100" decoding="async">
+    <p class="sf-loader-kicker" id="sf-loader-kicker">Speedy Friends / Navigation</p>
+    <h2 class="sf-loader-title" id="sf-loader-title">CARGANDO</h2>
+    <p class="sf-loader-subtitle" id="sf-loader-subtitle">Preparando la página…</p>
+    <div class="sf-loader-line" aria-hidden="true"></div>
+  </div>
+</div>
+<script src="page-loader.js"></script>
+<main id="main-content" class="admin-shell">
 <div class="admin-ghost" aria-hidden="true">ADMIN</div>
 <nav class="admin-topbar"><a class="admin-brand" href="index.html"><span>SPEEDY</span> FRIENDS</a><div class="admin-nav">
 <a href="index.html#topics">NOVEDADES</a><a href="index.html#friends">AMIGOS</a><a href="index.html#special">ESPECIAL</a><a href="index.html#download">DESCARGAS</a><a href="index.html#quick-actions">ACCESOS</a><a href="ranking.html">RANKING</a><a class="current" href="admin.html">ADMIN</a></div><a class="admin-menu" href="index.html#quick-actions" aria-label="Volver a accesos rápidos">☰</a></nav>
@@ -789,7 +708,7 @@ body.admin-profile-open{overflow:hidden}
           <input id="vp-edit-file" type="file" accept="image/png,image/jpeg,image/webp,image/gif">
           <div id="vp-edit-file-name" class="vp-upload-name">Ningún archivo seleccionado</div>
           <div id="vp-edit-file-status" class="vp-upload-status"></div>
-          <div class="vp-editor-preview"><img id="vp-edit-preview" src="assets/section-replacement.png" alt=""></div>
+          <div class="vp-editor-preview"><img id="vp-edit-preview" src="assets/optimized/1cdfd07e95f6-640.webp" srcset="assets/optimized/1cdfd07e95f6-320.webp 320w, assets/optimized/1cdfd07e95f6-640.webp 640w, assets/optimized/1cdfd07e95f6-960.webp 960w, assets/optimized/1cdfd07e95f6-1440.webp 1440w" sizes="(max-width: 600px) 90vw, (max-width: 1000px) 45vw, 640px" alt="" width="1774" height="887" decoding="async" loading="lazy"></div>
         </div>
         <div style="grid-column:1/-1;display:flex;gap:7px;flex-wrap:wrap">
           <button class="admin-btn primary" type="submit">REEMPLAZAR Y GUARDAR</button>
@@ -1325,7 +1244,7 @@ document.addEventListener("DOMContentLoaded",()=>{
     if(!items.length){list.innerHTML='<div class="admin-news-empty">No hay novedades todavía.</div>';return;}
     list.innerHTML=items.map((n,i)=>`
       <article class="admin-news-row" style="animation-delay:${Math.min(i,10)*45}ms">
-        <img class="admin-news-thumb" src="${esc(n.image||'assets/section-replacement.png')}" alt="">
+        <img class="admin-news-thumb" src="${esc(n.image||'assets/optimized/1cdfd07e95f6-640.webp')}" alt="">
         <div>
           <div class="admin-news-title">${esc(n.title||'Sin título')}</div>
           <div class="admin-news-meta">${esc(n.date||'')} · ${esc(n.category||'INFO')} · ${n.published===false?'OCULTA':'PUBLICADA'}${n.featured?' · DESTACADA':''}</div>
@@ -1492,7 +1411,7 @@ document.addEventListener("DOMContentLoaded",()=>{
   }
   function openEditor(n){
     editing=n;$('vp-editor').hidden=false;$('vp-edit-id').value=n.id;$('vp-edit-title').value=n.title||'';$('vp-edit-tag').value=n.tag||'';$('vp-edit-image').value=n.image||'';$('vp-edit-label').textContent=`ESPACIO ${n.order}`;
-    $('vp-edit-preview').src=n.image||'assets/section-replacement.png';$('vp-edit-file-name').textContent='Ningún archivo seleccionado';$('vp-edit-file-status').textContent='';
+    $('vp-edit-preview').src=n.image||'assets/optimized/1cdfd07e95f6-640.webp';$('vp-edit-file-name').textContent='Ningún archivo seleccionado';$('vp-edit-file-status').textContent='';
     $('vp-editor').scrollIntoView({behavior:'smooth',block:'center'});
   }
   function closeEditor(){editing=null;$('vp-editor').hidden=true}
