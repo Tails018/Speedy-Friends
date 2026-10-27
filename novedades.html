@@ -305,10 +305,14 @@ body.news-ready .news-pointer{opacity:1}
   .vp-card{height:160px}.vp-card img{height:160px}
 }
 </style>
+<meta name="description" content="Speedy Friends · Novedades · Comunidad de Speedy Friends, perfiles, creatividad y entretenimiento.">
+<link rel="stylesheet" href="portal-ui.css">
+<script defer src="portal-ui.js"></script>
 </head>
 <body class="novedades-public-page">
+<a class="sf-skip-link" href="#main-content">Saltar al contenido</a>
 <header class="top"><a class="brand" href="index.html"><b>SPEEDY</b> FRIENDS</a><div><a href="index.html">INICIO</a></div></header>
-<div class="news-ambient" aria-hidden="true"><div class="news-gridlines"></div><div class="news-orb a"></div><div class="news-orb b"></div><div class="news-orb c"></div></div><div class="news-pointer" id="news-pointer" aria-hidden="true"></div><main class="page">
+<div class="news-ambient" aria-hidden="true"><div class="news-gridlines"></div><div class="news-orb a"></div><div class="news-orb b"></div><div class="news-orb c"></div></div><div class="news-pointer" id="news-pointer" aria-hidden="true"></div><main id="main-content" class="page">
 <div class="mast"><div><p class="eyebrow">SPEEDY FRIENDS / NEWSROOM</p><h1>NOVEDADES<br><em>DEL TEAM.</em></h1><p class="lead">Lo que está pasando, lo que viene y lo que vale la pena recordar. Una portada editorial para nuestras novedades y un archivo vivo para no perder ninguna.</p></div><div class="mast-aside"><div class="stat"><b id="live-count">0</b><span>PUBLICACIONES ACTIVAS</span></div><div class="stat"><b>∞</b><span>ARCHIVO VIVO</span></div></div></div>
 <div class="pulse-line"></div>
 <div class="toolbar"><input id="search" placeholder="Buscar por título, categoría o texto..."><select id="cat"><option value="">TODAS LAS CATEGORÍAS</option><option>EVENTO</option><option>INFO</option><option>COMUNIDAD</option><option>ACTUALIZACIÓN</option><option>ANUNCIO</option></select></div><div id="news-v25-ribbon" style="display:flex;gap:9px;flex-wrap:wrap;margin:8px 0 18px;position:relative;z-index:2"><span>COMMUNITY</span><span>EVENTS</span><span>UPDATES</span><span>MOMENTS</span><span>STORIES</span></div>
@@ -373,7 +377,7 @@ body.news-ready .news-pointer{opacity:1}
     if($('featured-wrap')){
       $('featured-wrap').innerHTML=featured?`
         <article class="hero-news" data-news-id="${esc(featured.id)}" tabindex="0">
-          <div class="hero-news-media"><img src="${esc(featured.image||'assets/section-replacement.png')}" alt=""></div>
+          <div class="hero-news-media"><img src="${esc(featured.image||'assets/optimized/1cdfd07e95f6-640.webp')}" alt=""></div>
           <div class="hero-copy"><span class="chip">${esc(featured.category||'INFO')}</span>
           <h2>${esc(featured.title||'Sin título')}</h2><p>${esc(featured.summary||'')}</p>
           <button type="button" class="read">VER RESUMEN →</button></div>
@@ -383,7 +387,7 @@ body.news-ready .news-pointer{opacity:1}
     if($('news-grid')){
       $('news-grid').innerHTML=items.filter(n=>n!==featured).map(n=>`
         <article class="card" data-news-id="${esc(n.id)}" tabindex="0">
-          <div class="card-media"><img src="${esc(n.image||'assets/section-replacement.png')}" alt=""></div>
+          <div class="card-media"><img src="${esc(n.image||'assets/optimized/1cdfd07e95f6-640.webp')}" alt=""></div>
           <div class="card-copy"><div class="meta"><span>${esc(n.date||'')}</span><span>${esc(n.category||'INFO')}</span></div>
           <h3>${esc(n.title||'Sin título')}</h3><p>${esc(n.summary||'')}</p>
           <button type="button" class="news-open-summary">ABRIR RESUMEN →</button></div>

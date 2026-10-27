@@ -1,0 +1,15 @@
+{
+  "browser": "151.0.7922.34",
+  "home": {
+    "loaderHidden": true,
+    "quickCards": 5,
+    "nestedButtons": 0,
+    "gateVisible": true,
+    "scrollWidth": 390,
+    "viewport": 390,
+    "headInBody": false
+  },
+  "errors": [
+    "Missing } in template expression"
+  ]
+}

@@ -1,0 +1,2088 @@
+{
+  "assets/anime-ling.webp": {
+    "dimensions": {
+      "width": 100,
+      "height": 100
+    },
+    "detectedFormat": "webp"
+  },
+  "assets/arrow-btn01.webp": {
+    "dimensions": {
+      "width": 330,
+      "height": 43
+    },
+    "detectedFormat": "webp"
+  },
+  "assets/arrow-btn03.webp": {
+    "dimensions": {
+      "width": 413,
+      "height": 48
+    },
+    "detectedFormat": "webp"
+  },
+  "assets/arrow-l.webp": {
+    "dimensions": {
+      "width": 54,
+      "height": 54
+    },
+    "detectedFormat": "webp"
+  },
+  "assets/arrow-r.webp": {
+    "dimensions": {
+      "width": 54,
+      "height": 54
+    },
+    "detectedFormat": "webp"
+  },
+  "assets/arrow-w.webp": {
+    "dimensions": {
+      "width": 54,
+      "height": 54
+    },
+    "detectedFormat": "webp"
+  },
+  "assets/background-logo.png": {
+    "dimensions": {
+      "width": 500,
+      "height": 500
+    },
+    "detectedFormat": "png"
+  },
+  "assets/banner_250320_02_SonicChannelFuncard.jpg": {
+    "dimensions": {
+      "width": 1280,
+      "height": 720
+    },
+    "detectedFormat": "jpeg"
+  },
+  "assets/banner_250627_01_SonicRacingCrossWorld.jpg": {
+    "dimensions": {
+      "width": 1920,
+      "height": 1080
+    },
+    "detectedFormat": "jpeg"
+  },
+  "assets/banner_260624_01_SonicFrontiersDX.webp": {
+    "dimensions": {
+      "width": 1280,
+      "height": 720
+    },
+    "detectedFormat": "webp"
+  },
+  "assets/bgparts-w.webp": {
+    "dimensions": {
+      "width": 1129,
+      "height": 7129
+    },
+    "detectedFormat": "webp"
+  },
+  "assets/bgparts.webp": {
+    "dimensions": {
+      "width": 1129,
+      "height": 7129
+    },
+    "detectedFormat": "webp"
+  },
+  "assets/broadcasting_260821_01_ogp-thumb-640xauto-19300.webp": {
+    "dimensions": {
+      "width": 640,
+      "height": 360
+    },
+    "detectedFormat": "webp"
+  },
+  "assets/btn-chara-on.png": {
+    "dimensions": {
+      "width": 323,
+      "height": 161
+    },
+    "detectedFormat": "png"
+  },
+  "assets/btn-chara.png": {
+    "dimensions": {
+      "width": 323,
+      "height": 160
+    },
+    "detectedFormat": "png"
+  },
+  "assets/btn-fan-on.png": {
+    "dimensions": {
+      "width": 322,
+      "height": 161
+    },
+    "detectedFormat": "png"
+  },
+  "assets/btn-fan.png": {
+    "dimensions": {
+      "width": 322,
+      "height": 160
+    },
+    "detectedFormat": "png"
+  },
+  "assets/btn-history-on.png": {
+    "dimensions": {
+      "width": 322,
+      "height": 161
+    },
+    "detectedFormat": "png"
+  },
+  "assets/btn-history.png": {
+    "dimensions": {
+      "width": 322,
+      "height": 160
+    },
+    "detectedFormat": "png"
+  },
+  "assets/btn-redicon.webp": {
+    "dimensions": {
+      "width": 85,
+      "height": 85
+    },
+    "detectedFormat": "webp"
+  },
+  "assets/btn-special-on.png": {
+    "dimensions": {
+      "width": 323,
+      "height": 161
+    },
+    "detectedFormat": "png"
+  },
+  "assets/btn-special.png": {
+    "dimensions": {
+      "width": 323,
+      "height": 160
+    },
+    "detectedFormat": "png"
+  },
+  "assets/btn-top-on.webp": {
+    "dimensions": {
+      "width": 323,
+      "height": 160
+    },
+    "detectedFormat": "webp"
+  },
+  "assets/btn-top.webp": {
+    "dimensions": {
+      "width": 322,
+      "height": 160
+    },
+    "detectedFormat": "webp"
+  },
+  "assets/btn-topics-on.png": {
+    "dimensions": {
+      "width": 321,
+      "height": 161
+    },
+    "detectedFormat": "png"
+  },
+  "assets/btn-topics.png": {
+    "dimensions": {
+      "width": 320,
+      "height": 160
+    },
+    "detectedFormat": "png"
+  },
+  "assets/cafe-matcha-sonic.jpg": {
+    "dimensions": {
+      "width": 736,
+      "height": 981
+    },
+    "detectedFormat": "jpeg"
+  },
+  "assets/cafe-sonic-barista-cover.jpg": {
+    "dimensions": {
+      "width": 736,
+      "height": 926
+    },
+    "detectedFormat": "jpeg"
+  },
+  "assets/cafe-sonic-dessert.jpg": {
+    "dimensions": {
+      "width": 720,
+      "height": 960
+    },
+    "detectedFormat": "jpeg"
+  },
+  "assets/cafe-sonic-menu-board.jpg": {
+    "dimensions": {
+      "width": 736,
+      "height": 552
+    },
+    "detectedFormat": "jpeg"
+  },
+  "assets/cafe-speed-cafe-storefront.jpg": {
+    "dimensions": {
+      "width": 736,
+      "height": 1308
+    },
+    "detectedFormat": "jpeg"
+  },
+  "assets/cafe-toast-sonic.jpg": {
+    "dimensions": {
+      "width": 736,
+      "height": 981
+    },
+    "detectedFormat": "jpeg"
+  },
+  "assets/cafeteria-counter-inspiration.jpg": {
+    "dimensions": {
+      "width": 736,
+      "height": 490
+    },
+    "detectedFormat": "jpeg"
+  },
+  "assets/calendar_2607_thm-thumb-220x220-18918.jpg": {
+    "dimensions": {
+      "width": 220,
+      "height": 220
+    },
+    "detectedFormat": "jpeg"
+  },
+  "assets/calendar_2608_thm-thumb-220x220-19140.jpg": {
+    "dimensions": {
+      "width": 220,
+      "height": 220
+    },
+    "detectedFormat": "jpeg"
+  },
+  "assets/catEnjoyCalendar.png": {
+    "dimensions": {
+      "width": 220,
+      "height": 220
+    },
+    "detectedFormat": "png"
+  },
+  "assets/catEnjoyWallpaperPc.png": {
+    "dimensions": {
+      "width": 220,
+      "height": 220
+    },
+    "detectedFormat": "png"
+  },
+  "assets/catEnjoyWallpaperSp.png": {
+    "dimensions": {
+      "width": 220,
+      "height": 220
+    },
+    "detectedFormat": "png"
+  },
+  "assets/chara.webp": {
+    "dimensions": {
+      "width": 1919,
+      "height": 243
+    },
+    "detectedFormat": "webp"
+  },
+  "assets/classic.webp": {
+    "dimensions": {
+      "width": 1919,
+      "height": 243
+    },
+    "detectedFormat": "webp"
+  },
+  "assets/common1.png": {
+    "dimensions": {
+      "width": 200,
+      "height": 200
+    },
+    "detectedFormat": "png"
+  },
+  "assets/common2.png": {
+    "dimensions": {
+      "width": 200,
+      "height": 200
+    },
+    "detectedFormat": "png"
+  },
+  "assets/common3.png": {
+    "dimensions": {
+      "width": 200,
+      "height": 200
+    },
+    "detectedFormat": "png"
+  },
+  "assets/dl01.webp": {
+    "dimensions": {
+      "width": 500,
+      "height": 500
+    },
+    "detectedFormat": "webp"
+  },
+  "assets/dl02.webp": {
+    "dimensions": {
+      "width": 500,
+      "height": 500
+    },
+    "detectedFormat": "webp"
+  },
+  "assets/dl03.webp": {
+    "dimensions": {
+      "width": 500,
+      "height": 500
+    },
+    "detectedFormat": "webp"
+  },
+  "assets/dl04.webp": {
+    "dimensions": {
+      "width": 500,
+      "height": 500
+    },
+    "detectedFormat": "webp"
+  },
+  "assets/dl05.webp": {
+    "dimensions": {
+      "width": 500,
+      "height": 500
+    },
+    "detectedFormat": "webp"
+  },
+  "assets/dl06.webp": {
+    "dimensions": {
+      "width": 500,
+      "height": 500
+    },
+    "detectedFormat": "webp"
+  },
+  "assets/dl07.webp": {
+    "dimensions": {
+      "width": 500,
+      "height": 500
+    },
+    "detectedFormat": "webp"
+  },
+  "assets/downloads.webp": {
+    "dimensions": {
+      "width": 1919,
+      "height": 243
+    },
+    "detectedFormat": "webp"
+  },
+  "assets/enjoy.webp": {
+    "dimensions": {
+      "width": 1919,
+      "height": 243
+    },
+    "detectedFormat": "webp"
+  },
+  "assets/errorMessage.png": {
+    "dimensions": {
+      "width": 50,
+      "height": 60
+    },
+    "detectedFormat": "png"
+  },
+  "assets/event_260803_01_ogp-thumb-640xauto-19259.webp": {
+    "dimensions": {
+      "width": 640,
+      "height": 360
+    },
+    "detectedFormat": "webp"
+  },
+  "assets/event_260826_01_ogp-thumb-640xauto-19278.webp": {
+    "dimensions": {
+      "width": 640,
+      "height": 360
+    },
+    "detectedFormat": "webp"
+  },
+  "assets/fan.webp": {
+    "dimensions": {
+      "width": 1919,
+      "height": 243
+    },
+    "detectedFormat": "webp"
+  },
+  "assets/fanart-demo/avatar-1.webp": {
+    "dimensions": {
+      "width": 1774,
+      "height": 887
+    },
+    "detectedFormat": "png"
+  },
+  "assets/fanart-demo/avatar-2.webp": {
+    "dimensions": {
+      "width": 1774,
+      "height": 887
+    },
+    "detectedFormat": "png"
+  },
+  "assets/fanart-demo/avatar-3.webp": {
+    "dimensions": {
+      "width": 1774,
+      "height": 887
+    },
+    "detectedFormat": "png"
+  },
+  "assets/fanart-demo/avatar-4.webp": {
+    "dimensions": {
+      "width": 1774,
+      "height": 887
+    },
+    "detectedFormat": "png"
+  },
+  "assets/fanart-demo/blue-rush.webp": {
+    "dimensions": {
+      "width": 640,
+      "height": 360
+    },
+    "detectedFormat": "webp"
+  },
+  "assets/fanart-demo/cyber-team.svg": {
+    "dimensions": {
+      "width": 200,
+      "height": 150
+    },
+    "detectedFormat": "svg"
+  },
+  "assets/fanart-demo/eclipse.svg": {
+    "dimensions": {
+      "width": 200,
+      "height": 150
+    },
+    "detectedFormat": "svg"
+  },
+  "assets/fanart-demo/future-glow.webp": {
+    "dimensions": {
+      "width": 1919,
+      "height": 243
+    },
+    "detectedFormat": "webp"
+  },
+  "assets/fanart-demo/neon-rush.svg": {
+    "dimensions": {
+      "width": 200,
+      "height": 150
+    },
+    "detectedFormat": "svg"
+  },
+  "assets/fanart-demo/rose-drive.svg": {
+    "dimensions": {
+      "width": 200,
+      "height": 150
+    },
+    "detectedFormat": "svg"
+  },
+  "assets/fanart-demo/shadow-eclipse.webp": {
+    "dimensions": {
+      "width": 733,
+      "height": 171
+    },
+    "detectedFormat": "jpeg"
+  },
+  "assets/fanart-demo/team-run.webp": {
+    "dimensions": {
+      "width": 1919,
+      "height": 243
+    },
+    "detectedFormat": "webp"
+  },
+  "assets/fanart_2608_ogp-thumb-640xauto-19221.webp": {
+    "dimensions": {
+      "width": 640,
+      "height": 360
+    },
+    "detectedFormat": "webp"
+  },
+  "assets/gametitle.webp": {
+    "dimensions": {
+      "width": 1919,
+      "height": 243
+    },
+    "detectedFormat": "webp"
+  },
+  "assets/gametitle_SonicFrontiersDX_square-thumb-512x512-18932.webp": {
+    "dimensions": {
+      "width": 512,
+      "height": 512
+    },
+    "detectedFormat": "webp"
+  },
+  "assets/gametitle_SonicFrontiersDX_square.webp": {
+    "dimensions": {
+      "width": 512,
+      "height": 512
+    },
+    "detectedFormat": "webp"
+  },
+  "assets/gametitle_SonicRacingCrossWorld_square-thumb-512x512-15744.webp": {
+    "dimensions": {
+      "width": 512,
+      "height": 512
+    },
+    "detectedFormat": "webp"
+  },
+  "assets/gametitle_SonicRacingCrossWorld_square.webp": {
+    "dimensions": {
+      "width": 512,
+      "height": 512
+    },
+    "detectedFormat": "webp"
+  },
+  "assets/gametitle_SonicShadowGenerations_square-thumb-512x512-15742.webp": {
+    "dimensions": {
+      "width": 512,
+      "height": 512
+    },
+    "detectedFormat": "webp"
+  },
+  "assets/gametitle_SonicShadowGenerations_square.webp": {
+    "dimensions": {
+      "width": 512,
+      "height": 512
+    },
+    "detectedFormat": "webp"
+  },
+  "assets/goods.webp": {
+    "dimensions": {
+      "width": 1919,
+      "height": 243
+    },
+    "detectedFormat": "webp"
+  },
+  "assets/goods_260630_01_ogp-thumb-640xauto-19035.webp": {
+    "dimensions": {
+      "width": 640,
+      "height": 360
+    },
+    "detectedFormat": "webp"
+  },
+  "assets/goods_260701_01_ogp-thumb-640xauto-19042.webp": {
+    "dimensions": {
+      "width": 640,
+      "height": 360
+    },
+    "detectedFormat": "webp"
+  },
+  "assets/goods_260703_01_ogp-thumb-640xauto-19082.webp": {
+    "dimensions": {
+      "width": 640,
+      "height": 360
+    },
+    "detectedFormat": "webp"
+  },
+  "assets/goods_260722_01_ogp-thumb-640xauto-19144.webp": {
+    "dimensions": {
+      "width": 640,
+      "height": 360
+    },
+    "detectedFormat": "webp"
+  },
+  "assets/goods_260722_02_ogp-thumb-640xauto-19148.webp": {
+    "dimensions": {
+      "width": 640,
+      "height": 360
+    },
+    "detectedFormat": "webp"
+  },
+  "assets/goods_260722_03_ogp-thumb-640xauto-19153.webp": {
+    "dimensions": {
+      "width": 640,
+      "height": 360
+    },
+    "detectedFormat": "webp"
+  },
+  "assets/goods_260722_04_ogp-thumb-640xauto-19155.webp": {
+    "dimensions": {
+      "width": 640,
+      "height": 360
+    },
+    "detectedFormat": "webp"
+  },
+  "assets/goods_260724_01_ogp-thumb-640xauto-19232.webp": {
+    "dimensions": {
+      "width": 640,
+      "height": 360
+    },
+    "detectedFormat": "webp"
+  },
+  "assets/google-login.png": {
+    "dimensions": {
+      "width": 94,
+      "height": 96
+    },
+    "detectedFormat": "png"
+  },
+  "assets/header_caution.svg": {
+    "dimensions": {
+      "width": 150,
+      "height": 150
+    },
+    "detectedFormat": "svg"
+  },
+  "assets/iconLeft.png": {
+    "dimensions": {
+      "width": 26,
+      "height": 33
+    },
+    "detectedFormat": "png"
+  },
+  "assets/iconLeft_white.png": {
+    "dimensions": {
+      "width": 26,
+      "height": 33
+    },
+    "detectedFormat": "png"
+  },
+  "assets/iconRight.png": {
+    "dimensions": {
+      "width": 26,
+      "height": 33
+    },
+    "detectedFormat": "png"
+  },
+  "assets/iconRight_white.png": {
+    "dimensions": {
+      "width": 26,
+      "height": 33
+    },
+    "detectedFormat": "png"
+  },
+  "assets/icons.png": {
+    "dimensions": {
+      "width": 120,
+      "height": 24
+    },
+    "detectedFormat": "png"
+  },
+  "assets/iconUp.png": {
+    "dimensions": {
+      "width": 33,
+      "height": 26
+    },
+    "detectedFormat": "png"
+  },
+  "assets/iconUp_white.png": {
+    "dimensions": {
+      "width": 33,
+      "height": 26
+    },
+    "detectedFormat": "png"
+  },
+  "assets/iconX.png": {
+    "dimensions": {
+      "width": 33,
+      "height": 33
+    },
+    "detectedFormat": "png"
+  },
+  "assets/iconX_white.png": {
+    "dimensions": {
+      "width": 33,
+      "height": 33
+    },
+    "detectedFormat": "png"
+  },
+  "assets/images/anime-ling.webp": {
+    "dimensions": {
+      "width": 100,
+      "height": 100
+    },
+    "detectedFormat": "webp"
+  },
+  "assets/images/arrow-btn01.webp": {
+    "dimensions": {
+      "width": 330,
+      "height": 43
+    },
+    "detectedFormat": "webp"
+  },
+  "assets/images/arrow-btn03.webp": {
+    "dimensions": {
+      "width": 413,
+      "height": 48
+    },
+    "detectedFormat": "webp"
+  },
+  "assets/images/arrow-l.webp": {
+    "dimensions": {
+      "width": 54,
+      "height": 54
+    },
+    "detectedFormat": "webp"
+  },
+  "assets/images/arrow-r.webp": {
+    "dimensions": {
+      "width": 54,
+      "height": 54
+    },
+    "detectedFormat": "webp"
+  },
+  "assets/images/arrow-w.webp": {
+    "dimensions": {
+      "width": 54,
+      "height": 54
+    },
+    "detectedFormat": "webp"
+  },
+  "assets/images/background-logo.png": {
+    "dimensions": {
+      "width": 500,
+      "height": 500
+    },
+    "detectedFormat": "png"
+  },
+  "assets/images/banner_250320_02_SonicChannelFuncard.jpg": {
+    "dimensions": {
+      "width": 1280,
+      "height": 720
+    },
+    "detectedFormat": "jpeg"
+  },
+  "assets/images/banner_250627_01_SonicRacingCrossWorld.jpg": {
+    "dimensions": {
+      "width": 1920,
+      "height": 1080
+    },
+    "detectedFormat": "jpeg"
+  },
+  "assets/images/banner_260624_01_SonicFrontiersDX.webp": {
+    "dimensions": {
+      "width": 1280,
+      "height": 720
+    },
+    "detectedFormat": "webp"
+  },
+  "assets/images/bgparts-w.webp": {
+    "dimensions": {
+      "width": 1129,
+      "height": 7129
+    },
+    "detectedFormat": "webp"
+  },
+  "assets/images/bgparts.webp": {
+    "dimensions": {
+      "width": 1129,
+      "height": 7129
+    },
+    "detectedFormat": "webp"
+  },
+  "assets/images/broadcasting_260821_01_ogp-thumb-640xauto-19300.webp": {
+    "dimensions": {
+      "width": 640,
+      "height": 360
+    },
+    "detectedFormat": "webp"
+  },
+  "assets/images/btn-chara-on.png": {
+    "dimensions": {
+      "width": 323,
+      "height": 161
+    },
+    "detectedFormat": "png"
+  },
+  "assets/images/btn-chara.png": {
+    "dimensions": {
+      "width": 323,
+      "height": 160
+    },
+    "detectedFormat": "png"
+  },
+  "assets/images/btn-fan-on.png": {
+    "dimensions": {
+      "width": 322,
+      "height": 161
+    },
+    "detectedFormat": "png"
+  },
+  "assets/images/btn-fan.png": {
+    "dimensions": {
+      "width": 322,
+      "height": 160
+    },
+    "detectedFormat": "png"
+  },
+  "assets/images/btn-history-on.png": {
+    "dimensions": {
+      "width": 322,
+      "height": 161
+    },
+    "detectedFormat": "png"
+  },
+  "assets/images/btn-history.png": {
+    "dimensions": {
+      "width": 322,
+      "height": 160
+    },
+    "detectedFormat": "png"
+  },
+  "assets/images/btn-redicon.webp": {
+    "dimensions": {
+      "width": 85,
+      "height": 85
+    },
+    "detectedFormat": "webp"
+  },
+  "assets/images/btn-special-on.png": {
+    "dimensions": {
+      "width": 323,
+      "height": 161
+    },
+    "detectedFormat": "png"
+  },
+  "assets/images/btn-special.png": {
+    "dimensions": {
+      "width": 323,
+      "height": 160
+    },
+    "detectedFormat": "png"
+  },
+  "assets/images/btn-top-on.webp": {
+    "dimensions": {
+      "width": 323,
+      "height": 160
+    },
+    "detectedFormat": "webp"
+  },
+  "assets/images/btn-top.webp": {
+    "dimensions": {
+      "width": 322,
+      "height": 160
+    },
+    "detectedFormat": "webp"
+  },
+  "assets/images/btn-topics-on.png": {
+    "dimensions": {
+      "width": 321,
+      "height": 161
+    },
+    "detectedFormat": "png"
+  },
+  "assets/images/btn-topics.png": {
+    "dimensions": {
+      "width": 320,
+      "height": 160
+    },
+    "detectedFormat": "png"
+  },
+  "assets/images/calendar_2607_thm-thumb-220x220-18918.jpg": {
+    "dimensions": {
+      "width": 220,
+      "height": 220
+    },
+    "detectedFormat": "jpeg"
+  },
+  "assets/images/calendar_2608_thm-thumb-220x220-19140.jpg": {
+    "dimensions": {
+      "width": 220,
+      "height": 220
+    },
+    "detectedFormat": "jpeg"
+  },
+  "assets/images/catEnjoyCalendar.png": {
+    "dimensions": {
+      "width": 220,
+      "height": 220
+    },
+    "detectedFormat": "png"
+  },
+  "assets/images/catEnjoyWallpaperPc.png": {
+    "dimensions": {
+      "width": 220,
+      "height": 220
+    },
+    "detectedFormat": "png"
+  },
+  "assets/images/catEnjoyWallpaperSp.png": {
+    "dimensions": {
+      "width": 220,
+      "height": 220
+    },
+    "detectedFormat": "png"
+  },
+  "assets/images/chara.webp": {
+    "dimensions": {
+      "width": 1919,
+      "height": 243
+    },
+    "detectedFormat": "webp"
+  },
+  "assets/images/classic.webp": {
+    "dimensions": {
+      "width": 1919,
+      "height": 243
+    },
+    "detectedFormat": "webp"
+  },
+  "assets/images/common1.png": {
+    "dimensions": {
+      "width": 200,
+      "height": 200
+    },
+    "detectedFormat": "png"
+  },
+  "assets/images/common2.png": {
+    "dimensions": {
+      "width": 200,
+      "height": 200
+    },
+    "detectedFormat": "png"
+  },
+  "assets/images/common3.png": {
+    "dimensions": {
+      "width": 200,
+      "height": 200
+    },
+    "detectedFormat": "png"
+  },
+  "assets/images/dl01.webp": {
+    "dimensions": {
+      "width": 500,
+      "height": 500
+    },
+    "detectedFormat": "webp"
+  },
+  "assets/images/dl02.webp": {
+    "dimensions": {
+      "width": 500,
+      "height": 500
+    },
+    "detectedFormat": "webp"
+  },
+  "assets/images/dl03.webp": {
+    "dimensions": {
+      "width": 500,
+      "height": 500
+    },
+    "detectedFormat": "webp"
+  },
+  "assets/images/dl04.webp": {
+    "dimensions": {
+      "width": 500,
+      "height": 500
+    },
+    "detectedFormat": "webp"
+  },
+  "assets/images/dl05.webp": {
+    "dimensions": {
+      "width": 500,
+      "height": 500
+    },
+    "detectedFormat": "webp"
+  },
+  "assets/images/dl06.webp": {
+    "dimensions": {
+      "width": 500,
+      "height": 500
+    },
+    "detectedFormat": "webp"
+  },
+  "assets/images/dl07.webp": {
+    "dimensions": {
+      "width": 500,
+      "height": 500
+    },
+    "detectedFormat": "webp"
+  },
+  "assets/images/downloads.webp": {
+    "dimensions": {
+      "width": 1919,
+      "height": 243
+    },
+    "detectedFormat": "webp"
+  },
+  "assets/images/enjoy.webp": {
+    "dimensions": {
+      "width": 1919,
+      "height": 243
+    },
+    "detectedFormat": "webp"
+  },
+  "assets/images/errorMessage.png": {
+    "dimensions": {
+      "width": 50,
+      "height": 60
+    },
+    "detectedFormat": "png"
+  },
+  "assets/images/event_260803_01_ogp-thumb-640xauto-19259.webp": {
+    "dimensions": {
+      "width": 640,
+      "height": 360
+    },
+    "detectedFormat": "webp"
+  },
+  "assets/images/event_260826_01_ogp-thumb-640xauto-19278.webp": {
+    "dimensions": {
+      "width": 640,
+      "height": 360
+    },
+    "detectedFormat": "webp"
+  },
+  "assets/images/fan.webp": {
+    "dimensions": {
+      "width": 1919,
+      "height": 243
+    },
+    "detectedFormat": "webp"
+  },
+  "assets/images/fanart_2608_ogp-thumb-640xauto-19221.webp": {
+    "dimensions": {
+      "width": 640,
+      "height": 360
+    },
+    "detectedFormat": "webp"
+  },
+  "assets/images/gametitle.webp": {
+    "dimensions": {
+      "width": 1919,
+      "height": 243
+    },
+    "detectedFormat": "webp"
+  },
+  "assets/images/gametitle_SonicFrontiersDX_square-thumb-512x512-18932.webp": {
+    "dimensions": {
+      "width": 512,
+      "height": 512
+    },
+    "detectedFormat": "webp"
+  },
+  "assets/images/gametitle_SonicFrontiersDX_square.webp": {
+    "dimensions": {
+      "width": 512,
+      "height": 512
+    },
+    "detectedFormat": "webp"
+  },
+  "assets/images/gametitle_SonicRacingCrossWorld_square-thumb-512x512-15744.webp": {
+    "dimensions": {
+      "width": 512,
+      "height": 512
+    },
+    "detectedFormat": "webp"
+  },
+  "assets/images/gametitle_SonicRacingCrossWorld_square.webp": {
+    "dimensions": {
+      "width": 512,
+      "height": 512
+    },
+    "detectedFormat": "webp"
+  },
+  "assets/images/gametitle_SonicShadowGenerations_square-thumb-512x512-15742.webp": {
+    "dimensions": {
+      "width": 512,
+      "height": 512
+    },
+    "detectedFormat": "webp"
+  },
+  "assets/images/gametitle_SonicShadowGenerations_square.webp": {
+    "dimensions": {
+      "width": 512,
+      "height": 512
+    },
+    "detectedFormat": "webp"
+  },
+  "assets/images/goods.webp": {
+    "dimensions": {
+      "width": 1919,
+      "height": 243
+    },
+    "detectedFormat": "webp"
+  },
+  "assets/images/goods_260630_01_ogp-thumb-640xauto-19035.webp": {
+    "dimensions": {
+      "width": 640,
+      "height": 360
+    },
+    "detectedFormat": "webp"
+  },
+  "assets/images/goods_260701_01_ogp-thumb-640xauto-19042.webp": {
+    "dimensions": {
+      "width": 640,
+      "height": 360
+    },
+    "detectedFormat": "webp"
+  },
+  "assets/images/goods_260703_01_ogp-thumb-640xauto-19082.webp": {
+    "dimensions": {
+      "width": 640,
+      "height": 360
+    },
+    "detectedFormat": "webp"
+  },
+  "assets/images/goods_260722_01_ogp-thumb-640xauto-19144.webp": {
+    "dimensions": {
+      "width": 640,
+      "height": 360
+    },
+    "detectedFormat": "webp"
+  },
+  "assets/images/goods_260722_02_ogp-thumb-640xauto-19148.webp": {
+    "dimensions": {
+      "width": 640,
+      "height": 360
+    },
+    "detectedFormat": "webp"
+  },
+  "assets/images/goods_260722_03_ogp-thumb-640xauto-19153.webp": {
+    "dimensions": {
+      "width": 640,
+      "height": 360
+    },
+    "detectedFormat": "webp"
+  },
+  "assets/images/goods_260722_04_ogp-thumb-640xauto-19155.webp": {
+    "dimensions": {
+      "width": 640,
+      "height": 360
+    },
+    "detectedFormat": "webp"
+  },
+  "assets/images/goods_260724_01_ogp-thumb-640xauto-19232.webp": {
+    "dimensions": {
+      "width": 640,
+      "height": 360
+    },
+    "detectedFormat": "webp"
+  },
+  "assets/images/header_caution.svg": {
+    "dimensions": {
+      "width": 150,
+      "height": 150
+    },
+    "detectedFormat": "svg"
+  },
+  "assets/images/iconLeft.png": {
+    "dimensions": {
+      "width": 26,
+      "height": 33
+    },
+    "detectedFormat": "png"
+  },
+  "assets/images/iconLeft_white.png": {
+    "dimensions": {
+      "width": 26,
+      "height": 33
+    },
+    "detectedFormat": "png"
+  },
+  "assets/images/iconRight.png": {
+    "dimensions": {
+      "width": 26,
+      "height": 33
+    },
+    "detectedFormat": "png"
+  },
+  "assets/images/iconRight_white.png": {
+    "dimensions": {
+      "width": 26,
+      "height": 33
+    },
+    "detectedFormat": "png"
+  },
+  "assets/images/icons.png": {
+    "dimensions": {
+      "width": 120,
+      "height": 24
+    },
+    "detectedFormat": "png"
+  },
+  "assets/images/iconUp.png": {
+    "dimensions": {
+      "width": 33,
+      "height": 26
+    },
+    "detectedFormat": "png"
+  },
+  "assets/images/iconUp_white.png": {
+    "dimensions": {
+      "width": 33,
+      "height": 26
+    },
+    "detectedFormat": "png"
+  },
+  "assets/images/iconX.png": {
+    "dimensions": {
+      "width": 33,
+      "height": 33
+    },
+    "detectedFormat": "png"
+  },
+  "assets/images/iconX_white.png": {
+    "dimensions": {
+      "width": 33,
+      "height": 33
+    },
+    "detectedFormat": "png"
+  },
+  "assets/images/information_251023_01_ogp.jpg": {
+    "dimensions": {
+      "width": 1920,
+      "height": 1080
+    },
+    "detectedFormat": "jpeg"
+  },
+  "assets/images/information_251031_01_ogp.png": {
+    "dimensions": {
+      "width": 1920,
+      "height": 1080
+    },
+    "detectedFormat": "png"
+  },
+  "assets/images/information_260225_01_ogp.webp": {
+    "dimensions": {
+      "width": 1280,
+      "height": 720
+    },
+    "detectedFormat": "webp"
+  },
+  "assets/images/information_260818_01_ogp-thumb-640xauto-19288.webp": {
+    "dimensions": {
+      "width": 640,
+      "height": 360
+    },
+    "detectedFormat": "webp"
+  },
+  "assets/images/information_260825_01_ogp-thumb-640xauto-19316.jpg": {
+    "dimensions": {
+      "width": 640,
+      "height": 360
+    },
+    "detectedFormat": "jpeg"
+  },
+  "assets/images/kishimoto_260804_01_ogp-thumb-640xauto-19274.webp": {
+    "dimensions": {
+      "width": 640,
+      "height": 360
+    },
+    "detectedFormat": "webp"
+  },
+  "assets/images/lineup.webp": {
+    "dimensions": {
+      "width": 1919,
+      "height": 243
+    },
+    "detectedFormat": "webp"
+  },
+  "assets/images/loader.gif": {
+    "dimensions": {
+      "width": 100,
+      "height": 100
+    },
+    "detectedFormat": "gif"
+  },
+  "assets/images/logo_sonicchannel.png": {
+    "dimensions": {
+      "width": 372,
+      "height": 94
+    },
+    "detectedFormat": "png"
+  },
+  "assets/images/logo_sonicchannel_menu.webp": {
+    "dimensions": {
+      "width": 810,
+      "height": 210
+    },
+    "detectedFormat": "webp"
+  },
+  "assets/images/logo_sonicteam.png": {
+    "dimensions": {
+      "width": 284,
+      "height": 88
+    },
+    "detectedFormat": "png"
+  },
+  "assets/images/menu-arrow.webp": {
+    "dimensions": {
+      "width": 62,
+      "height": 62
+    },
+    "detectedFormat": "webp"
+  },
+  "assets/images/modern.webp": {
+    "dimensions": {
+      "width": 1919,
+      "height": 243
+    },
+    "detectedFormat": "webp"
+  },
+  "assets/images/newInfo.png": {
+    "dimensions": {
+      "width": 70,
+      "height": 29
+    },
+    "detectedFormat": "png"
+  },
+  "assets/images/ogp20250320.jpg": {
+    "dimensions": {
+      "width": 1920,
+      "height": 1080
+    },
+    "detectedFormat": "jpeg"
+  },
+  "assets/images/oshiete_260612_01_ogp-thumb-640xauto-18899.webp": {
+    "dimensions": {
+      "width": 640,
+      "height": 360
+    },
+    "detectedFormat": "webp"
+  },
+  "assets/images/screenshot_2608_ogp-thumb-640xauto-19257.webp": {
+    "dimensions": {
+      "width": 640,
+      "height": 360
+    },
+    "detectedFormat": "webp"
+  },
+  "assets/images/sega_logo_s_b.svg": {
+    "dimensions": {
+      "width": 300,
+      "height": 98
+    },
+    "detectedFormat": "svg"
+  },
+  "assets/images/sns_facebook.png": {
+    "dimensions": {
+      "width": 72,
+      "height": 72
+    },
+    "detectedFormat": "png"
+  },
+  "assets/images/sns_line.png": {
+    "dimensions": {
+      "width": 72,
+      "height": 72
+    },
+    "detectedFormat": "png"
+  },
+  "assets/images/sns_x.png": {
+    "dimensions": {
+      "width": 72,
+      "height": 72
+    },
+    "detectedFormat": "png"
+  },
+  "assets/images/sonicforces1.gif": {
+    "dimensions": {
+      "width": 6000,
+      "height": 1000
+    },
+    "detectedFormat": "gif"
+  },
+  "assets/images/sonicforces2.gif": {
+    "dimensions": {
+      "width": 1350,
+      "height": 3000
+    },
+    "detectedFormat": "gif"
+  },
+  "assets/images/sonicforces3.gif": {
+    "dimensions": {
+      "width": 4,
+      "height": 4
+    },
+    "detectedFormat": "gif"
+  },
+  "assets/images/sonicforces4.jpg": {
+    "dimensions": {
+      "width": 1280,
+      "height": 720
+    },
+    "detectedFormat": "jpeg"
+  },
+  "assets/images/sonicmania1.png": {
+    "dimensions": {
+      "width": 1300,
+      "height": 1329
+    },
+    "detectedFormat": "png"
+  },
+  "assets/images/sonicmania2.png": {
+    "dimensions": {
+      "width": 1300,
+      "height": 1329
+    },
+    "detectedFormat": "png"
+  },
+  "assets/images/sonicmania3.png": {
+    "dimensions": {
+      "width": 1300,
+      "height": 1329
+    },
+    "detectedFormat": "png"
+  },
+  "assets/images/sonicteamstaff_260721_01_ogp-thumb-640xauto-19137.webp": {
+    "dimensions": {
+      "width": 640,
+      "height": 360
+    },
+    "detectedFormat": "webp"
+  },
+  "assets/images/sonicworldstory.webp": {
+    "dimensions": {
+      "width": 1919,
+      "height": 243
+    },
+    "detectedFormat": "webp"
+  },
+  "assets/images/special.webp": {
+    "dimensions": {
+      "width": 1919,
+      "height": 243
+    },
+    "detectedFormat": "webp"
+  },
+  "assets/images/staffcolumn_260807_01_ogp-thumb-640xauto-19283.jpg": {
+    "dimensions": {
+      "width": 640,
+      "height": 360
+    },
+    "detectedFormat": "jpeg"
+  },
+  "assets/images/star-circle-lb.webp": {
+    "dimensions": {
+      "width": 941,
+      "height": 941
+    },
+    "detectedFormat": "webp"
+  },
+  "assets/images/star-circle-w.webp": {
+    "dimensions": {
+      "width": 941,
+      "height": 941
+    },
+    "detectedFormat": "webp"
+  },
+  "assets/images/star-icon.webp": {
+    "dimensions": {
+      "width": 300,
+      "height": 297
+    },
+    "detectedFormat": "webp"
+  },
+  "assets/images/star-icon02.webp": {
+    "dimensions": {
+      "width": 300,
+      "height": 297
+    },
+    "detectedFormat": "webp"
+  },
+  "assets/images/topics.webp": {
+    "dimensions": {
+      "width": 1919,
+      "height": 243
+    },
+    "detectedFormat": "webp"
+  },
+  "assets/images/tri-bb.webp": {
+    "dimensions": {
+      "width": 63,
+      "height": 30
+    },
+    "detectedFormat": "webp"
+  },
+  "assets/images/tri-bt.webp": {
+    "dimensions": {
+      "width": 63,
+      "height": 30
+    },
+    "detectedFormat": "webp"
+  },
+  "assets/images/tri-wb.webp": {
+    "dimensions": {
+      "width": 63,
+      "height": 30
+    },
+    "detectedFormat": "webp"
+  },
+  "assets/images/tri-wt.webp": {
+    "dimensions": {
+      "width": 63,
+      "height": 30
+    },
+    "detectedFormat": "webp"
+  },
+  "assets/images/video-bgb.webp": {
+    "dimensions": {
+      "width": 30,
+      "height": 529
+    },
+    "detectedFormat": "webp"
+  },
+  "assets/images/video-bgw.webp": {
+    "dimensions": {
+      "width": 30,
+      "height": 529
+    },
+    "detectedFormat": "webp"
+  },
+  "assets/images/videos.webp": {
+    "dimensions": {
+      "width": 1919,
+      "height": 243
+    },
+    "detectedFormat": "webp"
+  },
+  "assets/images/wallpaper_260_espio_05_pc_thm-thumb-400x400-19097.jpg": {
+    "dimensions": {
+      "width": 400,
+      "height": 400
+    },
+    "detectedFormat": "jpeg"
+  },
+  "assets/images/wallpaper_260_espio_05_sp_thm-thumb-400x400-19098.jpg": {
+    "dimensions": {
+      "width": 400,
+      "height": 400
+    },
+    "detectedFormat": "jpeg"
+  },
+  "assets/images/wallpaper_261_blaze_18_pc_thm-thumb-400x400-19286.jpg": {
+    "dimensions": {
+      "width": 400,
+      "height": 400
+    },
+    "detectedFormat": "jpeg"
+  },
+  "assets/images/wallpaper_261_blaze_18_sp_thm-thumb-400x400-19282.jpg": {
+    "dimensions": {
+      "width": 400,
+      "height": 400
+    },
+    "detectedFormat": "jpeg"
+  },
+  "assets/images/window.webp": {
+    "dimensions": {
+      "width": 38,
+      "height": 39
+    },
+    "detectedFormat": "webp"
+  },
+  "assets/information_251023_01_ogp.jpg": {
+    "dimensions": {
+      "width": 1920,
+      "height": 1080
+    },
+    "detectedFormat": "jpeg"
+  },
+  "assets/information_251031_01_ogp.png": {
+    "dimensions": {
+      "width": 1920,
+      "height": 1080
+    },
+    "detectedFormat": "png"
+  },
+  "assets/information_260225_01_ogp.webp": {
+    "dimensions": {
+      "width": 1280,
+      "height": 720
+    },
+    "detectedFormat": "webp"
+  },
+  "assets/information_260818_01_ogp-thumb-640xauto-19288.webp": {
+    "dimensions": {
+      "width": 640,
+      "height": 360
+    },
+    "detectedFormat": "webp"
+  },
+  "assets/information_260825_01_ogp-thumb-640xauto-19316.jpg": {
+    "dimensions": {
+      "width": 640,
+      "height": 360
+    },
+    "detectedFormat": "jpeg"
+  },
+  "assets/kishimoto_260804_01_ogp-thumb-640xauto-19274.webp": {
+    "dimensions": {
+      "width": 640,
+      "height": 360
+    },
+    "detectedFormat": "webp"
+  },
+  "assets/lineup.webp": {
+    "dimensions": {
+      "width": 1919,
+      "height": 243
+    },
+    "detectedFormat": "webp"
+  },
+  "assets/loader.gif": {
+    "dimensions": {
+      "width": 100,
+      "height": 100
+    },
+    "detectedFormat": "gif"
+  },
+  "assets/logo_sonicchannel.png": {
+    "dimensions": {
+      "width": 372,
+      "height": 94
+    },
+    "detectedFormat": "png"
+  },
+  "assets/logo_sonicchannel_menu.webp": {
+    "dimensions": {
+      "width": 810,
+      "height": 210
+    },
+    "detectedFormat": "webp"
+  },
+  "assets/logo_sonicteam.png": {
+    "dimensions": {
+      "width": 284,
+      "height": 88
+    },
+    "detectedFormat": "png"
+  },
+  "assets/menu-arrow.webp": {
+    "dimensions": {
+      "width": 62,
+      "height": 62
+    },
+    "detectedFormat": "webp"
+  },
+  "assets/modern.webp": {
+    "dimensions": {
+      "width": 1919,
+      "height": 243
+    },
+    "detectedFormat": "webp"
+  },
+  "assets/newInfo.png": {
+    "dimensions": {
+      "width": 70,
+      "height": 29
+    },
+    "detectedFormat": "png"
+  },
+  "assets/ogp20250320.jpg": {
+    "dimensions": {
+      "width": 1920,
+      "height": 1080
+    },
+    "detectedFormat": "jpeg"
+  },
+  "assets/optimized/1cdfd07e95f6-1440.webp": {
+    "dimensions": {
+      "width": 1440,
+      "height": 720
+    },
+    "detectedFormat": "webp"
+  },
+  "assets/optimized/1cdfd07e95f6-320.webp": {
+    "dimensions": {
+      "width": 320,
+      "height": 160
+    },
+    "detectedFormat": "webp"
+  },
+  "assets/optimized/1cdfd07e95f6-640.webp": {
+    "dimensions": {
+      "width": 640,
+      "height": 320
+    },
+    "detectedFormat": "webp"
+  },
+  "assets/optimized/1cdfd07e95f6-960.webp": {
+    "dimensions": {
+      "width": 960,
+      "height": 480
+    },
+    "detectedFormat": "webp"
+  },
+  "assets/optimized/7d38094202ec-320.webp": {
+    "dimensions": {
+      "width": 320,
+      "height": 492
+    },
+    "detectedFormat": "webp"
+  },
+  "assets/optimized/7d38094202ec-640.webp": {
+    "dimensions": {
+      "width": 640,
+      "height": 985
+    },
+    "detectedFormat": "webp"
+  },
+  "assets/optimized/7d38094202ec-720.webp": {
+    "dimensions": {
+      "width": 720,
+      "height": 1108
+    },
+    "detectedFormat": "webp"
+  },
+  "assets/optimized/80ea62c8e9aa-307.webp": {
+    "dimensions": {
+      "width": 307,
+      "height": 445
+    },
+    "detectedFormat": "webp"
+  },
+  "assets/optimized/900cfb3d55be-320.webp": {
+    "dimensions": {
+      "width": 320,
+      "height": 320
+    },
+    "detectedFormat": "webp"
+  },
+  "assets/optimized/900cfb3d55be-640.webp": {
+    "dimensions": {
+      "width": 640,
+      "height": 640
+    },
+    "detectedFormat": "webp"
+  },
+  "assets/optimized/900cfb3d55be-736.webp": {
+    "dimensions": {
+      "width": 736,
+      "height": 736
+    },
+    "detectedFormat": "webp"
+  },
+  "assets/optimized/aa5fd1983646-320.webp": {
+    "dimensions": {
+      "width": 320,
+      "height": 320
+    },
+    "detectedFormat": "webp"
+  },
+  "assets/optimized/aa5fd1983646-640.webp": {
+    "dimensions": {
+      "width": 640,
+      "height": 640
+    },
+    "detectedFormat": "webp"
+  },
+  "assets/optimized/aa5fd1983646-736.webp": {
+    "dimensions": {
+      "width": 736,
+      "height": 736
+    },
+    "detectedFormat": "webp"
+  },
+  "assets/optimized/b6fcf28e7ac2-320.webp": {
+    "dimensions": {
+      "width": 320,
+      "height": 75
+    },
+    "detectedFormat": "webp"
+  },
+  "assets/optimized/b6fcf28e7ac2-640.webp": {
+    "dimensions": {
+      "width": 640,
+      "height": 149
+    },
+    "detectedFormat": "webp"
+  },
+  "assets/optimized/b6fcf28e7ac2-733.webp": {
+    "dimensions": {
+      "width": 733,
+      "height": 171
+    },
+    "detectedFormat": "webp"
+  },
+  "assets/optimized/ba3d3df36e13-320.webp": {
+    "dimensions": {
+      "width": 320,
+      "height": 491
+    },
+    "detectedFormat": "webp"
+  },
+  "assets/optimized/ba3d3df36e13-640.webp": {
+    "dimensions": {
+      "width": 640,
+      "height": 982
+    },
+    "detectedFormat": "webp"
+  },
+  "assets/optimized/ba3d3df36e13-720.webp": {
+    "dimensions": {
+      "width": 720,
+      "height": 1105
+    },
+    "detectedFormat": "webp"
+  },
+  "assets/oshiete_260612_01_ogp-thumb-640xauto-18899.webp": {
+    "dimensions": {
+      "width": 640,
+      "height": 360
+    },
+    "detectedFormat": "webp"
+  },
+  "assets/ring-animated.png": {
+    "dimensions": {
+      "width": 100,
+      "height": 100
+    },
+    "detectedFormat": "png"
+  },
+  "assets/screenshot_2608_ogp-thumb-640xauto-19257.webp": {
+    "dimensions": {
+      "width": 640,
+      "height": 360
+    },
+    "detectedFormat": "webp"
+  },
+  "assets/section-replacement.png": {
+    "dimensions": {
+      "width": 1774,
+      "height": 887
+    },
+    "detectedFormat": "png"
+  },
+  "assets/sega_logo_s_b.svg": {
+    "dimensions": {
+      "width": 300,
+      "height": 98
+    },
+    "detectedFormat": "svg"
+  },
+  "assets/sns_facebook.png": {
+    "dimensions": {
+      "width": 72,
+      "height": 72
+    },
+    "detectedFormat": "png"
+  },
+  "assets/sns_line.png": {
+    "dimensions": {
+      "width": 72,
+      "height": 72
+    },
+    "detectedFormat": "png"
+  },
+  "assets/sns_x.png": {
+    "dimensions": {
+      "width": 72,
+      "height": 72
+    },
+    "detectedFormat": "png"
+  },
+  "assets/sonicforces1.gif": {
+    "dimensions": {
+      "width": 6000,
+      "height": 1000
+    },
+    "detectedFormat": "gif"
+  },
+  "assets/sonicforces2.gif": {
+    "dimensions": {
+      "width": 1350,
+      "height": 3000
+    },
+    "detectedFormat": "gif"
+  },
+  "assets/sonicforces3.gif": {
+    "dimensions": {
+      "width": 4,
+      "height": 4
+    },
+    "detectedFormat": "gif"
+  },
+  "assets/sonicforces4.jpg": {
+    "dimensions": {
+      "width": 1280,
+      "height": 720
+    },
+    "detectedFormat": "jpeg"
+  },
+  "assets/sonicmania1.png": {
+    "dimensions": {
+      "width": 1300,
+      "height": 1329
+    },
+    "detectedFormat": "png"
+  },
+  "assets/sonicmania2.png": {
+    "dimensions": {
+      "width": 1300,
+      "height": 1329
+    },
+    "detectedFormat": "png"
+  },
+  "assets/sonicmania3.png": {
+    "dimensions": {
+      "width": 1300,
+      "height": 1329
+    },
+    "detectedFormat": "png"
+  },
+  "assets/sonicteamstaff_260721_01_ogp-thumb-640xauto-19137.webp": {
+    "dimensions": {
+      "width": 640,
+      "height": 360
+    },
+    "detectedFormat": "webp"
+  },
+  "assets/sonicworldstory.webp": {
+    "dimensions": {
+      "width": 1919,
+      "height": 243
+    },
+    "detectedFormat": "webp"
+  },
+  "assets/special.webp": {
+    "dimensions": {
+      "width": 1919,
+      "height": 243
+    },
+    "detectedFormat": "webp"
+  },
+  "assets/staffcolumn_260807_01_ogp-thumb-640xauto-19283.jpg": {
+    "dimensions": {
+      "width": 640,
+      "height": 360
+    },
+    "detectedFormat": "jpeg"
+  },
+  "assets/star-circle-lb.webp": {
+    "dimensions": {
+      "width": 941,
+      "height": 941
+    },
+    "detectedFormat": "webp"
+  },
+  "assets/star-circle-w.webp": {
+    "dimensions": {
+      "width": 941,
+      "height": 941
+    },
+    "detectedFormat": "webp"
+  },
+  "assets/star-icon.webp": {
+    "dimensions": {
+      "width": 300,
+      "height": 297
+    },
+    "detectedFormat": "webp"
+  },
+  "assets/star-icon02.webp": {
+    "dimensions": {
+      "width": 300,
+      "height": 297
+    },
+    "detectedFormat": "webp"
+  },
+  "assets/topics.webp": {
+    "dimensions": {
+      "width": 1919,
+      "height": 243
+    },
+    "detectedFormat": "webp"
+  },
+  "assets/tri-bb.webp": {
+    "dimensions": {
+      "width": 63,
+      "height": 30
+    },
+    "detectedFormat": "webp"
+  },
+  "assets/tri-bt.webp": {
+    "dimensions": {
+      "width": 63,
+      "height": 30
+    },
+    "detectedFormat": "webp"
+  },
+  "assets/tri-wb.webp": {
+    "dimensions": {
+      "width": 63,
+      "height": 30
+    },
+    "detectedFormat": "webp"
+  },
+  "assets/tri-wt.webp": {
+    "dimensions": {
+      "width": 63,
+      "height": 30
+    },
+    "detectedFormat": "webp"
+  },
+  "assets/ultimos-momentos/execution.jpeg": {
+    "dimensions": {
+      "width": 733,
+      "height": 171
+    },
+    "detectedFormat": "jpeg"
+  },
+  "assets/ultimos-momentos/metal-virus.jpeg": {
+    "dimensions": {
+      "width": 720,
+      "height": 1105
+    },
+    "detectedFormat": "jpeg"
+  },
+  "assets/ultimos-momentos/sonic-wars.jpeg": {
+    "dimensions": {
+      "width": 720,
+      "height": 1108
+    },
+    "detectedFormat": "jpeg"
+  },
+  "assets/user-carousel/carousel-01.jpg": {
+    "dimensions": {
+      "width": 736,
+      "height": 736
+    },
+    "detectedFormat": "jpeg"
+  },
+  "assets/user-carousel/carousel-02.jpg": {
+    "dimensions": {
+      "width": 307,
+      "height": 445
+    },
+    "detectedFormat": "jpeg"
+  },
+  "assets/user-carousel/carousel-03.jpg": {
+    "dimensions": {
+      "width": 736,
+      "height": 736
+    },
+    "detectedFormat": "jpeg"
+  },
+  "assets/video-bgb.webp": {
+    "dimensions": {
+      "width": 30,
+      "height": 529
+    },
+    "detectedFormat": "webp"
+  },
+  "assets/video-bgw.webp": {
+    "dimensions": {
+      "width": 30,
+      "height": 529
+    },
+    "detectedFormat": "webp"
+  },
+  "assets/videos.webp": {
+    "dimensions": {
+      "width": 1919,
+      "height": 243
+    },
+    "detectedFormat": "webp"
+  },
+  "assets/wallpaper_260_espio_05_pc_thm-thumb-400x400-19097.jpg": {
+    "dimensions": {
+      "width": 400,
+      "height": 400
+    },
+    "detectedFormat": "jpeg"
+  },
+  "assets/wallpaper_260_espio_05_sp_thm-thumb-400x400-19098.jpg": {
+    "dimensions": {
+      "width": 400,
+      "height": 400
+    },
+    "detectedFormat": "jpeg"
+  },
+  "assets/wallpaper_261_blaze_18_pc_thm-thumb-400x400-19286.jpg": {
+    "dimensions": {
+      "width": 400,
+      "height": 400
+    },
+    "detectedFormat": "jpeg"
+  },
+  "assets/wallpaper_261_blaze_18_sp_thm-thumb-400x400-19282.jpg": {
+    "dimensions": {
+      "width": 400,
+      "height": 400
+    },
+    "detectedFormat": "jpeg"
+  },
+  "assets/window.webp": {
+    "dimensions": {
+      "width": 38,
+      "height": 39
+    },
+    "detectedFormat": "webp"
+  }
+}

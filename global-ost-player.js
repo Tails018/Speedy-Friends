@@ -11,7 +11,7 @@
   audio.crossOrigin='anonymous';
 
   const read=()=>{
-    try{return JSON.parse(sessionStorage.getItem(KEY)||'null')}catch{return null}
+    try{const value=JSON.parse(sessionStorage.getItem(KEY)||'null');return value&&typeof value==='object'&&!Array.isArray(value)?value:null}catch{return null}
   };
   const write=(extra={})=>{
     try{
@@ -31,11 +31,12 @@
 
   const saved=read();
   if(saved?.src){
-    audio.volume=Number.isFinite(saved.volume)?saved.volume:.58;
+    audio.volume=Number.isFinite(saved.volume)?Math.min(1,Math.max(0,saved.volume)):.58;
     audio.src=saved.src;
     audio.addEventListener('loadedmetadata',()=>{
-      const max=Math.max(0,(audio.duration||0)-.25);
-      audio.currentTime=Math.min(Number(saved.time||0),max);
+      const max=Number.isFinite(audio.duration)?Math.max(0,audio.duration-.25):0;
+      const time=Number(saved.time);
+      audio.currentTime=Number.isFinite(time)?Math.max(0,Math.min(time,max)):0;
       if(saved.playing){
         audio.play().catch(()=>{
           // Autoplay can be blocked after a full document navigation.
@@ -46,7 +47,8 @@
     audio.load();
   }
 
-  audio.addEventListener('timeupdate',()=>write());
+  let lastProgressWrite=0;
+  audio.addEventListener('timeupdate',()=>{if(performance.now()-lastProgressWrite<1000)return;lastProgressWrite=performance.now();write();});
   audio.addEventListener('play',()=>write({playing:true}));
   audio.addEventListener('pause',()=>write({playing:false}));
   audio.addEventListener('volumechange',()=>write({volume:audio.volume}));
@@ -57,8 +59,11 @@
     resume:()=>audio.play().catch(()=>false),
     load:(src,time=0,autoplay=true)=>{
       if(!src)return;
-      if(audio.src!==src)audio.src=src;
-      audio.currentTime=Number(time)||0;
+      // load() resets currentTime. Restore it only after metadata for this source arrives.
+      const position=Number.isFinite(Number(time))?Math.max(0,Number(time)):0;
+      const onReady=()=>{if(audio.getAttribute('src')!==src)return;const max=Number.isFinite(audio.duration)?audio.duration:position;audio.currentTime=Math.min(position,max);};
+      audio.addEventListener('loadedmetadata',onReady,{once:true});
+      audio.src=src;
       audio.load();
       return autoplay?audio.play().catch(()=>false):Promise.resolve();
     },

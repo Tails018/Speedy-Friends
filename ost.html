@@ -1,5 +1,73 @@
 <!doctype html>
+<html lang="es">
+<head><script id="sf-theme-prepaint-v47">(function(){try{var v=localStorage.getItem('sfTheme');if(v==='dark')document.documentElement.setAttribute('data-sf-theme','dark')}catch(e){}})();</script>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Audio / OST · Speedy Friends</title>
+<link rel="stylesheet" href="styles.css">
+<style>
+body.ost-page{margin:0;background:#f4f3ee;color:#151515;overflow-x:hidden}
+.ost-shell{min-height:100vh;padding:0 clamp(20px,4vw,68px) 60px;position:relative;overflow:clip}
+.ost-ghost{position:absolute;top:18%;left:-3%;font-family:SFDisplay,Arial Black,Arial,sans-serif;font-size:clamp(150px,27vw,420px);line-height:.65;letter-spacing:-.1em;opacity:.045;filter:blur(1.2px);transform:skewX(-9deg);pointer-events:none;animation:og 11s ease-in-out infinite alternate}
+@keyframes og{from{transform:skewX(-9deg) translateX(-1%)}to{transform:skewX(-9deg) translate(4%,2%) scale(1.02)}}
+.ost-topbar{position:relative;z-index:10;display:flex;align-items:center;gap:24px;min-height:76px;border-bottom:1px solid rgba(18,18,18,.09)}
+.ost-brand{color:#171717;text-decoration:none;font-size:21px;font-weight:900;letter-spacing:-.05em;white-space:nowrap}.ost-brand span{color:#ef263f;font-style:italic}
+.ost-nav{display:flex;align-items:center;gap:clamp(14px,2.4vw,34px);flex:1;justify-content:center;overflow:auto}
+.ost-nav a{position:relative;color:#171717;text-decoration:none;font-size:10px;font-weight:900;letter-spacing:.14em;padding:8px 0;transition:.3s}.ost-nav a::after{content:"";position:absolute;left:0;right:100%;bottom:1px;height:2px;background:#ef263f;transition:right .35s}.ost-nav a:hover{transform:translateY(-2px);color:#ef263f}.ost-nav a:hover::after{right:0}
+.ost-menu{width:46px;height:46px;display:grid;place-items:center;border-radius:50%;text-decoration:none;color:#fff;background:#666;box-shadow:0 10px 24px rgba(0,0,0,.12);transition:.3s}.ost-menu:hover{transform:scale(1.05) rotate(4deg)}
+.ost-hero{position:relative;z-index:2;display:grid;grid-template-columns:minmax(290px,.78fr) minmax(0,1.22fr);gap:clamp(24px,4vw,64px);align-items:center;padding:clamp(50px,7vw,98px) 0 38px}
+.ost-title-wrap{max-width:640px}.ost-kicker{margin:0 0 10px;font-size:9px;letter-spacing:.2em;font-weight:900;text-transform:uppercase;opacity:.58}
+.ost-title{margin:0;font-family:SFDisplay,Arial Black,Arial,sans-serif;font-size:clamp(68px,10vw,142px);line-height:.72;letter-spacing:-.075em;text-transform:uppercase}.ost-title em{color:#ef263f;font-style:normal}
+.ost-lead{max-width:500px;margin:24px 0 0;font-size:11px;line-height:1.75;opacity:.58}
+.ost-now{position:relative;min-height:340px;padding:clamp(22px,3vw,38px);background:#fff;border:1px solid rgba(18,18,18,.08);box-shadow:0 24px 70px rgba(0,0,0,.08);overflow:hidden;animation:on .72s cubic-bezier(.16,1,.3,1) both;transition:transform .18s ease}.ost-now::before{content:"";position:absolute;inset:0;background:radial-gradient(circle at 78% 28%,rgba(35,61,143,.12),transparent 35%),radial-gradient(circle at 16% 84%,rgba(239,38,63,.10),transparent 30%);pointer-events:none}.ost-now::after{content:"";position:absolute;left:-34%;top:0;width:18%;height:100%;background:linear-gradient(90deg,transparent,rgba(255,255,255,.55),transparent);transform:skewX(-15deg);animation:sw 5.8s cubic-bezier(.16,1,.3,1) infinite;pointer-events:none}@keyframes on{from{opacity:0;transform:translateY(28px) rotateX(5deg)}to{opacity:1;transform:translateY(0) rotateX(0)}}@keyframes sw{0%,55%{opacity:0;transform:skewX(-15deg) translateX(0)}63%{opacity:.8}79%,100%{opacity:0;transform:skewX(-15deg) translateX(760%)}}
+.ost-now-head{display:flex;align-items:flex-end;justify-content:space-between;gap:14px;position:relative;z-index:2}.ost-now-head h2{margin:0;font-family:SFDisplay,Arial Black,Arial,sans-serif;font-size:clamp(28px,4vw,56px);line-height:.8;letter-spacing:-.055em;text-transform:uppercase}.ost-status{font-size:7px;font-weight:900;letter-spacing:.16em;color:#ef263f;border:1px solid rgba(239,38,63,.28);padding:7px 9px}
+.ost-player{position:relative;z-index:2;margin-top:28px;display:grid;grid-template-columns:78px 1fr;gap:18px;align-items:center}.ost-disc{width:78px;height:78px;border-radius:50%;display:grid;place-items:center;background:radial-gradient(circle at 50% 50%,#f4f3ee 0 11%,transparent 12%),repeating-radial-gradient(circle,#1a1a1a 0 2px,#313131 3px 4px);box-shadow:0 14px 28px rgba(0,0,0,.18);animation:spin 8s linear infinite}.ost-disc::after{content:"SF";width:25px;height:25px;border-radius:50%;display:grid;place-items:center;background:#ef263f;color:#fff;font-size:8px;font-weight:900}@keyframes spin{to{transform:rotate(360deg)}}.ost-track-title{font-family:SFDisplay,Arial Black,Arial,sans-serif;font-size:clamp(26px,3.7vw,48px);line-height:.82;letter-spacing:-.055em;text-transform:uppercase;margin:0}.ost-track-meta{display:flex;gap:12px;flex-wrap:wrap;margin-top:7px;font-size:7px;font-weight:900;letter-spacing:.11em;text-transform:uppercase;opacity:.52}
+.ost-controls{margin-top:30px;display:grid;grid-template-columns:auto 1fr auto;gap:12px;align-items:center;position:relative;z-index:2}.ost-play{width:48px;height:48px;border-radius:50%;border:0;cursor:pointer;background:#ef263f;color:#fff;display:grid;place-items:center;font-size:16px;box-shadow:0 12px 28px rgba(239,38,63,.2);transition:.3s}.ost-play:hover{transform:scale(1.08)}.ost-range{appearance:none;width:100%;height:4px;border-radius:99px;background:rgba(18,18,18,.1);outline:none}.ost-range::-webkit-slider-thumb{appearance:none;width:13px;height:13px;border-radius:50%;background:#ef263f;cursor:pointer}.ost-time{font-size:7px;font-weight:900;letter-spacing:.1em;opacity:.48;white-space:nowrap}
+.ost-library{position:relative;z-index:2}.ost-library-head{display:flex;align-items:end;justify-content:space-between;gap:18px;margin-bottom:16px}.ost-library-head h2{margin:0;font-family:SFDisplay,Arial Black,Arial,sans-serif;font-size:clamp(34px,5vw,64px);line-height:.8;letter-spacing:-.06em;text-transform:uppercase}.ost-library-head p{margin:0;max-width:360px;font-size:8px;line-height:1.6;text-transform:uppercase;letter-spacing:.1em;opacity:.48}
+.ost-list{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}.ost-row{position:relative;display:grid;grid-template-columns:50px minmax(0,1fr) auto;gap:16px;align-items:center;min-height:94px;padding:14px 16px;background:rgba(255,255,255,.78);border:1px solid rgba(18,18,18,.07);overflow:hidden;cursor:pointer;transition:.42s cubic-bezier(.16,1,.3,1);transform:translateY(18px);opacity:0}.ost-row.is-visible{animation:rin .62s cubic-bezier(.16,1,.3,1) forwards;animation-delay:var(--delay)}@keyframes rin{to{opacity:1;transform:translateY(0)}}.ost-row:hover{transform:translateY(-5px) skewX(-1deg);background:#fff;box-shadow:0 16px 34px rgba(0,0,0,.08)}.ost-row::after{content:"";position:absolute;left:0;bottom:0;width:100%;height:3px;background:linear-gradient(90deg,#ef263f,#233d8f);transform:scaleX(0);transform-origin:left;transition:.42s}.ost-row:hover::after,.ost-row.is-active::after{transform:scaleX(1)}.ost-index{width:44px;height:44px;display:grid;place-items:center;border:1px solid rgba(18,18,18,.1);font-size:9px;font-weight:900;transition:.35s}.ost-row:hover .ost-index,.ost-row.is-active .ost-index{transform:rotate(-7deg) scale(1.05);background:#ef263f;color:#fff}.ost-row-title{margin:0;font-family:SFDisplay,Arial Black,Arial,sans-serif;font-size:clamp(20px,2.3vw,32px);line-height:.86;letter-spacing:-.05em;text-transform:uppercase}.ost-row-meta{margin-top:6px;font-size:7px;font-weight:900;letter-spacing:.11em;text-transform:uppercase;opacity:.46}.ost-row-duration{font-size:8px;font-weight:900;letter-spacing:.1em;opacity:.5}.ost-eq{display:none;align-items:end;gap:3px;height:20px}.ost-row.is-active .ost-eq{display:flex}.ost-eq i{display:block;width:3px;background:#ef263f;animation:eq .8s ease-in-out infinite alternate}.ost-eq i:nth-child(1){height:8px}.ost-eq i:nth-child(2){height:16px;animation-delay:.12s}.ost-eq i:nth-child(3){height:11px;animation-delay:.25s}.ost-eq i:nth-child(4){height:18px;animation-delay:.17s}@keyframes eq{from{transform:scaleY(.55)}to{transform:scaleY(1.05)}}
+.ost-actions{margin-top:14px;display:flex;flex-wrap:wrap;gap:10px}.ost-action{appearance:none;border:1px solid rgba(18,18,18,.12);background:#fff;color:#171717;padding:12px 16px;font-size:8px;font-weight:900;letter-spacing:.13em;text-transform:uppercase;text-decoration:none;cursor:pointer;transition:.32s}.ost-action:hover{transform:translateY(-4px);background:#171717;color:#fff}.ost-action.primary{background:#ef263f;color:#fff;border-color:#ef263f}
+@media(max-width:940px){.ost-hero{grid-template-columns:1fr}.ost-nav{justify-content:flex-start}.ost-list{grid-template-columns:1fr}}
+@media(max-width:640px){.ost-topbar{min-height:64px;gap:12px}.ost-brand{font-size:18px}.ost-nav a{font-size:8px}.ost-hero{padding-top:42px}.ost-title{font-size:64px}.ost-player{grid-template-columns:64px 1fr}.ost-disc{width:64px;height:64px}.ost-row{grid-template-columns:42px minmax(0,1fr) auto;gap:11px}}
+@media(prefers-reduced-motion:reduce){.ost-ghost,.ost-now,.ost-now::after,.ost-disc,.ost-row,.ost-eq i{animation:none!important}.ost-row{opacity:1;transform:none}}
 
+.ost-upload{display:inline-flex;align-items:center;justify-content:center;user-select:none}
+.ost-custom-label{margin-top:18px;margin-bottom:9px;font-size:7px;font-weight:900;letter-spacing:.18em;text-transform:uppercase;opacity:.5}
+.ost-custom-list{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.ost-custom-list:empty{display:none}
+.ost-custom-row{position:relative;display:grid;grid-template-columns:38px minmax(0,1fr) auto;gap:12px;align-items:center;min-height:76px;padding:12px 14px;background:rgba(255,255,255,.78);border:1px solid rgba(18,18,18,.07);cursor:pointer;overflow:hidden;transition:transform .38s cubic-bezier(.16,1,.3,1),box-shadow .3s ease,background .25s ease}
+.ost-custom-row:hover{transform:translateY(-4px);background:#fff;box-shadow:0 14px 28px rgba(0,0,0,.07)}
+.ost-custom-row.is-active{border-color:rgba(239,38,63,.3)}
+.ost-custom-row.is-active::after{content:"";position:absolute;left:0;bottom:0;width:100%;height:3px;background:#ef263f;animation:customActiveIn .4s cubic-bezier(.16,1,.3,1)}
+@keyframes customActiveIn{from{transform:scaleX(0);transform-origin:left}to{transform:scaleX(1);transform-origin:left}}
+.ost-custom-num{width:34px;height:34px;display:grid;place-items:center;background:#f4f3ee;border:1px solid rgba(18,18,18,.08);font-size:8px;font-weight:900;transition:.3s}
+.ost-custom-row:hover .ost-custom-num,.ost-custom-row.is-active .ost-custom-num{background:#ef263f;color:#fff;transform:rotate(-6deg)}
+.ost-custom-name{margin:0;font-family:SFDisplay,Arial Black,Arial,sans-serif;font-size:clamp(17px,2vw,27px);line-height:.86;letter-spacing:-.04em;text-transform:uppercase;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.ost-custom-meta{margin-top:5px;font-size:6px;letter-spacing:.1em;font-weight:900;opacity:.46;text-transform:uppercase}
+.ost-custom-remove{appearance:none;width:30px;height:30px;border-radius:50%;border:1px solid rgba(18,18,18,.1);background:#fff;color:#111;cursor:pointer;font-size:12px;transition:.28s}
+.ost-custom-remove:hover{transform:rotate(90deg);background:#111;color:#fff}
+.ost-stop{border-color:rgba(18,18,18,.18)}
+@media(max-width:940px){.ost-custom-list{grid-template-columns:1fr}}
+
+</style>
+
+<script src="https://www.gstatic.com/firebasejs/12.1.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/12.1.0/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/12.1.0/firebase-database-compat.js"></script>
+<script src="firebase-legacy.js"></script>
+
+
+<style id="ost-firebase-polish">
+.ost-firebase-status{
+ display:inline-flex;align-items:center;min-height:30px;padding:0 10px;margin-left:8px;
+ border:1px solid rgba(18,18,18,.1);background:#fff;font-size:6px;font-weight:900;
+ letter-spacing:.12em;text-transform:uppercase;opacity:.55
+}
+.ost-custom-row.is-uploading{opacity:.55;pointer-events:none}
+.ost-custom-row.is-online{border-color:rgba(31,132,76,.22)}
+.ost-custom-meta.online{color:#1f844c}
+@media(max-width:700px){.ost-firebase-status{margin:8px 0 0}}
+</style>
+
+<script src="global-ost-player.js"></script>
 <style id="sf-loader-style">
 .sf-page-loader{
   position:fixed;inset:0;z-index:99999;
@@ -106,179 +174,29 @@
   }
 }
 </style>
+<meta name="description" content="Audio / OST · Speedy Friends · Comunidad de Speedy Friends, perfiles, creatividad y entretenimiento.">
+<link rel="stylesheet" href="portal-ui.css">
+<script defer src="portal-ui.js"></script>
+</head>
+<body class="ost-page">
+<a class="sf-skip-link" href="#main-content">Saltar al contenido</a>
 <div class="sf-page-loader" id="sf-page-loader" aria-live="polite" aria-busy="true">
   <div class="sf-loader-orbit" aria-hidden="true"></div>
   <div class="sf-loader-card">
-    <img class="sf-loader-gif" src="assets/loader.gif" alt="" aria-hidden="true">
+    <img class="sf-loader-gif" src="assets/loader.gif" alt="" aria-hidden="true" width="100" height="100" decoding="async">
     <p class="sf-loader-kicker" id="sf-loader-kicker">Speedy Friends / Navigation</p>
     <h2 class="sf-loader-title" id="sf-loader-title">CARGANDO</h2>
     <p class="sf-loader-subtitle" id="sf-loader-subtitle">Preparando la página…</p>
     <div class="sf-loader-line" aria-hidden="true"></div>
   </div>
 </div>
-<script>
-(() => {
-  const loader = document.getElementById('sf-page-loader');
-  const title = document.getElementById('sf-loader-title');
-  const subtitle = document.getElementById('sf-loader-subtitle');
-  const kicker = document.getElementById('sf-loader-kicker');
-  if (!loader) return;
-
-  let shownAt = performance.now();
-  let hideTimer = null;
-  const minVisible = 520;
-
-  const routeName = href => {
-    try {
-      const u = new URL(href, window.location.href);
-      const file = (u.pathname.split('/').pop() || 'index.html').toLowerCase();
-      const names = {
-        'index.html':'INICIO',
-        'profile.html':'PERFIL',
-        'ost.html':'AUDIO / OST',
-        'ranking.html':'RANKING',
-        'admin.html':'ADMIN',
-        'admin-role.html':'STAFF ADMIN'
-      };
-      return names[file] || (file ? file.replace('.html','').replace(/[-_]/g,' ').toUpperCase() : 'PÁGINA');
-    } catch { return 'PÁGINA'; }
-  };
-
-  const show = (page = 'PÁGINA', sub = 'Preparando la página…') => {
-    if (!loader.classList.contains('is-hidden')) {
-      shownAt = performance.now();
-    } else {
-      loader.classList.remove('is-hidden');
-      loader.setAttribute('aria-hidden','false');
-      loader.setAttribute('aria-busy','true');
-      shownAt = performance.now();
-    }
-    if (kicker) kicker.textContent = 'SPEEDY FRIENDS / NAVEGACIÓN';
-    if (title) title.textContent = page;
-    if (subtitle) subtitle.textContent = sub;
-  };
-
-  const hide = () => {
-    const wait = Math.max(0, minVisible - (performance.now() - shownAt));
-    clearTimeout(hideTimer);
-    hideTimer = setTimeout(() => {
-      loader.classList.add('is-hidden');
-      loader.setAttribute('aria-hidden','true');
-      loader.setAttribute('aria-busy','false');
-    }, wait);
-  };
-
-  window.addEventListener('load', hide, {once:true});
-  if (document.readyState === 'complete') hide();
-
-  document.addEventListener('click', event => {
-    const link = event.target.closest('a[href]');
-    if (!link) return;
-
-    const raw = link.getAttribute('href') || '';
-    if (!raw || raw.startsWith('#') || raw.startsWith('mailto:') || raw.startsWith('tel:') ||
-        link.target === '_blank' || event.ctrlKey || event.metaKey || event.shiftKey || event.altKey) return;
-
-    let target;
-    try { target = new URL(raw, window.location.href); } catch { return; }
-    if (target.origin !== window.location.origin) return;
-
-    const page = routeName(target.href);
-    const isSameDocument = target.pathname === window.location.pathname && target.hash;
-    if (isSameDocument) {
-      show(page, 'Navegando a la sección…');
-      setTimeout(() => { window.location.href = target.href; }, 250);
-      return;
-    }
-
-    // Full page navigation: display loader before the browser leaves.
-    show(page, page === 'RANKING' ? 'Cargando clasificación…' :
-               page === 'AUDIO / OST' ? 'Cargando biblioteca OST…' :
-               page === 'PERFIL' ? 'Cargando perfil…' :
-               page === 'ADMIN' || page === 'STAFF ADMIN' ? 'Cargando panel…' :
-               'Preparando la página…');
-  });
-})();
-</script>
-
-
-<html lang="es">
-<head><script id="sf-theme-prepaint-v47">(function(){try{var v=localStorage.getItem('sfTheme');if(v==='dark')document.documentElement.setAttribute('data-sf-theme','dark')}catch(e){}})();</script>
-<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Audio / OST · Speedy Friends</title>
-<link rel="stylesheet" href="styles.css">
-<style>
-body.ost-page{margin:0;background:#f4f3ee;color:#151515;overflow-x:hidden}
-.ost-shell{min-height:100vh;padding:0 clamp(20px,4vw,68px) 60px;position:relative;overflow:clip}
-.ost-ghost{position:absolute;top:18%;left:-3%;font-family:SFDisplay,Arial Black,Arial,sans-serif;font-size:clamp(150px,27vw,420px);line-height:.65;letter-spacing:-.1em;opacity:.045;filter:blur(1.2px);transform:skewX(-9deg);pointer-events:none;animation:og 11s ease-in-out infinite alternate}
-@keyframes og{from{transform:skewX(-9deg) translateX(-1%)}to{transform:skewX(-9deg) translate(4%,2%) scale(1.02)}}
-.ost-topbar{position:relative;z-index:10;display:flex;align-items:center;gap:24px;min-height:76px;border-bottom:1px solid rgba(18,18,18,.09)}
-.ost-brand{color:#171717;text-decoration:none;font-size:21px;font-weight:900;letter-spacing:-.05em;white-space:nowrap}.ost-brand span{color:#ef263f;font-style:italic}
-.ost-nav{display:flex;align-items:center;gap:clamp(14px,2.4vw,34px);flex:1;justify-content:center;overflow:auto}
-.ost-nav a{position:relative;color:#171717;text-decoration:none;font-size:10px;font-weight:900;letter-spacing:.14em;padding:8px 0;transition:.3s}.ost-nav a::after{content:"";position:absolute;left:0;right:100%;bottom:1px;height:2px;background:#ef263f;transition:right .35s}.ost-nav a:hover{transform:translateY(-2px);color:#ef263f}.ost-nav a:hover::after{right:0}
-.ost-menu{width:46px;height:46px;display:grid;place-items:center;border-radius:50%;text-decoration:none;color:#fff;background:#666;box-shadow:0 10px 24px rgba(0,0,0,.12);transition:.3s}.ost-menu:hover{transform:scale(1.05) rotate(4deg)}
-.ost-hero{position:relative;z-index:2;display:grid;grid-template-columns:minmax(290px,.78fr) minmax(0,1.22fr);gap:clamp(24px,4vw,64px);align-items:center;padding:clamp(50px,7vw,98px) 0 38px}
-.ost-title-wrap{max-width:640px}.ost-kicker{margin:0 0 10px;font-size:9px;letter-spacing:.2em;font-weight:900;text-transform:uppercase;opacity:.58}
-.ost-title{margin:0;font-family:SFDisplay,Arial Black,Arial,sans-serif;font-size:clamp(68px,10vw,142px);line-height:.72;letter-spacing:-.075em;text-transform:uppercase}.ost-title em{color:#ef263f;font-style:normal}
-.ost-lead{max-width:500px;margin:24px 0 0;font-size:11px;line-height:1.75;opacity:.58}
-.ost-now{position:relative;min-height:340px;padding:clamp(22px,3vw,38px);background:#fff;border:1px solid rgba(18,18,18,.08);box-shadow:0 24px 70px rgba(0,0,0,.08);overflow:hidden;animation:on .72s cubic-bezier(.16,1,.3,1) both;transition:transform .18s ease}.ost-now::before{content:"";position:absolute;inset:0;background:radial-gradient(circle at 78% 28%,rgba(35,61,143,.12),transparent 35%),radial-gradient(circle at 16% 84%,rgba(239,38,63,.10),transparent 30%);pointer-events:none}.ost-now::after{content:"";position:absolute;left:-34%;top:0;width:18%;height:100%;background:linear-gradient(90deg,transparent,rgba(255,255,255,.55),transparent);transform:skewX(-15deg);animation:sw 5.8s cubic-bezier(.16,1,.3,1) infinite;pointer-events:none}@keyframes on{from{opacity:0;transform:translateY(28px) rotateX(5deg)}to{opacity:1;transform:translateY(0) rotateX(0)}}@keyframes sw{0%,55%{opacity:0;transform:skewX(-15deg) translateX(0)}63%{opacity:.8}79%,100%{opacity:0;transform:skewX(-15deg) translateX(760%)}}
-.ost-now-head{display:flex;align-items:flex-end;justify-content:space-between;gap:14px;position:relative;z-index:2}.ost-now-head h2{margin:0;font-family:SFDisplay,Arial Black,Arial,sans-serif;font-size:clamp(28px,4vw,56px);line-height:.8;letter-spacing:-.055em;text-transform:uppercase}.ost-status{font-size:7px;font-weight:900;letter-spacing:.16em;color:#ef263f;border:1px solid rgba(239,38,63,.28);padding:7px 9px}
-.ost-player{position:relative;z-index:2;margin-top:28px;display:grid;grid-template-columns:78px 1fr;gap:18px;align-items:center}.ost-disc{width:78px;height:78px;border-radius:50%;display:grid;place-items:center;background:radial-gradient(circle at 50% 50%,#f4f3ee 0 11%,transparent 12%),repeating-radial-gradient(circle,#1a1a1a 0 2px,#313131 3px 4px);box-shadow:0 14px 28px rgba(0,0,0,.18);animation:spin 8s linear infinite}.ost-disc::after{content:"SF";width:25px;height:25px;border-radius:50%;display:grid;place-items:center;background:#ef263f;color:#fff;font-size:8px;font-weight:900}@keyframes spin{to{transform:rotate(360deg)}}.ost-track-title{font-family:SFDisplay,Arial Black,Arial,sans-serif;font-size:clamp(26px,3.7vw,48px);line-height:.82;letter-spacing:-.055em;text-transform:uppercase;margin:0}.ost-track-meta{display:flex;gap:12px;flex-wrap:wrap;margin-top:7px;font-size:7px;font-weight:900;letter-spacing:.11em;text-transform:uppercase;opacity:.52}
-.ost-controls{margin-top:30px;display:grid;grid-template-columns:auto 1fr auto;gap:12px;align-items:center;position:relative;z-index:2}.ost-play{width:48px;height:48px;border-radius:50%;border:0;cursor:pointer;background:#ef263f;color:#fff;display:grid;place-items:center;font-size:16px;box-shadow:0 12px 28px rgba(239,38,63,.2);transition:.3s}.ost-play:hover{transform:scale(1.08)}.ost-range{appearance:none;width:100%;height:4px;border-radius:99px;background:rgba(18,18,18,.1);outline:none}.ost-range::-webkit-slider-thumb{appearance:none;width:13px;height:13px;border-radius:50%;background:#ef263f;cursor:pointer}.ost-time{font-size:7px;font-weight:900;letter-spacing:.1em;opacity:.48;white-space:nowrap}
-.ost-library{position:relative;z-index:2}.ost-library-head{display:flex;align-items:end;justify-content:space-between;gap:18px;margin-bottom:16px}.ost-library-head h2{margin:0;font-family:SFDisplay,Arial Black,Arial,sans-serif;font-size:clamp(34px,5vw,64px);line-height:.8;letter-spacing:-.06em;text-transform:uppercase}.ost-library-head p{margin:0;max-width:360px;font-size:8px;line-height:1.6;text-transform:uppercase;letter-spacing:.1em;opacity:.48}
-.ost-list{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}.ost-row{position:relative;display:grid;grid-template-columns:50px minmax(0,1fr) auto;gap:16px;align-items:center;min-height:94px;padding:14px 16px;background:rgba(255,255,255,.78);border:1px solid rgba(18,18,18,.07);overflow:hidden;cursor:pointer;transition:.42s cubic-bezier(.16,1,.3,1);transform:translateY(18px);opacity:0}.ost-row.is-visible{animation:rin .62s cubic-bezier(.16,1,.3,1) forwards;animation-delay:var(--delay)}@keyframes rin{to{opacity:1;transform:translateY(0)}}.ost-row:hover{transform:translateY(-5px) skewX(-1deg);background:#fff;box-shadow:0 16px 34px rgba(0,0,0,.08)}.ost-row::after{content:"";position:absolute;left:0;bottom:0;width:100%;height:3px;background:linear-gradient(90deg,#ef263f,#233d8f);transform:scaleX(0);transform-origin:left;transition:.42s}.ost-row:hover::after,.ost-row.is-active::after{transform:scaleX(1)}.ost-index{width:44px;height:44px;display:grid;place-items:center;border:1px solid rgba(18,18,18,.1);font-size:9px;font-weight:900;transition:.35s}.ost-row:hover .ost-index,.ost-row.is-active .ost-index{transform:rotate(-7deg) scale(1.05);background:#ef263f;color:#fff}.ost-row-title{margin:0;font-family:SFDisplay,Arial Black,Arial,sans-serif;font-size:clamp(20px,2.3vw,32px);line-height:.86;letter-spacing:-.05em;text-transform:uppercase}.ost-row-meta{margin-top:6px;font-size:7px;font-weight:900;letter-spacing:.11em;text-transform:uppercase;opacity:.46}.ost-row-duration{font-size:8px;font-weight:900;letter-spacing:.1em;opacity:.5}.ost-eq{display:none;align-items:end;gap:3px;height:20px}.ost-row.is-active .ost-eq{display:flex}.ost-eq i{display:block;width:3px;background:#ef263f;animation:eq .8s ease-in-out infinite alternate}.ost-eq i:nth-child(1){height:8px}.ost-eq i:nth-child(2){height:16px;animation-delay:.12s}.ost-eq i:nth-child(3){height:11px;animation-delay:.25s}.ost-eq i:nth-child(4){height:18px;animation-delay:.17s}@keyframes eq{from{transform:scaleY(.55)}to{transform:scaleY(1.05)}}
-.ost-actions{margin-top:14px;display:flex;flex-wrap:wrap;gap:10px}.ost-action{appearance:none;border:1px solid rgba(18,18,18,.12);background:#fff;color:#171717;padding:12px 16px;font-size:8px;font-weight:900;letter-spacing:.13em;text-transform:uppercase;text-decoration:none;cursor:pointer;transition:.32s}.ost-action:hover{transform:translateY(-4px);background:#171717;color:#fff}.ost-action.primary{background:#ef263f;color:#fff;border-color:#ef263f}
-@media(max-width:940px){.ost-hero{grid-template-columns:1fr}.ost-nav{justify-content:flex-start}.ost-list{grid-template-columns:1fr}}
-@media(max-width:640px){.ost-topbar{min-height:64px;gap:12px}.ost-brand{font-size:18px}.ost-nav a{font-size:8px}.ost-hero{padding-top:42px}.ost-title{font-size:64px}.ost-player{grid-template-columns:64px 1fr}.ost-disc{width:64px;height:64px}.ost-row{grid-template-columns:42px minmax(0,1fr) auto;gap:11px}}
-@media(prefers-reduced-motion:reduce){.ost-ghost,.ost-now,.ost-now::after,.ost-disc,.ost-row,.ost-eq i{animation:none!important}.ost-row{opacity:1;transform:none}}
-
-.ost-upload{display:inline-flex;align-items:center;justify-content:center;user-select:none}
-.ost-custom-label{margin-top:18px;margin-bottom:9px;font-size:7px;font-weight:900;letter-spacing:.18em;text-transform:uppercase;opacity:.5}
-.ost-custom-list{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
-.ost-custom-list:empty{display:none}
-.ost-custom-row{position:relative;display:grid;grid-template-columns:38px minmax(0,1fr) auto;gap:12px;align-items:center;min-height:76px;padding:12px 14px;background:rgba(255,255,255,.78);border:1px solid rgba(18,18,18,.07);cursor:pointer;overflow:hidden;transition:transform .38s cubic-bezier(.16,1,.3,1),box-shadow .3s ease,background .25s ease}
-.ost-custom-row:hover{transform:translateY(-4px);background:#fff;box-shadow:0 14px 28px rgba(0,0,0,.07)}
-.ost-custom-row.is-active{border-color:rgba(239,38,63,.3)}
-.ost-custom-row.is-active::after{content:"";position:absolute;left:0;bottom:0;width:100%;height:3px;background:#ef263f;animation:customActiveIn .4s cubic-bezier(.16,1,.3,1)}
-@keyframes customActiveIn{from{transform:scaleX(0);transform-origin:left}to{transform:scaleX(1);transform-origin:left}}
-.ost-custom-num{width:34px;height:34px;display:grid;place-items:center;background:#f4f3ee;border:1px solid rgba(18,18,18,.08);font-size:8px;font-weight:900;transition:.3s}
-.ost-custom-row:hover .ost-custom-num,.ost-custom-row.is-active .ost-custom-num{background:#ef263f;color:#fff;transform:rotate(-6deg)}
-.ost-custom-name{margin:0;font-family:SFDisplay,Arial Black,Arial,sans-serif;font-size:clamp(17px,2vw,27px);line-height:.86;letter-spacing:-.04em;text-transform:uppercase;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.ost-custom-meta{margin-top:5px;font-size:6px;letter-spacing:.1em;font-weight:900;opacity:.46;text-transform:uppercase}
-.ost-custom-remove{appearance:none;width:30px;height:30px;border-radius:50%;border:1px solid rgba(18,18,18,.1);background:#fff;color:#111;cursor:pointer;font-size:12px;transition:.28s}
-.ost-custom-remove:hover{transform:rotate(90deg);background:#111;color:#fff}
-.ost-stop{border-color:rgba(18,18,18,.18)}
-@media(max-width:940px){.ost-custom-list{grid-template-columns:1fr}}
-
-</style>
-
-<script src="https://www.gstatic.com/firebasejs/12.1.0/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/12.1.0/firebase-auth-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/12.1.0/firebase-database-compat.js"></script>
-<script src="firebase-legacy.js"></script>
-
-
-<style id="ost-firebase-polish">
-.ost-firebase-status{
- display:inline-flex;align-items:center;min-height:30px;padding:0 10px;margin-left:8px;
- border:1px solid rgba(18,18,18,.1);background:#fff;font-size:6px;font-weight:900;
- letter-spacing:.12em;text-transform:uppercase;opacity:.55
-}
-.ost-custom-row.is-uploading{opacity:.55;pointer-events:none}
-.ost-custom-row.is-online{border-color:rgba(31,132,76,.22)}
-.ost-custom-meta.online{color:#1f844c}
-@media(max-width:700px){.ost-firebase-status{margin:8px 0 0}}
-</style>
-
-<script src="global-ost-player.js"></script>
-</head>
-<body class="ost-page"><main class="ost-shell"><div class="ost-ghost">AUDIO</div>
+<script src="page-loader.js"></script><main id="main-content" class="ost-shell"><div class="ost-ghost">AUDIO</div>
 <nav class="ost-topbar"><a class="ost-brand" href="index.html"><span>SPEEDY</span> FRIENDS</a><div class="ost-nav">
 <a href="index.html#topics">NOVEDADES</a><a href="index.html#friends">AMIGOS</a><a href="index.html#special">ESPECIAL</a><a href="index.html#download">DESCARGAS</a><a href="index.html#quick-actions">ACCESOS</a><a href="index.html#videos">VIDEOS</a></div><a class="ost-menu" href="index.html#quick-actions">☰</a></nav>
 <section class="ost-hero"><div class="ost-title-wrap"><p class="ost-kicker">Speedy Friends / Sound Archive</p><h1 class="ost-title">Audio <em>/</em><br>OST</h1><p class="ost-lead">Tu espacio para la música de Speedy Friends. Selecciona una pista y controla la reproducción desde este panel.</p></div>
 <section class="ost-now"><div class="ost-now-head"><div><p class="ost-kicker">Now Playing</p><h2>Speedy Friends</h2></div><span class="ost-status" id="now-status">READY</span></div>
 <div class="ost-player"><div class="ost-disc"></div><div><p class="ost-track-title" id="now-track">SELECT A TRACK</p><div class="ost-track-meta"><span id="now-author">SPEEDY FRIENDS OST</span><span>ORIGINAL / DEMO</span></div></div></div>
-<div class="ost-controls"><button class="ost-play" id="play" type="button">▶</button><input class="ost-range" id="seek" type="range" min="0" max="100" value="0"><span class="ost-time" id="time">0:00 / 0:00</span></div></section></section>
+<div class="ost-controls"><button class="ost-play" id="play" type="button" aria-label="Reproducir OST">▶</button><input class="ost-range" id="seek" type="range" aria-label="Posici?n del audio" min="0" max="100" value="0"><span class="ost-time" id="time">0:00 / 0:00</span></div></section></section>
 <section class="ost-library"><div class="ost-library-head"><div><p class="ost-kicker">Library</p><h2>Tracks</h2></div><p>Selecciona una pista para cargarla en el reproductor. Después conectaremos los archivos reales sin cambiar esta interfaz.</p></div>
 <div class="ost-list">
 <article class="ost-row" data-title="Main Theme" data-author="Speedy Friends" data-duration="2:48"><div class="ost-index">01</div><div><h3 class="ost-row-title">Main Theme</h3><div class="ost-row-meta">Speedy Friends · Main Menu</div></div><div class="ost-row-duration">2:48</div><div class="ost-eq"><i></i><i></i><i></i><i></i></div></article>
@@ -288,7 +206,7 @@ body.ost-page{margin:0;background:#f4f3ee;color:#151515;overflow-x:hidden}
 <article class="ost-row" data-title="Sunset Arcade" data-author="Speedy Friends" data-duration="3:44"><div class="ost-index">05</div><div><h3 class="ost-row-title">Sunset Arcade</h3><div class="ost-row-meta">Speedy Friends · Chill</div></div><div class="ost-row-duration">3:44</div><div class="ost-eq"><i></i><i></i><i></i><i></i></div></article>
 <article class="ost-row" data-title="Final Lap" data-author="Speedy Friends" data-duration="4:02"><div class="ost-index">06</div><div><h3 class="ost-row-title">Final Lap</h3><div class="ost-row-meta">Speedy Friends · Finale</div></div><div class="ost-row-duration">4:02</div><div class="ost-eq"><i></i><i></i><i></i><i></i></div></article>
 </div><div class="ost-custom-label">CUSTOM OST</div><div class="ost-custom-list" id="custom-list"></div><div class="ost-actions"><a class="ost-action primary" href="index.html">← Volver a Speedy Friends</a><button class="ost-action" id="random" type="button">Reproducir aleatorio</button>
-<button class="ost-action ost-stop" id="stop" type="button">■ Detener</button>
+<button class="ost-action ost-stop" id="stop" type="button" aria-label="Detener OST">■ Detener</button>
 <label class="ost-action ost-upload" for="custom-ost">＋ Agregar OST personalizado</label>
 <input id="custom-ost" type="file" accept="audio/*" multiple hidden><span id="ost-firebase-status" class="ost-firebase-status" aria-live="polite">NO INICIADO</span></div></section></main>
 
@@ -316,7 +234,7 @@ body.ost-page{margin:0;background:#f4f3ee;color:#151515;overflow-x:hidden}
   const nowStatus=document.getElementById('now-status');
   const demoRows=[...document.querySelectorAll('.ost-row')];
 
-  let currentUrl='';
+  let currentUrl=audio.getAttribute('src')||'';
   let currentEl=null;
 
   const sf=()=>window.SpeedyFirebase;
@@ -377,11 +295,9 @@ body.ost-page{margin:0;background:#f4f3ee;color:#151515;overflow-x:hidden}
 
   playBtn?.addEventListener('click',()=>{
     if(!currentUrl){
-      const first=demoRows[0];
-      if(first){
-        const parts=(first.dataset.duration||'0:00').split(':');
-        setTrack({url:'',name:first.dataset.title||'TRACK',author:first.dataset.author||'SPEEDY FRIENDS'},first);
-      }
+      const first=document.querySelector('.ost-custom-row');
+      if(first){first.click();return;}
+      setStatus('SELECCIONA O SUBE UN OST PARA REPRODUCIR');
       return;
     }
     audio.paused?playCurrent():audio.pause();

@@ -11,8 +11,12 @@
 <script src="https://www.gstatic.com/firebasejs/12.1.0/firebase-database-compat.js"></script>
 <script src="firebase-legacy.js"></script>
 <script src="friends-system.js"></script>
+<meta name="description" content="Speedy Friends · Fanarts · Comunidad de Speedy Friends, perfiles, creatividad y entretenimiento.">
+<link rel="stylesheet" href="portal-ui.css">
+<script defer src="portal-ui.js"></script>
 </head>
 <body class="fanart-page">
+<a class="sf-skip-link" href="#main-content">Saltar al contenido</a>
 <div class="fanart-atmosphere" aria-hidden="true"><i></i><i></i><i></i><span></span><span></span><span></span></div>
 <header class="sf-header fanart-header">
   <a class="sf-brand" href="index.html" aria-label="Speedy Friends inicio"><span class="sf-brand-speedy">SPEEDY</span><strong class="sf-brand-friends">FRIENDS</strong></a>
@@ -23,7 +27,7 @@
 </header>
 <div class="fanart-mobile" id="fanartMobile" aria-hidden="true"><button type="button" id="fanartMobileClose">×</button><p class="eyebrow">SPEEDY FRIENDS</p><a href="index.html">Inicio</a><a href="novedades.html">Novedades</a><a href="friends.html">Amigos</a><a href="ranking.html">Ranking</a><a href="fanarts.html">Fanarts</a><a href="cafeteria.html">Cafetería</a></div>
 
-<main>
+<main id="main-content">
 <section class="fanart-hero">
   <div class="hero-noise"></div><div class="hero-orbit orbit-a"></div><div class="hero-orbit orbit-b"></div><div class="hero-orbit orbit-c"></div>
   <div class="fanart-hero-copy reveal-fa">
@@ -59,6 +63,6 @@
 </main>
 <footer class="sf-footer fanart-footer"><div class="sf-footer-brand">SPEEDY <strong>FRIENDS</strong></div><div>COMMUNITY ART · 2026</div><a href="#top">TOP ↑</a></footer>
 
-<div class="fanart-modal" id="fanartModal" aria-hidden="true"><div class="fanart-modal-backdrop" data-fanart-close></div><div class="fanart-modal-dialog" role="dialog" aria-modal="true" aria-labelledby="modalTitle"><button class="fanart-modal-close" data-fanart-close type="button">×</button><div class="fanart-modal-media" id="modalMedia"></div><div class="fanart-modal-info"><div class="modal-topline"><span id="modalCategory"></span><small id="modalFormat"></small></div><h2 id="modalTitle"></h2><p id="modalDescription"></p><div class="fanart-modal-author"><div class="fanart-modal-avatar" id="modalAvatar"></div><div><strong id="modalAuthor"></strong><span>ARTISTA DEL TEAM</span></div></div><div class="fanart-modal-likes"><span>♥</span><b id="modalLikes">0</b><small>LIKES</small></div></div></div></div>
+<div class="fanart-modal" id="fanartModal" aria-hidden="true"><div class="fanart-modal-backdrop" data-fanart-close></div><div class="fanart-modal-dialog" role="dialog" aria-modal="true" aria-labelledby="modalTitle"><button class="fanart-modal-close" data-fanart-close type="button" aria-label="Cerrar fanart">×</button><div class="fanart-modal-media" id="modalMedia"></div><div class="fanart-modal-info"><div class="modal-topline"><span id="modalCategory"></span><small id="modalFormat"></small></div><h2 id="modalTitle"></h2><p id="modalDescription"></p><div class="fanart-modal-author"><div class="fanart-modal-avatar" id="modalAvatar"></div><div><strong id="modalAuthor"></strong><span>ARTISTA DEL TEAM</span></div></div><div class="fanart-modal-likes"><span>♥</span><b id="modalLikes">0</b><small>LIKES</small></div></div></div></div>
 <script src="fanarts-system.js"></script>
 </body></html>

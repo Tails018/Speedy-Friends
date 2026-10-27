@@ -21,19 +21,23 @@
   const sfIsOwner = a => Boolean(SF()?.current?.uid && a && !String(a.id).startsWith('demo-') && a.ownerUid === SF().current.uid);
   const likeCount = a => Object.prototype.hasOwnProperty.call(a || {}, 'likes') ? Object.keys(a.likes || {}).length : Number(a?.likeCount || 0);
   const filtered = list => {
-    const q = state.search.trim().toLowerCase();
+    const normalize = value => String(value || '').normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase();
+    const q = normalize(state.search.trim());
     return list.filter(a => state.filter === 'Todos' || a.category === state.filter)
-      .filter(a => !q || `${a.title} ${a.description} ${a.authorName} ${a.category}`.toLowerCase().includes(q))
+      .filter(a => !q || normalize(`${a.title} ${a.description} ${a.authorName} ${a.category}`).includes(q))
       .sort((a,b) => state.sort === 'likes' ? likeCount(b)-likeCount(a) : Number(b.createdAt||0)-Number(a.createdAt||0));
   };
   const mediaMarkup = (a, cls='fanart-image') => a.mediaType === 'video'
     ? `<video class="${cls}" src="${esc(a.image)}" muted loop playsinline preload="none"></video><span class="fanart-video-badge">▶ EDIT</span>`
     : `<img class="${cls}" src="${esc(a.image)}" alt="${esc(a.title)}" loading="lazy">`;
 
+  let visibleCount=12, previewUrl=null, modalOpener=null;
   function render(list) {
     const el = cards(); if (!el) return;
-    const items = filtered(list).slice(0,12);
+    const all = filtered(list);
+    const items = all.slice(0,visibleCount);
     if (!items.length) {
+      const more=$('#fanartLoadMore');if(more)more.hidden=true;
       el.innerHTML = '<div class="fanart-empty"><strong>No encontramos fanarts.</strong><span>Prueba otro filtro o sé el primero en publicar algo aquí.</span></div>';
       return;
     }
@@ -55,8 +59,11 @@
           ${sfIsOwner(a) ? `<div class="fanart-owner-tools"><button type="button" data-edit="${esc(a.id)}">EDITAR</button><button type="button" data-delete="${esc(a.id)}">ELIMINAR</button></div>` : ''}
         </div>
       </article>`).join('');
+    let more=$('#fanartLoadMore');
+    if(!more){more=document.createElement('button');more.id='fanartLoadMore';more.type='button';more.className='fanart-submit';more.textContent='Cargar más fanarts';el.after(more);more.addEventListener('click',()=>{visibleCount+=12;render(sourceList());});}
+    more.hidden=items.length>=all.length;
     bindTilt(el);
-    $$('video', el).forEach(v => { v.addEventListener('mouseenter',()=>v.play().catch(()=>{}), {passive:true}); v.addEventListener('mouseleave',()=>{v.pause(); v.currentTime=0;}, {passive:true}); });
+    $$('video', el).forEach(v => { v.addEventListener('mouseenter',()=>{if(!matchMedia('(prefers-reduced-motion: reduce)').matches)v.play().catch(()=>{});}, {passive:true}); v.addEventListener('mouseleave',()=>{v.pause(); v.currentTime=0;}, {passive:true}); });
   }
 
   function renderHome(list) {
@@ -67,6 +74,7 @@
 
   function showModal(a) {
     const m = $('#fanartModal'); if (!m) return;
+    modalOpener=document.activeElement;
     $('#modalTitle').textContent = a.title || 'Fanart';
     $('#modalDescription').textContent = a.description || '';
     $('#modalAuthor').textContent = a.authorName || 'Integrante';
@@ -77,8 +85,9 @@
     const media = $('#modalMedia');
     media.innerHTML = a.mediaType === 'video' ? `<video src="${esc(a.image)}" controls autoplay playsinline></video>` : `<img src="${esc(a.image)}" alt="${esc(a.title)}">`;
     m.classList.add('is-open'); m.setAttribute('aria-hidden','false'); state.modalId = a.id; document.body.classList.add('fanart-modal-open');
+    m.querySelector('button[data-fanart-close]')?.focus();
   }
-  function closeModal(){const m=$('#fanartModal');if(!m)return;m.classList.remove('is-open');m.setAttribute('aria-hidden','true');state.modalId=null;document.body.classList.remove('fanart-modal-open');$('#modalMedia').innerHTML='';}
+  function closeModal(){const m=$('#fanartModal');if(!m)return;m.classList.remove('is-open');m.setAttribute('aria-hidden','true');state.modalId=null;document.body.classList.remove('fanart-modal-open');$('#modalMedia').innerHTML='';if(modalOpener?.isConnected)modalOpener.focus();}
 
   function loadLikes(uid, arts) {
     if (!uid) return;
@@ -175,22 +184,25 @@
   function bindTilt(){ return; }
   function previewFile(file){
     const box=$('#fanartFilePreview'), label=$('#fanartFileLabel'); if(!box||!label)return;
+    if(previewUrl){URL.revokeObjectURL(previewUrl);previewUrl=null;}
     if(!file){box.style.display='none';box.innerHTML='';label.textContent='ARRASTRA TU ARTE AQUÍ';return;}
-    label.textContent=file.name.length>34?file.name.slice(0,31)+'…':file.name; box.style.display='block'; box.innerHTML=file.type.startsWith('video/')?`<video src="${URL.createObjectURL(file)}" muted autoplay loop></video>`:`<img src="${URL.createObjectURL(file)}" alt="">`;
+    previewUrl=URL.createObjectURL(file);
+    label.textContent=file.name.length>34?file.name.slice(0,31)+'…':file.name; box.style.display='block'; box.innerHTML=file.type.startsWith('video/')?`<video src="${previewUrl}" muted autoplay loop></video>`:`<img src="${previewUrl}" alt="">`;
   }
   function bind(){
-    $$('.fanart-filter').forEach(b=>b.addEventListener('click',()=>{$$('.fanart-filter').forEach(x=>x.classList.remove('is-active'));b.classList.add('is-active');state.filter=b.dataset.filter;render(sourceList());}));
-    $('#fanartSort')?.addEventListener('change',e=>{state.sort=e.target.value;render(sourceList());});
-    let searchTimer=null; $('#fanartSearch')?.addEventListener('input',e=>{state.search=e.target.value;clearTimeout(searchTimer);searchTimer=setTimeout(()=>render(sourceList()),120);});
+    $$('.fanart-filter').forEach(b=>b.addEventListener('click',()=>{$$('.fanart-filter').forEach(x=>x.classList.remove('is-active'));b.classList.add('is-active');visibleCount=12;state.filter=b.dataset.filter;$$('.fanart-filter').forEach(x=>x.setAttribute('aria-pressed',String(x===b)));render(sourceList());}));
+    $('#fanartSort')?.addEventListener('change',e=>{visibleCount=12;state.sort=e.target.value;render(sourceList());});
+    let searchTimer=null; $('#fanartSearch')?.addEventListener('input',e=>{visibleCount=12;state.search=e.target.value;clearTimeout(searchTimer);searchTimer=setTimeout(()=>render(sourceList()),120);});
     cards()?.addEventListener('click',e=>{const edit=e.target.closest('[data-edit]');if(edit){e.stopPropagation();editFanart(edit.dataset.edit).catch(err=>alert(err.message||'No se pudo editar.'));return;}const del=e.target.closest('[data-delete]');if(del){e.stopPropagation();deleteFanart(del.dataset.delete).catch(err=>alert(err.message||'No se pudo eliminar.'));return;}const like=e.target.closest('[data-like]');if(like){e.stopPropagation();toggleLike(like.dataset.like).then(()=>render(sourceList()));return;}const card=e.target.closest('.fanart-card');if(card){const a=state.arts[card.dataset.id]||demo.find(x=>x.id===card.dataset.id);if(a)showModal(a);}});
     $('#fanartFile')?.addEventListener('change',e=>previewFile(e.target.files[0]));
     const drop=$('#fanartDrop'); if(drop){['dragenter','dragover'].forEach(ev=>drop.addEventListener(ev,e=>{e.preventDefault();drop.classList.add('dragging');}));['dragleave','drop'].forEach(ev=>drop.addEventListener(ev,e=>{e.preventDefault();drop.classList.remove('dragging');}));drop.addEventListener('drop',e=>{const f=e.dataTransfer.files[0];if(!f)return;const input=$('#fanartFile');const dt=new DataTransfer();dt.items.add(f);input.files=dt.files;previewFile(f);});}
-    $('[data-fanart-close]')?.addEventListener('click',closeModal);document.addEventListener('keydown',e=>{if(e.key==='Escape')closeModal();});
+    $$('[data-fanart-close]').forEach(button=>button.addEventListener('click',closeModal));document.addEventListener('keydown',e=>{if(e.key==='Escape')closeModal();});
     $('#fanartCategory')?.addEventListener('change',e=>{const f=$('#fanartFile');if(e.target.value==='Edits')f?.setAttribute('accept','image/png,image/jpeg,image/webp,video/mp4,video/webm,video/quicktime');else f?.setAttribute('accept','image/png,image/jpeg,image/webp');});
     $('#fanartUploadForm')?.addEventListener('submit',async e=>{e.preventDefault();const form=e.currentTarget,status=$('#fanartUploadStatus'),btn=form.querySelector('.fanart-submit');try{const file=$('#fanartFile').files[0],title=$('#fanartTitle').value,desc=$('#fanartDescription').value,cat=$('#fanartCategory').value;if(!file||!title||!cat)throw new Error('Completa el archivo, el título y el apartado del arte.');btn.disabled=true;status.textContent='PUBLICANDO · SUBIENDO ARCHIVO…';await upload(file,title,desc,cat);form.reset();previewFile(null);status.textContent='PUBLICADO · YA ESTÁ EN LA GALERÍA';setTimeout(()=>status.textContent='',3000);}catch(err){status.textContent=(err.message||'No se pudo publicar').toUpperCase();}finally{btn.disabled=false;}});
     $('#fanartMenu')?.addEventListener('click',()=>{$('#fanartMobile')?.classList.add('is-open');$('#fanartMobile')?.setAttribute('aria-hidden','false');});$('#fanartMobileClose')?.addEventListener('click',()=>{$('#fanartMobile')?.classList.remove('is-open');$('#fanartMobile')?.setAttribute('aria-hidden','true');});
   }
   function init(){bind();render(demo);renderHome(demo);const sf=SF();if(!sf)return;const ready=()=>{state.ready=true;state.uid=sf.current?.uid||'';subscribe();};if(sf.current?.ready)ready();else document.addEventListener('speedy:firebase-ready',ready,{once:true});setTimeout(()=>{if(!state.ready){render(sourceList());renderHome(sourceList());}},5000);}
-  document.addEventListener('DOMContentLoaded',init);
+  window.addEventListener('pagehide',()=>{if(previewUrl)URL.revokeObjectURL(previewUrl);state.unsub?.();});
+  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init,{once:true});else init();
   window.SpeedyFanarts={renderHome};
 })();

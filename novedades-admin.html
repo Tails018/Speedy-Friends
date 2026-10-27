@@ -88,8 +88,13 @@ html[data-sf-theme="dark"] #news-preview-public .npp-copy h4#npp-title{
   word-break:normal;
 }
 </style>
+<meta name="description" content="Speedy Friends · Editor de Novedades · Comunidad de Speedy Friends, perfiles, creatividad y entretenimiento.">
+<meta name="robots" content="noindex,nofollow">
+<link rel="stylesheet" href="portal-ui.css">
+<script defer src="portal-ui.js"></script>
 </head>
 <body class="novedades-admin-page">
+<a class="sf-skip-link" href="#main-content">Saltar al contenido</a>
 <header class="top"><a class="brand" href="index.html"><b>SPEEDY</b> FRIENDS</a><div><a href="index.html">INICIO</a> · <a href="novedades.html">VER NOVEDADES</a></div></header>
 <div class="editor-bg" aria-hidden="true"></div>
 
@@ -129,7 +134,7 @@ html[data-sf-theme="dark"] #news-preview-public .npp-copy h4#npp-title{
   check();
 })();
 </script>
-<main class="wrap">
+<main id="main-content" class="wrap">
 <p class="k"><span class="live-dot"></span> Community / Editor / LIVE</p><h1>NOVEDADES<br>CONTROL</h1><p class="intro">Panel exclusivo para Creadora y administradores. Publica, edita y retira novedades. La vista previa usa el mismo diseño que verá la comunidad.</p>
 <div id="denied" class="role-note" style="display:none">ACCESO RESTRINGIDO: solo Creadora y administradores.</div>
 <div id="app" style="display:none">
@@ -162,7 +167,7 @@ html[data-sf-theme="dark"] #news-preview-public .npp-copy h4#npp-title{
 <label class="full" style="font-size:6px;font-weight:900;letter-spacing:.1em"><input id="news-published" type="checkbox" checked> PUBLICADA</label>
 <div class="full" style="display:flex;gap:7px;flex-wrap:wrap"><button class="btn red">PUBLICAR / GUARDAR</button><button class="btn" id="news-clear" type="button">NUEVA</button></div>
 </form>
-<article class="preview-card"><img id="preview-image" src="assets/section-replacement.png" alt=""><div class="preview-copy"><small id="preview-meta">26.08.2026 · EVENTO</small><h3 id="preview-title">Tu próxima novedad</h3><p id="preview-summary">Así se verá el resumen de la noticia en la portada.</p></div></article>
+<article class="preview-card"><img id="preview-image" src="assets/optimized/1cdfd07e95f6-640.webp" srcset="assets/optimized/1cdfd07e95f6-320.webp 320w, assets/optimized/1cdfd07e95f6-640.webp 640w, assets/optimized/1cdfd07e95f6-960.webp 960w, assets/optimized/1cdfd07e95f6-1440.webp 1440w" sizes="(max-width: 600px) 90vw, (max-width: 1000px) 45vw, 640px" alt="" width="1774" height="887" decoding="async" loading="lazy"><div class="preview-copy"><small id="preview-meta">26.08.2026 · EVENTO</small><h3 id="preview-title">Tu próxima novedad</h3><p id="preview-summary">Así se verá el resumen de la noticia en la portada.</p></div></article>
 </div>
 </div>
 
@@ -176,7 +181,7 @@ html[data-sf-theme="dark"] #news-preview-public .npp-copy h4#npp-title{
     <b id="npp-status">BORRADOR</b>
   </div>
   <article class="npp-card" aria-live="polite">
-    <div class="npp-media"><img id="npp-image" src="assets/section-replacement.png" alt=""></div>
+    <div class="npp-media"><img id="npp-image" src="assets/optimized/1cdfd07e95f6-640.webp" srcset="assets/optimized/1cdfd07e95f6-320.webp 320w, assets/optimized/1cdfd07e95f6-640.webp 640w, assets/optimized/1cdfd07e95f6-960.webp 960w, assets/optimized/1cdfd07e95f6-1440.webp 1440w" sizes="(max-width: 600px) 90vw, (max-width: 1000px) 45vw, 640px" alt="" width="1774" height="887" decoding="async" loading="lazy"></div>
     <div class="npp-copy">
       <div class="npp-meta"><span id="npp-category">EVENTO</span><b id="npp-date">FECHA</b></div>
       <h4 id="npp-title">Tu próxima novedad</h4>
@@ -233,7 +238,7 @@ $('news-clear').onclick=clearForm;
 
 function drawList(){
  const items=Object.values(all).sort((a,b)=>(b.createdAt||0)-(a.createdAt||0));
- $('news-list').innerHTML=items.map(n=>`<article class="news-row"><img class="thumb" src="${esc(n.image||'assets/section-replacement.png')}" alt=""><div><div class="title">${esc(n.title||'Sin título')}</div><div class="small">${esc(n.date||'')} · ${esc(n.category||'INFO')}<br>${esc(n.summary||'')}</div><span class="status">${n.published===false?'OCULTA':'PUBLICADA'}${n.featured?' · DESTACADA':''}</span></div><div><button class="btn" data-edit="${esc(n.id)}">EDITAR</button></div></article>`).join('')||'<p class="intro">Todavía no hay novedades.</p>';
+ $('news-list').innerHTML=items.map(n=>`<article class="news-row"><img class="thumb" src="${esc(n.image||'assets/optimized/1cdfd07e95f6-640.webp')}" alt=""><div><div class="title">${esc(n.title||'Sin título')}</div><div class="small">${esc(n.date||'')} · ${esc(n.category||'INFO')}<br>${esc(n.summary||'')}</div><span class="status">${n.published===false?'OCULTA':'PUBLICADA'}${n.featured?' · DESTACADA':''}</span></div><div><button class="btn" data-edit="${esc(n.id)}">EDITAR</button></div></article>`).join('')||'<p class="intro">Todavía no hay novedades.</p>';
  document.querySelectorAll('[data-edit]').forEach(b=>b.onclick=()=>fill(all[b.dataset.edit]));
 }
 

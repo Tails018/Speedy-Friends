@@ -39,7 +39,7 @@
         <div class="hfr-main">
           <div class="hfr-avatar" ${avatar}>${av?'':esc(initials(row.name))}</div>
           <div class="hfr-user"><strong>${esc(row.name)}</strong><small>${esc(row.profile.title || row.profile.role || 'Integrante')}</small></div>
-          <div class="hfr-rings"><span>${row.rings.toLocaleString('en-US')}</span><img src="assets/ring-animated.png" alt="Rings"></div>
+          <div class="hfr-rings"><span>${row.rings.toLocaleString('en-US')}</span><img src="assets/ring-animated.png" alt="Rings" width="100" height="100" decoding="async"></div>
         </div>
       </article>`;
     }).join('');

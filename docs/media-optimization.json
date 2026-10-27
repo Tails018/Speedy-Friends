@@ -1,0 +1,178 @@
+{
+  "assets/section-replacement.png": {
+    "originalBytes": 2524570,
+    "width": 1774,
+    "height": 887,
+    "src": "assets/optimized/1cdfd07e95f6-640.webp",
+    "variants": [
+      {
+        "path": "assets/optimized/1cdfd07e95f6-320.webp",
+        "width": 320,
+        "height": 160,
+        "bytes": 14720
+      },
+      {
+        "path": "assets/optimized/1cdfd07e95f6-640.webp",
+        "width": 640,
+        "height": 320,
+        "bytes": 37148
+      },
+      {
+        "path": "assets/optimized/1cdfd07e95f6-960.webp",
+        "width": 960,
+        "height": 480,
+        "bytes": 64596
+      },
+      {
+        "path": "assets/optimized/1cdfd07e95f6-1440.webp",
+        "width": 1440,
+        "height": 720,
+        "bytes": 99772
+      }
+    ]
+  },
+  "assets/user-carousel/carousel-01.jpg": {
+    "originalBytes": 25748,
+    "width": 736,
+    "height": 736,
+    "src": "assets/optimized/aa5fd1983646-640.webp",
+    "variants": [
+      {
+        "path": "assets/optimized/aa5fd1983646-320.webp",
+        "width": 320,
+        "height": 320,
+        "bytes": 6190
+      },
+      {
+        "path": "assets/optimized/aa5fd1983646-640.webp",
+        "width": 640,
+        "height": 640,
+        "bytes": 12278
+      },
+      {
+        "path": "assets/optimized/aa5fd1983646-736.webp",
+        "width": 736,
+        "height": 736,
+        "bytes": 14540
+      }
+    ]
+  },
+  "assets/user-carousel/carousel-02.jpg": {
+    "originalBytes": 11693,
+    "width": 307,
+    "height": 445,
+    "src": "assets/optimized/80ea62c8e9aa-307.webp",
+    "variants": [
+      {
+        "path": "assets/optimized/80ea62c8e9aa-307.webp",
+        "width": 307,
+        "height": 445,
+        "bytes": 8270
+      }
+    ]
+  },
+  "assets/user-carousel/carousel-03.jpg": {
+    "originalBytes": 49129,
+    "width": 736,
+    "height": 736,
+    "src": "assets/optimized/900cfb3d55be-640.webp",
+    "variants": [
+      {
+        "path": "assets/optimized/900cfb3d55be-320.webp",
+        "width": 320,
+        "height": 320,
+        "bytes": 11464
+      },
+      {
+        "path": "assets/optimized/900cfb3d55be-640.webp",
+        "width": 640,
+        "height": 640,
+        "bytes": 24554
+      },
+      {
+        "path": "assets/optimized/900cfb3d55be-736.webp",
+        "width": 736,
+        "height": 736,
+        "bytes": 30666
+      }
+    ]
+  },
+  "assets/ultimos-momentos/sonic-wars.jpeg": {
+    "originalBytes": 139929,
+    "width": 720,
+    "height": 1108,
+    "src": "assets/optimized/7d38094202ec-640.webp",
+    "variants": [
+      {
+        "path": "assets/optimized/7d38094202ec-320.webp",
+        "width": 320,
+        "height": 492,
+        "bytes": 38286
+      },
+      {
+        "path": "assets/optimized/7d38094202ec-640.webp",
+        "width": 640,
+        "height": 985,
+        "bytes": 102296
+      },
+      {
+        "path": "assets/optimized/7d38094202ec-720.webp",
+        "width": 720,
+        "height": 1108,
+        "bytes": 126228
+      }
+    ]
+  },
+  "assets/ultimos-momentos/metal-virus.jpeg": {
+    "originalBytes": 197262,
+    "width": 720,
+    "height": 1105,
+    "src": "assets/optimized/ba3d3df36e13-640.webp",
+    "variants": [
+      {
+        "path": "assets/optimized/ba3d3df36e13-320.webp",
+        "width": 320,
+        "height": 491,
+        "bytes": 62944
+      },
+      {
+        "path": "assets/optimized/ba3d3df36e13-640.webp",
+        "width": 640,
+        "height": 982,
+        "bytes": 199092
+      },
+      {
+        "path": "assets/optimized/ba3d3df36e13-720.webp",
+        "width": 720,
+        "height": 1105,
+        "bytes": 237176
+      }
+    ]
+  },
+  "assets/ultimos-momentos/execution.jpeg": {
+    "originalBytes": 25289,
+    "width": 733,
+    "height": 171,
+    "src": "assets/optimized/b6fcf28e7ac2-640.webp",
+    "variants": [
+      {
+        "path": "assets/optimized/b6fcf28e7ac2-320.webp",
+        "width": 320,
+        "height": 75,
+        "bytes": 6942
+      },
+      {
+        "path": "assets/optimized/b6fcf28e7ac2-640.webp",
+        "width": 640,
+        "height": 149,
+        "bytes": 17866
+      },
+      {
+        "path": "assets/optimized/b6fcf28e7ac2-733.webp",
+        "width": 733,
+        "height": 171,
+        "bytes": 23684
+      }
+    ]
+  }
+}
