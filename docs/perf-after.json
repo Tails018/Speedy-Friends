@@ -1,0 +1,320 @@
+{
+  "browser": "156.0.4314.50",
+  "date": "2026-10-30T23:38:46.040Z",
+  "results": {
+    "mobile:index.html": {
+      "dcl": 296,
+      "load": 300,
+      "lcp": 1200,
+      "cls": 0,
+      "tbt": 0,
+      "domNodes": 688,
+      "requests": 33,
+      "kb": 952,
+      "byType": {
+        "html": 80,
+        "css": 320,
+        "js": 365,
+        "webp": 130,
+        "svg": 3,
+        "png": 14,
+        "gif": 39
+      },
+      "duplicates": []
+    },
+    "mobile:cafeteria.html": {
+      "dcl": 132,
+      "load": 133,
+      "lcp": 212,
+      "cls": 0,
+      "tbt": 0,
+      "domNodes": 196,
+      "requests": 15,
+      "kb": 456,
+      "byType": {
+        "html": 50,
+        "css": 140,
+        "webp": 190,
+        "js": 70,
+        "gif": 7
+      },
+      "duplicates": []
+    },
+    "mobile:friends.html": {
+      "dcl": 76,
+      "load": 91,
+      "lcp": 128,
+      "cls": 0,
+      "tbt": 0,
+      "domNodes": 132,
+      "requests": 9,
+      "kb": 234,
+      "byType": {
+        "html": 5,
+        "css": 157,
+        "js": 72
+      },
+      "duplicates": []
+    },
+    "mobile:fanarts.html": {
+      "dcl": 102,
+      "load": 105,
+      "lcp": 128,
+      "cls": 0,
+      "tbt": 0,
+      "domNodes": 242,
+      "requests": 12,
+      "kb": 402,
+      "byType": {
+        "html": 7,
+        "css": 189,
+        "js": 89,
+        "webp": 117
+      },
+      "duplicates": []
+    },
+    "mobile:ranking.html": {
+      "dcl": 110,
+      "load": 111,
+      "lcp": 148,
+      "cls": 0.028,
+      "tbt": 0,
+      "domNodes": 149,
+      "requests": 14,
+      "kb": 331,
+      "byType": {
+        "html": 59,
+        "css": 157,
+        "js": 101,
+        "gif": 7,
+        "png": 7
+      },
+      "duplicates": []
+    },
+    "mobile:profile.html": {
+      "dcl": 118,
+      "load": 120,
+      "lcp": 208,
+      "cls": 0,
+      "tbt": 0,
+      "domNodes": 266,
+      "requests": 13,
+      "kb": 342,
+      "byType": {
+        "html": 77,
+        "css": 157,
+        "js": 101,
+        "gif": 7
+      },
+      "duplicates": []
+    },
+    "mobile:ost.html": {
+      "dcl": 100,
+      "load": 101,
+      "lcp": 136,
+      "cls": 0,
+      "tbt": 0,
+      "domNodes": 162,
+      "requests": 11,
+      "kb": 242,
+      "byType": {
+        "html": 33,
+        "css": 140,
+        "js": 62,
+        "gif": 7
+      },
+      "duplicates": []
+    },
+    "mobile:novedades.html": {
+      "dcl": 98,
+      "load": 102,
+      "lcp": 148,
+      "cls": 0,
+      "tbt": 0,
+      "domNodes": 112,
+      "requests": 12,
+      "kb": 468,
+      "byType": {
+        "html": 39,
+        "css": 140,
+        "js": 57,
+        "webp": 233
+      },
+      "duplicates": []
+    },
+    "mobile:admin.html": {
+      "dcl": 100,
+      "load": 104,
+      "lcp": 136,
+      "cls": 0,
+      "tbt": 0,
+      "domNodes": 386,
+      "requests": 11,
+      "kb": 307,
+      "byType": {
+        "html": 99,
+        "css": 140,
+        "js": 62,
+        "gif": 7
+      },
+      "duplicates": []
+    },
+    "desktop:index.html": {
+      "dcl": 284,
+      "load": 289,
+      "lcp": 1016,
+      "cls": 0.256,
+      "tbt": 0,
+      "domNodes": 688,
+      "requests": 33,
+      "kb": 952,
+      "byType": {
+        "html": 80,
+        "css": 320,
+        "webp": 130,
+        "js": 365,
+        "svg": 3,
+        "png": 14,
+        "gif": 39
+      },
+      "duplicates": []
+    },
+    "desktop:cafeteria.html": {
+      "dcl": 151,
+      "load": 152,
+      "lcp": 184,
+      "cls": 0,
+      "tbt": 0,
+      "domNodes": 196,
+      "requests": 15,
+      "kb": 647,
+      "byType": {
+        "html": 50,
+        "css": 140,
+        "webp": 380,
+        "js": 70,
+        "gif": 7
+      },
+      "duplicates": []
+    },
+    "desktop:friends.html": {
+      "dcl": 73,
+      "load": 87,
+      "lcp": 76,
+      "cls": 0,
+      "tbt": 0,
+      "domNodes": 132,
+      "requests": 9,
+      "kb": 234,
+      "byType": {
+        "html": 5,
+        "css": 157,
+        "js": 72
+      },
+      "duplicates": []
+    },
+    "desktop:fanarts.html": {
+      "dcl": 105,
+      "load": 118,
+      "lcp": 140,
+      "cls": 0,
+      "tbt": 0,
+      "domNodes": 242,
+      "requests": 12,
+      "kb": 500,
+      "byType": {
+        "html": 7,
+        "css": 189,
+        "js": 89,
+        "webp": 215
+      },
+      "duplicates": []
+    },
+    "desktop:ranking.html": {
+      "dcl": 89,
+      "load": 90,
+      "lcp": 116,
+      "cls": 0.007,
+      "tbt": 0,
+      "domNodes": 149,
+      "requests": 14,
+      "kb": 331,
+      "byType": {
+        "html": 59,
+        "css": 157,
+        "js": 101,
+        "gif": 7,
+        "png": 7
+      },
+      "duplicates": []
+    },
+    "desktop:profile.html": {
+      "dcl": 122,
+      "load": 124,
+      "lcp": 144,
+      "cls": 0,
+      "tbt": 4,
+      "domNodes": 266,
+      "requests": 13,
+      "kb": 342,
+      "byType": {
+        "html": 77,
+        "css": 157,
+        "js": 101,
+        "gif": 7
+      },
+      "duplicates": []
+    },
+    "desktop:ost.html": {
+      "dcl": 94,
+      "load": 95,
+      "lcp": 124,
+      "cls": 0,
+      "tbt": 0,
+      "domNodes": 162,
+      "requests": 11,
+      "kb": 242,
+      "byType": {
+        "html": 33,
+        "css": 140,
+        "js": 62,
+        "gif": 7
+      },
+      "duplicates": []
+    },
+    "desktop:novedades.html": {
+      "dcl": 101,
+      "load": 105,
+      "lcp": 124,
+      "cls": 0,
+      "tbt": 0,
+      "domNodes": 112,
+      "requests": 12,
+      "kb": 468,
+      "byType": {
+        "html": 39,
+        "css": 140,
+        "js": 57,
+        "webp": 233
+      },
+      "duplicates": []
+    },
+    "desktop:admin.html": {
+      "dcl": 106,
+      "load": 108,
+      "lcp": 136,
+      "cls": 0,
+      "tbt": 0,
+      "domNodes": 386,
+      "requests": 11,
+      "kb": 307,
+      "byType": {
+        "html": 99,
+        "css": 140,
+        "js": 62,
+        "gif": 7
+      },
+      "duplicates": []
+    }
+  }
+}

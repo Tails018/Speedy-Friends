@@ -83,7 +83,10 @@ html[data-sf-fx="lite"] .sf-ring::before,html[data-sf-fx="lite"] .sf-ring::after
 .sf-fx-toggle .sf-fx-dot{width:9px;height:9px;border-radius:50%;background:var(--sf-ring);box-shadow:0 0 0 3px rgba(247,197,72,.25)}
 .sf-fx-toggle[aria-pressed="true"] .sf-fx-dot{background:#9a9a9a;box-shadow:none}
 html[data-sf-theme="dark"] .sf-fx-toggle{background:rgba(18,24,32,.92);color:#fff;border-color:rgba(255,255,255,.1)}
-.sf-utility-panel-title .sf-fx-toggle{margin-top:10px}
+/* En el panel: fila propia bajo el título, sin invadir la zona del botón de cerrar. */
+.sf-utility-panel-title{flex-wrap:wrap}
+.sf-utility-panel-title .sf-fx-toggle{flex:0 0 auto;order:3;margin-top:12px;width:max-content}
+.sf-utility-panel-title>div{flex:1 0 100%}
 [data-theme-toggle]+.sf-fx-toggle{margin-left:8px}
 
 /* ---------- Modo ligero: quita desenfoques y decoración continua, conserva el contenido ---------- */
