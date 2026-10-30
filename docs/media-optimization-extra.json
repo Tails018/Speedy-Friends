@@ -1,0 +1,135 @@
+{
+  "assets/banner_250627_01_SonicRacingCrossWorld.jpg": {
+    "originalBytes": 1018857,
+    "width": 1920,
+    "height": 1080,
+    "variants": [
+      {
+        "path": "assets/optimized/0984bf3c1fee-960.webp",
+        "width": 960,
+        "height": 540,
+        "bytes": 119654
+      },
+      {
+        "path": "assets/optimized/0984bf3c1fee-1440.webp",
+        "width": 1440,
+        "height": 810,
+        "bytes": 220032
+      }
+    ]
+  },
+  "assets/banner_260624_01_SonicFrontiersDX.webp": {
+    "originalBytes": 340340,
+    "width": 1280,
+    "height": 720,
+    "variants": [
+      {
+        "path": "assets/optimized/1052f928e779-640.webp",
+        "width": 640,
+        "height": 360,
+        "bytes": 39974
+      },
+      {
+        "path": "assets/optimized/1052f928e779-1280.webp",
+        "width": 1280,
+        "height": 720,
+        "bytes": 106094
+      }
+    ]
+  },
+  "assets/cafeteria-counter-inspiration.jpg": {
+    "originalBytes": 69127,
+    "width": 736,
+    "height": 490,
+    "variants": [
+      {
+        "path": "assets/optimized/0c1d819b0848-480.webp",
+        "width": 480,
+        "height": 320,
+        "bytes": 25990
+      },
+      {
+        "path": "assets/optimized/0c1d819b0848-736.webp",
+        "width": 736,
+        "height": 490,
+        "bytes": 53074
+      }
+    ]
+  },
+  "assets/cafe-sonic-barista-cover.jpg": {
+    "originalBytes": 52818,
+    "width": 736,
+    "height": 926,
+    "variants": [
+      {
+        "path": "assets/optimized/70f5c5b9bc61-480.webp",
+        "width": 480,
+        "height": 604,
+        "bytes": 19470
+      },
+      {
+        "path": "assets/optimized/70f5c5b9bc61-736.webp",
+        "width": 736,
+        "height": 926,
+        "bytes": 33126
+      }
+    ]
+  },
+  "assets/cafe-speed-cafe-storefront.jpg": {
+    "originalBytes": 201326,
+    "width": 736,
+    "height": 1308,
+    "variants": [
+      {
+        "path": "assets/optimized/8f936a05f197-480.webp",
+        "width": 480,
+        "height": 853,
+        "bytes": 80182
+      },
+      {
+        "path": "assets/optimized/8f936a05f197-736.webp",
+        "width": 736,
+        "height": 1308,
+        "bytes": 173594
+      }
+    ]
+  },
+  "assets/cafe-toast-sonic.jpg": {
+    "originalBytes": 81525,
+    "width": 736,
+    "height": 981,
+    "variants": [
+      {
+        "path": "assets/optimized/69fd3ecb4ef9-480.webp",
+        "width": 480,
+        "height": 640,
+        "bytes": 32444
+      },
+      {
+        "path": "assets/optimized/69fd3ecb4ef9-736.webp",
+        "width": 736,
+        "height": 981,
+        "bytes": 56018
+      }
+    ]
+  },
+  "assets/cafe-matcha-sonic.jpg": {
+    "originalBytes": 101884,
+    "width": 736,
+    "height": 981,
+    "variants": [
+      {
+        "path": "assets/optimized/55fda01757df-480.webp",
+        "width": 480,
+        "height": 640,
+        "bytes": 36352
+      },
+      {
+        "path": "assets/optimized/55fda01757df-736.webp",
+        "width": 736,
+        "height": 981,
+        "bytes": 73602
+      }
+    ]
+  }
+}

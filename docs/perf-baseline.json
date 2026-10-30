@@ -1,0 +1,320 @@
+{
+  "browser": "156.0.4314.50",
+  "date": "2026-10-30T23:19:00.085Z",
+  "results": {
+    "mobile:index.html": {
+      "dcl": 380,
+      "load": 382,
+      "lcp": 1300,
+      "cls": 0,
+      "tbt": 0,
+      "domNodes": 669,
+      "requests": 31,
+      "kb": 936,
+      "byType": {
+        "html": 80,
+        "css": 311,
+        "webp": 130,
+        "js": 358,
+        "svg": 3,
+        "png": 14,
+        "gif": 39
+      },
+      "duplicates": []
+    },
+    "mobile:cafeteria.html": {
+      "dcl": 123,
+      "load": 123,
+      "lcp": 220,
+      "cls": 0,
+      "tbt": 0,
+      "domNodes": 188,
+      "requests": 13,
+      "kb": 744,
+      "byType": {
+        "html": 49,
+        "css": 131,
+        "jpg": 495,
+        "js": 62,
+        "gif": 7
+      },
+      "duplicates": []
+    },
+    "mobile:friends.html": {
+      "dcl": 77,
+      "load": 88,
+      "lcp": 132,
+      "cls": 0,
+      "tbt": 0,
+      "domNodes": 127,
+      "requests": 7,
+      "kb": 218,
+      "byType": {
+        "html": 5,
+        "css": 149,
+        "js": 65
+      },
+      "duplicates": []
+    },
+    "mobile:fanarts.html": {
+      "dcl": 96,
+      "load": 104,
+      "lcp": 128,
+      "cls": 0,
+      "tbt": 0,
+      "domNodes": 237,
+      "requests": 10,
+      "kb": 1264,
+      "byType": {
+        "html": 7,
+        "css": 180,
+        "js": 82,
+        "jpg": 995
+      },
+      "duplicates": []
+    },
+    "mobile:ranking.html": {
+      "dcl": 86,
+      "load": 90,
+      "lcp": 124,
+      "cls": 0.157,
+      "tbt": 0,
+      "domNodes": 141,
+      "requests": 12,
+      "kb": 314,
+      "byType": {
+        "html": 58,
+        "css": 149,
+        "js": 94,
+        "gif": 7,
+        "png": 7
+      },
+      "duplicates": []
+    },
+    "mobile:profile.html": {
+      "dcl": 108,
+      "load": 109,
+      "lcp": 200,
+      "cls": 0,
+      "tbt": 0,
+      "domNodes": 258,
+      "requests": 11,
+      "kb": 326,
+      "byType": {
+        "html": 77,
+        "css": 149,
+        "js": 94,
+        "gif": 7
+      },
+      "duplicates": []
+    },
+    "mobile:ost.html": {
+      "dcl": 85,
+      "load": 85,
+      "lcp": 124,
+      "cls": 0,
+      "tbt": 0,
+      "domNodes": 154,
+      "requests": 9,
+      "kb": 225,
+      "byType": {
+        "html": 33,
+        "css": 131,
+        "js": 55,
+        "gif": 7
+      },
+      "duplicates": []
+    },
+    "mobile:novedades.html": {
+      "dcl": 93,
+      "load": 94,
+      "lcp": 148,
+      "cls": 0,
+      "tbt": 0,
+      "domNodes": 104,
+      "requests": 10,
+      "kb": 680,
+      "byType": {
+        "html": 38,
+        "css": 131,
+        "js": 49,
+        "webp": 462
+      },
+      "duplicates": []
+    },
+    "mobile:admin.html": {
+      "dcl": 98,
+      "load": 100,
+      "lcp": 132,
+      "cls": 0,
+      "tbt": 0,
+      "domNodes": 378,
+      "requests": 9,
+      "kb": 291,
+      "byType": {
+        "html": 98,
+        "css": 131,
+        "js": 55,
+        "gif": 7
+      },
+      "duplicates": []
+    },
+    "desktop:index.html": {
+      "dcl": 274,
+      "load": 276,
+      "lcp": 1000,
+      "cls": 0.256,
+      "tbt": 0,
+      "domNodes": 669,
+      "requests": 31,
+      "kb": 936,
+      "byType": {
+        "html": 80,
+        "css": 311,
+        "webp": 130,
+        "js": 358,
+        "svg": 3,
+        "png": 14,
+        "gif": 39
+      },
+      "duplicates": []
+    },
+    "desktop:cafeteria.html": {
+      "dcl": 118,
+      "load": 118,
+      "lcp": 136,
+      "cls": 0,
+      "tbt": 0,
+      "domNodes": 188,
+      "requests": 13,
+      "kb": 744,
+      "byType": {
+        "html": 49,
+        "css": 131,
+        "js": 62,
+        "jpg": 495,
+        "gif": 7
+      },
+      "duplicates": []
+    },
+    "desktop:friends.html": {
+      "dcl": 72,
+      "load": 88,
+      "lcp": 72,
+      "cls": 0,
+      "tbt": 0,
+      "domNodes": 127,
+      "requests": 7,
+      "kb": 218,
+      "byType": {
+        "html": 5,
+        "css": 149,
+        "js": 65
+      },
+      "duplicates": []
+    },
+    "desktop:fanarts.html": {
+      "dcl": 96,
+      "load": 104,
+      "lcp": 128,
+      "cls": 0,
+      "tbt": 0,
+      "domNodes": 237,
+      "requests": 10,
+      "kb": 1264,
+      "byType": {
+        "html": 7,
+        "css": 180,
+        "js": 82,
+        "jpg": 995
+      },
+      "duplicates": []
+    },
+    "desktop:ranking.html": {
+      "dcl": 88,
+      "load": 91,
+      "lcp": 124,
+      "cls": 0.123,
+      "tbt": 0,
+      "domNodes": 141,
+      "requests": 12,
+      "kb": 314,
+      "byType": {
+        "html": 58,
+        "css": 149,
+        "js": 94,
+        "gif": 7,
+        "png": 7
+      },
+      "duplicates": []
+    },
+    "desktop:profile.html": {
+      "dcl": 111,
+      "load": 112,
+      "lcp": 136,
+      "cls": 0,
+      "tbt": 0,
+      "domNodes": 258,
+      "requests": 11,
+      "kb": 326,
+      "byType": {
+        "html": 77,
+        "css": 149,
+        "js": 94,
+        "gif": 7
+      },
+      "duplicates": []
+    },
+    "desktop:ost.html": {
+      "dcl": 88,
+      "load": 88,
+      "lcp": 112,
+      "cls": 0,
+      "tbt": 0,
+      "domNodes": 154,
+      "requests": 9,
+      "kb": 225,
+      "byType": {
+        "html": 33,
+        "css": 131,
+        "js": 55,
+        "gif": 7
+      },
+      "duplicates": []
+    },
+    "desktop:novedades.html": {
+      "dcl": 94,
+      "load": 95,
+      "lcp": 120,
+      "cls": 0,
+      "tbt": 0,
+      "domNodes": 104,
+      "requests": 10,
+      "kb": 680,
+      "byType": {
+        "html": 38,
+        "css": 131,
+        "js": 49,
+        "webp": 462
+      },
+      "duplicates": []
+    },
+    "desktop:admin.html": {
+      "dcl": 96,
+      "load": 99,
+      "lcp": 120,
+      "cls": 0,
+      "tbt": 0,
+      "domNodes": 378,
+      "requests": 9,
+      "kb": 291,
+      "byType": {
+        "html": 98,
+        "css": 131,
+        "js": 55,
+        "gif": 7
+      },
+      "duplicates": []
+    }
+  }
+}
