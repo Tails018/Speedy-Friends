@@ -116,6 +116,37 @@ let activeBrowser;
   assert.equal(await page.locator('.sf-hero-swiper').evaluate(el=>el.swiper.autoplay.running),false);
   await page.emulateMedia({reducedMotion:'reduce'});
  });
+ await test('Experience layer: effects toggle persists, decorations stay decorative and nothing overflows',async()=>{
+  await page.goto(base+'/index.html');await page.waitForFunction(()=>document.body.classList.contains('page-ready'));await dismissGate();
+  assert.equal(await page.evaluate(()=>document.documentElement.dataset.sfFx),'lite','reduced motion selects lite automatically');
+  await page.evaluate(()=>localStorage.removeItem('sfFx'));await page.emulateMedia({reducedMotion:'no-preference'});await page.reload();
+  await page.waitForFunction(()=>document.body.classList.contains('page-ready'));await dismissGate();
+  assert.equal(await page.evaluate(()=>document.documentElement.dataset.sfFx),'full');
+  assert.equal(await page.locator('.sf-ring').count(),5);
+  assert.ok(await page.locator('.sf-rings').evaluate(el=>el.getAttribute('aria-hidden')==='true'&&getComputedStyle(el).pointerEvents==='none'));
+  await page.locator('.sf-utility-toggle').click();
+  const toggle=page.locator('.hero-utility-rail .sf-fx-toggle');await toggle.click();
+  assert.equal(await toggle.getAttribute('aria-pressed'),'true');assert.equal(await page.evaluate(()=>localStorage.getItem('sfFx')),'lite');
+  await page.reload();await page.waitForFunction(()=>document.body.classList.contains('page-ready'));
+  assert.equal(await page.evaluate(()=>document.documentElement.dataset.sfFx),'lite');
+  assert.equal(await page.locator('[data-theme-toggle]').count(),1,'theme toggle preserved');
+  await page.evaluate(()=>localStorage.removeItem('sfFx'));
+  for(const route of ['index.html','ranking.html','cafeteria.html','fanarts.html','profile.html']){
+   await page.goto(base+'/'+route);await page.waitForTimeout(400);
+   await page.evaluate(async()=>{for(let y=0;y<document.documentElement.scrollHeight;y+=500){scrollTo(0,y);await new Promise(r=>requestAnimationFrame(()=>setTimeout(r,40)));}});
+   await page.waitForTimeout(900);
+   const state=await page.evaluate(()=>({hidden:[...document.querySelectorAll('.sf-x-reveal:not(.is-in)')].length,overflow:document.documentElement.scrollWidth-innerWidth,bar:!!document.querySelector('.sf-speedbar')}));
+   assert.equal(state.hidden,0,route+' leaves revealed content hidden');assert.ok(state.overflow<=1,route+' horizontal overflow '+state.overflow);assert.ok(state.bar);
+  }
+  await page.emulateMedia({reducedMotion:'reduce'});
+ });
+ await test('Ranking reserves list space while data loads (no layout shift)',async()=>{
+  const p=await context.newPage();
+  await p.addInitScript(()=>{window.__cls=0;new PerformanceObserver(l=>{for(const e of l.getEntries())if(!e.hadRecentInput)window.__cls+=e.value}).observe({type:'layout-shift',buffered:true});});
+  await p.goto(base+'/ranking.html');await p.waitForTimeout(2000);
+  const cls=await p.evaluate(()=>window.__cls);await p.close();
+  assert.ok(cls<0.1,'ranking CLS '+cls);
+ });
  await test('No uncaught JavaScript errors across the audited routes',async()=>assert.deepEqual(errors,[]));
  writeFileSync('docs/browser-verification.json',JSON.stringify({browser:browser.version(),report,errors,limitations:['External services blocked. Firebase login, live writes, uploads and real administrative permissions not exercised.','Rings use a read-only fixture. Home screenshots dismiss only the local presentation gate.','Chromium responsive emulation; not physical Android/iOS or cross-browser certification.']},null,2));
  await browser.close();

@@ -2,6 +2,8 @@
 <html lang="es">
 <head><script id="sf-theme-prepaint-v47">(function(){try{var v=localStorage.getItem('sfTheme');if(v==='dark')document.documentElement.setAttribute('data-sf-theme','dark')}catch(e){}})();</script>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<link rel="preconnect" href="https://www.gstatic.com">
+<link rel="preconnect" href="https://speedy-friends-default-rtdb.firebaseio.com">
 <title>Speedy Friends · Novedades</title>
 <link rel="stylesheet" href="styles.css">
 <style>
@@ -308,6 +310,8 @@ body.news-ready .news-pointer{opacity:1}
 <meta name="description" content="Speedy Friends · Novedades · Comunidad de Speedy Friends, perfiles, creatividad y entretenimiento.">
 <link rel="stylesheet" href="portal-ui.css">
 <script defer src="portal-ui.js"></script>
+<link rel="stylesheet" href="sf-experience.css">
+<script src="sf-experience.js"></script>
 </head>
 <body class="novedades-public-page">
 <a class="sf-skip-link" href="#main-content">Saltar al contenido</a>
@@ -337,7 +341,7 @@ body.news-ready .news-pointer{opacity:1}
   const defaults=[
     {id:'pick1',title:'SHADOW / NOW',tag:'SHADOW / NOW',image:'assets/gametitle_SonicShadowGenerations_square.webp',order:1},
     {id:'pick2',title:'EVENT / 2026',tag:'EVENT / 2026',image:'assets/event_260826_01_ogp-thumb-640xauto-19278.webp',order:2},
-    {id:'pick3',title:'FRONTIERS / FEATURE',tag:'FRONTIERS / FEATURE',image:'assets/banner_260624_01_SonicFrontiersDX.webp',order:3},
+    {id:'pick3',title:'FRONTIERS / FEATURE',tag:'FRONTIERS / FEATURE',image:'assets/optimized/1052f928e779-1280.webp',order:3},
     {id:'pick4',title:'FAN ART / COMMUNITY',tag:'FAN ART / COMMUNITY',image:'assets/fanart_2608_ogp-thumb-640xauto-19221.webp',order:4}
   ];
   const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[c]));

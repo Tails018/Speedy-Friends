@@ -1,5 +1,5 @@
 {
-  "browser": "151.0.7922.34",
+  "browser": "156.0.4314.50",
   "report": [
     {
       "name": "Loader, repaired document and required authentication",
@@ -47,6 +47,14 @@
     },
     {
       "name": "Carousel responds to motion preference and user pause controls",
+      "status": "passed"
+    },
+    {
+      "name": "Experience layer: effects toggle persists, decorations stay decorative and nothing overflows",
+      "status": "passed"
+    },
+    {
+      "name": "Ranking reserves list space while data loads (no layout shift)",
       "status": "passed"
     },
     {
