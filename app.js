@@ -112,16 +112,17 @@
   $$('.sf-news-card,.friend-card,.download-card,.quick-action-card,.gallery-grid img,.lineup-cards article').forEach(el => cardObserver.observe(el));
 
   // Scroll state + parallax layers.
+  // Nodes and factors are cached: the scroll frame only writes custom properties.
   let ticking = false;
+  const scrollHeader = $('.sf-header');
+  const parallaxLayers = $$('.sf-bg, .hero-orbit, .hero-ring').map((el, i) => [el, [0.035, -0.055, 0.08, -0.045, 0.06][i] ?? 0.04]);
   const updateScroll = () => {
     const y = window.scrollY || 0;
     body.classList.toggle('scrolled', y > 46);
-    $('.sf-header')?.style.setProperty('--scroll-progress', Math.min(y / 600, 1).toFixed(3));
-    $$('.sf-bg, .hero-orbit, .hero-ring').forEach((el, i) => {
-      if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
-      const factor = [0.035, -0.055, 0.08, -0.045, 0.06][i] ?? 0.04;
-      el.style.setProperty('--parallax-y', `${y * factor}px`);
-    });
+    scrollHeader?.style.setProperty('--scroll-progress', Math.min(y / 600, 1).toFixed(3));
+    if (!reducedMotion.matches && document.documentElement.dataset.sfFx !== 'lite') {
+      parallaxLayers.forEach(([el, factor]) => el.style.setProperty('--parallax-y', `${(y * factor).toFixed(1)}px`));
+    }
     ticking = false;
   };
   window.addEventListener('scroll', () => {
@@ -132,13 +133,20 @@
   // Subtle mouse parallax on the hero, inspired by the layered portal artwork.
   const hero = $('.sf-hero');
   if (hero && !window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+    let heroFrame = 0, heroEvent = null;
     hero.addEventListener('pointermove', e => {
-      const r = hero.getBoundingClientRect();
-      const x = (e.clientX - r.left) / r.width - .5;
-      const y = (e.clientY - r.top) / r.height - .5;
-      hero.style.setProperty('--mx', `${x * 18}px`);
-      hero.style.setProperty('--my', `${y * 18}px`);
-    });
+      heroEvent = e;
+      if (heroFrame) return;
+      heroFrame = requestAnimationFrame(() => {
+        heroFrame = 0;
+        if (document.documentElement.dataset.sfFx === 'lite') return;
+        const r = hero.getBoundingClientRect();
+        const x = (heroEvent.clientX - r.left) / r.width - .5;
+        const y = (heroEvent.clientY - r.top) / r.height - .5;
+        hero.style.setProperty('--mx', `${x * 18}px`);
+        hero.style.setProperty('--my', `${y * 18}px`);
+      });
+    }, { passive: true });
     hero.addEventListener('pointerleave', () => {
       hero.style.setProperty('--mx', '0px');
       hero.style.setProperty('--my', '0px');

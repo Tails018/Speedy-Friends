@@ -1,0 +1,125 @@
+/* Speedy Friends — capa de experiencia compartida.
+ * Se carga después de los estilos de cada página. Solo añade: transiciones entre
+ * páginas, barra de velocidad, aparición progresiva, respuesta táctil, anillos del
+ * hero y correcciones de maquetación. Todo usa transform/opacity y respeta
+ * prefers-reduced-motion y el modo de efectos ligeros (html[data-sf-fx="lite"]). */
+:root{
+  --sf-red:#ef263f;
+  --sf-blue:#1f5bff;
+  --sf-ring:#f7c548;
+  --sf-ring-deep:#c98a12;
+  --sf-ink:#151515;
+  --sf-ease-out:cubic-bezier(.16,1,.3,1);
+  --sf-ease-snap:cubic-bezier(.2,.9,.25,1.25);
+}
+
+/* ---------- Transiciones entre páginas (View Transitions entre documentos) ---------- */
+@view-transition{navigation:auto}
+::view-transition-old(root){animation:sfVtOut .26s cubic-bezier(.4,0,1,1) both}
+::view-transition-new(root){animation:sfVtIn .42s var(--sf-ease-out) both}
+@keyframes sfVtOut{to{opacity:0;transform:translateX(-3.5%)}}
+@keyframes sfVtIn{from{opacity:0;transform:translateX(4.5%)}}
+html[data-sf-fx="lite"]::view-transition-old(root),
+html[data-sf-fx="lite"]::view-transition-new(root){animation-duration:.01s}
+@media (prefers-reduced-motion:reduce){
+  ::view-transition-old(root),::view-transition-new(root){animation:none}
+}
+
+/* ---------- Barra de velocidad (progreso de scroll) ---------- */
+.sf-speedbar{position:fixed;inset:0 0 auto 0;height:3px;z-index:100004;pointer-events:none;
+  transform-origin:0 50%;transform:scaleX(var(--sf-progress,0));
+  background:linear-gradient(90deg,var(--sf-blue),var(--sf-red) 62%,var(--sf-ring));
+  box-shadow:0 0 12px rgba(239,38,63,.45);opacity:0;transition:opacity .3s}
+.sf-speedbar.is-on{opacity:1}
+
+/* ---------- Aparición progresiva (solo contenido bajo el pliegue) ---------- */
+.sf-x-reveal{opacity:0;transform:translate3d(0,26px,0);
+  transition:opacity .7s var(--sf-ease-out),transform .8s var(--sf-ease-out);
+  transition-delay:var(--sf-delay,0ms)}
+.sf-x-reveal.is-in{opacity:1;transform:none}
+html[data-sf-fx="lite"] .sf-x-reveal{transform:none;transition-duration:.25s}
+
+/* ---------- Respuesta al pulsar: `scale` se compone con transform existentes ---------- */
+@media (prefers-reduced-motion:no-preference){
+  :where(button,.btn,[class*="-btn"],.rank-btn,.quick-action-card,.hero-utility-card,a[role="button"]):not(:disabled){
+    transition-property:transform,box-shadow,background-color,border-color,color,opacity,filter,scale;
+  }
+  :where(button,.btn,[class*="-btn"],.rank-btn,.quick-action-card,.hero-utility-card,a[role="button"]):not(:disabled):active{scale:.965}
+}
+:where(button,a,[tabindex]):focus-visible{outline:2px solid var(--sf-red);outline-offset:3px}
+
+/* ---------- Anillos dorados del hero (elemento distintivo) ---------- */
+.sf-rings{position:absolute;inset:0;pointer-events:none;z-index:1;overflow:hidden}
+.sf-ring{position:absolute;width:var(--size,46px);aspect-ratio:1;border-radius:50%;
+  left:var(--x);top:var(--y);
+  transform:translate3d(calc(var(--mx,0px) * var(--depth,1)),calc(var(--sf-hero-y,0px) * var(--depth,1)),0);
+  will-change:transform}
+.sf-ring::before{content:"";position:absolute;inset:0;border-radius:50%;
+  background:radial-gradient(circle at 50% 50%,transparent 52%,var(--sf-ring-deep) 53%,var(--sf-ring) 62%,#fff4c4 70%,var(--sf-ring) 78%,var(--sf-ring-deep) 86%,transparent 87%);
+  filter:drop-shadow(0 6px 10px rgba(201,138,18,.28));
+  animation:sfRingSpin 1.6s linear infinite;animation-delay:var(--spin-delay,0s)}
+.sf-ring::after{content:"";position:absolute;inset:-35%;border-radius:50%;
+  background:radial-gradient(circle,rgba(247,197,72,.32),transparent 62%);
+  animation:sfRingGlow 3.2s ease-in-out infinite;animation-delay:var(--spin-delay,0s)}
+@keyframes sfRingSpin{0%{transform:scaleX(1)}25%{transform:scaleX(.12)}50%{transform:scaleX(-1)}75%{transform:scaleX(-.12)}100%{transform:scaleX(1)}}
+@keyframes sfRingGlow{50%{opacity:.35;transform:scale(.8)}}
+.sf-streaks{position:absolute;inset:0;pointer-events:none;z-index:0;overflow:hidden}
+.sf-streaks i{position:absolute;left:0;height:2px;width:34%;top:var(--t);border-radius:2px;opacity:0;
+  background:linear-gradient(90deg,transparent,var(--c,rgba(31,91,255,.5)),transparent);
+  animation:sfStreak var(--d,2.6s) cubic-bezier(.55,0,.45,1) infinite;animation-delay:var(--w,0s)}
+@keyframes sfStreak{0%{transform:translate3d(-40vw,0,0);opacity:0}15%{opacity:1}70%{opacity:.8}100%{transform:translate3d(130vw,0,0);opacity:0}}
+.sf-fx-paused .sf-ring::before,.sf-fx-paused .sf-ring::after,.sf-fx-paused .sf-streaks i{animation-play-state:paused}
+html[data-sf-fx="lite"] .sf-streaks{display:none}
+html[data-sf-fx="lite"] .sf-ring::before,html[data-sf-fx="lite"] .sf-ring::after{animation:none}
+@media (prefers-reduced-motion:reduce){.sf-streaks{display:none}.sf-ring::before,.sf-ring::after{animation:none}}
+@media (max-width:560px){.sf-ring{--size:30px!important}.sf-ring:nth-child(n+4){display:none}}
+
+/* ---------- Interruptor de efectos ---------- */
+.sf-fx-toggle{display:inline-flex;align-items:center;gap:8px;padding:9px 12px;border-radius:999px;cursor:pointer;
+  border:1px solid rgba(18,18,18,.12);background:rgba(255,255,255,.78);color:#171717;
+  font:900 9px/1 Arial,Helvetica,sans-serif;letter-spacing:.1em;text-transform:uppercase;
+  box-shadow:0 10px 30px rgba(0,0,0,.08);transition:transform .25s var(--sf-ease-out),background-color .25s}
+.sf-fx-toggle:hover{transform:translateY(-3px)}
+.sf-fx-toggle .sf-fx-dot{width:9px;height:9px;border-radius:50%;background:var(--sf-ring);box-shadow:0 0 0 3px rgba(247,197,72,.25)}
+.sf-fx-toggle[aria-pressed="true"] .sf-fx-dot{background:#9a9a9a;box-shadow:none}
+html[data-sf-theme="dark"] .sf-fx-toggle{background:rgba(18,24,32,.92);color:#fff;border-color:rgba(255,255,255,.1)}
+.sf-utility-panel-title .sf-fx-toggle{margin-top:10px}
+[data-theme-toggle]+.sf-fx-toggle{margin-left:8px}
+
+/* ---------- Modo ligero: quita desenfoques y decoración continua, conserva el contenido ---------- */
+html[data-sf-fx="lite"] .sf-header,html[data-sf-fx="lite"] .hero-utility-card,
+html[data-sf-fx="lite"] .sf-theme-toggle,html[data-sf-fx="lite"] .sf-fx-toggle{backdrop-filter:none!important}
+html[data-sf-fx="lite"] .sf-bg,html[data-sf-fx="lite"] .hero-orbit,html[data-sf-fx="lite"] .hero-ring{--parallax-y:0px!important}
+
+/* ---------- Correcciones de maquetación de la portada ---------- */
+.sf-header .sf-brand{flex:0 0 auto;margin-right:clamp(14px,2.2vw,36px);white-space:nowrap}
+.sf-header .sf-desktop-nav{min-width:0}
+.sf-header .sf-socials{flex:0 0 auto}
+.sf-header .sf-socials button{width:34px!important;min-width:34px;height:34px;padding:0!important;border-radius:50%!important;display:inline-grid;place-items:center}
+@media (min-width:901px) and (max-width:1180px){
+  .sf-header .sf-desktop-nav{gap:clamp(10px,1.6vw,22px)!important}
+  .sf-header .sf-desktop-nav a{font-size:10px!important;letter-spacing:.1em!important}
+}
+/* El título escala con el ancho de su tarjeta: nunca se corta ni parte palabras. */
+.hero-nav-top .hero-utility-card{overflow:hidden;container-type:inline-size}
+.hero-nav-top .hero-utility-card strong{font-size:clamp(11px,10.5cqi,22px)!important;white-space:nowrap;max-width:100%}
+/* Legibilidad del texto del hero sobre las ilustraciones. */
+.sf-hero-copy{position:relative;z-index:3}
+.sf-hero-copy>p:not(.eyebrow){background:rgba(255,255,255,.86);padding:10px 14px;margin-left:-14px;border-left:3px solid var(--sf-red);max-width:44ch}
+html[data-sf-theme="dark"] .sf-hero-copy>p:not(.eyebrow){background:rgba(14,16,20,.84)}
+/* Indicador de Firebase: compacto cuando la conexión está lista. */
+#sf-firebase-status.ready{opacity:.55;transform-origin:left bottom;scale:.85;transition:opacity .3s,scale .3s}
+#sf-firebase-status.ready:hover{opacity:1;scale:1}
+
+/* ---------- Fanarts: las órbitas giratorias desbordaban el ancho en móvil (hasta 708px en 390px) ---------- */
+.fanart-hero{overflow:clip}
+@supports not (overflow:clip){.fanart-hero{overflow:hidden}}
+
+/* ---------- Ranking: reserva espacio mientras llegan los datos (evita CLS) ---------- */
+/* Creadores/administradores sin filas: el script las oculta al recibir datos; se ocultan desde el inicio. */
+#creator-ranking-section:has(#creator-ranking-list:empty),
+#admin-ranking-section:has(#admin-ranking-list:empty){display:none}
+/* El «RANK» decorativo usaba top:14% y se movía al crecer la lista. */
+.ranking-ghost{top:clamp(56px,8vw,120px)!important}
+#member-ranking-list:empty{min-height:340px;display:grid;place-items:center}
+#member-ranking-list:empty::before{content:"Cargando ranking…";font:900 10px/1 Arial,Helvetica,sans-serif;letter-spacing:.14em;color:#8a8a8a;text-transform:uppercase}
