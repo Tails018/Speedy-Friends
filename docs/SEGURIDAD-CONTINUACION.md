@@ -27,3 +27,11 @@ No se han aplicado cambios a producción. El flujo de cobro actual no debe consi
 - Se agregó `.github/workflows/browser-tests.yml` como alternativa reproducible en Linux. Los flujos E2E emplean Firebase simulado, no comprueban reglas ni servicios reales.
 - E2E ahora devuelve error si cualquiera de los navegadores solicitados no arranca, o si no se ejecuta ninguno. Sus informes se escriben en `test-results/` para no sobrescribir evidencias previas.
 - La rama no existe en origin y todavía no se ha publicado. Antes de publicar, revisar el diff completo y los archivos nuevos en busca de información sensible.
+
+## Reglas experimentales y emulador
+
+En `tests/firebase-emulator/` hay un candidato parcial derivado exclusivamente de `firebase-rules.json` y nueve escenarios propuestos de perfiles y permisos. No es una consolidación y no se ha comparado con producción: conserva otras autorizaciones de la referencia y puede impedir operaciones legítimas. No desplegarlo.
+
+La CLI, bibliotecas y JRE portátil se intentaron configurar sin modificar el sistema; `npm ci` falló con `EPERM` al crear `node_modules/@google-cloud/pubsub`, tanto en el proyecto como en el espacio de trabajo. El emulador y sus pruebas **no se ejecutaron**. La instalación de solo lock reportó 21 vulnerabilidades (16 moderadas y 5 altas), sin evaluación individual. Se añadió un job de GitHub Actions para ejecutar la suite en Linux; aún no se ha ejecutado allí. La seguridad y la compatibilidad quedan sin validar.
+
+Resultados locales adicionales: 9 pruebas Node, 21 de navegador y 8 flujos E2E en Chromium de escritorio más 8 en móvil emulado. Las pruebas E2E usan Firebase simulado.
