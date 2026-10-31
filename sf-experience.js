@@ -135,6 +135,43 @@
         : `<a href="${href}">${label.toUpperCase()}</a>`).join('');
     }
 
+    // Cerrar sesión: SpeedyFirebase.signOut existía, pero ninguna pantalla lo ofrecía.
+    // Se muestra en el perfil (junto a «Volver») y en el panel «Accesos» cuando hay sesión.
+    const logoutButtons = new Set();
+    const makeLogout = () => {
+      const button = document.createElement('button');
+      button.type = 'button';
+      button.className = 'sf-logout';
+      button.textContent = 'Cerrar sesión';
+      button.hidden = true;
+      button.addEventListener('click', async () => {
+        button.disabled = true;
+        button.textContent = 'Cerrando sesión…';
+        try {
+          await window.SpeedyFirebase?.signOut?.();
+          try { localStorage.removeItem('sfAuthHint'); } catch {}
+          location.assign('index.html');
+        } catch (error) {
+          console.error('[Speedy Friends] signOut', error);
+          button.disabled = false;
+          button.textContent = 'No se pudo cerrar sesión. Reintentar';
+        }
+      });
+      logoutButtons.add(button);
+      return button;
+    };
+    const mountLogout = () => {
+      const back = document.querySelector('.profile-top .profile-back');
+      if (back && !back.parentElement.querySelector('.sf-logout')) back.after(makeLogout());
+      const panelTitle = document.querySelector('.hero-utility-rail .sf-utility-panel-title');
+      if (panelTitle && !panelTitle.querySelector('.sf-logout')) panelTitle.appendChild(makeLogout());
+    };
+    const syncLogout = uid => logoutButtons.forEach(b => { b.hidden = !uid; });
+    mountLogout();
+    addEventListener('load', mountLogout, { once: true });
+    document.addEventListener('speedy:firebase-ready', event => { mountLogout(); syncLogout(event.detail?.uid); });
+    if (window.SpeedyFirebase?.current?.checked) syncLogout(window.SpeedyFirebase.current.uid);
+
     // Interruptor de efectos: en el panel «Accesos» (visible en todos los anchos) o,
     // si la página no lo tiene, junto al botón de tema. No altera el botón de tema.
     const themeToggle = document.querySelector('[data-theme-toggle]');

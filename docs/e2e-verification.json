@@ -1,0 +1,11 @@
+{
+  "date": "2026-10-31T20:06:08.761Z",
+  "note": "Firebase simulado en memoria (tests/firebase-mock.js). No evalúa reglas de seguridad.",
+  "report": [
+    {
+      "browser": "chromium",
+      "test": "Login with Google, remembered session and logout",
+      "status": "passed"
+    }
+  ]
+}

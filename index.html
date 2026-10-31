@@ -623,6 +623,7 @@ body.sf-auth-gate-open{overflow:hidden!important}
       if (!result?.user) throw new Error('Google no devolvió una cuenta válida');
       if (typeof sf.resolve === 'function') await sf.resolve().catch(() => {});
       authHandled = true;
+      setHint(true);
       closeGate();
       showSuccess();
     } catch (error) {
