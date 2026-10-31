@@ -21,8 +21,9 @@ const SEED={'speedy-friends-teams':{'speedy-friends':{
  news:{n1:{id:'n1',title:'Noticia de prueba',summary:'Resumen de prueba',date:'2026-10-30',category:'INFO',published:true}}
 }}};
 
-async function newContext(browser,{viewport={width:1280,height:850},session=null}={}){
- const context=await browser.newContext({viewport,reducedMotion:'reduce'});
+const MOBILE=process.env.SF_E2E_VIEWPORT==='mobile';
+async function newContext(browser,{viewport=MOBILE?{width:390,height:844}:{width:1280,height:850},session=null}={}){
+ const context=await browser.newContext({viewport,reducedMotion:'reduce',...(MOBILE?{hasTouch:true}:{})});
  await context.route('**/*',route=>{
   const url=new URL(route.request().url());
   if(url.origin===base)return route.continue();
@@ -189,6 +190,6 @@ const waitReady=page=>page.waitForFunction(()=>window.SpeedyFirebase?.current?.c
   await browser.close();
  }
  fs.mkdirSync('test-results',{recursive:true});
- fs.writeFileSync('docs/e2e-verification.json',JSON.stringify({date:new Date().toISOString(),note:'Firebase simulado en memoria (tests/firebase-mock.js). No evalúa reglas de seguridad.',report},null,2));
+ fs.writeFileSync(MOBILE?'docs/e2e-verification-mobile.json':'docs/e2e-verification.json',JSON.stringify({date:new Date().toISOString(),viewport:MOBILE?'390x844 táctil (emulado)':'1280x850',note:'Firebase simulado en memoria (tests/firebase-mock.js). No evalúa reglas de seguridad.',report},null,2));
  process.exitCode=failed?1:0;
 })().catch(e=>{console.error(e);process.exitCode=1;});

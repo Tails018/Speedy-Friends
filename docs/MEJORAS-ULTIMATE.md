@@ -6,6 +6,54 @@ Ramas, apiladas para poder revertir cada etapa por separado:
 
 Nada se fusiona en `main`.
 
+## Cuarta fase — funciones reales y pruebas de extremo a extremo (`upgrade/visual-system`)
+
+### Cómo se probó
+- **`tests/firebase-mock.js`**: Firebase compat **simulado en memoria**. Cubre el login con Google, Realtime Database con eventos `value`, `transaction`, `orderByChild/equalTo`, `ServerValue.TIMESTAMP` y escrituras multirruta, y un Storage mínimo. Sustituye a los SDK de gstatic **solo durante las pruebas**: el código real de las páginas lee y escribe contra datos ficticios (creadora, Alice, Bob). **No toca Firebase real.**
+- **`npm run test:e2e`** (`tests/e2e.cjs`): 8 flujos. Variables: `SF_E2E_BROWSERS=chromium,webkit,firefox` y `SF_E2E_VIEWPORT=mobile`.
+- **Límite importante**: el simulador **no evalúa las reglas de seguridad**. Para eso hace falta el emulador oficial (ver «Configuración externa pendiente»).
+
+| Flujo verificado | Chromium escritorio | WebKit escritorio | Chromium móvil (emulado) | WebKit móvil (emulado) |
+|---|---|---|---|---|
+| Login con Google, sesión recordada y cierre de sesión | ✔ | ✔ | ✔ | ✔ |
+| Perfil: guardar datos y quitar el icono | ✔ | ✔ | ✔ | ✔ |
+| Cafetería: pedido, un ticket activo, trabajador prepara y sirve, cobro único e historial | ✔ | ✔ | ✔ | ✔ |
+| Cafetería: pedido rechazado por Rings insuficientes | ✔ | ✔ | ✔ | ✔ |
+| Amigos: solicitud y aceptación desde la otra cuenta | ✔ | ✔ | ✔ | ✔ |
+| Fanarts: obra real listada y like guardado | ✔ | ✔ | ✔ | ✔ |
+| Ranking: orden por Rings reales | ✔ | ✔ | ✔ | ✔ |
+| Admin: Rings con historial, recuento real, miembro sin rol fuera | ✔ | ✔ | ✔ | ✔ |
+
+**Firefox**: no arranca en este equipo (`spawn UNKNOWN`, probablemente bloqueado por la seguridad de Windows): **no probado**. **Dispositivos físicos** (Android, iPhone): **no probados**. Todo lo marcado como móvil es emulación.
+
+### Funciones reparadas o completadas
+| Área | Problema comprobado | Solución |
+|---|---|---|
+| Sesión | **No existía forma de cerrar sesión**: `signOut` no se llamaba en ninguna pantalla | Botón «Cerrar sesión» en Perfil y en el panel Accesos |
+| Sesión | La marca de sesión recordada dependía de un evento posterior al login | Se guarda al completar el login |
+| Perfil | **Quitar o restablecer el icono o la portada no se guardaba**: volvía la imagen de Firebase | Corregido. La prueba falla sin la corrección |
+| Perfil | Tras leer IndexedDB se reescribían nombre, apodo, título, usuario y descripción, **pisando lo que el usuario estaba escribiendo** | Solo se rellenan campos vacíos |
+| Cafetería | Carta y pedidos suscritos dos veces con sesión | Arranque único |
+| Cafetería | Se podía pedir sin Rings suficientes y el ticket quedaba atascado sin poder cobrarse | Comprobación de saldo al pedir. El cobro sigue siendo al servir |
+| Safari (WebKit) | **La galería de fanarts medía 0 px**: la última fila y su botón de like quedaban fuera del área desplazable | Corregido. Verificado en WebKit |
+| Ranking | Hasta 4 suscripciones iguales a amigos y Rings y 3 a usuarios, cada una repintando la lista | Una por módulo (14 → 9 suscripciones) |
+| Administración | `bootRealtime` y los arranques de novedades y visual picks se ejecutaban 2–3 veces | Arranques idempotentes (admin 14 → 8 suscripciones; admin-role sin duplicados) |
+| Toda la web | 26 `alert()` bloqueaban la página | Avisos no bloqueantes y accesibles (`aria-live`). `confirm()` y `prompt()` siguen nativos |
+
+### Clasificación funcional
+| Estado | Funciones |
+|---|---|
+| **Funciona** (verificado de extremo a extremo con datos ficticios) | Login, persistencia y logout; edición de perfil; pedidos, tickets, proceso del trabajador y cobro; solicitudes y aceptación de amistad; likes de fanarts; ranking; Rings de administración con historial; protección de las páginas de admin por rol |
+| **Funciona, sin prueba de extremo a extremo** | Editor de novedades, visual picks, carta, especialidad y disquera de la cafetería, rol de trabajador desde el panel de creadora, publicación y edición de fanarts. Usan las mismas rutas y patrones, pero no se automatizaron en esta fase |
+| **Incompleto** | Carrito de la portada: guarda productos en este navegador; **el canje con Rings no está conectado** (falta definir el contrato de backend: inventario, precio y descuento atómico). `mountQuickRings` en admin está definido pero no se llama: duplica el panel Rings, así que no se activa. Redes X, Discord y Facebook sin URL oficial |
+| **Requiere decisión** | En la cafetería, marcar un pedido como **«listo»** lo archiva **sin cobrar**, mientras la página y `placeOrder` tratan «listo» como un ticket activo que se cobra al servirlo. Viene de un commit del propietario (`077f041`) y **no se ha cambiado**. Hay que confirmar si «listo» debe mantener el ticket activo |
+| **Requiere configuración externa** | Subida de OST a Cloudinary (depende del *preset* sin firmar `speedy_friends_ost`); validación de las reglas de seguridad (ver abajo) |
+
+### Configuración externa pendiente
+1. **Pruebas de reglas con el emulador oficial**: instalar Java 11+ y `firebase-tools`, añadir `firebase.json` con `database.rules` apuntando a las reglas **publicadas** (exportarlas desde la consola, porque hay 8 archivos parciales en el repositorio) y ejecutar las pruebas con `firebase emulators:exec`. Así se comprobaría que un miembro no puede escribir Rings ni permisos, y que un trabajador solo puede procesar tickets.
+2. **Proyecto Firebase de pruebas** (opcional): un proyecto separado con su propia configuración permitiría probar el login real con cuentas de prueba sin tocar producción.
+3. Las recomendaciones de seguridad de la primera ronda (`email_verified`, `ownerEmail` editable por el cliente, archivo único de reglas) siguen pendientes de la decisión del propietario.
+
 ## Tercera ronda — `upgrade/visual-system` (sobre `upgrade/professional-rebuild`)
 
 Revisión con capturas de las 14 páginas en móvil (390 px) y escritorio (1366 px) antes y después. Se generan con `scripts/screenshots.cjs` y `scripts/contact-sheet.cjs`.
