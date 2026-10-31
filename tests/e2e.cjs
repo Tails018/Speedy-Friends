@@ -253,6 +253,28 @@ const waitReady=page=>page.waitForFunction(()=>window.SpeedyFirebase?.current?.c
    await ctx.close();
   });
 
+  await test('News editor preserves drafts and shows the selected image',async()=>{
+   const ctx=await newContext(browser,{session:CREATOR});const page=await ctx.newPage();
+   await page.goto(base+'/novedades-admin.html');await waitReady(page);await page.locator('#app').waitFor({state:'visible'});
+   assert.equal(await page.locator('#news-image-file').count(),1);
+   await page.locator('#news-title').fill('Borrador de prueba');
+   await page.locator('#news-summary').fill('Resumen de prueba');
+   await page.locator('#news-published').uncheck();
+   await page.locator('#news-image-file').setInputFiles({name:'imagen.png',mimeType:'image/png',buffer:Buffer.from('iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAwMCAO+/aXcAAAAASUVORK5CYII=','base64')});
+   await page.waitForFunction(()=>document.querySelector('#npp-image').getAttribute('src')?.startsWith('data:image/png'));
+   assert.equal(await page.locator('#npp-image').getAttribute('srcset'),null);
+   await page.evaluate(()=>document.dispatchEvent(new Event('speedy:firebase-ready')));
+   await page.waitForTimeout(100);assert.equal(await page.locator('#news-title').inputValue(),'Borrador de prueba');
+   fs.mkdirSync('test-results',{recursive:true});await page.locator('#editor').screenshot({path:`test-results/news-editor-${MOBILE?'mobile':'desktop'}.png`});
+   await page.locator('#news-form .btn.red').click();
+   await page.waitForFunction(()=>Object.values(window.__sfMock.getAt('speedy-friends-teams/speedy-friends/news')||{}).some(x=>x.title==='Borrador de prueba'&&x.published===false));
+   await page.locator('.side [data-tab="published"]').click();
+   await page.locator('.news-row').filter({hasText:'Borrador de prueba'}).getByRole('button',{name:'EDITAR'}).click();
+   assert.equal(await page.locator('#news-title').inputValue(),'Borrador de prueba');
+   assert.equal(await page.locator('.side [data-tab="editor"]').getAttribute('aria-pressed'),'true');
+   await ctx.close();
+  });
+
   await test('Admin: creator adds Rings with history; a member without role is sent back to Inicio',async()=>{
    const ctx=await newContext(browser,{session:CREATOR});const page=await ctx.newPage();
    await page.goto(base+'/admin.html');await waitReady(page);
