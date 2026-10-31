@@ -172,7 +172,7 @@
       const p = api.profile();
       const workerName = p.nickname || p.username || p.name || "Trabajador";
 
-      if(["listo","agotado","cancelado"].includes(status)){
+      if(["agotado","cancelado"].includes(status)){
         const historyId = historyRef.push().key;
         const doneAt = Date.now();
         const archived = {
@@ -208,6 +208,11 @@
     },
 
     async completeOrder(id){
+      // Explicit local-only integration: never fall back to legacy writes after an error.
+      if(window.SpeedyCafeEmulator?.enabled){
+        if(!['localhost','127.0.0.1'].includes(window.location?.hostname) || firebase.app()?.options?.projectId !== 'demo-speedy-integration' || typeof window.SpeedyCafeEmulator.serveOrder !== 'function') throw new Error('La integración segura solo está disponible en el emulador local.');
+        return await window.SpeedyCafeEmulator.serveOrder(id);
+      }
       const role = await api.role();
       if(!["creator","worker"].includes(role)) throw new Error("No tienes permiso para finalizar tickets");
       const snap = await ordersRef.child(id).once("value");

@@ -13,7 +13,7 @@
       field.setAttribute('aria-label',field.getAttribute('placeholder'));
     });
     // Make existing clickable ranking/OST rows operable with a keyboard.
-    const enhanceRows = () => document.querySelectorAll('.ost-row,.ost-custom-row,.rank-row,.creator-rank-card').forEach(row => {
+    const enhanceRows = () => document.querySelectorAll('.ost-custom-row,.rank-row,.creator-rank-card').forEach(row => {
       if (row.matches('a,button') || row.dataset.sfKeyboard) return;
       row.dataset.sfKeyboard = 'true'; row.tabIndex = 0; row.setAttribute('role','button');
       row.addEventListener('keydown', event => {

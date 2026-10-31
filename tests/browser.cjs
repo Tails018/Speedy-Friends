@@ -28,6 +28,15 @@ let activeBrowser;
   await page.waitForFunction(()=>document.body.classList.contains('page-ready'));assert.ok(await page.locator('#sf-auth-gate').isVisible());
  });
  await dismissGate();
+ await test('Quick access toggle has a legible aligned label and opens and closes',async()=>{
+  const toggle=page.locator('.sf-utility-toggle');
+  const geometry=await toggle.evaluate(el=>{const r=el.getBoundingClientRect(),i=el.querySelector('span').getBoundingClientRect(),t=el.querySelector('b').getBoundingClientRect();return {w:r.width,h:r.height,iconRight:i.right,labelLeft:t.left,labelRight:t.right,right:r.right,top:r.top,bottom:r.bottom,viewport:innerHeight}});
+  assert.ok(geometry.h>=48&&geometry.w>=48);assert.ok(geometry.iconRight<geometry.labelLeft&&geometry.labelRight<=geometry.right);assert.ok(geometry.bottom<=geometry.viewport);
+  await page.screenshot({path:'test-results/access-closed.png'});
+  await toggle.click();assert.equal(await toggle.getAttribute('aria-expanded'),'true');
+  await page.screenshot({path:'test-results/access-open.png'});
+  await page.keyboard.press('Escape');assert.equal(await toggle.getAttribute('aria-expanded'),'false');
+ });
  await test('Mobile menu, focus return and keyboard carousel',async()=>{
   await page.locator('#menuBtn').click();assert.equal(await page.locator('#menuBtn').getAttribute('aria-expanded'),'true');
   assert.equal(await page.evaluate(()=>document.activeElement.id),'closeMenu');
@@ -65,6 +74,8 @@ let activeBrowser;
   await page.locator('.sf-utility-toggle').click();await page.locator('[data-action="theme"]').click();
   const theme=await page.locator('html').getAttribute('data-sf-theme');await page.reload();
   assert.equal(await page.locator('html').getAttribute('data-sf-theme'),theme);await dismissGate();
+  const positions=await page.locator('.sf-utility-toggle').evaluate(el=>({icon:el.querySelector('span').getBoundingClientRect().right,label:el.querySelector('b').getBoundingClientRect().left}));
+  assert.ok(positions.icon<positions.label);await page.screenshot({path:'test-results/access-dark.png'});
  });
  await test('Fanart gallery never shows invented works: offline shows an error state with retry',async()=>{
   await page.goto(base+'/fanarts.html');await page.waitForSelector('.fanart-empty.is-error, .fanart-skeleton');
@@ -219,6 +230,37 @@ let activeBrowser;
   assert.match(await notice.textContent(),/No se pudo procesar/);assert.equal(await page.locator('#sf-notices').getAttribute('aria-live'),'polite');
   await notice.locator('button').click();assert.equal(await notice.count(),0);
   assert.equal(dialogs,0);page.off('dialog',onDialog);
+ });
+ await test('OST samples cannot masquerade as playable tracks',async()=>{
+  await page.goto(base+'/ost.html');
+  await page.waitForSelector('#ost-empty');
+  assert.equal(await page.locator('.ost-row[role="button"]').count(),0);
+  assert.equal(await page.locator('.ost-row-duration').filter({hasText:'SIN AUDIO'}).count(),6);
+  assert.ok(await page.locator('#ost-empty').isVisible());
+  const before=await page.locator('#now-track').innerText();
+  await page.locator('.ost-row').first().click();
+  await page.locator('#random').click();
+  assert.equal(await page.locator('#now-track').innerText(),before);
+  assert.match(await page.locator('#ost-firebase-status').innerText(),/AGREGA UNA PISTA/);
+ });
+ await test('Ranking announces the selected filter',async()=>{
+  await page.goto(base+'/ranking.html');
+  const filters=page.locator('.ranking-filter');
+  assert.equal(await filters.first().getAttribute('aria-pressed'),'true');
+  await page.locator('.ranking-filter[data-mode="friends"]').click();
+  assert.equal(await filters.first().getAttribute('aria-pressed'),'false');
+  assert.equal(await page.locator('.ranking-filter[data-mode="friends"]').getAttribute('aria-pressed'),'true');
+ });
+ await test('Cafe wallet is inaccessible when closed and returns focus on Escape',async()=>{
+  await page.goto(base+'/cafeteria.html');
+  assert.equal(await page.locator('#side').getAttribute('aria-hidden'),'true');
+  assert.equal(await page.locator('#side').evaluate(el=>el.inert),true);
+  await page.locator('#wallet').click();
+  assert.equal(await page.locator('#side').getAttribute('aria-hidden'),'false');
+  assert.equal(await page.evaluate(()=>document.activeElement.id),'close');
+  await page.keyboard.press('Escape');
+  assert.equal(await page.locator('#side').evaluate(el=>el.inert),true);
+  assert.equal(await page.evaluate(()=>document.activeElement.id),'wallet');
  });
  await test('No uncaught JavaScript errors across the audited routes',async()=>assert.deepEqual(errors,[]));
  writeFileSync('docs/browser-verification.json',JSON.stringify({browser:browser.version(),report,errors,limitations:['External services blocked. Firebase login, live writes, uploads and real administrative permissions not exercised.','Rings use a read-only fixture. Home screenshots dismiss only the local presentation gate.','Chromium responsive emulation; not physical Android/iOS or cross-browser certification.']},null,2));

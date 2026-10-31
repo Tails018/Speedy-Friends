@@ -86,6 +86,11 @@
       state.rings = {};
     }
 
+    rebuildDirectory();
+    return state.users;
+  }
+
+  function rebuildDirectory() {
     state.byUid = {};
 
     for (const [profileId, raw] of Object.entries(state.users)) {
@@ -98,7 +103,6 @@
       const ringValue = state.rings[profileId];
       profile.__rings = ringValue !== undefined ? Number(ringValue || 0) : Number(profile.rings || 0);
     }
-    return state.users;
   }
 
   function profileForUid(uid) {
@@ -619,10 +623,11 @@
 
       const tab = e.target.closest('.sf-f-tab');
       if (tab) {
-        $$('.sf-f-tab', root).forEach(x => x.classList.remove('is-active'));
+        $$('.sf-f-tab', root).forEach(x => {x.classList.remove('is-active');x.setAttribute('aria-pressed','false');});
         tab.classList.add('is-active');
-        try { await ensureReady(); await refreshRelations(); } catch (err) { notify(err?.message || 'No se pudieron cargar tus relaciones', 'error'); }
+        tab.setAttribute('aria-pressed','true');
         renderFriendsPage();
+        try { await ensureReady(); if(!state.unsubs.length){await refreshRelations();renderFriendsPage();} } catch (err) { notify(err?.message || 'No se pudieron cargar tus relaciones', 'error'); }
         return;
       }
 
@@ -658,27 +663,33 @@
     state.unsubs.forEach(fn => fn && fn());
     state.unsubs = [];
 
-    const watch = (ref, cb, label = 'datos') => {
+    const watch = (ref, cb, label = 'datos', sharedKey = '', onDenied = () => {}) => {
       const handler = snap => cb(snap.val() || {});
-      const errHandler = error => console.warn(`[Speedy Friends] Listener ${label}:`, error);
-      ref.on('value', handler, errHandler);
-      state.unsubs.push(() => ref.off('value', handler));
+      const errHandler = error => {console.warn(`[Speedy Friends] Listener ${label}:`, error);onDenied();};
+      if(sharedKey && SF().subscribeShared){
+        state.unsubs.push(SF().subscribeShared(sharedKey,ref,handler,errHandler));
+      }else{
+        ref.on('value', handler, errHandler);
+        state.unsubs.push(() => ref.off('value', handler));
+      }
     };
 
-    watch(friendsRef(state.uid), value => { state.friends = value; presenceWatchFriends(); refreshViews(); });
+    watch(friendsRef(state.uid), value => { state.friends = value; presenceWatchFriends(); refreshViews(); }, 'amistades', `friends:${state.uid}`,()=>{state.friends={};presenceWatchFriends();refreshViews();});
     watch(inboxRef(state.uid), value => { state.incoming = value; refreshViews(); });
     watch(outboxRef(state.uid), value => { state.outgoing = value; refreshViews(); });
     watch(SF().refs.users, value => {
       state.users = value || {};
-      loadDirectory().then(refreshViews);
-    });
+      rebuildDirectory();
+      refreshViews();
+    }, 'usuarios', 'users',()=>{state.users={};state.byUid={};refreshViews();});
     watch(SF().refs.rings, value => {
       state.rings = value || {};
       for (const [profileId, profile] of Object.entries(state.users)) {
         profile.__rings = Number(state.rings[profileId] ?? profile.rings ?? 0);
       }
+      rebuildDirectory();
       refreshViews();
-    });
+    }, 'rings', 'rings',()=>{state.rings={};rebuildDirectory();refreshViews();});
   }
 
   function presenceFor(uid){
@@ -840,8 +851,12 @@
       const syncSession = async (user) => {
         try {
           if (!user) {
+            state.unsubs.forEach(fn => fn && fn());state.unsubs=[];
+            state.presenceUnsubs.forEach(fn => fn && fn());state.presenceUnsubs=[];
+            bootedUid='';
             state.uid = '';
             state.ready = true;
+            state.users={};state.byUid={};state.rings={};state.friends={};state.incoming={};state.outgoing={};state.presence={};
             renderGuestFriendsPage();
             return;
           }

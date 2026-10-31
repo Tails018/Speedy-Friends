@@ -201,7 +201,7 @@ body.ost-page{margin:0;background:#f4f3ee;color:#151515;overflow-x:hidden}
 <section class="ost-now"><div class="ost-now-head"><div><p class="ost-kicker">Now Playing</p><h2>Speedy Friends</h2></div><span class="ost-status" id="now-status">READY</span></div>
 <div class="ost-player"><div class="ost-disc"></div><div><p class="ost-track-title" id="now-track">SELECT A TRACK</p><div class="ost-track-meta"><span id="now-author">SPEEDY FRIENDS OST</span><span>ORIGINAL / DEMO</span></div></div></div>
 <div class="ost-controls"><button class="ost-play" id="play" type="button" aria-label="Reproducir OST">▶</button><input class="ost-range" id="seek" type="range" aria-label="Posici?n del audio" min="0" max="100" value="0"><span class="ost-time" id="time">0:00 / 0:00</span></div></section></section>
-<section class="ost-library"><div class="ost-library-head"><div><p class="ost-kicker">Library</p><h2>Tracks</h2></div><p>Selecciona una pista para cargarla en el reproductor. Después conectaremos los archivos reales sin cambiar esta interfaz.</p></div>
+<section class="ost-library"><div class="ost-library-head"><div><p class="ost-kicker">Archivo de sonido</p><h2>Biblioteca</h2></div><p>Las pistas de ejemplo son referencias visuales sin audio. Agrega un OST personalizado para reproducirlo.</p></div>
 <div class="ost-list">
 <article class="ost-row" data-title="Main Theme" data-author="Speedy Friends" data-duration="2:48"><div class="ost-index">01</div><div><h3 class="ost-row-title">Main Theme</h3><div class="ost-row-meta">Speedy Friends · Main Menu</div></div><div class="ost-row-duration">2:48</div><div class="ost-eq"><i></i><i></i><i></i><i></i></div></article>
 <article class="ost-row" data-title="Neon Run" data-author="Speedy Friends" data-duration="3:12"><div class="ost-index">02</div><div><h3 class="ost-row-title">Neon Run</h3><div class="ost-row-meta">Speedy Friends · Night Drive</div></div><div class="ost-row-duration">3:12</div><div class="ost-eq"><i></i><i></i><i></i><i></i></div></article>
@@ -209,7 +209,7 @@ body.ost-page{margin:0;background:#f4f3ee;color:#151515;overflow-x:hidden}
 <article class="ost-row" data-title="Ring Rush" data-author="Speedy Friends" data-duration="2:56"><div class="ost-index">04</div><div><h3 class="ost-row-title">Ring Rush</h3><div class="ost-row-meta">Speedy Friends · Rings</div></div><div class="ost-row-duration">2:56</div><div class="ost-eq"><i></i><i></i><i></i><i></i></div></article>
 <article class="ost-row" data-title="Sunset Arcade" data-author="Speedy Friends" data-duration="3:44"><div class="ost-index">05</div><div><h3 class="ost-row-title">Sunset Arcade</h3><div class="ost-row-meta">Speedy Friends · Chill</div></div><div class="ost-row-duration">3:44</div><div class="ost-eq"><i></i><i></i><i></i><i></i></div></article>
 <article class="ost-row" data-title="Final Lap" data-author="Speedy Friends" data-duration="4:02"><div class="ost-index">06</div><div><h3 class="ost-row-title">Final Lap</h3><div class="ost-row-meta">Speedy Friends · Finale</div></div><div class="ost-row-duration">4:02</div><div class="ost-eq"><i></i><i></i><i></i><i></i></div></article>
-</div><div class="ost-custom-label">CUSTOM OST</div><div class="ost-custom-list" id="custom-list"></div><div class="ost-actions"><a class="ost-action primary" href="index.html">← Volver a Speedy Friends</a><button class="ost-action" id="random" type="button">Reproducir aleatorio</button>
+</div><div class="ost-custom-label">Tus pistas</div><p class="ost-empty" id="ost-empty">Aún no tienes pistas disponibles. Agrega un OST personalizado para escucharlo aquí.</p><div class="ost-custom-list" id="custom-list"></div><div class="ost-actions"><a class="ost-action primary" href="index.html">← Volver a Speedy Friends</a><button class="ost-action" id="random" type="button">Reproducir aleatorio</button>
 <button class="ost-action ost-stop" id="stop" type="button" aria-label="Detener OST">■ Detener</button>
 <label class="ost-action ost-upload" for="custom-ost">＋ Agregar OST personalizado</label>
 <input id="custom-ost" type="file" accept="audio/*" multiple hidden><span id="ost-firebase-status" class="ost-firebase-status" aria-live="polite">NO INICIADO</span></div></section></main>
@@ -332,20 +332,12 @@ body.ost-page{margin:0;background:#f4f3ee;color:#151515;overflow-x:hidden}
       audio.currentTime=audio.duration*(Number(seek.value)/100);
   });
 
-  // The "demo" rows remain visual previews, but do not interfere with Cloudinary tracks.
+  // These entries have no audio source; retain them as clearly labelled references.
   demoRows.forEach(row=>{
-    row.addEventListener('click',()=>{
-      clearActive();
-      row.classList.add('is-active');
-      if(nowTrack)nowTrack.textContent=row.dataset.title||'TRACK';
-      if(nowAuthor)nowAuthor.textContent=(row.dataset.author||'SPEEDY FRIENDS')+' · DEMO';
-      if(nowStatus)nowStatus.textContent='DEMO';
-      currentUrl='';
-      currentEl=row;
-      try{audio.pause();audio.removeAttribute('src');audio.load()}catch{}
-      if(playBtn)playBtn.textContent='▶';
-    });
+    row.querySelector('.ost-row-duration').textContent='EJEMPLO · SIN AUDIO';
   });
+
+  const syncEmpty=()=>{const empty=document.getElementById('ost-empty');if(empty)empty.hidden=!!list?.children.length;};
 
   function appendCloudTrack(track){
     if(!track?.url || !list)return;
@@ -355,6 +347,7 @@ body.ost-page{margin:0;background:#f4f3ee;color:#151515;overflow-x:hidden}
     el.querySelector('.ost-custom-name').textContent=track.name||'OST';
     el.querySelector('.ost-custom-num').textContent=String(list.children.length+1).padStart(2,'0');
     list.appendChild(el);
+    syncEmpty();
 
     el.addEventListener('click',event=>{
       if(event.target.closest('.ost-custom-remove'))return;
@@ -370,9 +363,14 @@ body.ost-page{margin:0;background:#f4f3ee;color:#151515;overflow-x:hidden}
           await sf().refs.users.child(pid).child('ostTracks').child(track.id).remove();
         if(pid)
           await sf().refs.users.child(pid).update({hasOst:false,ostName:'',ostUrl:null,ostBytes:0});
-      }catch(err){console.error('[Cloudinary OST] remove',err)}
+      }catch(err){
+        console.error('[Cloudinary OST] remove',err);
+        setStatus('NO SE PUDO ELIMINAR · VUELVE A INTENTAR');
+        return;
+      }
       if(currentUrl===track.url)stopCurrent();
       el.remove();
+      syncEmpty();
       setStatus('LISTO PARA SUBIR');
     });
   }
@@ -425,6 +423,7 @@ body.ost-page{margin:0;background:#f4f3ee;color:#151515;overflow-x:hidden}
       const profile=state.profile||{};
       await migrateExistingOstToTracks(pid,profile);
       list&&(list.innerHTML='');
+      syncEmpty();
 
       const snap=await sf().refs.users.child(pid).child('ostTracks').once('value');
       let tracks=Object.entries(snap.val()||{})
@@ -491,9 +490,7 @@ body.ost-page{margin:0;background:#f4f3ee;color:#151515;overflow-x:hidden}
       tracks[Math.floor(Math.random()*tracks.length)].click();
       return;
     }
-    if(demoRows.length){
-      demoRows[Math.floor(Math.random()*demoRows.length)].click();
-    }
+    setStatus('AGREGA UNA PISTA PARA REPRODUCIR');
   });
 
   document.addEventListener('speedy:firebase-ready',loadMyOst,{once:true});

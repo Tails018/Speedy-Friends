@@ -413,112 +413,25 @@ body.rank-ost-playing .rank-profile-modal{box-shadow:-25px 0 65px rgba(239,38,63
 
 <script src="global-ost-player.js"></script>
 
-<style id="ranking-mobile-name-fix">
-.rank-row,.rank-user,.rank-user>div{min-width:0;max-width:100%}
-.rank-user strong,.rank-user small{
-  display:block;
-  max-width:100%;
-  min-width:0;
-  overflow:hidden;
-  text-overflow:ellipsis;
-  white-space:nowrap;
-}
+<style id="ranking-row-layout">
+.rank-row,.rank-user,.rank-user>div{min-width:0}
+.rank-user strong,.rank-user small{display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.rank-row{grid-template-columns:54px minmax(0,1fr) max-content 95px}
+.rank-rings{min-width:max-content;justify-content:flex-end;white-space:nowrap;font-variant-numeric:tabular-nums}
+.rank-rings strong{flex:none;white-space:nowrap;line-height:1.15;overflow:visible;word-break:normal;overflow-wrap:normal}
+.rank-rings span{flex:none;white-space:nowrap;line-height:1.2;opacity:.7}
+.rank-rings .ring-icon{flex:none}
 @media(max-width:680px){
-  .rank-row{
-    grid-template-columns:32px minmax(0,1fr) 58px!important;
-    gap:7px!important;
-    min-width:0!important;
-    width:100%!important;
-    overflow:hidden!important;
-  }
-  .rank-user{min-width:0!important;gap:7px!important}
-  .rank-avatar{width:34px!important;height:34px!important}
-  .rank-user strong{font-size:15px!important;line-height:.92!important}
-  .rank-user small{font-size:9px!important;letter-spacing:.08em!important}
-  .rank-rings{min-width:0!important;text-align:right}
-  .rank-rings strong{font-size:18px!important}
-  .rank-rings span{font-size:9px!important}
-  .rank-move{display:block!important;min-width:0!important;text-align:right}
-  .rank-ost-btn{max-width:34px!important;overflow:hidden!important}
-}
-</style>
-
-<style id="ranking-mobile-harmony-final">
-.rank-row,
-.rank-user,
-.rank-user>div,
-.rank-rings,
-.rank-rings>strong,
-.rank-rings>span{
-  min-width:0!important;
-  max-width:100%!important;
-  box-sizing:border-box;
-}
-.rank-user strong{
-  min-width:0!important;
-  max-width:100%!important;
-  overflow:hidden!important;
-  text-overflow:ellipsis!important;
-  white-space:nowrap!important;
-}
-@media(max-width:680px){
-  .rank-table-wrap{width:100%!important;box-sizing:border-box!important;overflow:hidden!important}
-  .rank-list{width:100%!important;min-width:0!important}
-  .rank-row{
-    width:100%!important;
-    max-width:100%!important;
-    grid-template-columns:34px minmax(0,1fr) 76px!important;
-    gap:8px!important;
-    padding:10px 9px!important;
-    overflow:hidden!important;
-  }
-  .rank-no{font-size:22px!important}
-  .rank-user{gap:7px!important;overflow:hidden!important}
-  .rank-avatar{width:34px!important;height:34px!important}
-  .rank-user>div{overflow:hidden!important}
-  .rank-user strong{
-    font-size:15px!important;
-    line-height:.92!important;
-    display:block!important;
-    overflow:hidden!important;
-    text-overflow:ellipsis!important;
-    white-space:nowrap!important;
-  }
-  .rank-user small{
-    max-width:100%!important;
-    overflow:hidden!important;
-    text-overflow:ellipsis!important;
-    white-space:nowrap!important;
-  }
-  .rank-rings{
-    width:76px!important;
-    overflow:hidden!important;
-    display:flex!important;
-    align-items:center!important;
-    justify-content:flex-end!important;
-    gap:4px!important;
-    white-space:nowrap!important;
-  }
-  .rank-rings strong{
-    max-width:51px!important;
-    overflow:hidden!important;
-    text-overflow:ellipsis!important;
-    white-space:nowrap!important;
-    font-size:16px!important;
-    line-height:.9!important;
-  }
-  .rank-rings span{display:none!important}
-  .rank-rings .ring-icon{
-    width:19px!important;height:19px!important;flex:0 0 19px!important;
-  }
-}
-@media(max-width:380px){
-  .rank-row{grid-template-columns:30px minmax(0,1fr) 66px!important;gap:6px!important;padding-inline:7px!important}
-  .rank-avatar{width:31px!important;height:31px!important}
-  .rank-user strong{font-size:13px!important}
-  .rank-rings{width:66px!important}
-  .rank-rings strong{max-width:43px!important;font-size:14px!important}
-  .rank-rings .ring-icon{width:17px!important;height:17px!important;flex-basis:17px!important}
+ .ranking-page .rank-row{grid-template-columns:32px minmax(0,1fr) max-content;grid-template-rows:auto auto;gap:7px;padding:10px}
+ .rank-no{grid-column:1;grid-row:1;white-space:nowrap;line-height:1;font-size:22px}
+ .rank-user{grid-column:2;grid-row:1;gap:7px;min-width:0}
+ .rank-avatar{width:34px;height:34px;flex-basis:34px}
+ .rank-user strong{font-size:15px;line-height:1.1}
+ .rank-rings{grid-column:2 / 4;grid-row:2;justify-content:flex-start;gap:6px}
+ .rank-rings strong{font-size:18px}
+ .rank-move{display:block;grid-column:3;grid-row:1;text-align:right}
+ .rank-move>span{font-size:8px;overflow-wrap:normal}
+ .rank-ost-btn{min-width:44px;min-height:44px}
 }
 </style>
 
@@ -551,7 +464,7 @@ body.rank-ost-playing .rank-profile-modal{box-shadow:-25px 0 65px rgba(239,38,63
  .creator-rank-user{gap:8px}
  .creator-rank-user strong{font-size:18px}
  .creator-rank-badge{grid-column:2;justify-self:start;padding:7px 9px;font-size:9px}
- .special-ranking-list .rank-row{grid-template-columns:30px minmax(0,1fr) 68px!important}
+ .special-ranking-head h2{font-size:clamp(25px,8vw,40px);line-height:1;overflow-wrap:anywhere}
 }
 </style>
 
@@ -704,10 +617,10 @@ body.rank-ost-playing .rank-profile-modal{box-shadow:-25px 0 65px rgba(239,38,63
     <h1 class="ranking-title">Top <em>Integrantes</em></h1>
     <p class="ranking-lead">El marcador de la comunidad: Rings, posición y progreso. Usa "AMIGOS" para ver únicamente tu círculo personal.</p>
     <div class="ranking-switches" aria-label="Filtros">
-      <button class="ranking-filter active" type="button" data-mode="rings">RINGS</button>
-      <button class="ranking-filter" type="button" data-mode="level">NIVEL</button>
-      <button class="ranking-filter" type="button" data-mode="friends">AMIGOS</button>
-      <button class="ranking-filter" type="button" data-mode="week">SEMANA</button>
+      <button class="ranking-filter active" type="button" data-mode="rings" aria-pressed="true">RINGS</button>
+      <button class="ranking-filter" type="button" data-mode="level" aria-pressed="false">NIVEL</button>
+      <button class="ranking-filter" type="button" data-mode="friends" aria-pressed="false">AMIGOS</button>
+      <button class="ranking-filter" type="button" data-mode="week" aria-pressed="false">SEMANA</button>
     </div>
   </header>
 
@@ -742,7 +655,7 @@ body.rank-ost-playing .rank-profile-modal{box-shadow:-25px 0 65px rgba(239,38,63
 
   <footer class="ranking-footer">
     <a class="rank-btn primary" href="index.html">← Volver a Speedy Friends</a>
-    <button class="rank-btn" type="button" id="shuffle">Actualizar muestra</button>
+    <button class="rank-btn" type="button" id="shuffle">Actualizar vista</button>
   </footer>
 </section>
 </main>
@@ -765,7 +678,7 @@ document.addEventListener('DOMContentLoaded',()=>{
   const memberMeta=memberSection?.querySelector('.rank-table-head p');
   const heroTitle=document.querySelector('.ranking-title');
   const heroLead=document.querySelector('.ranking-lead');
-  let mode='rings',users=[],friendsMap={},ringMap={};
+  let mode='rings',users=[],sourceUsers={},friendsMap={},ringMap={};
 
   const esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[c]));
   const num=v=>Number(v||0);
@@ -818,13 +731,32 @@ document.addEventListener('DOMContentLoaded',()=>{
       ${type!=='creator'?`<div class="rank-move">${u.ostUrl?`<button class="rank-ost-btn rank-row-ost" type="button" data-ost-track="${esc(u.ost)}" data-ost-url="${esc(u.ostUrl)}" aria-label="Escuchar OST de ${esc(u.username)}">♫</button>`:`<span>${roleLabel}</span>`}</div>`:''}
     </article>`;
   };
-  function bindCards(root){
-    root.querySelectorAll('.rank-row,.creator-rank-card').forEach(el=>el.addEventListener('click',e=>{
-      if(e.target.closest('button,a'))return;
-      document.dispatchEvent(new CustomEvent('ranking:profile-select',{detail:el}));
-    }));
-    root.querySelectorAll('.rank-ost-btn').forEach(btn=>btn.addEventListener('click',e=>{e.stopPropagation();document.dispatchEvent(new CustomEvent('ranking:ost-play',{detail:btn}));}));
+  // Reuse unchanged cards and move them into their new order without clearing the list.
+  function syncCards(root,items,type,empty){
+    if(!items.length){
+      if(root.dataset.empty!==empty){root.innerHTML=empty;root.dataset.empty=empty;}
+      return;
+    }
+    if(root.dataset.empty){root.replaceChildren();delete root.dataset.empty;}
+    const existing=new Map([...root.children].filter(el=>el.dataset.profileId).map(el=>[el.dataset.profileId,el]));
+    items.forEach((u,i)=>{
+      const markup=card(u,i,type),key=String(u.id);let el=existing.get(key);
+      if(!el || el._sfMarkup!==markup){
+        const template=document.createElement('template');template.innerHTML=markup.trim();
+        const next=template.content.firstElementChild;next._sfMarkup=markup;
+        if(el)el.replaceWith(next);el=next;
+      }
+      const at=root.children[i];if(at!==el)root.insertBefore(el,at||null);
+      existing.delete(key);
+    });
+    existing.forEach(el=>el.remove());
   }
+  [creatorList,adminList,memberList].forEach(root=>root.addEventListener('click',e=>{
+    const btn=e.target.closest('.rank-ost-btn');
+    if(btn){e.stopPropagation();document.dispatchEvent(new CustomEvent('ranking:ost-play',{detail:btn}));return;}
+    const row=e.target.closest('.rank-row,.creator-rank-card');
+    if(row&&!e.target.closest('button,a'))document.dispatchEvent(new CustomEvent('ranking:profile-select',{detail:row}));
+  }));
   function applyFriendsFilter(){
     const currentUid=window.SpeedyFirebase?.current?.uid || window.SpeedyFirebase?.state?.uid || null;
     const friendIds=Object.keys(friendsMap||{});
@@ -843,8 +775,7 @@ document.addEventListener('DOMContentLoaded',()=>{
     if(heroLead)heroLead.textContent=currentUid?'Solo aparecen los amigos que tienes agregados, ordenados por Rings.':'Inicia sesión para ver tu ranking personal de amigos.';
     const sorted=friendUsers.slice().sort((a,b)=>b.rings-a.rings||String(a.username).localeCompare(String(b.username),'es'));
     memberCount.textContent=`${sorted.length} MOSTRADOS`;
-    memberList.innerHTML=sorted.length?sorted.map((u,i)=>card(u,i,'member')).join(''):`<div class="ranking-empty-state">${currentUid?'AÚN NO TIENES AMIGOS AGREGADOS':'INICIA SESIÓN PARA VER TU RANKING DE AMIGOS'}</div>`;
-    bindCards(memberList);
+    syncCards(memberList,sorted,'member',`<div class="ranking-empty-state">${currentUid?'AÚN NO TIENES AMIGOS AGREGADOS':'INICIA SESIÓN PARA VER TU RANKING DE AMIGOS'}</div>`);
   }
   function applyGlobal(){
     const creators=users.filter(isCreator).slice(0,1); const admins=sortGroup(users.filter(u=>!isCreator(u)&&isAdmin(u))); const members=sortGroup(users.filter(u=>!isCreator(u)&&!isAdmin(u)));
@@ -854,32 +785,38 @@ document.addEventListener('DOMContentLoaded',()=>{
     if(memberMeta)memberMeta.textContent='RINGS TOTALES · ADMINISTRADORES Y MIEMBROS';
     if(heroTitle)heroTitle.innerHTML='Top <em>Integrantes</em>';
     if(heroLead)heroLead.textContent='El marcador de la comunidad: Rings, posición y progreso. Usa "AMIGOS" para ver únicamente tu círculo personal.';
-    creatorList.innerHTML=creators.length?creators.map((u,i)=>card(u,i,'creator')).join(''):'<div class="special-empty">CUENTA CREADORA NO ENCONTRADA</div>';
-    adminList.innerHTML=admins.length?admins.map((u,i)=>card(u,i,'admin')).join(''):'<div class="special-empty">AÚN NO HAY ADMINISTRADORES</div>';
-    memberList.innerHTML=members.length?members.map((u,i)=>card(u,i,'member')).join(''):`<div class="ranking-empty-state">${window.SpeedyFirebase?.current?.uid?'AÚN NO HAY INTEGRANTES REGISTRADOS':'INICIA SESIÓN PARA VER EL RANKING DEL TEAM'}</div>`;
+    syncCards(creatorList,creators,'creator','<div class="special-empty">CUENTA CREADORA NO ENCONTRADA</div>');
+    syncCards(adminList,admins,'admin','<div class="special-empty">AÚN NO HAY ADMINISTRADORES</div>');
+    syncCards(memberList,members,'member',`<div class="ranking-empty-state">${window.SpeedyFirebase?.current?.uid?'AÚN NO HAY INTEGRANTES REGISTRADOS':'INICIA SESIÓN PARA VER EL RANKING DEL TEAM'}</div>`);
     memberCount.textContent=`${members.length} MOSTRADOS`; adminCount.textContent=`${admins.length} MOSTRADOS`;
-    bindCards(creatorList);bindCards(adminList);bindCards(memberList);
   }
   function render(){
-    filters.forEach(f=>f.classList.toggle('active',f.dataset.mode===mode));
+    filters.forEach(f=>{const selected=f.dataset.mode===mode;f.classList.toggle('active',selected);f.setAttribute('aria-pressed',String(selected));});
     if(mode==='friends')applyFriendsFilter();else applyGlobal();
   }
   // Se llamaba desde bindFirebase (x2) y onAuthStateChanged sin cancelar: hasta 4 suscripciones
   // iguales que repintaban la lista. Una suscripción por usuario y se cancela al cambiar.
-  let friendsUid='',offFriends=null,usersBound=false;
+  let friendsUid='',offFriends=null,usersBound=false,offUsers=null,activeUid='';
   function loadFriends(uid){
     if(!uid || uid===friendsUid || !window.SpeedyFirebase?.db || !window.SpeedyFirebase?.refs?.root) return;
     offFriends?.();friendsUid=uid;
     const teamRef=window.SpeedyFirebase.refs.root;
     const fRef=teamRef.child('friends').child(uid),rRef=teamRef.child('rings');
-    const onF=fRef.on('value',snap=>{friendsMap=snap.val()||{}; if(mode==='friends')render();});
-    const onR=rRef.on('value',snap=>{ringMap=snap.val()||{}; if(mode==='friends')render();});
-    offFriends=()=>{fRef.off('value',onF);rRef.off('value',onR);};
+    const onF=snap=>{friendsMap=snap.val()||{}; if(mode==='friends')render();};
+    const onR=snap=>{
+      ringMap=snap.val()||{};
+      users=users.map(u=>Object.hasOwn(ringMap,u.id)?{...u,rings:num(ringMap[u.id])}:u);
+      render();
+    };
+    const offF=window.SpeedyFirebase.subscribeShared(`friends:${uid}`,fRef,onF,()=>{friendsMap={};if(mode==='friends')render();});
+    const offR=window.SpeedyFirebase.subscribeShared('rings',rRef,onR,()=>{ringMap={};users=normalize(sourceUsers);render();});
+    offFriends=()=>{offF();offR();};
   }
   function bindFirebase(){
-    if(!window.SpeedyFirebase?.watchPublicUsers||usersBound)return;
+    if(!window.SpeedyFirebase?.refs?.users||usersBound||!activeUid||window.SpeedyFirebase?.auth?.currentUser?.uid!==activeUid)return;
     usersBound=true;
-    window.SpeedyFirebase.watchPublicUsers(raw=>{users=normalize(raw);render();});
+    const ref=window.SpeedyFirebase.refs.users;
+    offUsers=window.SpeedyFirebase.subscribeShared('users',ref,snap=>{sourceUsers=snap.val()||{};users=normalize(sourceUsers).map(u=>Object.hasOwn(ringMap,u.id)?{...u,rings:num(ringMap[u.id])}:u);render();},()=>{sourceUsers={};users=[];render();});
     const uid=window.SpeedyFirebase?.current?.uid || window.SpeedyFirebase?.state?.uid;
     if(uid)loadFriends(uid);
   }
@@ -888,7 +825,14 @@ document.addEventListener('DOMContentLoaded',()=>{
   document.addEventListener('speedy:firebase-ready',()=>{bindFirebase();},{once:true});
   if(window.SpeedyFirebase?.current?.uid || window.SpeedyFirebase?.watchPublicUsers)bindFirebase();
   if(window.SpeedyFirebase?.auth){
-    window.SpeedyFirebase.auth.onAuthStateChanged(user=>{ if(user) loadFriends(user.uid); else { offFriends?.(); offFriends=null; friendsUid=''; friendsMap={}; ringMap={}; if(mode==='friends')render(); } });
+    window.SpeedyFirebase.auth.onAuthStateChanged(user=>{
+      const uid=user?.uid||'';
+      if(uid!==activeUid){
+        offFriends?.();offUsers?.();offFriends=null;offUsers=null;friendsUid='';usersBound=false;
+        friendsMap={};ringMap={};sourceUsers={};users=[];activeUid=uid;render();
+      }
+      if(uid){bindFirebase();loadFriends(uid);}
+    });
   }
   render();
 });

@@ -10,6 +10,10 @@
       "status": "passed"
     },
     {
+      "name": "Quick access toggle has a legible aligned label and opens and closes",
+      "status": "passed"
+    },
+    {
       "name": "Mobile menu, focus return and keyboard carousel",
       "status": "passed"
     },
@@ -79,6 +83,18 @@
     },
     {
       "name": "alert() shows a non-blocking, accessible notice instead of a dialog",
+      "status": "passed"
+    },
+    {
+      "name": "OST samples cannot masquerade as playable tracks",
+      "status": "passed"
+    },
+    {
+      "name": "Ranking announces the selected filter",
+      "status": "passed"
+    },
+    {
+      "name": "Cafe wallet is inaccessible when closed and returns focus on Escape",
       "status": "passed"
     },
     {

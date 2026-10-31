@@ -1,0 +1,192 @@
+{
+  "rules": {
+    "speedy-friends-teams": {
+      "$teamId": {
+        "siteSettings": {
+          ".read": "auth != null",
+          ".write": "auth != null && (auth.token.email == 't89886464@gmail.com' && auth.token.email_verified == true)",
+          ".validate": "newData.hasChildren(['title', 'subtitle']) && newData.child('title').isString() && newData.child('subtitle').isString() && (!newData.hasChild('icon') || newData.child('icon').isString())"
+        },
+        "users": {
+          ".read": "auth != null",
+          "$profileId": {
+            ".write": "auth != null && ((auth.token.email == 't89886464@gmail.com' && auth.token.email_verified == true) || (!data.exists() && newData.exists() && newData.child('ownerUid').val() == auth.uid) || (data.exists() && data.child('ownerUid').val() == auth.uid && (!newData.exists() || (newData.child('ownerUid').val() == data.child('ownerUid').val() && newData.child('ownerEmail').val() == data.child('ownerEmail').val() && newData.child('role').val() == data.child('role').val() && newData.child('rings').val() == data.child('rings').val()))))",
+            ".validate": "((auth.token.email == 't89886464@gmail.com' && auth.token.email_verified == true)) || (newData.child('ownerUid').val() == auth.uid && newData.child('isAdmin').val() == data.child('isAdmin').val() && newData.child('isCreator').val() == data.child('isCreator').val() && newData.child('admin').val() == data.child('admin').val() && newData.child('permissions').val() == data.child('permissions').val() && newData.child('customClaims').val() == data.child('customClaims').val() && ((data.exists() && newData.child('ownerEmail').val() == data.child('ownerEmail').val() && newData.child('role').val() == data.child('role').val() && newData.child('rings').val() == data.child('rings').val()) || (!data.exists() && newData.child('ownerEmail').val() == auth.token.email && newData.child('role').val() == 'Runner' && newData.child('rings').val() == 0)))"
+          },
+          ".indexOn": [
+            "ownerUid"
+          ]
+        },
+        "permissions": {
+          ".read": "auth != null && (auth.token.email == 't89886464@gmail.com' && auth.token.email_verified == true)",
+          "$uid": {
+            ".read": "auth != null && ((auth.token.email == 't89886464@gmail.com' && auth.token.email_verified == true) || auth.uid == $uid)",
+            ".write": "auth != null && (auth.token.email == 't89886464@gmail.com' && auth.token.email_verified == true)"
+          }
+        },
+        "rings": {
+          ".read": "auth != null",
+          "$profileId": {
+            ".write": "auth != null && ((auth.token.email == 't89886464@gmail.com' && auth.token.email_verified == true) || root.child('speedy-friends-teams').child($teamId).child('permissions').child(auth.uid).child('role').val() == 'admin')",
+            ".validate": "newData.isNumber() && newData.val() >= 0"
+          }
+        },
+        "ringHistory": {
+          ".read": "auth != null && ((auth.token.email == 't89886464@gmail.com' && auth.token.email_verified == true) || root.child('speedy-friends-teams').child($teamId).child('permissions').child(auth.uid).child('role').val() == 'admin')",
+          "$eventId": {
+            ".write": "auth != null && ((auth.token.email == 't89886464@gmail.com' && auth.token.email_verified == true) || root.child('speedy-friends-teams').child($teamId).child('permissions').child(auth.uid).child('role').val() == 'admin')"
+          }
+        },
+        "ratings": {
+          ".read": "auth != null",
+          "$profileId": {
+            "$raterUid": {
+              ".write": "auth != null && auth.uid == $raterUid && root.child('speedy-friends-teams').child($teamId).child('users').child($profileId).child('ownerUid').val() != auth.uid",
+              ".validate": "newData.isNumber() && newData.val() >= 1 && newData.val() <= 5"
+            }
+          }
+        },
+        "news": {
+          ".read": "auth != null",
+          "$id": {
+            ".write": "auth != null && ((auth.token.email == 't89886464@gmail.com' && auth.token.email_verified == true) || auth.token.admin == true || auth.token.role == 'admin' || root.child('speedy-friends-teams').child($teamId).child('permissions').child(auth.uid).child('role').val() == 'admin')",
+            ".validate": "newData.hasChildren(['id','title','category','date','summary','body','published']) && newData.child('id').isString() && newData.child('title').isString() && newData.child('category').isString() && newData.child('date').isString() && newData.child('summary').isString() && newData.child('body').isString() && newData.child('published').isBoolean()"
+          }
+        },
+        "visualPicks": {
+          ".read": "auth != null",
+          "$id": {
+            ".write": "auth != null && (auth.token.email == 't89886464@gmail.com' && auth.token.email_verified == true)",
+            ".validate": "newData.hasChildren(['id','title','image','tag','order']) && newData.child('id').isString() && newData.child('title').isString() && newData.child('image').isString() && newData.child('tag').isString() && newData.child('order').isNumber()"
+          }
+        },
+        "cafeteria": {
+          "menu": {
+            ".read": "auth != null",
+            "$id": {
+              ".write": "auth != null && ((auth.token.email == 't89886464@gmail.com' && auth.token.email_verified == true) || root.child('speedy-friends-teams').child($teamId).child('cafeteria').child('workers').child(auth.uid).child('role').val() == 'worker')"
+            }
+          },
+          "music": {
+            ".read": "auth != null",
+            "$id": {
+              ".write": "auth != null && (auth.token.email == 't89886464@gmail.com' && auth.token.email_verified == true)"
+            }
+          },
+          "special": {
+            ".read": "auth != null",
+            ".write": "auth != null && ((auth.token.email == 't89886464@gmail.com' && auth.token.email_verified == true) || root.child('speedy-friends-teams').child($teamId).child('cafeteria').child('workers').child(auth.uid).child('role').val() == 'worker')"
+          },
+          "workers": {
+            ".read": "auth != null && (auth.token.email == 't89886464@gmail.com' && auth.token.email_verified == true)",
+            "$uid": {
+              ".read": "auth != null && ((auth.token.email == 't89886464@gmail.com' && auth.token.email_verified == true) || auth.uid == $uid)",
+              ".write": "auth != null && (auth.token.email == 't89886464@gmail.com' && auth.token.email_verified == true)"
+            }
+          },
+          "orders": {
+            ".indexOn": [
+              "ownerUid",
+              "createdAt"
+            ],
+            ".read": "auth != null && ((auth.token.email == 't89886464@gmail.com' && auth.token.email_verified == true) || root.child('speedy-friends-teams').child($teamId).child('cafeteria').child('workers').child(auth.uid).child('role').val() == 'worker' || (query.orderByChild == 'ownerUid' && query.equalTo == auth.uid))",
+            "$id": {
+              ".write": "auth != null && ((!data.exists() && newData.child('ownerUid').val() == auth.uid) || (auth.token.email == 't89886464@gmail.com' && auth.token.email_verified == true) || root.child('speedy-friends-teams').child($teamId).child('cafeteria').child('workers').child(auth.uid).child('role').val() == 'worker')"
+            }
+          },
+          "workerHistory": {
+            "$uid": {
+              ".read": "auth != null && ((auth.token.email == 't89886464@gmail.com' && auth.token.email_verified == true) || auth.uid == $uid)",
+              "$historyId": {
+                ".write": "auth != null && ((auth.token.email == 't89886464@gmail.com' && auth.token.email_verified == true) || root.child('speedy-friends-teams').child($teamId).child('cafeteria').child('workers').child(auth.uid).child('role').val() == 'worker')"
+              }
+            }
+          },
+          "ticketHistory": {
+            ".read": "auth != null && (auth.token.email == 't89886464@gmail.com' && auth.token.email_verified == true)",
+            "$id": {
+              ".write": "auth != null && ((auth.token.email == 't89886464@gmail.com' && auth.token.email_verified == true) || root.child('speedy-friends-teams').child($teamId).child('cafeteria').child('workers').child(auth.uid).child('role').val() == 'worker')"
+            }
+          },
+          "activity": {
+            ".read": "auth != null && ((auth.token.email == 't89886464@gmail.com' && auth.token.email_verified == true) || root.child('speedy-friends-teams').child($teamId).child('cafeteria').child('workers').child(auth.uid).child('role').val() == 'worker')",
+            "$id": {
+              ".write": "auth != null && ((auth.token.email == 't89886464@gmail.com' && auth.token.email_verified == true) || root.child('speedy-friends-teams').child($teamId).child('cafeteria').child('workers').child(auth.uid).child('role').val() == 'worker')"
+            }
+          }
+        },
+        "friendRequests": {
+          "inbox": {
+            "$uid": {
+              ".read": "auth != null && auth.uid == $uid",
+              "$requesterUid": {
+                ".read": "auth != null && (auth.uid == $uid || auth.uid == $requesterUid)",
+                ".write": "auth != null && (auth.uid == $uid || auth.uid == $requesterUid)",
+                ".validate": "!newData.exists() || (newData.child('requesterUid').val() == $requesterUid && newData.child('recipientUid').val() == $uid && newData.child('status').val() == 'pending' && newData.child('requesterProfileId').isString() && newData.child('recipientProfileId').isString())"
+              }
+            }
+          },
+          "outbox": {
+            "$uid": {
+              ".read": "auth != null && auth.uid == $uid",
+              "$targetUid": {
+                ".read": "auth != null && auth.uid == $uid",
+                ".write": "auth != null && (auth.uid == $uid || auth.uid == $targetUid)",
+                ".validate": "!newData.exists() || (newData.child('requesterUid').val() == $uid && newData.child('recipientUid').val() == $targetUid && newData.child('status').val() == 'pending' && newData.child('requesterProfileId').isString() && newData.child('recipientProfileId').isString())"
+              }
+            }
+          }
+        },
+        "friends": {
+          "$uid": {
+            ".read": "auth != null && auth.uid == $uid",
+            "$friendUid": {
+              ".read": "auth != null && (auth.uid == $uid || auth.uid == $friendUid)",
+              ".write": "auth != null && (auth.uid == $uid || auth.uid == $friendUid)",
+              ".validate": "!newData.exists() || (newData.child('uid').val() == $friendUid && newData.child('profileId').isString() && newData.child('displayName').isString())"
+            }
+          }
+        },
+        "presence": {
+          "$uid": {
+            ".read": "auth != null",
+            ".write": "auth != null && auth.uid == $uid",
+            ".validate": "!newData.exists() || (newData.child('online').isBoolean() && newData.child('lastSeen').isNumber())"
+          }
+        },
+        "fanarts": {
+          ".read": "auth != null",
+          ".indexOn": [
+            "createdAt",
+            "ownerUid",
+            "category"
+          ],
+          "$fanartId": {
+            ".read": "auth != null",
+            ".write": "auth != null && ((!data.exists() && newData.exists() && newData.child('ownerUid').val() == auth.uid && !newData.child('likes').exists()) || (data.exists() && !newData.exists() && data.child('ownerUid').val() == auth.uid))",
+            ".validate": "newData.hasChildren(['id','ownerUid','title','description','category','mediaType','image','createdAt']) && newData.child('id').val() == $fanartId && newData.child('ownerUid').isString() && newData.child('title').isString() && newData.child('title').val().length > 0 && newData.child('title').val().length <= 70 && newData.child('description').isString() && newData.child('description').val().length <= 220 && (newData.child('category').val() == 'Digital' || newData.child('category').val() == 'Dibujos' || newData.child('category').val() == 'Renders' || newData.child('category').val() == 'Edits' || newData.child('category').val() == 'Tradicional') && (newData.child('mediaType').val() == 'image' || (newData.child('mediaType').val() == 'video' && newData.child('category').val() == 'Edits')) && newData.child('image').isString() && newData.child('image').val().length <= 2048 && newData.child('createdAt').isNumber() && (!newData.child('cloudinaryDeleteToken').exists() || (data.exists() && data.child('cloudinaryDeleteToken').exists() && newData.child('cloudinaryDeleteToken').val() == data.child('cloudinaryDeleteToken').val()))",
+            "title": {
+              ".write": "auth != null && data.parent().child('ownerUid').val() == auth.uid",
+              ".validate": "newData.isString()"
+            },
+            "description": {
+              ".write": "auth != null && data.parent().child('ownerUid').val() == auth.uid",
+              ".validate": "newData.isString()"
+            },
+            "category": {
+              ".write": "auth != null && data.parent().child('ownerUid').val() == auth.uid",
+              ".validate": "newData.isString()"
+            },
+            "likes": {
+              "$uid": {
+                ".read": "auth != null",
+                ".write": "auth != null && auth.uid == $uid",
+                ".validate": "!newData.exists() || newData.val() == true"
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

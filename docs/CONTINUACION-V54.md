@@ -1,0 +1,25 @@
+# Continuación V5.4: medios y prototipos de seguridad
+
+## Cambios activos en perfiles
+
+El editor guardaba y restauraba `avatar`, `cover` e identidad usando claves globales del navegador. Esto podía mostrar y volver a guardar imágenes de otra cuenta. Ya no restaura esas copias sin dueño atribuible; conserva los blobs históricos sin borrarlos y guarda nuevas copias con claves por UID. La identidad local también se separa por UID. La imagen guardada en RTDB sigue siendo la fuente remota; si cambia la sesión se limpia el borrador anterior y se comprueba su dueño antes de guardar. No se convierte ni modifica el GIF seleccionado; la prueba compara los bytes de un GIF guardado. La prueba de dos cuentas utiliza Firebase simulado; las reglas de producción no han sido verificadas.
+
+## Medios pendientes
+
+Los datos Base64 se almacenan en users y la aplicación descarga la colección completa para varias vistas, con un coste mayor de transferencia. La separación de proyecciones públicas y privadas requiere migración y cambios de lectores; no se ha comprimido ni migrado ninguna imagen existente. Los límites y validaciones del navegador no son controles de seguridad del servidor. El código exporta `uploadProfileAsset` que usa Firebase Storage; no se encontraron llamadas internas, pero no se eliminó la función ni el SDK sin confirmar integraciones externas. No se proporcionaron reglas de Storage.
+
+Fanarts, OST y audio de cafetería utilizan un preset Cloudinary sin firma visible en el cliente. Si está habilitado para subidas sin firma, quien conozca el preset puede intentar subir directamente; no se verificó la configuración efectiva ni se subió ningún archivo. Los tokens de borrado siguen presentes en registros de fanart y pueden ser leídos según la copia de reglas; no se han eliminado ni modificado archivos existentes. Es preciso cambiar a firma y borrado desde backend autorizado, revisar configuración y exposición de tokens, y migrar sin romper eliminación. Cloudinary documenta los tokens de borrado de corta duración: https://cloudinary.com/documentation/client_side_uploading y las subidas sin firma: https://cloudinary.com/documentation/upload_images.
+
+## Economía y amistades: código aislado, no desplegar
+
+`server/settle-order.cjs` contiene un núcleo experimental para un servidor de confianza. Exige identidad verificada suministrada por el servidor, verifica trabajador activo o creadora, estado listo, propiedad, producto, cantidad, precio de la carta y saldo. La transacción debe abarcar el nodo completo del equipo: actualiza saldo, pedido y registro juntos, usando el id del pedido para idempotencia. Se comprobaron tres peticiones concurrentes, precio falsificado, reintento, falta de permiso, saldo insuficiente y estado incorrecto en RTDB Emulator. El caso del servidor usa reglas abiertas únicamente en su entorno ficticio para simular privilegios del backend, y no valida las reglas de autorización. La transacción completa puede ser costosa con imágenes Base64 y conflictos frecuentes; requiere rediseño de datos, límites y medición antes de producción.
+
+No existe aún un endpoint callable que verifique Firebase Auth y proporcione el UID, un adaptador Admin desplegable, ni reglas migradas que cierren todas las escrituras antiguas. La carta puede cambiar entre pedido y cobro: el prototipo usa el precio vigente, una política que necesita aprobación antes de integrarse. No se ha conectado al frontend; el cobro anterior sigue sin protección suficiente. Tampoco están implementados canje, inventario, administración económica ni migración histórica.
+
+`tests/firebase-emulator/social/` contiene un prototipo de una relación transaccional por pareja con pruebas separadas. No está conectado a friends-system ni migrado; faltan endpoint autenticado, consultas privadas, límites de abuso y compatibilidad. Consultar su README. Las reglas candidatas anteriores aún no cierran los ataques de amistad y pedidos y no deben desplegarse.
+
+## Pruebas y seguimiento
+
+La suite oficial principal ejecutó 21 pruebas: 17 de reglas conocidas y 4 de transacción experimental. Las pruebas del servidor no demuestran protección de las reglas. El prototipo social tiene 4 pruebas unitarias y 2 en el emulador separado. Las pruebas E2E usan Firebase simulado y navegador Chromium; no son pruebas de autorización real ni de Android físico. `npm audit --package-lock-only` reportó 16 vulnerabilidades moderadas y 5 altas en dependencias de desarrollo del emulador; requieren evaluación individual. La configuración de Actions se preparó pero no se ha ejecutado en GitHub.
+
+Para migrar: verificar reglas realmente publicadas y copiar respaldo; definir política de precio, consentimiento y recuperación; integrar endpoints autenticados y acceso confiable; migrar datos con comprobaciones y reversión; adaptar UI; bloquear escrituras económicas y sociales antiguas en reglas; ejecutar pruebas en emuladores y proyecto aislado con datos representativos; revisar métricas y obtener autorización antes del despliegue. No se han modificado datos ni recursos de producción.

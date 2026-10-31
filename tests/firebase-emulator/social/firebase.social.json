@@ -1,0 +1,1 @@
+{"database":{"rules":"deny.rules.json"},"emulators":{"database":{"host":"127.0.0.1","port":19011},"hub":{"host":"127.0.0.1","port":19012},"logging":{"host":"127.0.0.1","port":19013},"ui":{"enabled":false},"singleProjectMode":true}}

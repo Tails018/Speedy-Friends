@@ -301,7 +301,7 @@
   toggle.className = 'sf-utility-toggle';
   toggle.setAttribute('aria-label','Abrir accesos rápidos');
   toggle.setAttribute('aria-expanded','false');
-  toggle.innerHTML = '<span aria-hidden="true">✦</span><b>Accesos</b>';
+  toggle.innerHTML = '<span aria-hidden="true"></span><b>Accesos</b>';
 
   const close = document.createElement('button');
   close.type = 'button';
