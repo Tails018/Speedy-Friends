@@ -28,6 +28,15 @@ let activeBrowser;
   await page.waitForFunction(()=>document.body.classList.contains('page-ready'));assert.ok(await page.locator('#sf-auth-gate').isVisible());
  });
  await dismissGate();
+ await test('Quick access toggle has a legible aligned label and opens and closes',async()=>{
+  const toggle=page.locator('.sf-utility-toggle');
+  const geometry=await toggle.evaluate(el=>{const r=el.getBoundingClientRect(),i=el.querySelector('span').getBoundingClientRect(),t=el.querySelector('b').getBoundingClientRect();return {w:r.width,h:r.height,iconRight:i.right,labelLeft:t.left,labelRight:t.right,right:r.right,top:r.top,bottom:r.bottom,viewport:innerHeight}});
+  assert.ok(geometry.h>=48&&geometry.w>=48);assert.ok(geometry.iconRight<geometry.labelLeft&&geometry.labelRight<=geometry.right);assert.ok(geometry.bottom<=geometry.viewport);
+  await page.screenshot({path:'test-results/access-closed.png'});
+  await toggle.click();assert.equal(await toggle.getAttribute('aria-expanded'),'true');
+  await page.screenshot({path:'test-results/access-open.png'});
+  await page.keyboard.press('Escape');assert.equal(await toggle.getAttribute('aria-expanded'),'false');
+ });
  await test('Mobile menu, focus return and keyboard carousel',async()=>{
   await page.locator('#menuBtn').click();assert.equal(await page.locator('#menuBtn').getAttribute('aria-expanded'),'true');
   assert.equal(await page.evaluate(()=>document.activeElement.id),'closeMenu');
@@ -65,6 +74,8 @@ let activeBrowser;
   await page.locator('.sf-utility-toggle').click();await page.locator('[data-action="theme"]').click();
   const theme=await page.locator('html').getAttribute('data-sf-theme');await page.reload();
   assert.equal(await page.locator('html').getAttribute('data-sf-theme'),theme);await dismissGate();
+  const positions=await page.locator('.sf-utility-toggle').evaluate(el=>({icon:el.querySelector('span').getBoundingClientRect().right,label:el.querySelector('b').getBoundingClientRect().left}));
+  assert.ok(positions.icon<positions.label);await page.screenshot({path:'test-results/access-dark.png'});
  });
  await test('Fanart gallery never shows invented works: offline shows an error state with retry',async()=>{
   await page.goto(base+'/fanarts.html');await page.waitForSelector('.fanart-empty.is-error, .fanart-skeleton');

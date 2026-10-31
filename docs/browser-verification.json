@@ -10,6 +10,10 @@
       "status": "passed"
     },
     {
+      "name": "Quick access toggle has a legible aligned label and opens and closes",
+      "status": "passed"
+    },
+    {
       "name": "Mobile menu, focus return and keyboard carousel",
       "status": "passed"
     },

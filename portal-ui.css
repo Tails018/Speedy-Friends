@@ -21,9 +21,6 @@ html[data-sf-theme=light]{color-scheme:light}
 .sf-carousel-controls{position:absolute;left:50%;bottom:5px;transform:translateX(-50%);z-index:5;display:flex;gap:8px;white-space:nowrap}
 .sf-carousel-controls button{min-height:40px;min-width:44px;padding:8px 14px;border:1px solid #ef263f55;background:#17191f;color:white;border-radius:5px;font:700 12px Arial,sans-serif;cursor:pointer}
 .sf-carousel-controls button:hover{background:#ef263f}
-.sf-utility-toggle b{position:absolute;right:48px;top:50%;transform:translateY(-50%);padding:8px 12px;border-radius:20px;background:#111;color:white;font:700 12px Arial,sans-serif;letter-spacing:0;pointer-events:none}
-.sf-utility-toggle{top:auto!important;right:20px!important;bottom:max(22px,env(safe-area-inset-bottom))!important;transform:none!important}
-.sf-utility-toggle.is-open{right:20px!important}
 .sf-utility-panel :is(.quick-action-card,.hero-utility-card){min-height:66px}
 .sf-utility-panel :is(button,a){cursor:pointer}
 .sf-account-feedback{margin-top:12px;min-height:20px;font:600 13px/1.5 Arial,sans-serif;color:#e7c66b}
