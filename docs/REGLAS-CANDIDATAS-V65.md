@@ -5,6 +5,7 @@
 ## Qué cambia
 
 - El perfil propio conserva `ownerUid`, `ownerEmail`, `role`, `rings` y varias banderas o estructuras habituales de privilegios. Una cuenta nueva no puede introducir esas banderas. No es una lista exhaustiva de todos los campos que futuras versiones podrían considerar privilegiados.
+- Las excepciones por correo de la creadora exigen `email_verified == true` en este candidato. Debe verificarse que las cuentas y proveedores legítimos emitan ese claim antes de cualquier migración.
 - En Fanarts se rechazan tokens de borrado y likes precargados en una creación, se validan título, descripción, categoría, tipo de medio y tamaño de URL, y un vídeo debe pertenecer a Edits. Las publicaciones con un token histórico pueden conservarlo sin modificarlo durante una edición: no se han borrado datos ni dejado de ser legibles por esta regla.
 - La configuración `firebase.experimental.json` apunta solo al candidato y `demo-speedy-experimental`; el workflow ejecuta `npm run test:experimental`. El candidato no se usa por el frontend ni por una configuración de despliegue.
 
@@ -12,7 +13,7 @@
 
 Las pruebas `experimental-risks.test.mjs` **pasan cuando reproducen fallos**: un usuario puede crear un ticket servido y manipular su precio; una amistad puede crearse sin consentimiento; un trabajador inactivo puede modificar la carta; y un usuario autenticado puede leer borradores. Se mantienen deliberadamente visibles para evitar interpretar una suite verde como seguridad integral. Las rutas antiguas no se han cerrado: el frontend todavía depende de ellas y no existen alternativas seguras completas para creación y transición de pedidos, amistades, canjes y gestión económica.
 
-La lectura de `users` sigue exponiendo campos privados a usuarios autenticados. La lectura de Fanarts puede exponer tokens históricos. Faltan proyecciones públicas y privadas, migración de perfiles heredados, validación de campos y límites de imágenes con datos reales, revisión de `email_verified`, política de moderación y pruebas de todos los permisos. Las validaciones nuevas pueden impedir operaciones sobre datos históricos incompatibles; deben ensayarse con una copia saneada y autorización apropiada. Ninguna revisión de cliente sustituye las reglas de servidor.
+La lectura de `users` sigue exponiendo campos privados a usuarios autenticados. La lectura de Fanarts puede exponer tokens históricos. Faltan proyecciones públicas y privadas, migración de perfiles heredados, validación de campos y límites de imágenes con datos reales, revisión de proveedores y claims, política de moderación y pruebas de todos los permisos. Las validaciones nuevas pueden impedir operaciones sobre datos históricos incompatibles; deben ensayarse con una copia saneada y autorización apropiada. Ninguna revisión de cliente sustituye las reglas de servidor.
 
 `server/index.cjs` y el adaptador de cafetería están restringidos al emulador; el núcleo transaccional y el componente de eliminación Cloudinary son prototipos, no un backend listo para desplegar. El flujo de producción existente no queda protegido por subir estos archivos a GitHub.
 

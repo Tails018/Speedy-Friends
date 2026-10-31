@@ -15,3 +15,11 @@ test('usuario nuevo no puede crear perfil con privilegios adicionales',async()=>
  await assertFails(set(ref(db('bob'),`${base}/bob`),{ownerUid:'bob',ownerEmail:'bob@example.test',role:'Runner',rings:0,isAdmin:true}));
  await assertSucceeds(set(ref(db('bob'),`${base}/bob`),{ownerUid:'bob',ownerEmail:'bob@example.test',role:'Runner',rings:0}));
 });
+test('el acceso de creadora por correo exige email verificado',async()=>{
+ const claims={email:'t89886464@gmail.com'};
+ const unverified=env.authenticatedContext('impostor',{...claims,email_verified:false}).database();
+ const verified=env.authenticatedContext('creator',{...claims,email_verified:true}).database();
+ const target='speedy-friends-teams/speedy-friends/permissions/bob';
+ await assertFails(set(ref(unverified,target),{role:'admin'}));
+ await assertSucceeds(set(ref(verified,target),{role:'admin'}));
+});
