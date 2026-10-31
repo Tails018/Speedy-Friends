@@ -26,6 +26,34 @@
     onChange: fn => { listeners.add(fn); return () => listeners.delete(fn); }
   };
 
+  // Avisos no bloqueantes: los 26 alert() del proyecto (errores de paneles, cafetería, fanarts)
+  // detenían la página. Se muestran como aviso accesible; confirm()/prompt() siguen nativos.
+  const notify = (message, type) => {
+    const text = String(message ?? '');
+    if (!document.body) { setTimeout(() => notify(text, type), 50); return; }
+    let region = document.getElementById('sf-notices');
+    if (!region) {
+      region = document.createElement('div');
+      region.id = 'sf-notices';
+      region.setAttribute('role', 'status');
+      region.setAttribute('aria-live', 'polite');
+      document.body.appendChild(region);
+    }
+    const item = document.createElement('div');
+    const kind = type || (/error|no se pudo|insuficiente|permiso|límite|inválid|rechaz|no tienes|demasiado|selecciona|introduce/i.test(text) ? 'error' : 'info');
+    item.className = 'sf-notice is-' + kind;
+    item.textContent = text;
+    const close = document.createElement('button');
+    close.type = 'button'; close.setAttribute('aria-label', 'Cerrar aviso'); close.textContent = '×';
+    close.addEventListener('click', () => item.remove());
+    item.appendChild(close);
+    region.appendChild(item);
+    while (region.children.length > 3) region.firstElementChild.remove();
+    setTimeout(() => item.remove(), kind === 'error' ? 7000 : 4000);
+  };
+  window.sfNotify = notify;
+  window.alert = message => notify(message);
+
   const init = () => {
     const vh = () => window.innerHeight || document.documentElement.clientHeight;
 

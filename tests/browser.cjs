@@ -211,6 +211,15 @@ let activeBrowser;
   // En móvil el CSS original de cafetería ya ocultaba «Carta»/«Mis tickets»: se comprueba que no se marcan como duplicados.
   assert.equal(await page.locator('header.top a[href="#menu"]:not(.sf-dup-link)').count(),1,'page-specific links kept');
  });
+ await test('alert() shows a non-blocking, accessible notice instead of a dialog',async()=>{
+  let dialogs=0;const onDialog=d=>{dialogs++;d.dismiss();};page.on('dialog',onDialog);
+  await page.goto(base+'/cafe-worker.html');await page.waitForTimeout(300);
+  await page.evaluate(()=>alert('No se pudo procesar el ticket'));
+  const notice=page.locator('#sf-notices .sf-notice.is-error');await notice.waitFor();
+  assert.match(await notice.textContent(),/No se pudo procesar/);assert.equal(await page.locator('#sf-notices').getAttribute('aria-live'),'polite');
+  await notice.locator('button').click();assert.equal(await notice.count(),0);
+  assert.equal(dialogs,0);page.off('dialog',onDialog);
+ });
  await test('No uncaught JavaScript errors across the audited routes',async()=>assert.deepEqual(errors,[]));
  writeFileSync('docs/browser-verification.json',JSON.stringify({browser:browser.version(),report,errors,limitations:['External services blocked. Firebase login, live writes, uploads and real administrative permissions not exercised.','Rings use a read-only fixture. Home screenshots dismiss only the local presentation gate.','Chromium responsive emulation; not physical Android/iOS or cross-browser certification.']},null,2));
  await browser.close();

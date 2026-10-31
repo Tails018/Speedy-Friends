@@ -277,3 +277,12 @@ body:has(#fab) .sf-theme-toggle-global{bottom:80px!important}
    trataba como 0px y la última fila (botón de like) quedaba fuera del área desplazable. Las tarjetas
    conservan su content-visibility (sí tienen tamaño intrínseco). */
 .fanart-page .fanart-grid,.fanart-grid{content-visibility:visible}
+
+/* ---------- Avisos no bloqueantes (sustituyen a alert) ---------- */
+#sf-notices{position:fixed;left:50%;bottom:20px;transform:translateX(-50%);z-index:100007;display:grid;gap:8px;width:min(440px,calc(100vw - 32px));pointer-events:none}
+.sf-notice{pointer-events:auto;display:flex;align-items:flex-start;gap:12px;padding:12px 12px 12px 16px;border-radius:12px;background:#151515;color:#fff;
+  font:600 13px/1.45 Arial,Helvetica,sans-serif;box-shadow:0 18px 40px rgba(0,0,0,.28);border-left:4px solid var(--sf-ring);animation:sfNoticeIn .3s var(--sf-ease-out)}
+.sf-notice.is-error{border-left-color:var(--sf-red)}
+.sf-notice button{margin-left:auto;flex:0 0 auto;width:28px;height:28px;border:0;border-radius:50%;background:rgba(255,255,255,.12);color:#fff;font-size:16px;line-height:1;cursor:pointer}
+@keyframes sfNoticeIn{from{opacity:0;transform:translateY(10px)}}
+@media (prefers-reduced-motion:reduce){.sf-notice{animation:none}}
