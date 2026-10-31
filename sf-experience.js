@@ -14,6 +14,8 @@
     (navigator.deviceMemory && navigator.deviceMemory <= 2) ||
     (navigator.hardwareConcurrency && navigator.hardwareConcurrency <= 2);
   const resolve = () => { const saved = read(); return saved === 'lite' || saved === 'full' ? saved : (autoLite() ? 'lite' : 'full'); };
+  // Sesión recordada: la portada se muestra sin la pantalla «Comprobando sesión» (ver index.html).
+  try { if (localStorage.getItem('sfAuthHint') === '1') root.classList.add('sf-auth-hint'); } catch {}
   const listeners = new Set();
   const apply = () => { root.dataset.sfFx = resolve(); listeners.forEach(fn => fn(root.dataset.sfFx)); };
   apply();

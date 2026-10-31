@@ -25,6 +25,20 @@ html[data-sf-fx="lite"]::view-transition-new(root){animation-duration:.01s}
   ::view-transition-old(root),::view-transition-new(root){animation:none}
 }
 
+/* ---------- Sesión recordada: sin puerta de acceso hasta que Firebase diga lo contrario ---------- */
+html.sf-auth-hint #sf-auth-gate{display:none!important}
+html.sf-auth-hint body.sf-auth-gate-open{overflow:auto!important}
+
+/* ---------- Carga de páginas: sin pantallas completas; barra fina solo mientras se navega ---------- */
+#sf-page-loader{display:none!important}
+.sf-nav-progress{position:fixed;inset:0 0 auto 0;height:3px;z-index:100006;pointer-events:none;overflow:hidden;opacity:0;transition:opacity .2s}
+.sf-nav-progress::before{content:"";position:absolute;inset:0;width:40%;
+  background:linear-gradient(90deg,transparent,var(--sf-red),var(--sf-ring),transparent);
+  animation:sfNavSweep 1s cubic-bezier(.4,0,.2,1) infinite}
+html.sf-navigating .sf-nav-progress{opacity:1}
+@keyframes sfNavSweep{from{transform:translateX(-100%)}to{transform:translateX(260%)}}
+@media (prefers-reduced-motion:reduce){.sf-nav-progress::before{animation:none;width:100%;opacity:.6}}
+
 /* ---------- Barra de velocidad (progreso de scroll) ---------- */
 .sf-speedbar{position:fixed;inset:0 0 auto 0;height:3px;z-index:100004;pointer-events:none;
   transform-origin:0 50%;transform:scaleX(var(--sf-progress,0));

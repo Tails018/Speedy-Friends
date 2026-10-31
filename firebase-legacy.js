@@ -43,11 +43,17 @@
 
   if(typeof firebase==="undefined"){
     console.error("[Speedy Firebase] SDK not loaded");
+    // Sin SDK no habrá onAuthStateChanged: avisar para que la interfaz no quede esperando.
+    const fail=()=>document.dispatchEvent(new CustomEvent("speedy:firebase-error",{detail:new Error("SDK not loaded")}));
+    if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",fail,{once:true});else setTimeout(fail,0);
     return;
   }
   if(!firebase.apps.length) firebase.initializeApp(REALTIME_CONFIG.firebaseConfig);
 
   const auth=firebase.auth();
+  // El primer onAuthStateChanged llega cuando Firebase ya restauró (o no) la sesión guardada.
+  let authSettled=false;
+  auth.onAuthStateChanged(()=>{authSettled=true;});
   const db=firebase.database();
   const storage=firebase.storage ? firebase.storage() : null;
   const refs={
@@ -74,6 +80,8 @@
 
   async function waitForAuthUser(timeoutMs=8000){
     if(auth.currentUser)return auth.currentUser;
+    // Sesión ya comprobada y sin usuario: no hace falta esperar al timeout.
+    if(authSettled)return null;
     return await new Promise((resolve,reject)=>{
       let done=false;
       const timer=setTimeout(()=>{
@@ -84,7 +92,10 @@
       },timeoutMs);
       const unsub=auth.onAuthStateChanged(user=>{
         if(done)return;
-        if(!user)return;
+        if(!user){
+          // Primera notificación sin usuario = visitante sin sesión guardada.
+          done=true;clearTimeout(timer);setTimeout(()=>unsub(),0);resolve(null);return;
+        }
         done=true;
         clearTimeout(timer);
         unsub();
@@ -93,7 +104,23 @@
     });
   }
 
-  async function resolve(){
+  // Las páginas llaman a resolve() muchas veces al cargar; cada llamada descargaba todos los
+  // usuarios. Se comparte la consulta en curso y se reutiliza el resultado 2 s por usuario.
+  let resolving=null,resolvedAt=0,resolvedUid="";
+  async function resolve(options={}){
+    const uid=auth.currentUser?.uid||"";
+    if(!options.force){
+      if(resolving&&resolving.uid===uid)return resolving.promise;
+      if(uid&&uid===resolvedUid&&state.uid===uid&&Date.now()-resolvedAt<2000)return state;
+    }
+    const promise=resolveFresh().then(result=>{resolvedAt=Date.now();resolvedUid=result.uid||"";return result;})
+      .finally(()=>{if(resolving?.promise===promise)resolving=null;});
+    resolving={uid,promise};
+    return promise;
+  }
+  auth.onAuthStateChanged(()=>{resolvedAt=0;resolvedUid="";});
+
+  async function resolveFresh(){
     const user=await waitForAuthUser().catch(error=>{
       console.warn("[Speedy Firebase] auth wait:",error.message);
       return null;

@@ -563,8 +563,13 @@ body.sf-auth-gate-open{overflow:hidden!important}
 
   let successTimer = null;
   let authHandled = false;
+  // Marca local (sin datos personales) de que hubo sesión: evita tapar el portal con
+  // «Comprobando sesión» en cada carga. Firebase sigue decidiendo y las reglas protegen los datos.
+  const HINT = 'sfAuthHint';
+  const setHint = on => { try { on ? localStorage.setItem(HINT, '1') : localStorage.removeItem(HINT); } catch {} };
   const openGate = (message='Necesitas iniciar sesión para entrar al portal.') => {
     authHandled = false;
+    document.documentElement.classList.remove('sf-auth-hint');
     gate.classList.remove('is-hidden');
     document.body.classList.add('sf-auth-gate-open');
     button.disabled = false;
@@ -585,15 +590,24 @@ body.sf-auth-gate-open{overflow:hidden!important}
   const check = async (detail=null) => {
     const user = detail?.uid ? detail : getAuth()?.currentUser;
     if (user) {
+      setHint(true);
       if (!authHandled) {
         authHandled = true;
         closeGate();
       }
       return true;
     }
+    if (document.documentElement.classList.contains('sf-auth-hint')) return false;
     openGate('Comprobando sesión guardada…');
     return false;
   };
+  if (document.documentElement.classList.contains('sf-auth-hint')) closeGate();
+  // Si Firebase no responde, el botón queda disponible con un mensaje claro (nunca espera infinita).
+  const slowTimer = setTimeout(() => {
+    if (authHandled) return;
+    if (document.documentElement.classList.contains('sf-auth-hint')) { openGate('La conexión tarda más de lo normal. Puedes iniciar sesión de nuevo.'); return; }
+    if (note && /Comprobando/.test(note.textContent)) note.textContent = 'La conexión tarda más de lo normal. Puedes intentar iniciar sesión.';
+  }, 9000);
 
   button.addEventListener('click', async () => {
     const sf = window.SpeedyFirebase;
@@ -621,13 +635,16 @@ body.sf-auth-gate-open{overflow:hidden!important}
 
   document.addEventListener('speedy:firebase-ready', event => {
     const state = event.detail || {};
+    clearTimeout(slowTimer);
     if (state.uid) {
       check(state);
     } else {
+      setHint(false);
       openGate('Debes iniciar sesión para entrar al portal.');
     }
   });
   document.addEventListener('speedy:firebase-error', () => {
+    clearTimeout(slowTimer);
     openGate('No se pudo conectar con Firebase. Recarga la página para intentarlo de nuevo.');
   });
 
@@ -801,7 +818,7 @@ document.addEventListener("DOMContentLoaded",()=>{
         label==="ADMIN"?"Cargando panel…":"Preparando la página…";
 
       if(window.sfShowLoader)window.sfShowLoader(label,subtitle);
-      window.setTimeout(()=>window.location.assign(route),150);
+      window.location.assign(route);
     });
     card.addEventListener("pointerenter",()=>{
       card.classList.add("is-hovering");

@@ -396,7 +396,7 @@
     if (typeof window.sfShowLoader === 'function') {
       window.sfShowLoader('PERFIL', 'Cargando tu perfil…');
     }
-    window.setTimeout(() => window.location.assign(href), 120);
+    window.location.assign(href);
   };
 
   const signInThenProfile = async (trigger) => {
@@ -472,7 +472,7 @@
     } else {
       event.preventDefault();
       if (typeof window.sfShowLoader === 'function') window.sfShowLoader('PÁGINA', 'Preparando la página…');
-      window.setTimeout(() => window.location.assign(href), 120);
+      window.location.assign(href);
     }
   }, true);
 })();
