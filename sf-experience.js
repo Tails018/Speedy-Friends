@@ -121,6 +121,20 @@
       if (current) nav.scrollLeft = Math.max(0, current.offsetLeft - (nav.clientWidth - current.offsetWidth) / 2);
     }
 
+    // Perfil, Ranking, OST y Admin: su barra enlazaba a anclas de la portada (index.html#topics…).
+    // Se usa la misma lista de secciones, conservando sus clases de enlace activo.
+    const anchorNav = document.querySelector('.sf-nav-links, .ranking-nav, .ost-nav, .admin-nav');
+    if (anchorNav && !anchorNav.dataset.sfSiteNav) {
+      anchorNav.dataset.sfSiteNav = '1';
+      const file = (location.pathname.split('/').pop() || 'index.html').toLowerCase();
+      const isAdmin = file === 'admin.html' || file === 'admin-role.html';
+      const links = [['index.html', 'Inicio'], ['novedades.html', 'Novedades'], ['friends.html', 'Amigos'], ['ranking.html', 'Ranking'], ['fanarts.html', 'Fanarts'], ['cafeteria.html', 'Cafetería'], ['profile.html', 'Perfil']];
+      if (isAdmin) links.push([file, 'Admin']);
+      anchorNav.innerHTML = links.map(([href, label]) => href === file
+        ? `<a class="current is-current" href="${href}" aria-current="page">${label.toUpperCase()}</a>`
+        : `<a href="${href}">${label.toUpperCase()}</a>`).join('');
+    }
+
     // Interruptor de efectos: en el panel «Accesos» (visible en todos los anchos) o,
     // si la página no lo tiene, junto al botón de tema. No altera el botón de tema.
     const themeToggle = document.querySelector('[data-theme-toggle]');

@@ -202,6 +202,12 @@ let activeBrowser;
    assert.equal(r.links.length,7,route);assert.equal(r.current,active,route);assert.equal(r.visibleDup,0,route+' duplicated links visible');
   }
   await page.goto(base+'/cafeteria.html');
+  for(const [route,active] of Object.entries({'profile.html':'profile.html','ranking.html':'ranking.html','ost.html':null,'admin.html':'admin.html'})){
+   await page.goto(base+'/'+route);await page.waitForFunction(()=>document.querySelector('[data-sf-site-nav]'));
+   const r=await page.evaluate(()=>{const n=document.querySelector('[data-sf-site-nav]');return {anchors:n.querySelectorAll('a[href^="index.html#"]').length,current:n.querySelector('[aria-current="page"]')?.getAttribute('href')||null,count:n.querySelectorAll('a').length};});
+   assert.equal(r.anchors,0,route+' still links to home anchors');assert.equal(r.current,active,route);assert.ok(r.count>=7,route);
+  }
+  await page.goto(base+'/cafeteria.html');await page.waitForSelector('.sf-site-nav');
   // En móvil el CSS original de cafetería ya ocultaba «Carta»/«Mis tickets»: se comprueba que no se marcan como duplicados.
   assert.equal(await page.locator('header.top a[href="#menu"]:not(.sf-dup-link)').count(),1,'page-specific links kept');
  });

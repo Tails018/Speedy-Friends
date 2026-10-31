@@ -30,7 +30,7 @@ Revisión con capturas de las 14 páginas en móvil (390 px) y escritorio (1366 
 
 Pruebas: `npm test` 8/8 y `npm run test:browser` 20/20 (nuevas: titulares móviles y widget de cafetería; barra de secciones común).
 
-Pendiente en diseño: las cabeceras de Perfil, Ranking, OST y Admin enlazan a anclas de la portada (`index.html#topics`…) en lugar de a las páginas; conviene unificarlas también con la barra de secciones (cambio de marcado con su propio menú móvil).
+Perfil, Ranking, OST y Admin enlazaban a anclas de la portada (`index.html#topics`…, incluidos «Especial», «Descargas» y «Videos»). Ahora usan la misma lista de secciones, conservando su estilo y su menú ☰. En Admin, «Admin» queda como sección activa.
 
 ## Segunda ronda — `upgrade/professional-rebuild`
 
