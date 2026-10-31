@@ -105,6 +105,36 @@ const waitReady=page=>page.waitForFunction(()=>window.SpeedyFirebase?.current?.c
    await ctx.close();
   });
 
+  await test('Profile saves GIF bytes without conversion',async()=>{
+   const gif='R0lGODlhAQABAIAAAAAAAP///yH5BAAAAAAALAAAAAABAAEAAAIBRAA7';
+   const ctx=await newContext(browser,{session:ALICE});const page=await ctx.newPage();
+   await page.goto(base+'/profile.html');await waitReady(page);
+   await page.locator('#profile-avatar-file').setInputFiles({name:'avatar.gif',mimeType:'image/gif',buffer:Buffer.from(gif,'base64')});
+   await page.locator('#save-profile').click();
+   await page.waitForFunction(expected=>window.__sfMock.getAt('speedy-friends-teams/speedy-friends/users/user-alice/avatar')===expected,'data:image/gif;base64,'+gif,{timeout:8000});
+   await ctx.close();
+  });
+  await test('Profile ignores unowned legacy image cache from another account',async()=>{
+   const seed=structuredClone(SEED);
+   const bob=seed['speedy-friends-teams']['speedy-friends'].users['user-bob'];
+   bob.avatar='data:image/gif;base64,R0lGODlhAQABAAAAACw=';
+   bob.cover='https://example.test/bob-cover.jpg';
+   const ctx=await newContext(browser,{session:BOB,seed});const page=await ctx.newPage();
+   await page.goto(base+'/index.html');await waitReady(page);
+   await page.evaluate(async()=>{
+    localStorage.setItem('speedyFriendsProfileMeta',JSON.stringify({identity:{name:'Otra cuenta'}}));
+    const db=await new Promise((resolve,reject)=>{const r=indexedDB.open('speedy-friends-profile-db',1);r.onupgradeneeded=()=>r.result.createObjectStore('assets');r.onsuccess=()=>resolve(r.result);r.onerror=()=>reject(r.error);});
+    await new Promise((resolve,reject)=>{const tx=db.transaction('assets','readwrite');tx.objectStore('assets').put(new Blob(['old-avatar'],{type:'image/gif'}),'avatar');tx.objectStore('assets').put(new Blob(['old-cover'],{type:'image/jpeg'}),'cover');tx.oncomplete=resolve;tx.onerror=()=>reject(tx.error);});db.close();
+   });
+   await page.goto(base+'/profile.html');await waitReady(page);
+   await page.locator('#profile-edit-name').fill('Bob actualizado');
+   await page.locator('#save-profile').click();
+   await page.waitForFunction(()=>window.__sfMock.getAt('speedy-friends-teams/speedy-friends/users/user-bob/name')==='Bob actualizado',null,{timeout:8000});
+   const updated=await db(page,T+'/users/user-bob');
+   assert.equal(updated.avatar,bob.avatar);assert.equal(updated.cover,bob.cover);
+   const old=await page.evaluate(async()=>{const d=await new Promise(r=>{const q=indexedDB.open('speedy-friends-profile-db',1);q.onsuccess=()=>r(q.result)});return await new Promise(r=>{const q=d.transaction('assets').objectStore('assets').get('avatar');q.onsuccess=()=>r(Boolean(q.result));});});
+   assert.equal(old,true,'legacy local image is preserved');await ctx.close();
+  });
   await test('Cafeteria: order, one active ticket, worker serves it and Rings are charged once',async()=>{
    const ctx=await newContext(browser,{session:ALICE});const page=await ctx.newPage();const dialogs=[];
    page.on('dialog',d=>{dialogs.push(d.message());d.dismiss();});
