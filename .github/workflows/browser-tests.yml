@@ -12,6 +12,8 @@ jobs:
     timeout-minutes: 15
     steps:
       - uses: actions/checkout@v4
+      - name: Fetch baseline for asset-preservation test
+        run: git fetch --no-tags --depth=1 origin main:refs/heads/main
       - uses: actions/setup-node@v4
         with:
           node-version: 22
