@@ -50,3 +50,5 @@ jobs:
           java-version: '21'
       - run: npm ci
       - run: npm test
+      - run: node --test social/pair-transaction.test.mjs
+      - run: npx firebase emulators:exec --project demo-speedy-social --config social/firebase.social.json --only database "node --test social/pair-emulator.test.mjs"
