@@ -176,8 +176,8 @@
   function subscribe(){
     const sf=SF(); if(!sf?.refs?.root)return; state.unsub?.();
     const ref=teamRoot().child('fanarts');
-    const handler=snap=>{ state.arts=snap.val()||{}; state.loaded=true; state.failed=''; scheduleRender(); };
-    const fail=error=>{ console.warn('[Fanarts]',error); state.failed=/permission/i.test(String(error?.code||error?.message||''))?'Inicia sesión para ver la galería del team.':'Revisa tu conexión y vuelve a intentarlo.'; render(sourceList()); };
+    const handler=snap=>{if(sf.auth && sf.auth.currentUser?.uid!==state.uid)return;state.arts=snap.val()||{}; state.loaded=true; state.failed=''; scheduleRender(); };
+    const fail=error=>{ console.warn('[Fanarts]',error);state.arts={};state.liked={};if(state.modalId)closeModal();if($('#fanartEditDialog')?.open)$('#fanartEditDialog').close();state.failed=/permission/i.test(String(error?.code||error?.message||''))?'Inicia sesión para ver la galería del team.':'Revisa tu conexión y vuelve a intentarlo.'; render(sourceList()); };
     ref.on('value', handler, fail);
     state.unsub=()=>ref.off('value',handler);
   }
@@ -227,8 +227,21 @@
     render(sourceList());
     const sf=SF();
     if(!sf){state.failed='No se pudo conectar con Firebase.';render(sourceList());return;}
-    const ready=()=>{state.ready=true;state.uid=sf.current?.uid||'';if(!state.uid){state.guest=true;render(sourceList());return;}state.guest=false;subscribe();};
-    if(sf.current?.ready)ready();else document.addEventListener('speedy:firebase-ready',ready,{once:true});
+    const ready=()=>{
+      const uid=sf.current?.uid||'';
+      if(sf.auth && sf.auth.currentUser?.uid!==uid)return;
+      state.ready=true;
+      if(uid===state.uid && state.unsub)return;
+      state.unsub?.();state.unsub=null;state.arts={};state.liked={};state.loaded=false;state.uid=uid;
+      if(!uid){state.guest=true;render(sourceList());return;}state.guest=false;render(sourceList());subscribe();
+    };
+    sf.auth?.onAuthStateChanged(user=>{
+      if(user && (!state.uid||user.uid===state.uid))return;
+      state.unsub?.();state.unsub=null;state.arts={};state.liked={};state.uid='';state.loaded=false;state.guest=true;
+      if(state.modalId)closeModal();if($('#fanartEditDialog')?.open)$('#fanartEditDialog').close();render(sourceList());
+    });
+    document.addEventListener('speedy:firebase-ready',ready);
+    if(sf.current?.ready)ready();
     document.addEventListener('speedy:firebase-error',()=>{if(!state.loaded){state.failed='No se pudo conectar con Firebase.';render(sourceList());}},{once:true});
   }
   window.addEventListener('pagehide',()=>{if(previewUrl)URL.revokeObjectURL(previewUrl);state.unsub?.();});

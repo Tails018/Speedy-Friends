@@ -240,6 +240,9 @@ const waitReady=page=>page.waitForFunction(()=>window.SpeedyFirebase?.current?.c
    await page.locator('#fanartEditCategory').selectOption('Digital');await page.locator('#fanartEditForm [type="submit"]').click();
    assert.match(await page.locator('#fanartEditStatus').innerText(),/videos deben permanecer en Edits/i);
    assert.equal((await db(page,T+'/fanarts/'+video.id)).category,'Edits');
+   await page.evaluate(()=>window.SpeedyFirebase.auth.signOut());
+   await page.waitForFunction(()=>document.querySelectorAll('.fanart-card:not(.fanart-skeleton)').length===0);
+   assert.equal(await page.locator('#fanartEditDialog').evaluate(el=>el.open),false,'editor closes when session ends');
    await ctx.close();
   });
 
