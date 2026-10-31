@@ -79,7 +79,8 @@ const waitReady=page=>page.waitForFunction(()=>window.SpeedyFirebase?.current?.c
    await page.locator('#profile-edit-nickname').fill('Ali');
    await page.locator('#avatar-remove').click();
    await page.locator('#save-profile').click();
-   await page.waitForFunction(()=>/GUARDADO|GUARDADOS/.test(document.getElementById('save-profile-status')?.textContent||''),null,{timeout:8000});
+   // El estado ya dice «CAMBIOS GUARDADOS» al cargar: se espera al dato real en la base.
+   await page.waitForFunction(()=>window.__sfMock.getAt('speedy-friends-teams/speedy-friends/users/user-alice/name')==='Alice Prueba',null,{timeout:8000});
    const u=await db(page,T+'/users/user-alice');
    assert.equal(u.name,'Alice Prueba');assert.equal(u.nickname,'Ali');
    assert.equal(u.avatar||'','','icon removal persisted');assert.equal(u.ownerUid,ALICE.uid);

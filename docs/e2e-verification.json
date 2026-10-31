@@ -1,5 +1,5 @@
 {
-  "date": "2026-10-31T20:10:49.387Z",
+  "date": "2026-10-31T20:15:27.379Z",
   "note": "Firebase simulado en memoria (tests/firebase-mock.js). No evalúa reglas de seguridad.",
   "report": [
     {
@@ -39,6 +39,46 @@
     },
     {
       "browser": "chromium",
+      "test": "Admin: creator adds Rings with history; a member without role is sent back to Inicio",
+      "status": "passed"
+    },
+    {
+      "browser": "webkit",
+      "test": "Login with Google, remembered session and logout",
+      "status": "passed"
+    },
+    {
+      "browser": "webkit",
+      "test": "Profile: edits are saved to the database and removing the icon persists",
+      "status": "passed"
+    },
+    {
+      "browser": "webkit",
+      "test": "Cafeteria: order, one active ticket, worker serves it and Rings are charged once",
+      "status": "passed"
+    },
+    {
+      "browser": "webkit",
+      "test": "Cafeteria: order rejected up-front when Rings are insufficient",
+      "status": "passed"
+    },
+    {
+      "browser": "webkit",
+      "test": "Friends: request, accept on the other account, both sides see the friendship",
+      "status": "passed"
+    },
+    {
+      "browser": "webkit",
+      "test": "Fanarts: real work listed, like toggles in the database, guest-free",
+      "status": "passed"
+    },
+    {
+      "browser": "webkit",
+      "test": "Ranking: members ordered by real Rings",
+      "status": "passed"
+    },
+    {
+      "browser": "webkit",
       "test": "Admin: creator adds Rings with history; a member without role is sent back to Inicio",
       "status": "passed"
     }

@@ -271,3 +271,9 @@ body:has(#fab) .sf-theme-toggle-global{bottom:80px!important}
 .sf-logout[hidden]{display:none}
 .profile-top .sf-logout{margin-left:10px}
 .sf-utility-panel-title .sf-logout{margin:12px 0 0 8px}
+
+/* ---------- Safari/WebKit: la galería de fanarts medía 0px ----------
+   content-visibility:auto sin contain-intrinsic-size en el contenedor: fuera de pantalla WebKit lo
+   trataba como 0px y la última fila (botón de like) quedaba fuera del área desplazable. Las tarjetas
+   conservan su content-visibility (sí tienen tamaño intrínseco). */
+.fanart-page .fanart-grid,.fanart-grid{content-visibility:visible}

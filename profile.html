@@ -1809,11 +1809,13 @@ document.addEventListener('DOMContentLoaded', async () => {
   const savedMeta=readMeta();
   const identitySaved=savedMeta?.identity||{};
   const sourceProfile=window.SpeedyFirebase?.current?.profile||{};
-  if(editName)editName.value=sourceProfile.name||identitySaved.name||'';
-  if(editNickname)editNickname.value=sourceProfile.nickname||identitySaved.nickname||'';
-  if(editTitle)editTitle.value=sourceProfile.title||sourceProfile.role||identitySaved.title||'';
-  if(editUsername)editUsername.value=sourceProfile.username||identitySaved.username||'';
-  if(editDescription)editDescription.value=sourceProfile.description||sourceProfile.bio||identitySaved.description||'';
+  // Esto corre después de leer IndexedDB (await): solo rellena campos vacíos para no pisar
+  // lo que el usuario ya haya escrito mientras tanto.
+  if(editName&&!editName.value)editName.value=sourceProfile.name||identitySaved.name||'';
+  if(editNickname&&!editNickname.value)editNickname.value=sourceProfile.nickname||identitySaved.nickname||'';
+  if(editTitle&&!editTitle.value)editTitle.value=sourceProfile.title||sourceProfile.role||identitySaved.title||'';
+  if(editUsername&&!editUsername.value)editUsername.value=sourceProfile.username||identitySaved.username||'';
+  if(editDescription&&!editDescription.value)editDescription.value=sourceProfile.description||sourceProfile.bio||identitySaved.description||'';
   syncEditedText();
   applyAvatar();
   applyCover();
