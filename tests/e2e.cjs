@@ -278,7 +278,16 @@ const waitReady=page=>page.waitForFunction(()=>window.SpeedyFirebase?.current?.c
   await test('Admin: creator adds Rings with history; a member without role is sent back to Inicio',async()=>{
    const ctx=await newContext(browser,{session:CREATOR});const page=await ctx.newPage();
    await page.goto(base+'/admin.html');await waitReady(page);
+   await page.waitForFunction(()=>document.getElementById('admin-overview-status')?.textContent.includes('actualizados'));
+   assert.equal((await page.locator('#overview .admin-stat strong').nth(1).innerText()).replace(/\D/g,''),'700');
+   fs.mkdirSync('test-results',{recursive:true});await page.locator('#overview').screenshot({path:`test-results/admin-overview-${MOBILE?'mobile':'desktop'}.png`});
+   await page.getByRole('button',{name:'Equipo de cafetería'}).click();
+   assert.equal(await page.locator('.admin-side-btn[data-panel="cafe-workers"]').getAttribute('aria-pressed'),'true');
+   await page.locator('.admin-side-btn[data-panel="overview"]').click();
+   await page.getByRole('button',{name:'Gestionar novedades'}).click();
+   await page.waitForURL(/novedades-admin\.html/);await page.goBack();await waitReady(page);
    await page.locator('.admin-side-btn[data-panel="rings"]').click();
+   assert.equal(await page.locator('.admin-side-btn[data-panel="rings"]').getAttribute('aria-pressed'),'true');
    await page.waitForFunction(()=>[...document.querySelectorAll('#ring-user option')].some(o=>o.value==='user-bob'),null,{timeout:8000});
    await page.locator('#ring-user').selectOption('user-bob');
    await page.locator('#ring-amount').fill('25');
@@ -293,6 +302,15 @@ const waitReady=page=>page.waitForFunction(()=>window.SpeedyFirebase?.current?.c
    const mctx=await newContext(browser,{session:ALICE});const m=await mctx.newPage();
    await m.goto(base+'/admin.html');await m.waitForURL(/index\.html/,{timeout:8000});
    await mctx.close();
+  });
+
+  await test('Admin summary does not invent a total when Rings access fails',async()=>{
+   const ctx=await newContext(browser,{session:CREATOR});const page=await ctx.newPage();
+   await page.addInitScript(()=>{window.__sfMockDenyRead=path=>path.endsWith('/rings');});
+   await page.goto(base+'/admin.html');await waitReady(page);
+   await page.waitForFunction(()=>document.getElementById('admin-overview-status')?.textContent.includes('no están disponibles'));
+   assert.equal(await page.locator('#overview .admin-stat strong').nth(1).innerText(),'—');
+   await ctx.close();
   });
 
   await browser.close();

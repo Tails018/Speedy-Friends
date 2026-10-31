@@ -588,6 +588,14 @@ body.admin-profile-open{overflow:hidden}
 
 <header class="admin-head"><div><p class="admin-kicker">Speedy Friends / Control Center</p><h1 class="admin-title">Team <em>Admin</em></h1></div><div class="admin-security"><i></i>MODO ADMINISTRADOR</div></header>
 
+<style>
+.admin-shortcuts{grid-template-columns:repeat(auto-fit,minmax(min(100%,180px),1fr));gap:10px}
+.admin-shortcuts .admin-btn{min-height:48px;text-align:left}
+.admin-side-btn.active{background:#10274d;color:#fff;box-shadow:inset 4px 0 #f7c548}
+.admin-stat strong{font-variant-numeric:tabular-nums;overflow-wrap:anywhere;line-height:1}
+.admin-side-btn:focus-visible,.admin-shortcuts .admin-btn:focus-visible{outline:3px solid #1f5bff;outline-offset:2px}
+@media(prefers-reduced-motion:reduce){.admin-side-btn,.admin-shortcuts .admin-btn{transition:none}}
+</style>
 <section class="admin-layout">
 <aside class="admin-side">
 <div class="admin-side-title"><div><span class="admin-side-label">Navigation</span><h2>Control</h2></div><span class="admin-side-label">SF / 01</span></div>
@@ -603,9 +611,9 @@ body.admin-profile-open{overflow:hidden}
 </aside>
 
 <section class="admin-content">
-<section class="admin-section active" id="overview"><div class="admin-section-head"><div><p class="admin-kicker">Dashboard</p><h2>Resumen</h2></div><p>Sincronizado con Firebase</p></div>
+<section class="admin-section active" id="overview"><div class="admin-section-head"><div><p class="admin-kicker">Dashboard</p><h2>Resumen</h2></div><p id="admin-overview-status" role="status" aria-live="polite">Cargando datos…</p></div>
 <div class="admin-cards"><div class="admin-stat"><span>Integrantes</span><strong>—</strong><small>Registrados</small></div><div class="admin-stat"><span>Rings del team</span><strong>—</strong><small>Valor global</small></div><div class="admin-stat"><span>Admins</span><strong>—</strong><small>Con rol elevado</small></div></div>
-<div class="admin-surface"><h3>Acciones rápidas</h3><p>Operaciones que usará la administración con mayor frecuencia.</p><div class="admin-form" style="grid-template-columns:repeat(3,1fr)"><button class="admin-btn primary" data-go="rings">＋ Agregar Rings</button><button class="admin-btn" data-go="users">Gestionar integrantes</button><button class="admin-btn" data-go="permissions">Administrar permisos</button></div></div>
+<div class="admin-surface"><h3>Acciones rápidas</h3><p>Accede a las herramientas disponibles para tu cuenta.</p><div class="admin-form admin-shortcuts"><button class="admin-btn primary" data-go="rings">＋ Agregar Rings</button><button class="admin-btn" data-go="users">Gestionar integrantes</button><button class="admin-btn" data-go="permissions">Administrar permisos</button><button class="admin-btn" data-go="news-manager">Gestionar novedades</button><button class="admin-btn" data-go="cafe-workers">Equipo de cafetería</button></div></div>
 </section>
 
 <section class="admin-section" id="users"><div class="admin-section-head"><div><p class="admin-kicker">Community</p><h2>Integrantes</h2></div><p id="user-count-label">0 mostrados</p></div>
@@ -799,14 +807,16 @@ body.admin-profile-open{overflow:hidden}
   function selectedUserById(id){ return getUsers().find(u=>String(u.id)===String(id))||null; }
 
   function openPanel(id){
+    if(!sections.some(s=>s.id===id))return;
     sections.forEach(s=>s.classList.toggle('active',s.id===id));
-    nav.forEach(b=>b.classList.toggle('active',b.dataset.panel===id));
+    nav.forEach(b=>{const active=b.dataset.panel===id;b.classList.toggle('active',active);b.setAttribute('aria-pressed',String(active));});
     if(id==='users') renderUsers();
     if(id==='rings') renderRingResults();
     if(id==='permissions') renderPermissions();
     if(id==='audit') renderAudit(lastHistory);
     window.scrollTo({top:0,behavior:'smooth'});
   }
+  nav.forEach(b=>{b.setAttribute('aria-controls',b.dataset.panel);b.setAttribute('aria-pressed',String(b.classList.contains('active')));});
   nav.forEach(b=>b.addEventListener('click',()=>openPanel(b.dataset.panel)));
   document.querySelectorAll('[data-go]').forEach(b=>b.addEventListener('click',()=>{
     const target=nav.find(x=>x.dataset.panel===b.dataset.go); if(target) target.click();
@@ -965,14 +975,16 @@ body.admin-profile-open{overflow:hidden}
     q._fill();
   }
 
+  const overviewState={users:'loading',rings:'loading',permissions:'loading'};
   function renderOverview(){
     const all=getUsers();
     document.querySelectorAll('#overview .admin-stat strong').forEach((el,i)=>{
-      if(i===0)el.textContent=all.length;
-      if(i===1)el.textContent=(all.reduce((s,u)=>s+u.rings,0)/1000).toFixed(1)+'K';
-      if(i===2)el.textContent=Object.values(currentPerms).filter(p=>String(p?.role||'').toLowerCase()==='admin').length;
+      if(i===0)el.textContent=overviewState.users==='ready'?all.length:'—';
+      if(i===1)el.textContent=overviewState.users==='ready'&&overviewState.rings==='ready'?new Intl.NumberFormat('es-PE').format(all.reduce((s,u)=>s+u.rings,0)):'—';
+      if(i===2)el.textContent=overviewState.permissions==='ready'?Object.values(currentPerms).filter(p=>String(p?.role||'').toLowerCase()==='admin').length:'—';
     });
-    document.querySelector('#overview .admin-section-head>p')?.replaceChildren(document.createTextNode('Sincronizado con Firebase'));
+    const statuses=Object.values(overviewState);
+    document.getElementById('admin-overview-status').textContent=statuses.includes('error')?'Algunos datos no están disponibles.':statuses.every(s=>s==='ready')?'Datos actualizados desde Firebase':'Cargando datos…';
   }
 
   function renderPermissions(){
@@ -1065,18 +1077,18 @@ body.admin-profile-open{overflow:hidden}
     if(!state.uid){ notify('Sesión no disponible'); return; }
     bootRealtime.done=true;
     // One shared live users listener.
-    usersUnsub=sf.watchPublicUsers(raw=>{
-      currentUsers=raw||{};
+    usersUnsub=sf.refs.users.on('value',snap=>{
+      overviewState.users='ready';currentUsers=snap.val()||{};
       renderOverview(); renderUsers(); renderRingResults(); if(canManageRoles){renderPermissions(); renderCafeWorkers();}
-    });
+    },()=>{overviewState.users='error';currentUsers={};renderOverview();renderUsers();renderRingResults();});
     ringsUnsub=sf.refs.rings.on('value',snap=>{
-      currentRings=snap.val()||{};
+      overviewState.rings='ready';currentRings=snap.val()||{};
       renderOverview(); renderUsers(); renderRingResults();
-    });
+    },()=>{overviewState.rings='error';currentRings={};renderOverview();renderUsers();renderRingResults();});
     permsUnsub=sf.refs.permissions.on('value',snap=>{
-      currentPerms=snap.val()||{};
+      overviewState.permissions='ready';currentPerms=snap.val()||{};
       renderOverview(); renderUsers(); renderRingResults(); if(canManageRoles){renderPermissions(); renderCafeWorkers();}
-    });
+    },()=>{overviewState.permissions='error';currentPerms={};renderOverview();if(canManageRoles)renderPermissions();});
     historyUnsub=sf.refs.ringHistory.on('value',snap=>{
       lastHistory=Object.values(snap.val()||{}).sort((a,b)=>n(a.at)-n(b.at));
       renderAudit(lastHistory); renderAdminAudit(lastHistory);
