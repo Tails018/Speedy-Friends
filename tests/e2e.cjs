@@ -165,6 +165,26 @@ const waitReady=page=>page.waitForFunction(()=>window.SpeedyFirebase?.current?.c
    await ctx.close();
   });
 
+  await test('Admin: creator adds Rings with history; a member without role is sent back to Inicio',async()=>{
+   const ctx=await newContext(browser,{session:CREATOR});const page=await ctx.newPage();
+   await page.goto(base+'/admin.html');await waitReady(page);
+   await page.locator('.admin-side-btn[data-panel="rings"]').click();
+   await page.waitForFunction(()=>[...document.querySelectorAll('#ring-user option')].some(o=>o.value==='user-bob'),null,{timeout:8000});
+   await page.locator('#ring-user').selectOption('user-bob');
+   await page.locator('#ring-amount').fill('25');
+   await page.locator('#ring-reason').fill('Prueba e2e');
+   await page.locator('#rings-form button[type="submit"]').click();
+   await page.waitForFunction(()=>window.__sfMock.getAt('speedy-friends-teams/speedy-friends/rings/user-bob')===105,null,{timeout:8000});
+   const hist=Object.values(await db(page,T+'/ringHistory')||{});
+   assert.ok(hist.some(h=>/Prueba e2e/.test(JSON.stringify(h))),'ring history records the reason');
+   await page.waitForFunction(()=>/^\d/.test(document.querySelector('#overview .admin-stat strong')?.textContent||''),null,{timeout:8000});
+   assert.equal(await page.locator('#overview .admin-stat strong').first().textContent(),'3','real member count');
+   await ctx.close();
+   const mctx=await newContext(browser,{session:ALICE});const m=await mctx.newPage();
+   await m.goto(base+'/admin.html');await m.waitForURL(/index\.html/,{timeout:8000});
+   await mctx.close();
+  });
+
   await browser.close();
  }
  fs.mkdirSync('test-results',{recursive:true});

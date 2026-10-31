@@ -1,5 +1,5 @@
 {
-  "date": "2026-10-31T20:09:03.583Z",
+  "date": "2026-10-31T20:10:49.387Z",
   "note": "Firebase simulado en memoria (tests/firebase-mock.js). No evalúa reglas de seguridad.",
   "report": [
     {
@@ -35,6 +35,11 @@
     {
       "browser": "chromium",
       "test": "Ranking: members ordered by real Rings",
+      "status": "passed"
+    },
+    {
+      "browser": "chromium",
+      "test": "Admin: creator adds Rings with history; a member without role is sent back to Inicio",
       "status": "passed"
     }
   ]
