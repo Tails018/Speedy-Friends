@@ -87,7 +87,7 @@ html[data-sf-theme=light]{color-scheme:light}
  .hero-nav-top .hero-utility-card{flex:0 0 145px!important;height:78px!important;min-height:78px!important;scroll-snap-align:start;background:#111722!important;border:1px solid #ffffff25!important;color:#f6f7fc!important}
  .hero-nav-top .hero-utility-card :is(strong,span,small){color:inherit!important}
  .hero-nav-top .hero-utility-card strong{font-family:Arial,Helvetica,sans-serif!important;font-size:12px!important;font-weight:800!important}
- .hero-nav-top .hero-utility-card small{font-size:8px!important;opacity:.7}
+ .hero-nav-top .hero-utility-card small{font-size:9px!important;opacity:.7}
  .sf-hero .lead{font-size:14px!important;line-height:1.75!important}
  .sf-section-head h2{font-size:clamp(25px,7vw,37px)!important;line-height:1.1!important}
  .sf-hero-art{margin-bottom:42px!important}
