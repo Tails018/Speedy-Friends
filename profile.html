@@ -1792,6 +1792,18 @@ document.addEventListener('DOMContentLoaded', async () => {
     applyAvatar();applyCover();applyCropSurfaces();syncEditedText();
   };
   document.addEventListener('speedy:firebase-ready',hydrateFirebaseProfile);
+  // Sin sesión no se puede guardar: avisarlo de inmediato en lugar de esperar 7 s y fallar.
+  document.addEventListener('speedy:firebase-ready',event=>{
+    const guest=!event.detail?.uid;
+    const save=document.getElementById('save-profile');
+    if(save){save.disabled=guest;save.title=guest?'Inicia sesión para guardar tu perfil':'';}
+    let banner=document.getElementById('sf-profile-guest');
+    if(guest&&!banner){
+      banner=document.createElement('div');banner.id='sf-profile-guest';banner.className='sf-profile-guest';banner.setAttribute('role','status');
+      banner.innerHTML='<strong>Estás viendo el editor sin sesión.</strong><span>Inicia sesión con Google para crear y guardar tu perfil.</span><a href="index.html">Iniciar sesión</a>';
+      document.getElementById('main-content')?.prepend(banner);
+    }else if(!guest)banner?.remove();
+  });
   const savedMeta=readMeta();
   const identitySaved=savedMeta?.identity||{};
   const sourceProfile=window.SpeedyFirebase?.current?.profile||{};

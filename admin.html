@@ -604,7 +604,7 @@ body.admin-profile-open{overflow:hidden}
 
 <section class="admin-content">
 <section class="admin-section active" id="overview"><div class="admin-section-head"><div><p class="admin-kicker">Dashboard</p><h2>Resumen</h2></div><p>Sincronizado con Firebase</p></div>
-<div class="admin-cards"><div class="admin-stat"><span>Integrantes</span><strong>18</strong><small>Registrados</small></div><div class="admin-stat"><span>Rings del team</span><strong>48.2K</strong><small>Valor global</small></div><div class="admin-stat"><span>Admins</span><strong>2</strong><small>Con rol elevado</small></div></div>
+<div class="admin-cards"><div class="admin-stat"><span>Integrantes</span><strong>—</strong><small>Registrados</small></div><div class="admin-stat"><span>Rings del team</span><strong>—</strong><small>Valor global</small></div><div class="admin-stat"><span>Admins</span><strong>—</strong><small>Con rol elevado</small></div></div>
 <div class="admin-surface"><h3>Acciones rápidas</h3><p>Operaciones que usará la administración con mayor frecuencia.</p><div class="admin-form" style="grid-template-columns:repeat(3,1fr)"><button class="admin-btn primary" data-go="rings">＋ Agregar Rings</button><button class="admin-btn" data-go="users">Gestionar integrantes</button><button class="admin-btn" data-go="permissions">Administrar permisos</button></div></div>
 </section>
 
@@ -1118,7 +1118,7 @@ body.admin-profile-open{overflow:hidden}
   <div class="admin-profile-stats">
     <div><b id="admin-profile-rings">12,840</b><span>RINGS</span></div>
     <div><b id="admin-profile-level">42</b><span>NIVEL</span></div>
-    <div><b id="admin-profile-friends">18</b><span>AMIGOS</span></div>
+    <div><b id="admin-profile-friends">—</b><span>AMIGOS</span></div>
   </div>
 
   <div class="admin-profile-progress">
@@ -1182,7 +1182,9 @@ document.addEventListener("DOMContentLoaded",()=>{
   if(!sf?.auth)return;
   let finished=false;
   const check=async(user)=>{
-    if(finished || !user)return;
+    if(finished)return;
+    // Primer aviso sin usuario = sin sesión: igual que un miembro sin rol, vuelve a Inicio.
+    if(!user){finished=true;location.replace("index.html");return;}
     try{
       const s=await sf.resolve();
       if(s?.isCreator || s?.role==="admin"){

@@ -146,6 +146,9 @@ html[data-sf-theme="dark"] .sf-hero-copy>p:not(.eyebrow){background:rgba(14,16,2
 .sf-home-friend-skeleton .friend-img{min-height:180px}
 .sf-home-friend-skeleton .friend-info i:last-child{width:55%}
 .sf-news-state{display:grid;align-content:center;gap:8px;min-height:180px;border:1px dashed rgba(128,128,128,.35)}
+.sf-profile-guest{display:flex;flex-wrap:wrap;align-items:center;gap:6px 14px;margin:16px auto;padding:14px 18px;max-width:1180px;border-left:3px solid var(--sf-red);background:rgba(239,38,63,.07);font:600 13px/1.4 Arial,Helvetica,sans-serif}
+.sf-profile-guest a{margin-left:auto;padding:9px 14px;border-radius:999px;background:var(--sf-ink);color:#fff;text-decoration:none;font-weight:900;font-size:11px;letter-spacing:.08em;text-transform:uppercase}
+#save-profile:disabled{opacity:.45;cursor:not-allowed}
 .home-fanart-state{display:grid;align-content:end;min-height:260px;padding:24px;border:1px dashed rgba(128,128,128,.35)!important;background:transparent!important}
 .home-fanart-state-copy{display:grid;gap:10px;justify-items:start}
 .home-fanart-state-copy strong{font-size:22px}
