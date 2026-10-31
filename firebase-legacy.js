@@ -170,7 +170,7 @@
     const ringSnap=await refs.rings.child(profileId).once("value");
     if(ringSnap.exists())rings=Number(ringSnap.val()||0);
 
-    const role=creator?"creator":(String(profile.role||perms.role||"").toLowerCase()==="admin"?"admin":"member");
+    const role=creator?"creator":(String(perms.role||"").toLowerCase()==="admin"?"admin":"member");
     Object.assign(state,{ready:true,uid,email,role,isCreator:creator,isAdmin:creator||role==="admin",profileId,profile,permissions:perms,rings});
     return state;
   }

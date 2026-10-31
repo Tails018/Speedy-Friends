@@ -22,7 +22,7 @@ const SEED={'speedy-friends-teams':{'speedy-friends':{
 }}};
 
 const MOBILE=process.env.SF_E2E_VIEWPORT==='mobile';
-async function newContext(browser,{viewport=MOBILE?{width:390,height:844}:{width:1280,height:850},session=null}={}){
+async function newContext(browser,{viewport=MOBILE?{width:390,height:844}:{width:1280,height:850},session=null,seed=SEED}={}){
  const context=await browser.newContext({viewport,reducedMotion:'reduce',...(MOBILE?{hasTouch:true}:{})});
  await context.route('**/*',route=>{
   const url=new URL(route.request().url());
@@ -36,7 +36,7 @@ async function newContext(browser,{viewport=MOBILE?{width:390,height:844}:{width
    localStorage.setItem('__sfMockDb',JSON.stringify(seed));localStorage.setItem('__sfMockSeeded','1');
    if(session)localStorage.setItem('__sfMockAuth',JSON.stringify(session));
   }
- },{seed:SEED,session});
+ },{seed,session});
  return context;
 }
 const db=(page,path)=>page.evaluate(p=>window.__sfMock?.getAt(p),path);
@@ -73,6 +73,21 @@ const waitReady=page=>page.waitForFunction(()=>window.SpeedyFirebase?.current?.c
    assert.deepEqual(errors,[]);await ctx.close();
   });
 
+  await test('Admin status comes from permissions rather than a profile role',async()=>{
+   const seed=structuredClone(SEED);
+   const team=seed['speedy-friends-teams']['speedy-friends'];
+   team.users['user-alice'].role='admin';
+   const ctx=await newContext(browser,{session:ALICE,seed}); const page=await ctx.newPage();
+   await page.goto(base+'/index.html'); await waitReady(page);
+   assert.equal(await page.evaluate(()=>window.SpeedyFirebase.current.isAdmin),false);
+   await ctx.close();
+   team.permissions={'uid-alice':{role:'admin'}};
+   team.users['user-alice'].role='Runner';
+   const adminCtx=await newContext(browser,{session:ALICE,seed}); const adminPage=await adminCtx.newPage();
+   await adminPage.goto(base+'/index.html'); await waitReady(adminPage);
+   assert.equal(await adminPage.evaluate(()=>window.SpeedyFirebase.current.isAdmin),true);
+   await adminCtx.close();
+  });
   await test('Profile: edits are saved to the database and removing the icon persists',async()=>{
    const ctx=await newContext(browser,{session:ALICE});const page=await ctx.newPage();
    await page.addInitScript(()=>{const k='__sfMockDb';const d=JSON.parse(localStorage.getItem(k));const u=d['speedy-friends-teams']['speedy-friends'].users['user-alice'];if(!u.avatar){u.avatar='data:image/gif;base64,R0lGODlhAQABAAAAACw=';localStorage.setItem(k,JSON.stringify(d));}});
