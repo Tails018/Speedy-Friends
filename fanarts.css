@@ -15,6 +15,34 @@
 @media(max-width:1100px){.fanart-hero{grid-template-columns:1fr;padding:140px 34px 70px}.fanart-showcase{height:520px}.fanart-showcase .showcase-main{right:27%}.fanart-upload-zone{padding:0 34px 70px;grid-template-columns:1fr}.fanart-gallery-wrap{padding-left:34px;padding-right:34px}.fanart-grid{grid-template-columns:repeat(2,1fr)}.fanart-modal-dialog{grid-template-columns:1fr;height:calc(100vh - 22px);margin:11px;width:calc(100vw - 22px)}.fanart-modal-media{height:52vh}.fanart-modal-info{border-left:0;border-top:1px solid rgba(255,255,255,.07)}}
 @media(max-width:720px){.fanart-page .fanart-header{height:66px}.fanart-page .fanart-header .sf-desktop-nav,.fanart-profile-link{display:none}.fanart-menu{display:block!important;color:#fff!important}.fanart-user-actions{display:flex!important}.fanart-mobile{position:fixed;inset:0;z-index:130;display:flex;flex-direction:column;gap:17px;padding:92px 28px;background:linear-gradient(145deg,#07101c,#190812);transform:translateX(100%);transition:.4s cubic-bezier(.2,.8,.2,1)}.fanart-mobile.is-open{transform:none}.fanart-mobile button{position:absolute;top:18px;right:20px;border:0;background:none;color:#fff;font-size:42px}.fanart-mobile .eyebrow{margin:0 0 12px}.fanart-mobile a{color:#fff;text-decoration:none;font:900 42px/.9 SFDisplay,Arial Black;letter-spacing:-.05em;text-transform:uppercase}.fanart-hero{padding:112px 18px 46px}.fanart-title{font-size:70px}.fanart-lead{font-size:15px}.fanart-showcase{height:410px}.showcase-main{width:280px!important;height:365px!important;right:16%!important}.showcase-mid{width:250px;height:325px;right:10%;}.showcase-back{width:240px;height:310px;right:2%;}.showcase-art strong{font-size:50px;bottom:62px}.showcase-badge{right:0;bottom:0}.fanart-upload-zone{padding:0 18px 50px}.fanart-form{grid-template-columns:1fr;padding:13px}.fanart-drop{grid-row:auto;min-height:230px}.fanart-field-row{grid-template-columns:1fr}.fanart-gallery-wrap{padding:0 18px 70px}.fanart-toolbar{display:grid;align-items:start}.fanart-tools{display:grid;grid-template-columns:1fr}.search-box{min-width:0}.fanart-filter-row{align-items:start;flex-direction:column}.fanart-grid{grid-template-columns:1fr}.fanart-modal-media{height:40vh}.fanart-modal-info{padding:22px}.fanart-modal-info h2{font-size:36px}}
 .home-fanart-open video{display:block;width:100%;aspect-ratio:4/3;object-fit:cover;transition:transform .6s}.home-fanart-card:hover .home-fanart-open video{transform:scale(1.05)}
+
+/* Publication workspace: one clear path from file to details to sharing. */
+.fanart-form .fanart-drop input[type=file]{display:block;position:absolute;width:1px;height:1px;opacity:0;overflow:hidden}
+.fanart-drop:focus-within{outline:3px solid #f7c548;outline-offset:3px}
+.fanart-step{margin:0;color:#f7c548;font:800 11px/1.4 Arial,sans-serif;letter-spacing:.14em}
+.fanart-drop .fanart-step{position:absolute;left:22px;top:20px}
+.fanart-drop small{max-width:24ch;text-align:center;line-height:1.5;color:#c5d3e6;font-size:12px;letter-spacing:0}
+.fanart-fields{align-content:start;gap:8px}
+.fanart-fields>label,.fanart-category-picker label,.fanart-edit-dialog label{color:#e5edf9;font:700 13px/1.4 Arial,sans-serif}
+.fanart-fields label span,.fanart-edit-dialog label span{color:#aebdd2;font-weight:400}
+.fanart-form input:not([type=file]),.fanart-form textarea,.fanart-form select{min-height:48px;font-size:16px;transition:border-color .2s,box-shadow .2s}
+.fanart-field-row{grid-template-columns:1fr}
+.fanart-upload-hint{font-size:12px;line-height:1.5;color:#c0cddd;letter-spacing:0}
+.fanart-status{min-height:1.5em;font-size:12px;line-height:1.4}
+.fanart-edit-dialog{box-sizing:border-box;width:min(560px,calc(100% - 32px));max-height:calc(100dvh - 32px);padding:clamp(20px,4vw,32px);border:1px solid #536c91;border-top:4px solid #f7c548;background:#10274d;color:#fff;overflow:auto;box-shadow:0 24px 70px #0008}
+.fanart-edit-dialog::backdrop{background:#020b1bd9}
+.fanart-edit-dialog form{display:grid;gap:10px}
+.fanart-edit-head{display:flex;align-items:start;justify-content:space-between;gap:16px;margin-bottom:12px}
+.fanart-edit-head h2{margin:5px 0 0;font:900 clamp(26px,6vw,36px)/1 SFDisplay,Arial Black,sans-serif;letter-spacing:-.04em}
+.fanart-edit-close,.fanart-edit-actions button{min-height:48px;cursor:pointer}
+.fanart-edit-close{width:48px;border:1px solid #8094af;background:transparent;color:#fff;font-size:24px}
+.fanart-edit-dialog input,.fanart-edit-dialog textarea,.fanart-edit-dialog select{box-sizing:border-box;width:100%;min-height:48px;padding:12px;border:1px solid #8296af;background:#07192f;color:#fff;font:400 16px/1.4 Arial,sans-serif}
+.fanart-edit-dialog textarea{min-height:100px;resize:vertical}
+.fanart-edit-dialog [role=status]{margin:0;min-height:1.5em;color:#ffde83;font:600 13px/1.5 Arial,sans-serif}
+.fanart-edit-actions{display:flex;flex-wrap:wrap;justify-content:flex-end;gap:10px}
+.fanart-edit-actions button:not(.fanart-submit){padding:10px 16px;border:1px solid #8296af;background:transparent;color:#fff;font-weight:700}
+.fanart-edit-actions .fanart-submit{padding:10px 18px}
+@media(prefers-reduced-motion:reduce){.fanart-form input,.fanart-form textarea,.fanart-form select{transition:none}}
 .fanart-card:nth-child(4n+2){transform-origin:50% 20%}.fanart-card:nth-child(4n+2):hover{transform:translateY(-9px) rotateZ(-.7deg)}.fanart-card:nth-child(4n+3):hover{transform:translateY(-9px) rotateZ(.7deg)}
 .fanart-owner-tools{display:flex;gap:7px;margin-top:9px}.fanart-owner-tools button{border:1px solid rgba(255,255,255,.09);background:rgba(255,255,255,.025);color:#8fa2b8;padding:6px 8px;font:900 7px Arial;letter-spacing:.12em;cursor:pointer;transition:.2s}.fanart-owner-tools button:hover{color:#fff;border-color:rgba(98,219,255,.35);transform:translateY(-1px)}.fanart-owner-tools button:last-child:hover{border-color:rgba(255,49,87,.45);color:#ff8ba1}
 .fanart-category-picker{display:grid;gap:7px;margin-top:2px}.fanart-category-picker span{font:900 8px Arial;letter-spacing:.16em;color:#65dcff}.fanart-category-picker select{width:100%;box-sizing:border-box;background:#07101b;border:1px solid rgba(101,221,255,.18);color:#eef5ff;padding:14px 15px;outline:none;font:900 10px/1.4 Arial;letter-spacing:.04em;transition:.25s}.fanart-category-picker select:hover,.fanart-category-picker select:focus{border-color:rgba(31,168,255,.75);box-shadow:0 0 0 3px rgba(31,168,255,.06)}

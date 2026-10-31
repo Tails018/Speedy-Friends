@@ -204,9 +204,42 @@ const waitReady=page=>page.waitForFunction(()=>window.SpeedyFirebase?.current?.c
    await page.goto(base+'/fanarts.html');await waitReady(page);
    await page.waitForSelector('.fanart-card:not(.fanart-skeleton)');
    assert.match(await page.locator('#fanartGrid').textContent(),/Arte de prueba/);
+   assert.equal(await page.locator('[data-edit="f1"]').count(),0,'other users cannot open owner controls');
    await page.locator('[data-like="f1"]').click();
    await page.waitForFunction(()=>!!window.__sfMock.getAt('speedy-friends-teams/speedy-friends/fanarts/f1/likes/uid-alice'));
    await page.waitForFunction(()=>document.querySelector('[data-like="f1"] b')?.textContent.trim()==='1');
+   await ctx.close();
+  });
+
+  await test('Fanarts: owner edits and publishes without storing a deletion token',async()=>{
+   const ctx=await newContext(browser,{session:BOB});
+   await ctx.route('https://api.cloudinary.com/**',r=>r.fulfill({status:200,contentType:'application/json',body:JSON.stringify({secure_url:'https://example.test/image.png',public_id:'fixture',delete_token:'private-fixture-token'})}));
+   const page=await ctx.newPage();await page.goto(base+'/fanarts.html');await waitReady(page);
+   await page.locator('[data-edit="f1"]').click();
+   assert.equal(await page.locator('#fanartEditDialog').evaluate(el=>el.open),true);
+   fs.mkdirSync('test-results',{recursive:true});await page.screenshot({path:`test-results/fanart-editor-${MOBILE?'mobile':'desktop'}.png`});
+   await page.locator('#fanartEditTitle').fill('Obra editada');
+   await page.locator('#fanartEditForm [type="submit"]').click();
+   await page.waitForFunction(()=>window.__sfMock.getAt('speedy-friends-teams/speedy-friends/fanarts/f1/title')==='Obra editada');
+   await page.locator('#fanartTitle').fill('Nueva obra');
+   await page.locator('#fanartFile').setInputFiles({name:'obra.png',mimeType:'image/png',buffer:Buffer.from('iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAwMCAO+/aXcAAAAASUVORK5CYII=','base64')});
+   assert.ok(await page.locator('#fanartFilePreview img').isVisible());
+   await page.locator('#fanartUploadForm [type="submit"]').click();
+   await page.waitForFunction(()=>Object.values(window.__sfMock.getAt('speedy-friends-teams/speedy-friends/fanarts')||{}).some(x=>x.title==='Nueva obra'));
+   const records=await db(page,T+'/fanarts');const created=Object.values(records).find(x=>x.title==='Nueva obra');
+   assert.equal(created.ownerUid,BOB.uid);assert.equal('cloudinaryDeleteToken' in created,false);
+   await page.locator('#fanartCategory').selectOption('Edits');
+   await page.locator('#fanartTitle').fill('Video de prueba');
+   await page.locator('#fanartFile').setInputFiles({name:'clip.mp4',mimeType:'video/mp4',buffer:Buffer.from('mock video')});
+   assert.equal(await page.locator('#fanartFilePreview video').count(),1);
+   await page.locator('#fanartUploadForm [type="submit"]').click();
+   await page.waitForFunction(()=>Object.values(window.__sfMock.getAt('speedy-friends-teams/speedy-friends/fanarts')||{}).some(x=>x.title==='Video de prueba'));
+   const all=await db(page,T+'/fanarts');const video=Object.values(all).find(x=>x.title==='Video de prueba');
+   assert.equal(video.mediaType,'video');assert.equal(video.category,'Edits');
+   await page.locator(`[data-edit="${video.id}"]`).click();
+   await page.locator('#fanartEditCategory').selectOption('Digital');await page.locator('#fanartEditForm [type="submit"]').click();
+   assert.match(await page.locator('#fanartEditStatus').innerText(),/videos deben permanecer en Edits/i);
+   assert.equal((await db(page,T+'/fanarts/'+video.id)).category,'Edits');
    await ctx.close();
   });
 

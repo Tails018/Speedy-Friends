@@ -58,7 +58,7 @@
           <div class="fanart-author">
             <div class="fanart-avatar">${a.avatar ? `<img src="${esc(a.avatar)}" alt="">` : esc(initials(a.authorName))}</div>
             <div class="fanart-author-copy"><strong>${esc(a.authorName || 'Integrante')}</strong><span>${a.createdAt ? new Date(a.createdAt).toLocaleDateString('es-PE',{day:'2-digit',month:'short',year:'numeric'}) : 'Galería'}</span></div>
-            <button class="fanart-like ${state.liked[a.id]?'is-liked':''}" data-like="${esc(a.id)}" type="button" aria-label="Dar like"><span>♥</span><b>${likeCount(a)}</b></button></div>
+            <button class="fanart-like ${state.liked[a.id]?'is-liked':''}" data-like="${esc(a.id)}" type="button" aria-label="${state.liked[a.id]?'Quitar like':'Dar like'} a ${esc(a.title)}" aria-pressed="${Boolean(state.liked[a.id])}"><span aria-hidden="true">♥</span><b>${likeCount(a)}</b></button></div>
           ${sfIsOwner(a) ? `<div class="fanart-owner-tools"><button type="button" data-edit="${esc(a.id)}">EDITAR</button><button type="button" data-delete="${esc(a.id)}">ELIMINAR</button></div>` : ''}
         </div>
       </article>`).join('');
@@ -131,32 +131,33 @@
   async function upload(file,title,description,category){
     const sf=SF();
     if(!sf?.current?.uid) throw new Error('Inicia sesión para publicar un fanart.');
+    const uid=sf.current.uid;
     const isVideo=file.type.startsWith('video/');
     if(isVideo && category!=='Edits') throw new Error('Los videos solo pueden publicarse en la categoría Edits.');
-    if(!isVideo && !file.type.startsWith('image/')) throw new Error('Selecciona una imagen o video válido.');
+    if(!(isVideo?['video/mp4','video/webm','video/quicktime']:['image/png','image/jpeg','image/webp']).includes(file.type)) throw new Error('Selecciona una imagen PNG, JPG o WEBP, o un video MP4, WEBM o MOV.');
     if(file.size > (isVideo?40:10)*1024*1024) throw new Error(isVideo?'El video debe pesar 40 MB o menos.':'La imagen debe pesar 10 MB o menos.');
     const id=teamRoot().child('fanarts').push().key;
-    const uploaded=await uploadToCloudinary(file,sf.current.uid,id);
+    const uploaded=await uploadToCloudinary(file,uid,id);
+    if(sf.current.uid!==uid || (sf.auth && sf.auth.currentUser?.uid!==uid))throw new Error('La sesión cambió durante la subida. Vuelve a intentarlo.');
     const p=sf.current.profile||{};
-    const data={id,ownerUid:sf.current.uid,profileId:sf.current.profileId||'',authorName:p.nickname||p.username||p.name||sf.current.email.split('@')[0],avatar:p.avatar||'',title:title.trim(),description:description.trim(),category,mediaType:isVideo?'video':'image',image:uploaded.secure_url,cloudinaryPublicId:uploaded.public_id||'',cloudinaryDeleteToken:uploaded.delete_token||'',createdAt:firebase.database.ServerValue.TIMESTAMP,likes:{}};
+    const data={id,ownerUid:sf.current.uid,profileId:sf.current.profileId||'',authorName:p.nickname||p.username||p.name||sf.current.email.split('@')[0],avatar:p.avatar||'',title:title.trim(),description:description.trim(),category,mediaType:isVideo?'video':'image',image:uploaded.secure_url,cloudinaryPublicId:uploaded.public_id||'',createdAt:firebase.database.ServerValue.TIMESTAMP,likes:{}};
     await teamRoot().child('fanarts').child(id).set(data); return data;
   }
-  async function editFanart(id){
+  let editingId=null,editOpener=null;
+  function editFanart(id){
     const sf=SF(), a=state.arts[id];
     if(!sf?.current?.uid || !a || !sfIsOwner(a)) throw new Error('Solo puedes editar tus propios fanarts.');
-    const title=prompt('Título del fanart:', a.title||''); if(title===null) return;
-    const description=prompt('Descripción:', a.description||''); if(description===null) return;
-    const category=prompt('Categoría (Digital, Dibujos, Renders, Edits o Tradicional):', a.category||'Digital'); if(category===null) return;
-    const allowed=['Digital','Dibujos','Renders','Edits','Tradicional'];
-    if(!allowed.includes(category)) throw new Error('Categoría no válida.');
-    if(!title.trim()) throw new Error('El título no puede estar vacío.');
-    await teamRoot().child('fanarts').child(id).update({title:title.trim().slice(0,70),description:description.trim().slice(0,220),category});
+    editingId=id;editOpener=document.activeElement;
+    $('#fanartEditTitle').value=a.title||'';$('#fanartEditDescription').value=a.description||'';
+    $('#fanartEditCategory').value=a.category||'Digital';$('#fanartEditStatus').textContent='';
+    $('#fanartEditDialog').showModal();$('#fanartEditTitle').focus();
   }
 
   async function deleteFanart(id){
     const sf=SF(), a=state.arts[id];
     if(!sf?.current?.uid || !a || !sfIsOwner(a)) throw new Error('Solo puedes eliminar tus propios fanarts.');
-    if(!confirm(`¿Eliminar “${a.title||'este fanart'}”? Esta acción no se puede deshacer.`)) return;
+    const storageNote=a.cloudinaryDeleteToken?'':' El archivo puede permanecer en Cloudinary hasta que se habilite la eliminación segura.';
+    if(!confirm(`¿Eliminar “${a.title||'este fanart'}” de la galería? Esta acción no se puede deshacer.${storageNote}`)) return;
     await teamRoot().child('fanarts').child(id).remove();
     if(a.cloudinaryDeleteToken) await deleteCloudinaryByToken(a.cloudinaryDeleteToken);
   }
@@ -186,20 +187,37 @@
   function previewFile(file){
     const box=$('#fanartFilePreview'), label=$('#fanartFileLabel'); if(!box||!label)return;
     if(previewUrl){URL.revokeObjectURL(previewUrl);previewUrl=null;}
-    if(!file){box.style.display='none';box.innerHTML='';label.textContent='ARRASTRA TU ARTE AQUÍ';return;}
+    if(!file){box.style.display='none';box.innerHTML='';label.textContent='ELIGE O ARRASTRA TU ARTE';return;}
     previewUrl=URL.createObjectURL(file);
-    label.textContent=file.name.length>34?file.name.slice(0,31)+'…':file.name; box.style.display='block'; box.innerHTML=file.type.startsWith('video/')?`<video src="${previewUrl}" muted autoplay loop></video>`:`<img src="${previewUrl}" alt="">`;
+    label.textContent=file.name.length>34?file.name.slice(0,31)+'…':file.name; box.style.display='block'; box.innerHTML=file.type.startsWith('video/')?`<video src="${previewUrl}" muted playsinline preload="metadata"></video>`:`<img src="${previewUrl}" alt="">`;
   }
   function bind(){
     $$('.fanart-filter').forEach(b=>b.addEventListener('click',()=>{$$('.fanart-filter').forEach(x=>x.classList.remove('is-active'));b.classList.add('is-active');visibleCount=12;state.filter=b.dataset.filter;$$('.fanart-filter').forEach(x=>x.setAttribute('aria-pressed',String(x===b)));render(sourceList());}));
     $('#fanartSort')?.addEventListener('change',e=>{visibleCount=12;state.sort=e.target.value;render(sourceList());});
     let searchTimer=null; $('#fanartSearch')?.addEventListener('input',e=>{visibleCount=12;state.search=e.target.value;clearTimeout(searchTimer);searchTimer=setTimeout(()=>render(sourceList()),120);});
-    cards()?.addEventListener('click',e=>{const edit=e.target.closest('[data-edit]');if(edit){e.stopPropagation();editFanart(edit.dataset.edit).catch(err=>alert(err.message||'No se pudo editar.'));return;}const del=e.target.closest('[data-delete]');if(del){e.stopPropagation();deleteFanart(del.dataset.delete).catch(err=>alert(err.message||'No se pudo eliminar.'));return;}const like=e.target.closest('[data-like]');if(like){e.stopPropagation();toggleLike(like.dataset.like).then(()=>render(sourceList()));return;}const card=e.target.closest('.fanart-card');if(card){const a=state.arts[card.dataset.id]||demo.find(x=>x.id===card.dataset.id);if(a)showModal(a);}});
+    cards()?.addEventListener('click',e=>{const edit=e.target.closest('[data-edit]');if(edit){e.stopPropagation();try{editFanart(edit.dataset.edit);}catch(err){alert(err.message||'No se pudo editar.');}return;}const del=e.target.closest('[data-delete]');if(del){e.stopPropagation();deleteFanart(del.dataset.delete).catch(err=>alert(err.message||'No se pudo eliminar.'));return;}const like=e.target.closest('[data-like]');if(like){e.stopPropagation();toggleLike(like.dataset.like).then(()=>render(sourceList())).catch(()=>alert('No se pudo actualizar el like. Inténtalo de nuevo.'));return;}const card=e.target.closest('.fanart-card');if(card){const a=state.arts[card.dataset.id];if(a)showModal(a);}});
+    const editor=$('#fanartEditDialog'),editForm=$('#fanartEditForm');
+    const closeEditor=()=>editor?.close();
+    $('#fanartEditClose')?.addEventListener('click',closeEditor);$('#fanartEditCancel')?.addEventListener('click',closeEditor);
+    editor?.addEventListener('close',()=>{editingId=null;if(editOpener?.isConnected)editOpener.focus();});
+    editForm?.addEventListener('submit',async e=>{
+      e.preventDefault();const status=$('#fanartEditStatus'),button=editForm.querySelector('[type=submit]');
+      try{
+        const a=state.arts[editingId],title=$('#fanartEditTitle').value.trim(),description=$('#fanartEditDescription').value.trim(),category=$('#fanartEditCategory').value;
+        if(!a||!sfIsOwner(a))throw new Error('Ya no tienes permiso para editar esta publicación.');
+        if(!title)throw new Error('Escribe un título para tu obra.');
+        if(!['Digital','Dibujos','Renders','Edits','Tradicional'].includes(category))throw new Error('Elige una categoría válida.');
+        if(a.mediaType==='video'&&category!=='Edits')throw new Error('Los videos deben permanecer en Edits.');
+        button.disabled=true;status.textContent='Guardando cambios…';
+        await teamRoot().child('fanarts').child(editingId).update({title,description,category});closeEditor();
+      }catch(err){status.textContent=err.message||'No se pudo guardar. Inténtalo de nuevo.';}finally{button.disabled=false;}
+    });
     $('#fanartFile')?.addEventListener('change',e=>previewFile(e.target.files[0]));
     const drop=$('#fanartDrop'); if(drop){['dragenter','dragover'].forEach(ev=>drop.addEventListener(ev,e=>{e.preventDefault();drop.classList.add('dragging');}));['dragleave','drop'].forEach(ev=>drop.addEventListener(ev,e=>{e.preventDefault();drop.classList.remove('dragging');}));drop.addEventListener('drop',e=>{const f=e.dataTransfer.files[0];if(!f)return;const input=$('#fanartFile');const dt=new DataTransfer();dt.items.add(f);input.files=dt.files;previewFile(f);});}
     $$('[data-fanart-close]').forEach(button=>button.addEventListener('click',closeModal));document.addEventListener('keydown',e=>{if(e.key==='Escape')closeModal();});
-    $('#fanartCategory')?.addEventListener('change',e=>{const f=$('#fanartFile');if(e.target.value==='Edits')f?.setAttribute('accept','image/png,image/jpeg,image/webp,video/mp4,video/webm,video/quicktime');else f?.setAttribute('accept','image/png,image/jpeg,image/webp');});
-    $('#fanartUploadForm')?.addEventListener('submit',async e=>{e.preventDefault();const form=e.currentTarget,status=$('#fanartUploadStatus'),btn=form.querySelector('.fanart-submit');try{const file=$('#fanartFile').files[0],title=$('#fanartTitle').value,desc=$('#fanartDescription').value,cat=$('#fanartCategory').value;if(!file||!title||!cat)throw new Error('Completa el archivo, el título y el apartado del arte.');btn.disabled=true;status.textContent='PUBLICANDO · SUBIENDO ARCHIVO…';await upload(file,title,desc,cat);form.reset();previewFile(null);status.textContent='PUBLICADO · YA ESTÁ EN LA GALERÍA';setTimeout(()=>status.textContent='',3000);}catch(err){status.textContent=(err.message||'No se pudo publicar').toUpperCase();}finally{btn.disabled=false;}});
+    const syncAccepted=()=>{const f=$('#fanartFile');f?.setAttribute('accept',$('#fanartCategory')?.value==='Edits'?'image/png,image/jpeg,image/webp,video/mp4,video/webm,video/quicktime':'image/png,image/jpeg,image/webp');};
+    $('#fanartCategory')?.addEventListener('change',syncAccepted);
+    $('#fanartUploadForm')?.addEventListener('submit',async e=>{e.preventDefault();const form=e.currentTarget,status=$('#fanartUploadStatus'),btn=form.querySelector('.fanart-submit');try{const file=$('#fanartFile').files[0],title=$('#fanartTitle').value.trim(),desc=$('#fanartDescription').value,cat=$('#fanartCategory').value;if(!file||!title||!cat)throw new Error('Completa el archivo, el título y el apartado del arte.');btn.disabled=true;status.textContent='PUBLICANDO · SUBIENDO ARCHIVO…';await upload(file,title,desc,cat);form.reset();syncAccepted();previewFile(null);status.textContent='PUBLICADO · YA ESTÁ EN LA GALERÍA';setTimeout(()=>status.textContent='',3000);}catch(err){status.textContent=(err.message||'No se pudo publicar').toUpperCase();}finally{btn.disabled=false;}});
     $('#fanartMenu')?.addEventListener('click',()=>{$('#fanartMobile')?.classList.add('is-open');$('#fanartMobile')?.setAttribute('aria-hidden','false');});$('#fanartMobileClose')?.addEventListener('click',()=>{$('#fanartMobile')?.classList.remove('is-open');$('#fanartMobile')?.setAttribute('aria-hidden','true');});
   }
   function init(){
