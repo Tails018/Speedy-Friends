@@ -75,6 +75,12 @@
     }
   };
 
+  // Un solo audio a la vez: OST de perfiles, tocadiscos de cafetería o reproductor de ost.html
+  // pausan el OST global y viceversa. Los vídeos silenciados (previews) no cuentan.
+  const audible=media=>media&&media!==audio&&!media.muted&&media.volume>0;
+  document.addEventListener('play',event=>{if(audible(event.target)&&!audio.paused)audio.pause();},true);
+  audio.addEventListener('play',()=>{document.querySelectorAll('audio,video').forEach(media=>{if(audible(media)&&!media.paused)media.pause();});});
+
   window.addEventListener('pagehide',()=>write());
   window.addEventListener('beforeunload',()=>write());
 

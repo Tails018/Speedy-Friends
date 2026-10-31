@@ -167,6 +167,23 @@ let activeBrowser;
   const cls=await p.evaluate(()=>window.__cls);await p.close();
   assert.ok(cls<0.1,'ranking CLS '+cls);
  });
+ await test('Only one audible source plays: profile/cafe audio pauses the global OST and vice versa',async()=>{
+  await page.goto(base+'/index.html');await page.waitForFunction(()=>window.__sfOST&&document.body.classList.contains('page-ready'));await dismissGate();
+  await page.mouse.click(5,300);
+  const result=await page.evaluate(async()=>{
+   // 1 s de silencio WAV generado localmente: no depende de servicios externos.
+   const rate=8000,n=rate,buf=new ArrayBuffer(44+n),v=new DataView(buf);const w=(o,s)=>[...s].forEach((c,i)=>v.setUint8(o+i,c.charCodeAt(0)));
+   w(0,'RIFF');v.setUint32(4,36+n,true);w(8,'WAVE');w(12,'fmt ');v.setUint32(16,16,true);v.setUint16(20,1,true);v.setUint16(22,1,true);v.setUint32(24,rate,true);v.setUint32(28,rate,true);v.setUint16(32,1,true);v.setUint16(34,8,true);w(36,'data');v.setUint32(40,n,true);for(let i=0;i<n;i++)v.setUint8(44+i,128);
+   const url=URL.createObjectURL(new Blob([buf],{type:'audio/wav'}));
+   const g=window.__sfOST.audio;g.loop=true;await window.__sfOST.load(url,0,true);
+   const other=document.createElement('audio');other.src=url;other.loop=true;document.body.appendChild(other);
+   await other.play();await new Promise(r=>setTimeout(r,150));const globalPausedByOther=g.paused;
+   await g.play();await new Promise(r=>setTimeout(r,150));const otherPausedByGlobal=other.paused;
+   window.__sfOST.stop();other.remove();URL.revokeObjectURL(url);
+   return {globalPausedByOther,otherPausedByGlobal};
+  });
+  assert.deepEqual(result,{globalPausedByOther:true,otherPausedByGlobal:true});
+ });
  await test('No uncaught JavaScript errors across the audited routes',async()=>assert.deepEqual(errors,[]));
  writeFileSync('docs/browser-verification.json',JSON.stringify({browser:browser.version(),report,errors,limitations:['External services blocked. Firebase login, live writes, uploads and real administrative permissions not exercised.','Rings use a read-only fixture. Home screenshots dismiss only the local presentation gate.','Chromium responsive emulation; not physical Android/iOS or cross-browser certification.']},null,2));
  await browser.close();
