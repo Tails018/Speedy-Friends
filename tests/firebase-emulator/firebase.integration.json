@@ -1,0 +1,11 @@
+{
+  "functions": { "source": "../../server" },
+  "database": { "rules": "database.integration.rules.json" },
+  "emulators": {
+    "functions": { "host": "127.0.0.1", "port": 15001 },
+    "database": { "host": "127.0.0.1", "port": 19000 },
+    "auth": { "host": "127.0.0.1", "port": 19099 },
+    "ui": { "enabled": false },
+    "singleProjectMode": true
+  }
+}
