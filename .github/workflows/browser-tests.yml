@@ -1,0 +1,33 @@
+name: Browser tests
+on:
+  pull_request:
+  push:
+    branches: [codex/ultimate-security-and-completion]
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  browser:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - run: npx playwright-core install --with-deps chromium
+      - name: Start local server
+        run: |
+          npm run dev > /tmp/speedy-server.log 2>&1 &
+          for i in {1..30}; do curl --fail --silent http://127.0.0.1:4174/ > /dev/null && exit 0; sleep 1; done
+          cat /tmp/speedy-server.log
+          exit 1
+      - name: Run static and browser tests
+        run: |
+          export SF_BROWSER_EXECUTABLE="$(node -p "require('playwright-core').chromium.executablePath()")"
+          npm test
+          npm run test:browser
+          npm run test:e2e
+          SF_E2E_VIEWPORT=mobile npm run test:e2e

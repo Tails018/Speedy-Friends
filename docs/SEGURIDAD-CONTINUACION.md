@@ -19,3 +19,11 @@ Base: `upgrade/visual-system` en `74c8ac6`. Las reglas locales son referencias d
 4. Continuar con los demás módulos y revisión visual por página; probar con usuarios de prueba y dispositivos o emuladores identificados.
 
 No se han aplicado cambios a producción. El flujo de cobro actual no debe considerarse seguro por la corrección de LISTO.
+
+## Continuación V5.1 — pruebas de navegador
+
+- Node 24.22.1 y npm 11.19.1 disponibles. El arranque de Edge falló en este entorno (`browserType.launch: Target page, context or browser has been closed`; error de Crashpad y de perfil temporal); no se cambió la seguridad de Windows.
+- Se descargó Chromium de Playwright 145 en una carpeta temporal del espacio de trabajo y arrancó correctamente. Las pruebas de navegador usan este ejecutable y un servidor local en el puerto 4189.
+- Se agregó `.github/workflows/browser-tests.yml` como alternativa reproducible en Linux. Los flujos E2E emplean Firebase simulado, no comprueban reglas ni servicios reales.
+- E2E ahora devuelve error si cualquiera de los navegadores solicitados no arranca, o si no se ejecuta ninguno. Sus informes se escriben en `test-results/` para no sobrescribir evidencias previas.
+- La rama no existe en origin y todavía no se ha publicado. Antes de publicar, revisar el diff completo y los archivos nuevos en busca de información sensible.

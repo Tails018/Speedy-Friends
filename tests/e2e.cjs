@@ -44,12 +44,13 @@ const waitReady=page=>page.waitForFunction(()=>window.SpeedyFirebase?.current?.c
 
 (async()=>{
  const which=(process.env.SF_E2E_BROWSERS||'chromium').split(',');
- const report=[];let failed=0;
+ const report=[];let failed=0;let launched=0;
  for(const name of which){
   const type={chromium,firefox,webkit}[name];
   const opts=name==='chromium'?(process.env.SF_BROWSER_EXECUTABLE?{executablePath:process.env.SF_BROWSER_EXECUTABLE}:{channel:'msedge'}):{};
   let browser;
-  try{browser=await type.launch({headless:true,...opts});}catch(e){report.push({browser:name,test:'launch',status:'skipped',reason:e.message.split('\n')[0]});console.log(`SKIP [${name}] ${e.message.split('\n')[0]}`);continue;}
+  try{browser=await type.launch({headless:true,...opts});}catch(e){failed++;report.push({browser:name,test:'launch',status:'skipped',reason:e.message.split('\n')[0]});console.log(`SKIP [${name}] ${e.message.split('\n')[0]}`);continue;}
+  launched++;
   const test=async(title,fn)=>{try{await fn();report.push({browser:name,test:title,status:'passed'});console.log(`PASS [${name}] ${title}`);}catch(e){failed++;report.push({browser:name,test:title,status:'failed',error:e.message});console.log(`FAIL [${name}] ${title}\n  ${e.message.split('\n').slice(0,4).join('\n  ')}`);}};
 
   await test('Login with Google, remembered session and logout',async()=>{
@@ -190,6 +191,7 @@ const waitReady=page=>page.waitForFunction(()=>window.SpeedyFirebase?.current?.c
   await browser.close();
  }
  fs.mkdirSync('test-results',{recursive:true});
- fs.writeFileSync(MOBILE?'docs/e2e-verification-mobile.json':'docs/e2e-verification.json',JSON.stringify({date:new Date().toISOString(),viewport:MOBILE?'390x844 táctil (emulado)':'1280x850',note:'Firebase simulado en memoria (tests/firebase-mock.js). No evalúa reglas de seguridad.',report},null,2));
- process.exitCode=failed?1:0;
+ fs.writeFileSync(MOBILE?'test-results/e2e-verification-mobile.json':'test-results/e2e-verification.json',JSON.stringify({date:new Date().toISOString(),viewport:MOBILE?'390x844 táctil (emulado)':'1280x850',note:'Firebase simulado en memoria (tests/firebase-mock.js). No evalúa reglas de seguridad.',report},null,2));
+ if(!launched) console.error('No se pudo iniciar ningún navegador; no se ejecutaron pruebas E2E.');
+ process.exitCode=(failed || !launched)?1:0;
 })().catch(e=>{console.error(e);process.exitCode=1;});
