@@ -71,6 +71,22 @@ const waitReady=page=>page.waitForFunction(()=>window.SpeedyFirebase?.current?.c
    assert.deepEqual(errors,[]);await ctx.close();
   });
 
+  await test('Profile: edits are saved to the database and removing the icon persists',async()=>{
+   const ctx=await newContext(browser,{session:ALICE});const page=await ctx.newPage();
+   await page.addInitScript(()=>{const k='__sfMockDb';const d=JSON.parse(localStorage.getItem(k));const u=d['speedy-friends-teams']['speedy-friends'].users['user-alice'];if(!u.avatar){u.avatar='data:image/gif;base64,R0lGODlhAQABAAAAACw=';localStorage.setItem(k,JSON.stringify(d));}});
+   await page.goto(base+'/profile.html');await waitReady(page);
+   await page.locator('#profile-edit-name').fill('Alice Prueba');
+   await page.locator('#profile-edit-nickname').fill('Ali');
+   await page.locator('#avatar-remove').click();
+   await page.locator('#save-profile').click();
+   await page.waitForFunction(()=>/GUARDADO|GUARDADOS/.test(document.getElementById('save-profile-status')?.textContent||''),null,{timeout:8000});
+   const u=await db(page,T+'/users/user-alice');
+   assert.equal(u.name,'Alice Prueba');assert.equal(u.nickname,'Ali');
+   assert.equal(u.avatar||'','','icon removal persisted');assert.equal(u.ownerUid,ALICE.uid);
+   assert.equal(Object.keys(await db(page,T+'/users')).length,3,'no duplicate profile created');
+   await ctx.close();
+  });
+
   await browser.close();
  }
  fs.mkdirSync('test-results',{recursive:true});

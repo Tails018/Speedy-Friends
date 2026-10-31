@@ -1272,6 +1272,8 @@ document.addEventListener('DOMContentLoaded', async () => {
   let coverUrl='';
   let avatarBlob=null;
   let coverBlob=null;
+  // Quitar/restablecer solo borraba la copia local: al guardar volvía la imagen de Firebase.
+  let avatarCleared=false,coverCleared=false;
   let iconPosition='50% 50%';
   let coverPosition='50% 50%';
   let iconZoom=100;
@@ -1482,7 +1484,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     const file=e.target.files?.[0];
     if(!file || !file.type.startsWith('image/'))return;
     revoke(avatarUrl);
-    avatarBlob=file;
+    avatarBlob=file;avatarCleared=false;
     avatarUrl=URL.createObjectURL(file);
     iconPosition='50% 50%';iconZoom=100;
     if(iconZoomInput)iconZoomInput.value='100';
@@ -1495,7 +1497,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     const file=e.target.files?.[0];
     if(!file || !file.type.startsWith('image/'))return;
     revoke(coverUrl);
-    coverBlob=file;
+    coverBlob=file;coverCleared=false;
     coverUrl=URL.createObjectURL(file);
     coverPosition='50% 50%';coverZoom=100;
     if(coverZoomInput)coverZoomInput.value='100';
@@ -1507,7 +1509,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
   /* ---------- Reset/remove ---------- */
   avatarReset?.addEventListener('click',async()=>{
-    revoke(avatarUrl);avatarUrl='';avatarBlob=null;
+    revoke(avatarUrl);avatarUrl='';avatarBlob=null;avatarCleared=true;
     if(avatarInput)avatarInput.value='';
     iconPosition='50% 50%';iconZoom=100;
     if(iconZoomInput)iconZoomInput.value='100';
@@ -1518,14 +1520,14 @@ document.addEventListener('DOMContentLoaded', async () => {
   });
 
   avatarRemove?.addEventListener('click',async()=>{
-    revoke(avatarUrl);avatarUrl='';avatarBlob=null;
+    revoke(avatarUrl);avatarUrl='';avatarBlob=null;avatarCleared=true;
     if(avatarInput)avatarInput.value='';
     await dbDelete('avatar');
     applyAvatar();changed();
   });
 
   coverReset?.addEventListener('click',async()=>{
-    revoke(coverUrl);coverUrl='';coverBlob=null;
+    revoke(coverUrl);coverUrl='';coverBlob=null;coverCleared=true;
     coverPosition='50% 50%';coverZoom=100;
     if(coverInput)coverInput.value='';
     if(coverZoomInput)coverZoomInput.value='100';
@@ -1537,7 +1539,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   });
 
   coverRemove?.addEventListener('click',async()=>{
-    revoke(coverUrl);coverUrl='';coverBlob=null;
+    revoke(coverUrl);coverUrl='';coverBlob=null;coverCleared=true;
     if(coverInput)coverInput.value='';
     await dbDelete('cover');
     applyCover();changed();
@@ -1668,8 +1670,8 @@ document.addEventListener('DOMContentLoaded', async () => {
       // Keep the exact old project approach: profile images are stored as
       // data URLs in Realtime Database. No Firebase Storage request is made.
       // This also keeps GIFs animated because the original GIF bytes are kept.
-      let avatarData=existing.avatar||avatarUrl||'';
-      let coverData=existing.cover||coverUrl||'';
+      let avatarData=avatarCleared?'':(avatarUrl||existing.avatar||'');
+      let coverData=coverCleared?'':(coverUrl||existing.cover||'');
 
       if(avatarBlob){
         avatarData=await withTimeout(
@@ -1787,8 +1789,8 @@ document.addEventListener('DOMContentLoaded', async () => {
     if(editTitle&&!editTitle.value)editTitle.value=source.title||'';
     if(editUsername&&!editUsername.value)editUsername.value=source.username||'';
     if(editDescription&&!editDescription.value)editDescription.value=source.description||source.bio||'';
-    if(!avatarUrl&&source.avatar){avatarUrl=source.avatar;avatarBlob=null;canvasAvatar.textContent='';}
-    if(!coverUrl&&source.cover){coverUrl=source.cover;coverBlob=null;}
+    if(!avatarUrl&&!avatarCleared&&source.avatar){avatarUrl=source.avatar;avatarBlob=null;canvasAvatar.textContent='';}
+    if(!coverUrl&&!coverCleared&&source.cover){coverUrl=source.cover;coverBlob=null;}
     applyAvatar();applyCover();applyCropSurfaces();syncEditedText();
   };
   document.addEventListener('speedy:firebase-ready',hydrateFirebaseProfile);

@@ -1,11 +1,17 @@
 {
-  "date": "2026-10-31T20:06:08.761Z",
+  "date": "2026-10-31T20:07:14.194Z",
   "note": "Firebase simulado en memoria (tests/firebase-mock.js). No evalúa reglas de seguridad.",
   "report": [
     {
       "browser": "chromium",
       "test": "Login with Google, remembered session and logout",
       "status": "passed"
+    },
+    {
+      "browser": "chromium",
+      "test": "Profile: edits are saved to the database and removing the icon persists",
+      "status": "failed",
+      "error": "icon removal persisted\n+ actual - expected\n\n+ 'data:image/gif;base64,R0lGODlhAQABAAAAACw='\n- ''\n"
     }
   ]
 }
