@@ -82,6 +82,18 @@
       "status": "passed"
     },
     {
+      "name": "OST samples cannot masquerade as playable tracks",
+      "status": "passed"
+    },
+    {
+      "name": "Ranking announces the selected filter",
+      "status": "passed"
+    },
+    {
+      "name": "Cafe wallet is inaccessible when closed and returns focus on Escape",
+      "status": "passed"
+    },
+    {
       "name": "No uncaught JavaScript errors across the audited routes",
       "status": "passed"
     }

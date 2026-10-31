@@ -232,6 +232,25 @@ let activeBrowser;
   assert.equal(await page.locator('#now-track').innerText(),before);
   assert.match(await page.locator('#ost-firebase-status').innerText(),/AGREGA UNA PISTA/);
  });
+ await test('Ranking announces the selected filter',async()=>{
+  await page.goto(base+'/ranking.html');
+  const filters=page.locator('.ranking-filter');
+  assert.equal(await filters.first().getAttribute('aria-pressed'),'true');
+  await page.locator('.ranking-filter[data-mode="friends"]').click();
+  assert.equal(await filters.first().getAttribute('aria-pressed'),'false');
+  assert.equal(await page.locator('.ranking-filter[data-mode="friends"]').getAttribute('aria-pressed'),'true');
+ });
+ await test('Cafe wallet is inaccessible when closed and returns focus on Escape',async()=>{
+  await page.goto(base+'/cafeteria.html');
+  assert.equal(await page.locator('#side').getAttribute('aria-hidden'),'true');
+  assert.equal(await page.locator('#side').evaluate(el=>el.inert),true);
+  await page.locator('#wallet').click();
+  assert.equal(await page.locator('#side').getAttribute('aria-hidden'),'false');
+  assert.equal(await page.evaluate(()=>document.activeElement.id),'close');
+  await page.keyboard.press('Escape');
+  assert.equal(await page.locator('#side').evaluate(el=>el.inert),true);
+  assert.equal(await page.evaluate(()=>document.activeElement.id),'wallet');
+ });
  await test('No uncaught JavaScript errors across the audited routes',async()=>assert.deepEqual(errors,[]));
  writeFileSync('docs/browser-verification.json',JSON.stringify({browser:browser.version(),report,errors,limitations:['External services blocked. Firebase login, live writes, uploads and real administrative permissions not exercised.','Rings use a read-only fixture. Home screenshots dismiss only the local presentation gate.','Chromium responsive emulation; not physical Android/iOS or cross-browser certification.']},null,2));
  await browser.close();

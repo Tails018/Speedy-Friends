@@ -704,10 +704,10 @@ body.rank-ost-playing .rank-profile-modal{box-shadow:-25px 0 65px rgba(239,38,63
     <h1 class="ranking-title">Top <em>Integrantes</em></h1>
     <p class="ranking-lead">El marcador de la comunidad: Rings, posición y progreso. Usa "AMIGOS" para ver únicamente tu círculo personal.</p>
     <div class="ranking-switches" aria-label="Filtros">
-      <button class="ranking-filter active" type="button" data-mode="rings">RINGS</button>
-      <button class="ranking-filter" type="button" data-mode="level">NIVEL</button>
-      <button class="ranking-filter" type="button" data-mode="friends">AMIGOS</button>
-      <button class="ranking-filter" type="button" data-mode="week">SEMANA</button>
+      <button class="ranking-filter active" type="button" data-mode="rings" aria-pressed="true">RINGS</button>
+      <button class="ranking-filter" type="button" data-mode="level" aria-pressed="false">NIVEL</button>
+      <button class="ranking-filter" type="button" data-mode="friends" aria-pressed="false">AMIGOS</button>
+      <button class="ranking-filter" type="button" data-mode="week" aria-pressed="false">SEMANA</button>
     </div>
   </header>
 
@@ -742,7 +742,7 @@ body.rank-ost-playing .rank-profile-modal{box-shadow:-25px 0 65px rgba(239,38,63
 
   <footer class="ranking-footer">
     <a class="rank-btn primary" href="index.html">← Volver a Speedy Friends</a>
-    <button class="rank-btn" type="button" id="shuffle">Actualizar muestra</button>
+    <button class="rank-btn" type="button" id="shuffle">Actualizar vista</button>
   </footer>
 </section>
 </main>
@@ -861,7 +861,7 @@ document.addEventListener('DOMContentLoaded',()=>{
     bindCards(creatorList);bindCards(adminList);bindCards(memberList);
   }
   function render(){
-    filters.forEach(f=>f.classList.toggle('active',f.dataset.mode===mode));
+    filters.forEach(f=>{const selected=f.dataset.mode===mode;f.classList.toggle('active',selected);f.setAttribute('aria-pressed',String(selected));});
     if(mode==='friends')applyFriendsFilter();else applyGlobal();
   }
   // Se llamaba desde bindFirebase (x2) y onAuthStateChanged sin cancelar: hasta 4 suscripciones

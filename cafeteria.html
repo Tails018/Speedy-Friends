@@ -284,19 +284,23 @@
 
 <section class="section" id="tickets"><div class="head"><div><p class="k">Pedido activo</p><h2>MI TICKET</h2></div><p>Tu ticket permanece activo mientras está pendiente, preparando o listo. Nadie de tu cuenta puede marcarlo como servido.</p></div><div class="ticket-grid"><div id="active-ticket" class="ticket-empty"><span class="badge">SIN PEDIDOS</span><h3>ESPERANDO<br>TU CAFÉ</h3><p>Elige una bebida en la carta. El ticket aparecerá aquí y pasará al panel de trabajo.</p></div><div><div class="tickets" id="ticket-list"></div><div class="wallet"><small>RINGS EN TIEMPO REAL</small><b id="rings">—</b><div id="rings-status" style="font-size:9px;margin-top:8px;opacity:.75">SINCRONIZANDO…</div></div></div></div></section>
 </main>
-<aside class="side" id="side"><div class="sidehead"><h3>MI CARTERA</h3><button id="close">×</button></div><div class="sidebox"><small>RINGS EN TIEMPO REAL</small><b id="side-rings">—</b></div><div id="cafe-role-links" style="display:grid;gap:7px;margin-top:9px">
+<aside class="side" id="side" aria-hidden="true" inert><div class="sidehead"><h3>MI CARTERA</h3><button id="close" type="button" aria-label="Cerrar cartera">×</button></div><div class="sidebox"><small>RINGS EN TIEMPO REAL</small><b id="side-rings">—</b></div><div id="cafe-role-links" style="display:grid;gap:7px;margin-top:9px">
 <a id="cafe-role-creator" href="cafe-creator.html" style="display:none;background:var(--s)">⚙ PANEL DE CREADORA</a>
 <a id="cafe-role-worker" href="cafe-worker.html" style="display:none;background:var(--r)">☕ PANEL DE TRABAJADOR</a>
 <a id="cafe-role-admin" href="admin-role.html" style="display:none;background:var(--s)">⚙ PANEL DE STAFF</a>
 <a href="index.html" style="background:#26211e">← VOLVER A INICIO</a>
-</div></div></aside><button id="fab" style="position:fixed;right:15px;bottom:15px;z-index:59;width:54px;height:54px;border:0;border-radius:50%;background:var(--r);color:#fff">◒</button><div class="toast" id="toast"></div>
+</div></aside><button id="fab" type="button" aria-label="Abrir cartera" aria-controls="side" aria-expanded="false" style="position:fixed;right:15px;bottom:15px;z-index:59;width:54px;height:54px;border:0;border-radius:50%;background:var(--r);color:#fff">◒</button><div class="toast" id="toast"></div>
 <script>
 document.addEventListener('DOMContentLoaded',()=>{
  const $=id=>document.getElementById(id), toast=$('toast');
  let menu={};
  const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[c]));
  const say=m=>{toast.textContent=m;toast.classList.add('show');setTimeout(()=>toast.classList.remove('show'),2200)};
- const open=()=>$('side').classList.add('open'), close=()=>$('side').classList.remove('open'); const roleCreator=$('cafe-role-creator');
+ let walletOpener=null;
+ const open=event=>{walletOpener=event.currentTarget;const side=$('side');side.inert=false;side.setAttribute('aria-hidden','false');side.classList.add('open');$('fab').setAttribute('aria-expanded','true');$('close').focus();};
+ const close=()=>{const side=$('side');side.classList.remove('open');side.inert=true;side.setAttribute('aria-hidden','true');$('fab').setAttribute('aria-expanded','false');walletOpener?.focus();};
+ document.addEventListener('keydown',event=>{if(event.key==='Escape'&&$('side').classList.contains('open'))close();});
+ const roleCreator=$('cafe-role-creator');
  const roleWorker=$('cafe-role-worker');
  const roleAdmin=$('cafe-role-admin');
 
