@@ -1,0 +1,21 @@
+# Seguridad y continuación — 31 de octubre de 2026
+
+Base: `upgrade/visual-system` en `74c8ac6`. Las reglas locales son referencias diversas, no se ha comprobado su equivalencia con producción. No desplegar ninguna regla ni ejecutar migraciones hasta comparar una exportación de las reglas activas de Realtime Database y Storage y verificar compatibilidad.
+
+## Hallazgos prioritarios en copias locales
+
+- `firebase-rules.json`: la autorización de escritura de perfiles acepta `newData.ownerUid == auth.uid`, lo que puede permitir cambiar el propietario de un perfil existente. Revisar igualmente las variantes antes de consolidar.
+- `firebase-rules-novedades-merged.json` y `firebase-legacy.js`: el rol procede de datos de perfil que podrían ser modificables por su dueño; no utilizar roles editables por clientes como fuente de autorización.
+- `firebase-rules-cafeteria-final.json`: los permisos de trabajador y pedidos requieren pruebas negativas y restricciones de transición y propiedad. No se ha demostrado que estas reglas estén desplegadas.
+- `cafeteria-core.js`: el precio se recibe del cliente y el cobro y archivo son operaciones separadas; un fallo o peticiones concurrentes pueden producir cargos inconsistentes. El cambio de LISTO solo corrige su archivado prematuro, no protege la economía.
+- `fanarts-system.js`: se guarda un token de borrado Cloudinary con datos de la obra. Revisar exposición, vigencia y configuración de Cloudinary; no se ha comprobado la configuración externa.
+- No se han encontrado reglas Storage ni configuración `firebase.json` en esta rama. Firebase CLI y Java no están disponibles en PATH en este entorno.
+
+## Siguiente paso
+
+1. Obtener una copia de las reglas efectivamente publicadas de Realtime Database y Storage, sin credenciales; inventariar sus rutas junto con las variantes locales y los clientes.
+2. Configurar emuladores oficiales aislados con reglas explícitas y probar permisos positivos y negativos antes de proponer una migración. Nunca interpretar los mocks de navegador como pruebas de autorización.
+3. Diseñar un servicio confiable para servir y canjear: precios autoritativos, validación de roles y disponibilidad, operación idempotente y saldo/historial consistentes bajo concurrencia. Definir migración y reversión antes de habilitarlo.
+4. Continuar con los demás módulos y revisión visual por página; probar con usuarios de prueba y dispositivos o emuladores identificados.
+
+No se han aplicado cambios a producción. El flujo de cobro actual no debe considerarse seguro por la corrección de LISTO.

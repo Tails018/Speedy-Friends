@@ -172,7 +172,7 @@
       const p = api.profile();
       const workerName = p.nickname || p.username || p.name || "Trabajador";
 
-      if(["listo","agotado","cancelado"].includes(status)){
+      if(["agotado","cancelado"].includes(status)){
         const historyId = historyRef.push().key;
         const doneAt = Date.now();
         const archived = {
