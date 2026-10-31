@@ -87,6 +87,44 @@ const waitReady=page=>page.waitForFunction(()=>window.SpeedyFirebase?.current?.c
    await ctx.close();
   });
 
+  await test('Cafeteria: order, one active ticket, worker serves it and Rings are charged once',async()=>{
+   const ctx=await newContext(browser,{session:ALICE});const page=await ctx.newPage();const dialogs=[];
+   page.on('dialog',d=>{dialogs.push(d.message());d.dismiss();});
+   await page.goto(base+'/cafeteria.html');await waitReady(page);
+   const qty=page.locator('[data-qty="m1"]');await qty.waitFor();await qty.fill('2');
+   await page.locator('[data-order="m1"]').click();
+   await page.waitForFunction(()=>Object.keys(window.__sfMock.getAt('speedy-friends-teams/speedy-friends/cafeteria/orders')||{}).length===1);
+   const order=Object.values(await db(page,T+'/cafeteria/orders'))[0];
+   assert.equal(order.ownerUid,ALICE.uid);assert.equal(order.totalRings,40);assert.equal(order.status,'pendiente');assert.equal(typeof order.createdAt,'number');
+   await page.waitForFunction(()=>/PENDIENTE/.test(document.getElementById('active-ticket')?.textContent||''));
+   await page.locator('[data-order="m1"]').click();
+   await page.waitForFunction(()=>/TICKET EN PROCESO/i.test(document.getElementById('toast')?.textContent||''));
+   assert.equal(Object.keys(await db(page,T+'/cafeteria/orders')).length,1,'second active ticket rejected');
+   // Trabajador (Bob) en otro contexto: prepara y sirve.
+   const wctx=await newContext(browser,{session:BOB});const w=await wctx.newPage();w.on('dialog',d=>{dialogs.push(d.message());d.dismiss();});
+   await w.addInitScript(db=>{localStorage.setItem('__sfMockDb',db);},JSON.stringify(await page.evaluate(()=>window.__sfMock.getTree())));
+   await w.goto(base+'/cafe-worker.html');await waitReady(w);
+   await w.locator(`[data-id="${order.id}"][data-s="preparando"]`).click();
+   await w.waitForFunction(id=>window.__sfMock.getAt('speedy-friends-teams/speedy-friends/cafeteria/orders/'+id+'/status')==='preparando',order.id);
+   await w.locator(`[data-id="${order.id}"][data-s="servido"]`).click();
+   await w.waitForFunction(id=>!window.__sfMock.getAt('speedy-friends-teams/speedy-friends/cafeteria/orders/'+id),order.id);
+   assert.equal(await db(w,T+'/rings/user-alice'),80,'charged 40 of 120');
+   const hist=Object.values(await db(w,T+'/cafeteria/ticketHistory')||{});
+   assert.equal(hist.length,1);assert.equal(hist[0].status,'servido');assert.equal(hist[0].chargeRings,40);
+   assert.deepEqual(dialogs,[],'no error dialogs: '+dialogs.join(' | '));
+   await wctx.close();await ctx.close();
+  });
+
+  await test('Cafeteria: order rejected up-front when Rings are insufficient',async()=>{
+   const ctx=await newContext(browser,{session:ALICE});const page=await ctx.newPage();
+   await page.addInitScript(()=>{const d=JSON.parse(localStorage.getItem('__sfMockDb'));d['speedy-friends-teams']['speedy-friends'].rings['user-alice']=10;localStorage.setItem('__sfMockDb',JSON.stringify(d));});
+   await page.goto(base+'/cafeteria.html');await waitReady(page);
+   await page.locator('[data-order="m1"]').click();
+   await page.waitForFunction(()=>/Rings insuficientes/i.test(document.getElementById('toast')?.textContent||''));
+   assert.equal(await db(page,T+'/cafeteria/orders'),null);
+   await ctx.close();
+  });
+
   await browser.close();
  }
  fs.mkdirSync('test-results',{recursive:true});

@@ -1,5 +1,5 @@
 {
-  "date": "2026-10-31T20:07:14.194Z",
+  "date": "2026-10-31T20:07:59.604Z",
   "note": "Firebase simulado en memoria (tests/firebase-mock.js). No evalúa reglas de seguridad.",
   "report": [
     {
@@ -10,8 +10,17 @@
     {
       "browser": "chromium",
       "test": "Profile: edits are saved to the database and removing the icon persists",
-      "status": "failed",
-      "error": "icon removal persisted\n+ actual - expected\n\n+ 'data:image/gif;base64,R0lGODlhAQABAAAAACw='\n- ''\n"
+      "status": "passed"
+    },
+    {
+      "browser": "chromium",
+      "test": "Cafeteria: order, one active ticket, worker serves it and Rings are charged once",
+      "status": "passed"
+    },
+    {
+      "browser": "chromium",
+      "test": "Cafeteria: order rejected up-front when Rings are insufficient",
+      "status": "passed"
     }
   ]
 }

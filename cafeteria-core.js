@@ -135,6 +135,10 @@
       if(!profileId) throw new Error("No se encontró tu perfil");
       const qty = Math.max(1, Math.min(10, Math.trunc(Number(order.qty) || 1)));
       const price = Math.max(0, Math.trunc(Number(order.price) || 0));
+      // El cobro ocurre al servir; avisar antes evita tickets que el trabajador no podrá cobrar.
+      const balanceSnap = await sf.refs.rings.child(profileId).once("value");
+      const balance = Math.max(0, Math.trunc(Number(balanceSnap.val() ?? p.rings) || 0));
+      if(balance < price*qty) throw new Error(`Rings insuficientes: el pedido cuesta ${price*qty} y tienes ${balance}.`);
       const ref = ordersRef.push();
       const data = {
         id:ref.key, ownerUid:uid, ownerProfileId:profileId,

@@ -386,8 +386,10 @@ document.addEventListener('DOMContentLoaded',()=>{
      }
    }catch(error){console.warn('[Cafetería role]',error)}
  };
+ // Con sesión, boot podía ejecutarse dos veces (current.uid y evento ready): listeners duplicados.
+ let booted=false;
  const boot=()=>{
-  const sf=window.SpeedyFirebase;if(!sf?.watchUserRings)return;
+  const sf=window.SpeedyFirebase;if(!sf?.watchUserRings||booted)return;booted=true;
   SpeedyCafe.watchMenu(drawMenu);SpeedyCafe.watchMyOrders(drawOrders);configureRoleLinks();
   sf.watchUserRings(v=>{$('rings').textContent=Number(v||0).toLocaleString('en-US');$('side-rings').textContent=Number(v||0).toLocaleString('en-US');$('rings-status').textContent='CONECTADO · FIREBASE'});
  };
