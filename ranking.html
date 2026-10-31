@@ -864,14 +864,21 @@ document.addEventListener('DOMContentLoaded',()=>{
     filters.forEach(f=>f.classList.toggle('active',f.dataset.mode===mode));
     if(mode==='friends')applyFriendsFilter();else applyGlobal();
   }
+  // Se llamaba desde bindFirebase (x2) y onAuthStateChanged sin cancelar: hasta 4 suscripciones
+  // iguales que repintaban la lista. Una suscripción por usuario y se cancela al cambiar.
+  let friendsUid='',offFriends=null,usersBound=false;
   function loadFriends(uid){
-    if(!uid || !window.SpeedyFirebase?.db || !window.SpeedyFirebase?.refs?.root) return;
+    if(!uid || uid===friendsUid || !window.SpeedyFirebase?.db || !window.SpeedyFirebase?.refs?.root) return;
+    offFriends?.();friendsUid=uid;
     const teamRef=window.SpeedyFirebase.refs.root;
-    teamRef.child('friends').child(uid).on('value',snap=>{friendsMap=snap.val()||{}; if(mode==='friends')render();});
-    teamRef.child('rings').on('value',snap=>{ringMap=snap.val()||{}; if(mode==='friends')render();});
+    const fRef=teamRef.child('friends').child(uid),rRef=teamRef.child('rings');
+    const onF=fRef.on('value',snap=>{friendsMap=snap.val()||{}; if(mode==='friends')render();});
+    const onR=rRef.on('value',snap=>{ringMap=snap.val()||{}; if(mode==='friends')render();});
+    offFriends=()=>{fRef.off('value',onF);rRef.off('value',onR);};
   }
   function bindFirebase(){
-    if(!window.SpeedyFirebase?.watchPublicUsers)return;
+    if(!window.SpeedyFirebase?.watchPublicUsers||usersBound)return;
+    usersBound=true;
     window.SpeedyFirebase.watchPublicUsers(raw=>{users=normalize(raw);render();});
     const uid=window.SpeedyFirebase?.current?.uid || window.SpeedyFirebase?.state?.uid;
     if(uid)loadFriends(uid);
@@ -881,7 +888,7 @@ document.addEventListener('DOMContentLoaded',()=>{
   document.addEventListener('speedy:firebase-ready',()=>{bindFirebase();},{once:true});
   if(window.SpeedyFirebase?.current?.uid || window.SpeedyFirebase?.watchPublicUsers)bindFirebase();
   if(window.SpeedyFirebase?.auth){
-    window.SpeedyFirebase.auth.onAuthStateChanged(user=>{ if(user) loadFriends(user.uid); else { friendsMap={}; ringMap={}; if(mode==='friends')render(); } });
+    window.SpeedyFirebase.auth.onAuthStateChanged(user=>{ if(user) loadFriends(user.uid); else { offFriends?.(); offFriends=null; friendsUid=''; friendsMap={}; ringMap={}; if(mode==='friends')render(); } });
   }
   render();
 });

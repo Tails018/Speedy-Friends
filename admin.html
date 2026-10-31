@@ -1058,9 +1058,12 @@ body.admin-profile-open{overflow:hidden}
    }));
  }
  async function bootRealtime(){
-    if(!sf?.refs?.users)return;
-    const state=await sf.resolve();
+    // Se invocaba hasta 3 veces (evento ready, current.ready y current.uid): listeners duplicados.
+    if(!sf?.refs?.users||bootRealtime.busy||bootRealtime.done)return;
+    bootRealtime.busy=true;
+    const state=await sf.resolve().finally(()=>{bootRealtime.busy=false;});
     if(!state.uid){ notify('Sesión no disponible'); return; }
+    bootRealtime.done=true;
     // One shared live users listener.
     usersUnsub=sf.watchPublicUsers(raw=>{
       currentUsers=raw||{};
@@ -1303,7 +1306,7 @@ document.addEventListener("DOMContentLoaded",()=>{
   $('news-new-btn')?.addEventListener('click',clear);
   $('admin-news-cancel')?.addEventListener('click',clear);
 
-  const boot=async()=>{
+  const boot=async()=>{if(boot.done)return;boot.done=true;
     try{
       if(!(await canEdit()))return;
       const navBtn=document.querySelector('[data-panel="news-manager"]');
@@ -1336,7 +1339,7 @@ document.addEventListener("DOMContentLoaded",()=>{
  $('vp-edit-form')?.addEventListener('submit',async e=>{e.preventDefault();try{if(!(await canUse()))throw new Error('Esta función es exclusiva de la Creadora');const id=$('vp-edit-id').value,base=defaults.find(x=>x.id===id)||editing;await ref().child(id).set({id,title:$('vp-edit-title').value.trim()||base.title,tag:$('vp-edit-tag').value.trim()||base.tag,image:$('vp-edit-image').value.trim()||base.image,order:base.order,updatedAt:firebase.database.ServerValue.TIMESTAMP,updatedByUid:sf.current?.uid||''});$('vp-editor').hidden=true}catch(err){alert(err.message||'No se pudo guardar')}});
  $('vp-remove-current')?.addEventListener('click',async()=>{try{if(!(await canUse()))return;const id=$('vp-edit-id').value;if(confirm('¿Restaurar este espacio a su imagen original?'))await ref().child(id).remove();$('vp-editor').hidden=true}catch(e){alert(e.message||'No se pudo restaurar')}});
  $('vp-edit-file')?.addEventListener('change',()=>{const f=$('vp-edit-file').files?.[0];if(!f)return;$('vp-edit-file-name').textContent=f.name;if(!['image/png','image/jpeg','image/webp','image/gif'].includes(f.type)){ $('vp-edit-file-status').className='vp-upload-status error';$('vp-edit-file-status').textContent='Usa PNG, JPG, WEBP o GIF.';return}if(f.size>1200*1024){$('vp-edit-file-status').className='vp-upload-status error';$('vp-edit-file-status').textContent='Máximo 1.2 MB.';return}const r=new FileReader();r.onload=()=>{const d=String(r.result||'');$('vp-edit-image').value=d;$('vp-edit-preview').src=d;$('vp-edit-file-status').className='vp-upload-status ok';$('vp-edit-file-status').textContent='Imagen lista ✓'};r.readAsDataURL(f)});
- const boot=()=>{ref().once('value').then(s=>{cache=s.val()||{};render()}).catch(()=>render());ref().on('value',s=>{cache=s.val()||{};render()})};
+ const boot=()=>{if(boot.done)return;boot.done=true;ref().once('value').then(s=>{cache=s.val()||{};render()}).catch(()=>render());ref().on('value',s=>{cache=s.val()||{};render()})};
  if(sf.current?.uid)boot();else{let tries=0;const timer=setInterval(()=>{if(sf.current?.uid){clearInterval(timer);boot()}else if(++tries>30)clearInterval(timer)},400)}
 })();
 </script>
@@ -1447,7 +1450,7 @@ document.addEventListener("DOMContentLoaded",()=>{
     if(f.size>1200*1024){ $('vp-edit-file-status').className='vp-upload-status error';$('vp-edit-file-status').textContent='Máximo 1.2 MB.';return; }
     const r=new FileReader();r.onload=()=>{const data=String(r.result||'');$('vp-edit-image').value=data;$('vp-edit-preview').src=data;$('vp-edit-file-status').className='vp-upload-status ok';$('vp-edit-file-status').textContent='Imagen lista ✓'};r.readAsDataURL(f);
   });
-  const boot=async()=>{
+  const boot=async()=>{if(boot.done)return;boot.done=true;
     try{
       if(!(await canUse()))return;
       ref().on('value',s=>{cache=s.val()||{};render()});

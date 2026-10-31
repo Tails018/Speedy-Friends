@@ -963,8 +963,10 @@ body.admin-profile-open{overflow:hidden}
   }
 
   async function bootRealtime(){
-    if(!sf?.refs?.users || usersUnsub)return;
-    const state=await sf.resolve();
+    // Se invocaba hasta 3 veces; usersUnsub solo se asigna tras el await, así que no bastaba.
+    if(!sf?.refs?.users || usersUnsub || bootRealtime.busy)return;
+    bootRealtime.busy=true;
+    const state=await sf.resolve().finally(()=>{bootRealtime.busy=false;});
     if(!state.uid){ notify('Sesión no disponible'); return; }
     // One shared live users listener.
     usersUnsub=sf.watchPublicUsers(raw=>{
@@ -1208,7 +1210,7 @@ document.addEventListener("DOMContentLoaded",()=>{
   $('news-new-btn')?.addEventListener('click',clear);
   $('admin-news-cancel')?.addEventListener('click',clear);
 
-  const boot=async()=>{
+  const boot=async()=>{if(boot.done)return;boot.done=true;
     try{
       if(!(await canEdit()))return;
       const navBtn=document.querySelector('[data-panel="news-manager"]');
