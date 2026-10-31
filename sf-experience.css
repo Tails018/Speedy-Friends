@@ -158,6 +158,10 @@ html[data-sf-theme="dark"] .sf-hero-copy>p:not(.eyebrow){background:rgba(14,16,2
 .fanart-hero{overflow:clip}
 @supports not (overflow:clip){.fanart-hero{overflow:hidden}}
 
+/* ---------- Portada: el círculo azul fijo se anclaba con bottom:10vh y se recolocaba cuando
+   cambiaba el área visible (CLS 0,257 intermitente). Se posiciona con transform desde 0,0. ---------- */
+.sf-bg.sf-bg-b{top:0;left:0;bottom:auto;transform:translate3d(-20vw,calc(90vh - 40vw + var(--parallax-y,0px)),0)}
+
 /* ---------- Ranking: reserva espacio mientras llegan los datos (evita CLS) ---------- */
 /* Creadores/administradores sin filas: el script las oculta al recibir datos; se ocultan desde el inicio. */
 #creator-ranking-section:has(#creator-ranking-list:empty),

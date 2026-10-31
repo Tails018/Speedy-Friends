@@ -1,6 +1,59 @@
 # Speedy Friends — mejora visual, de rendimiento y funcional
 
-Rama: `upgrade/ultimate-portal`, creada desde `codex/frontend-audit-20261027` (idéntica al ZIP `Speedy-Friends-PR2.zip`). No se fusiona en `main`.
+Ramas, apiladas para poder revertir cada etapa por separado:
+1. `upgrade/ultimate-portal`, creada desde `codex/frontend-audit-20261027` (idéntica al ZIP `Speedy-Friends-PR2.zip`).
+2. `upgrade/professional-rebuild`, creada sobre la anterior: carga, sesión, contenido real y correcciones (ver la segunda ronda más abajo).
+
+Nada se fusiona en `main`.
+
+## Segunda ronda — `upgrade/professional-rebuild`
+
+### Carga y sesión
+| Problema comprobado | Antes | Después |
+|---|---|---|
+| Sin sesión, `waitForAuthUser` esperaba su timeout completo aunque Firebase ya hubiera dicho «no hay usuario» | 8,3 s hasta «Debes iniciar sesión» | 0,4–0,5 s (3 cargas con Firebase real) |
+| `resolve()` descargaba **todos** los usuarios en cada llamada (~30 llamadas, muchas simultáneas al cargar) | 1 descarga por llamada | Una consulta compartida en curso y resultado reutilizado 2 s por usuario |
+| Pantalla completa «CARGANDO» al abrir cada página y al navegar, mínimo 520 ms, más 120–150 ms de retraso antes de cada navegación | Siempre | Eliminada. Solo queda una barra fina de 3 px mientras se navega |
+| Puerta «Comprobando sesión guardada…» en cada carga, aunque ya hubieras iniciado sesión | Siempre | Con sesión recordada (`sfAuthHint`, sin datos personales) el portal se ve al instante. Firebase decide después y, si no hay sesión, la puerta aparece |
+| Si Firebase no responde o el SDK no carga, espera infinita | Sin salida | Mensaje claro a los 9 s y evento de error si falta el SDK |
+| Condición de carrera: con la sesión ya rápida, `speedy:firebase-ready` podía llegar antes que los scripts del final del `<body>` | — | Los eventos se emiten tras `DOMContentLoaded` |
+
+### Contenido inventado sustituido por estados reales
+- **Fanarts**: se eliminan las 4 obras de ejemplo con autores y likes inventados. Ahora hay esqueletos al cargar, estado sin sesión, galería vacía con «Publicar un fanart» y error con «Reintentar». La galería solo se suscribe a Firebase si la página la contiene; antes la portada abría además un listener duplicado.
+- **Portada**: los amigos «Blaze/Espio/Nova/Rin ONLINE», las 4 novedades con fechas inventadas y los fanarts de ejemplo pasan a esqueletos. Después se muestran los datos reales o el estado sin sesión, vacío o error. Las novedades se construyen desde los datos y ya no quedan tarjetas falsas cuando hay menos de 4.
+- **Amigos**: la vista pública explica las funciones reales en lugar de mostrar perfiles con Rings falsos.
+- **Administración** (`admin.html`, `admin-role.html`): las cifras fijas 18 / 48.2K / 2 / «18 amigos» pasan a «—» hasta cargar. Sin sesión, la página redirige a Inicio (antes el panel quedaba visible).
+- **Ranking**: sin sesión dice «Inicia sesión para ver el ranking del team» en lugar de «Aún no hay integrantes».
+- **Perfil**: sin sesión, aviso con «Iniciar sesión» y guardado desactivado (antes esperaba 7 s y fallaba).
+
+### Errores corregidos
+- `index.html`: `SpeedyFirebase.syncRings is not a function` en cada carga. Se usa `watchUserRings`.
+- `cafeteria.html`: `TypeError` en `configureRoleLinks` porque faltaba `#cafe-role-admin`. Se añade el enlace al panel de staff, oculto salvo para administradores.
+- OST: podían sonar dos audios a la vez (OST global y OST de perfil o tocadiscos). Ahora el que empieza pausa al otro.
+- Portada en escritorio: CLS intermitente de 0,256, causado por el círculo decorativo `.sf-bg-b` anclado con `bottom:10vh`. Ahora 0,001 en 5 de 5 mediciones.
+
+### Métricas finales frente a la línea base (Edge sin conexión)
+| Página | KB antes → después | CLS antes → después |
+|---|---|---|
+| index (escritorio) | 936 → 959 | **0,256 → 0,001** |
+| fanarts (móvil) | 1264 → 407 | 0 → 0 |
+| cafeteria (móvil) | 744 → 463 | 0 → 0 |
+| novedades | 680 → 474 | 0 → 0 |
+| ranking (móvil) | 314 → 336 | **0,157 → 0,028** |
+
+Detalle completo: `docs/perf-baseline.json` y `docs/perf-rebuild.json`.
+
+### Pruebas
+`npm test` 8/8 y `npm run test:browser` 18/18. Las nuevas cubren: sin contenido inventado en portada y galería, sin loader de pantalla completa, filtros de fanarts con datos de prueba y un solo audio a la vez.
+
+### Qué no se hizo en esta ronda
+- **Rediseño visual completo de cada página** (cabecera y menú unificados, formularios y paneles de administración y cafetería rediseñados). Cada página tiene su propio CSS extenso y contradictorio (por ejemplo `styles.css`, 122 KB con muchos `!important`), y un rediseño seguro exige ir página por página con capturas antes y después. Queda propuesto como siguiente fase.
+- Login real, guardado de perfil, pedidos, likes y acciones de administración **con una cuenta de pruebas**: no se ejecutaron (no se usan cuentas reales).
+- Pruebas en Safari, Firefox y Android físico.
+
+---
+
+# Primera ronda — `upgrade/ultimate-portal`
 
 ## Skills usadas
 

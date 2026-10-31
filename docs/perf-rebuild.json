@@ -1,0 +1,346 @@
+{
+  "browser": "156.0.4314.50",
+  "date": "2026-10-31T00:23:43.904Z",
+  "results": {
+    "mobile:index.html": {
+      "dcl": 282,
+      "load": 285,
+      "lcp": 1124,
+      "cls": 0.004,
+      "shifts": [],
+      "tbt": 0,
+      "domNodes": 615,
+      "requests": 33,
+      "kb": 959,
+      "byType": {
+        "html": 81,
+        "css": 323,
+        "webp": 130,
+        "js": 367,
+        "svg": 3,
+        "png": 14,
+        "gif": 39
+      },
+      "duplicates": []
+    },
+    "mobile:cafeteria.html": {
+      "dcl": 113,
+      "load": 113,
+      "lcp": 180,
+      "cls": 0,
+      "shifts": [],
+      "tbt": 0,
+      "domNodes": 197,
+      "requests": 15,
+      "kb": 463,
+      "byType": {
+        "html": 50,
+        "css": 143,
+        "webp": 190,
+        "js": 72,
+        "gif": 7
+      },
+      "duplicates": []
+    },
+    "mobile:friends.html": {
+      "dcl": 62,
+      "load": 80,
+      "lcp": 128,
+      "cls": 0,
+      "shifts": [],
+      "tbt": 0,
+      "domNodes": 118,
+      "requests": 9,
+      "kb": 239,
+      "byType": {
+        "html": 5,
+        "css": 161,
+        "js": 72
+      },
+      "duplicates": []
+    },
+    "mobile:fanarts.html": {
+      "dcl": 102,
+      "load": 104,
+      "lcp": 128,
+      "cls": 0,
+      "shifts": [],
+      "tbt": 0,
+      "domNodes": 177,
+      "requests": 12,
+      "kb": 407,
+      "byType": {
+        "html": 7,
+        "css": 193,
+        "js": 90,
+        "webp": 117
+      },
+      "duplicates": []
+    },
+    "mobile:ranking.html": {
+      "dcl": 85,
+      "load": 85,
+      "lcp": 120,
+      "cls": 0.028,
+      "shifts": [
+        {
+          "t": 86,
+          "v": 0.028,
+          "nodes": [
+            "ranking-footer"
+          ]
+        }
+      ],
+      "tbt": 0,
+      "domNodes": 149,
+      "requests": 14,
+      "kb": 336,
+      "byType": {
+        "html": 59,
+        "css": 161,
+        "js": 102,
+        "gif": 7,
+        "png": 7
+      },
+      "duplicates": []
+    },
+    "mobile:profile.html": {
+      "dcl": 117,
+      "load": 119,
+      "lcp": 212,
+      "cls": 0,
+      "shifts": [],
+      "tbt": 0,
+      "domNodes": 266,
+      "requests": 13,
+      "kb": 348,
+      "byType": {
+        "html": 78,
+        "css": 161,
+        "js": 102,
+        "gif": 7
+      },
+      "duplicates": []
+    },
+    "mobile:ost.html": {
+      "dcl": 92,
+      "load": 92,
+      "lcp": 108,
+      "cls": 0,
+      "shifts": [],
+      "tbt": 0,
+      "domNodes": 162,
+      "requests": 11,
+      "kb": 248,
+      "byType": {
+        "html": 33,
+        "css": 143,
+        "js": 65,
+        "gif": 7
+      },
+      "duplicates": []
+    },
+    "mobile:novedades.html": {
+      "dcl": 106,
+      "load": 110,
+      "lcp": 156,
+      "cls": 0,
+      "shifts": [],
+      "tbt": 0,
+      "domNodes": 112,
+      "requests": 12,
+      "kb": 474,
+      "byType": {
+        "html": 39,
+        "css": 143,
+        "js": 59,
+        "webp": 233
+      },
+      "duplicates": []
+    },
+    "mobile:admin.html": {
+      "dcl": 97,
+      "load": 99,
+      "lcp": 124,
+      "cls": 0,
+      "shifts": [],
+      "tbt": 0,
+      "domNodes": 386,
+      "requests": 11,
+      "kb": 314,
+      "byType": {
+        "html": 99,
+        "css": 143,
+        "js": 65,
+        "gif": 7
+      },
+      "duplicates": []
+    },
+    "desktop:index.html": {
+      "dcl": 240,
+      "load": 243,
+      "lcp": 960,
+      "cls": 0.001,
+      "shifts": [],
+      "tbt": 0,
+      "domNodes": 615,
+      "requests": 33,
+      "kb": 959,
+      "byType": {
+        "html": 81,
+        "css": 323,
+        "webp": 130,
+        "js": 367,
+        "svg": 3,
+        "png": 14,
+        "gif": 39
+      },
+      "duplicates": []
+    },
+    "desktop:cafeteria.html": {
+      "dcl": 118,
+      "load": 118,
+      "lcp": 136,
+      "cls": 0,
+      "shifts": [],
+      "tbt": 0,
+      "domNodes": 197,
+      "requests": 15,
+      "kb": 653,
+      "byType": {
+        "html": 50,
+        "css": 143,
+        "webp": 380,
+        "js": 72,
+        "gif": 7
+      },
+      "duplicates": []
+    },
+    "desktop:friends.html": {
+      "dcl": 66,
+      "load": 86,
+      "lcp": 84,
+      "cls": 0,
+      "shifts": [],
+      "tbt": 0,
+      "domNodes": 118,
+      "requests": 9,
+      "kb": 239,
+      "byType": {
+        "html": 5,
+        "css": 161,
+        "js": 72
+      },
+      "duplicates": []
+    },
+    "desktop:fanarts.html": {
+      "dcl": 111,
+      "load": 121,
+      "lcp": 148,
+      "cls": 0,
+      "shifts": [],
+      "tbt": 0,
+      "domNodes": 177,
+      "requests": 12,
+      "kb": 505,
+      "byType": {
+        "html": 7,
+        "css": 193,
+        "js": 90,
+        "webp": 215
+      },
+      "duplicates": []
+    },
+    "desktop:ranking.html": {
+      "dcl": 86,
+      "load": 91,
+      "lcp": 116,
+      "cls": 0.007,
+      "shifts": [],
+      "tbt": 0,
+      "domNodes": 149,
+      "requests": 14,
+      "kb": 336,
+      "byType": {
+        "html": 59,
+        "css": 161,
+        "js": 102,
+        "gif": 7,
+        "png": 7
+      },
+      "duplicates": []
+    },
+    "desktop:profile.html": {
+      "dcl": 111,
+      "load": 112,
+      "lcp": 124,
+      "cls": 0,
+      "shifts": [],
+      "tbt": 0,
+      "domNodes": 266,
+      "requests": 13,
+      "kb": 348,
+      "byType": {
+        "html": 78,
+        "css": 161,
+        "js": 102,
+        "gif": 7
+      },
+      "duplicates": []
+    },
+    "desktop:ost.html": {
+      "dcl": 93,
+      "load": 93,
+      "lcp": 108,
+      "cls": 0,
+      "shifts": [],
+      "tbt": 0,
+      "domNodes": 162,
+      "requests": 11,
+      "kb": 248,
+      "byType": {
+        "html": 33,
+        "css": 143,
+        "js": 65,
+        "gif": 7
+      },
+      "duplicates": []
+    },
+    "desktop:novedades.html": {
+      "dcl": 114,
+      "load": 118,
+      "lcp": 140,
+      "cls": 0,
+      "shifts": [],
+      "tbt": 0,
+      "domNodes": 112,
+      "requests": 12,
+      "kb": 474,
+      "byType": {
+        "html": 39,
+        "css": 143,
+        "js": 59,
+        "webp": 233
+      },
+      "duplicates": []
+    },
+    "desktop:admin.html": {
+      "dcl": 117,
+      "load": 120,
+      "lcp": 144,
+      "cls": 0,
+      "shifts": [],
+      "tbt": 7,
+      "domNodes": 386,
+      "requests": 11,
+      "kb": 314,
+      "byType": {
+        "html": 99,
+        "css": 143,
+        "js": 65,
+        "gif": 7
+      },
+      "duplicates": []
+    }
+  }
+}
