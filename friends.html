@@ -39,10 +39,10 @@
 
     <div id="sf-friends-app">
       <nav class="sf-friends-tabs" aria-label="Secciones de Amigos">
-        <button class="sf-f-tab is-active" data-tab="friends">Mis amigos <span id="sf-friends-count">0</span></button>
-        <button class="sf-f-tab" data-tab="requests">Solicitudes <span id="sf-friend-request-count">0</span></button>
-        <button class="sf-f-tab" data-tab="explore">Buscar integrantes</button>
-        <button class="sf-f-tab" data-tab="ranking">Ranking de amigos</button>
+        <button class="sf-f-tab is-active" data-tab="friends" aria-pressed="true">Mis amigos <span id="sf-friends-count">0</span></button>
+        <button class="sf-f-tab" data-tab="requests" aria-pressed="false">Solicitudes <span id="sf-friend-request-count">0</span></button>
+        <button class="sf-f-tab" data-tab="explore" aria-pressed="false">Buscar integrantes</button>
+        <button class="sf-f-tab" data-tab="ranking" aria-pressed="false">Ranking de amigos</button>
       </nav>
 
       <section class="sf-f-panel" data-panel="friends">
@@ -83,6 +83,7 @@
           <p class="sf-friends-kicker">DIRECTORIO DEL TEAM</p>
           <h3>Busca a un integrante</h3>
           <p>Explora los integrantes del team o escribe para filtrar por nombre, usuario o rol.</p>
+          <label class="sf-friends-search-label" for="sf-friends-search">Nombre, usuario o rol</label>
           <div class="sf-friends-search-box">
             <input id="sf-friends-search" type="search" autocomplete="off" placeholder="Buscar integrante o filtrar…">
           </div>

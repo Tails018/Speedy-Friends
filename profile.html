@@ -769,6 +769,7 @@
 }
 #icon-crop-surface{width:170px;height:170px;border-radius:50%;margin-bottom:8px}
 #icon-crop-surface .crop-surface-grid{border-radius:50%;overflow:hidden}
+#icon-crop-surface .crop-drag-label{left:50%;bottom:25px;transform:translateX(-50%);white-space:nowrap;letter-spacing:.06em}
 #cover-crop-surface{aspect-ratio:16/8.8;height:auto;width:100%}
 .editor-field:has(.crop-surface){padding-bottom:15px}
 @media(max-width:600px){
@@ -798,15 +799,15 @@
 .profile-edit-fields{display:grid!important;grid-template-columns:1fr 1fr!important;gap:8px!important}
 .profile-edit-fields .full{grid-column:1/-1!important}
 .profile-edit-field{min-width:0!important}
-.profile-edit-field label{display:block!important;margin:0 0 5px!important;font:900 6px/1 Arial,Helvetica,sans-serif!important;letter-spacing:.15em!important;text-transform:uppercase!important;color:#171717!important;opacity:.48!important}
+.profile-edit-field label{display:block!important;margin:0 0 7px!important;font:700 12px/1.3 Arial,Helvetica,sans-serif!important;letter-spacing:.08em!important;text-transform:uppercase!important;color:#263954!important;opacity:1!important}
 .profile-edit-field input,.profile-edit-field textarea{
  display:block!important;width:100%!important;box-sizing:border-box!important;
  padding:10px 11px!important;margin:0!important;border:1px solid rgba(18,18,18,.11)!important;border-radius:0!important;
  background:#f5f3ee!important;color:#151515!important;outline:none!important;
- font:800 14px/1.05 SFDisplay,Arial Black,Arial,sans-serif!important;letter-spacing:-.015em!important;
+ min-height:48px;font:600 16px/1.4 Arial,Helvetica,sans-serif!important;letter-spacing:0!important;
  box-shadow:none!important;transition:border-color .24s ease,box-shadow .24s ease,background .24s ease,transform .24s ease!important
 }
-.profile-edit-field textarea{min-height:70px!important;font:700 11px/1.42 Arial,Helvetica,sans-serif!important;letter-spacing:0!important;resize:vertical!important}
+.profile-edit-field textarea{min-height:100px!important;font:600 16px/1.5 Arial,Helvetica,sans-serif!important;letter-spacing:0!important;resize:vertical!important}
 .profile-edit-field input:focus,.profile-edit-field textarea:focus{background:#fff!important;border-color:#ef263f!important;box-shadow:0 0 0 3px rgba(239,38,63,.08)!important;transform:translateY(-1px)!important}
 .profile-edit-field input::placeholder,.profile-edit-field textarea::placeholder{opacity:.56!important;color:#686868!important}
 .profile-canvas-wrap{align-self:start!important;height:auto!important;min-height:0!important}
@@ -1021,7 +1022,7 @@
           <div class="crop-surface-image" id="icon-crop-image"></div>
           <div class="crop-surface-shade"></div>
           <div class="crop-surface-grid"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
-          <span class="crop-drag-label">ARRASTRA PARA MOVER</span>
+          <span class="crop-drag-label">ARRASTRA</span>
         </div>
         <div class="icon-crop-grid" id="icon-crop-grid" role="group" aria-label="Posición del icono">
           <button type="button" data-icon-pos="top left">↖</button>
@@ -1083,7 +1084,7 @@
 
       <div class="editor-save-row">
         <button class="editor-save primary" type="button" id="save-profile">GUARDAR CAMBIOS</button>
-        <span id="save-profile-status">Sin cambios</span>
+        <span id="save-profile-status" role="status" aria-live="polite">Sin cambios</span>
       </div>
     </div>
 
@@ -1656,6 +1657,8 @@ document.addEventListener('DOMContentLoaded', async () => {
 
   /* ---------- Save persistently ---------- */
   saveButton?.addEventListener('click',async()=>{
+    if(saveButton.disabled)return;
+    saveButton.disabled=true;
     if(saveStatus)saveStatus.textContent='GUARDANDO...';
     saveButton?.classList.remove('saved');
 
@@ -1757,6 +1760,8 @@ document.addEventListener('DOMContentLoaded', async () => {
       console.error('[Profile save]',error);
       if(saveStatus)saveStatus.textContent=`ERROR: ${error?.message||'AL GUARDAR'}`;
       saveButton?.classList.remove('saved');
+    }finally{
+      saveButton.disabled=false;
     }
   });
 

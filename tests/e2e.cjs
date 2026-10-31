@@ -65,6 +65,7 @@ const waitReady=page=>page.waitForFunction(()=>window.SpeedyFirebase?.current?.c
    assert.ok(await page.evaluate(()=>document.documentElement.classList.contains('sf-auth-hint')),'remembered session shows portal at once');
    await waitReady(page);assert.ok(await page.locator('#sf-auth-gate').isHidden());
    await page.goto(base+'/profile.html');await waitReady(page);
+   assert.equal(await page.locator('#save-profile-status').getAttribute('role'),'status');
    const logout=page.locator('.profile-top .sf-logout');await logout.waitFor({state:'visible'});await logout.click();
    await page.waitForURL(/index\.html/);await waitReady(page);
    await page.waitForFunction(()=>!document.getElementById('sf-auth-gate').classList.contains('is-hidden'));
@@ -176,7 +177,13 @@ const waitReady=page=>page.waitForFunction(()=>window.SpeedyFirebase?.current?.c
   await test('Friends: request, accept on the other account, both sides see the friendship',async()=>{
    const ctx=await newContext(browser,{session:ALICE});const page=await ctx.newPage();
    await page.goto(base+'/friends.html');await waitReady(page);
+   await page.waitForFunction(()=>window.SpeedyFriends?.state.unsubs.length>0);
+   const readsBefore=await page.evaluate(()=>window.__sfMockLog.filter(x=>x[0]==='read').length);
    await page.locator('.sf-f-tab[data-tab="explore"]').click();
+   assert.equal(await page.locator('.sf-f-tab[data-tab="explore"]').getAttribute('aria-pressed'),'true');
+   assert.equal(await page.locator('.sf-f-tab[data-tab="friends"]').getAttribute('aria-pressed'),'false');
+   assert.equal(await page.getByLabel('Nombre, usuario o rol').count(),1);
+   assert.equal(await page.evaluate(()=>window.__sfMockLog.filter(x=>x[0]==='read').length),readsBefore,'switching tabs does not reread Firebase');
    const add=page.locator('[data-panel="explore"] [data-friend-action="add"][data-uid="uid-bob"]').first();
    await add.waitFor({timeout:8000});await add.click();
    await page.waitForFunction(()=>!!window.__sfMock.getAt('speedy-friends-teams/speedy-friends/friendRequests/inbox/uid-bob/uid-alice'));

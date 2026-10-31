@@ -623,10 +623,11 @@
 
       const tab = e.target.closest('.sf-f-tab');
       if (tab) {
-        $$('.sf-f-tab', root).forEach(x => x.classList.remove('is-active'));
+        $$('.sf-f-tab', root).forEach(x => {x.classList.remove('is-active');x.setAttribute('aria-pressed','false');});
         tab.classList.add('is-active');
-        try { await ensureReady(); await refreshRelations(); } catch (err) { notify(err?.message || 'No se pudieron cargar tus relaciones', 'error'); }
+        tab.setAttribute('aria-pressed','true');
         renderFriendsPage();
+        try { await ensureReady(); if(!state.unsubs.length){await refreshRelations();renderFriendsPage();} } catch (err) { notify(err?.message || 'No se pudieron cargar tus relaciones', 'error'); }
         return;
       }
 
