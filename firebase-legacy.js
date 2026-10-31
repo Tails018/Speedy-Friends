@@ -72,6 +72,43 @@
     profileId:null,profile:null,permissions:{},rings:0,ringValues:{}
   };
 
+  // Share identical realtime queries only inside the current authenticated page session.
+  // Firebase remains responsible for authorization and every consumer gets cancellation errors.
+  const sharedWatches=new Map();
+  let sharedUid="";
+  auth.onAuthStateChanged(user=>{
+    const uid=user?.uid||"";
+    if(uid===sharedUid)return;
+    for(const entry of sharedWatches.values())entry.ref.off("value",entry.handler);
+    sharedWatches.clear();sharedUid=uid;
+  });
+  function subscribeShared(key,ref,onValue,onError=()=>{}){
+    const uid=auth.currentUser?.uid||"";
+    if(!uid||uid!==sharedUid)throw new Error("Sesión de Firebase no disponible");
+    let entry=sharedWatches.get(key);
+    if(!entry){
+      entry={ref,clients:new Set(),snapshot:null,hasSnapshot:false,handler:null};
+      sharedWatches.set(key,entry);
+      entry.handler=ref.on("value",snap=>{
+        if(sharedWatches.get(key)!==entry||auth.currentUser?.uid!==uid)return;
+        entry.snapshot=snap;entry.hasSnapshot=true;
+        for(const client of [...entry.clients])client.onValue(snap);
+      },error=>{
+        if(sharedWatches.get(key)!==entry)return;
+        sharedWatches.delete(key);entry.snapshot=null;entry.hasSnapshot=false;
+        for(const client of [...entry.clients])client.onError(error);
+      });
+    }
+    const client={onValue,onError};entry.clients.add(client);
+    if(entry.hasSnapshot)queueMicrotask(()=>{
+      if(sharedWatches.get(key)===entry&&entry.clients.has(client)&&auth.currentUser?.uid===uid)client.onValue(entry.snapshot);
+    });
+    return ()=>{
+      entry.clients.delete(client);
+      if(!entry.clients.size&&sharedWatches.get(key)===entry){entry.ref.off("value",entry.handler);sharedWatches.delete(key);}
+    };
+  }
+
   function profileMatches(data,uid,email){
     const ownerUid=String(data?.ownerUid||"");
     const ownerEmail=String(data?.ownerEmail||data?.email||"").toLowerCase();
@@ -402,7 +439,7 @@
     auth,db,storage,CloudinaryOST,CLOUDINARY_CONFIG,REALTIME_CONFIG,refs,current:state,
     resolve,saveProfile,signInGoogle,signOut:async()=>{ try{ if(state.uid) await stopPresence(state.uid); }catch(e){} return auth.signOut(); },adminHref,
     uploadProfileAsset,uploadOst:(uid,file,trackId)=>CloudinaryOST.upload(file,uid),
-    watchPublicUsers,watchUserRings,watchUserPresence,setRingAmount,grantRingsPermission,setAdminRole,setCafeWorkerRole,setRating,
+    watchPublicUsers,watchUserRings,watchUserPresence,subscribeShared,setRingAmount,grantRingsPermission,setAdminRole,setCafeWorkerRole,setRating,
     isCreator:()=>state.isCreator,isAdmin:()=>state.isAdmin
   };
 })();

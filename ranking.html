@@ -678,7 +678,7 @@ document.addEventListener('DOMContentLoaded',()=>{
   const memberMeta=memberSection?.querySelector('.rank-table-head p');
   const heroTitle=document.querySelector('.ranking-title');
   const heroLead=document.querySelector('.ranking-lead');
-  let mode='rings',users=[],friendsMap={},ringMap={};
+  let mode='rings',users=[],sourceUsers={},friendsMap={},ringMap={};
 
   const esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[c]));
   const num=v=>Number(v||0);
@@ -802,20 +802,21 @@ document.addEventListener('DOMContentLoaded',()=>{
     offFriends?.();friendsUid=uid;
     const teamRef=window.SpeedyFirebase.refs.root;
     const fRef=teamRef.child('friends').child(uid),rRef=teamRef.child('rings');
-    const onF=fRef.on('value',snap=>{friendsMap=snap.val()||{}; if(mode==='friends')render();});
-    const onR=rRef.on('value',snap=>{
+    const onF=snap=>{friendsMap=snap.val()||{}; if(mode==='friends')render();};
+    const onR=snap=>{
       ringMap=snap.val()||{};
       users=users.map(u=>Object.hasOwn(ringMap,u.id)?{...u,rings:num(ringMap[u.id])}:u);
       render();
-    });
-    offFriends=()=>{fRef.off('value',onF);rRef.off('value',onR);};
+    };
+    const offF=window.SpeedyFirebase.subscribeShared(`friends:${uid}`,fRef,onF,()=>{friendsMap={};if(mode==='friends')render();});
+    const offR=window.SpeedyFirebase.subscribeShared('rings',rRef,onR,()=>{ringMap={};users=normalize(sourceUsers);render();});
+    offFriends=()=>{offF();offR();};
   }
   function bindFirebase(){
     if(!window.SpeedyFirebase?.refs?.users||usersBound||!activeUid||window.SpeedyFirebase?.auth?.currentUser?.uid!==activeUid)return;
     usersBound=true;
     const ref=window.SpeedyFirebase.refs.users;
-    const handler=ref.on('value',snap=>{users=normalize(snap.val()||{}).map(u=>Object.hasOwn(ringMap,u.id)?{...u,rings:num(ringMap[u.id])}:u);render();},()=>{users=[];render();});
-    offUsers=()=>ref.off('value',handler);
+    offUsers=window.SpeedyFirebase.subscribeShared('users',ref,snap=>{sourceUsers=snap.val()||{};users=normalize(sourceUsers).map(u=>Object.hasOwn(ringMap,u.id)?{...u,rings:num(ringMap[u.id])}:u);render();},()=>{sourceUsers={};users=[];render();});
     const uid=window.SpeedyFirebase?.current?.uid || window.SpeedyFirebase?.state?.uid;
     if(uid)loadFriends(uid);
   }
@@ -828,7 +829,7 @@ document.addEventListener('DOMContentLoaded',()=>{
       const uid=user?.uid||'';
       if(uid!==activeUid){
         offFriends?.();offUsers?.();offFriends=null;offUsers=null;friendsUid='';usersBound=false;
-        friendsMap={};ringMap={};users=[];activeUid=uid;render();
+        friendsMap={};ringMap={};sourceUsers={};users=[];activeUid=uid;render();
       }
       if(uid){bindFirebase();loadFriends(uid);}
     });
