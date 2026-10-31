@@ -125,6 +125,46 @@ const waitReady=page=>page.waitForFunction(()=>window.SpeedyFirebase?.current?.c
    await ctx.close();
   });
 
+  await test('Friends: request, accept on the other account, both sides see the friendship',async()=>{
+   const ctx=await newContext(browser,{session:ALICE});const page=await ctx.newPage();
+   await page.goto(base+'/friends.html');await waitReady(page);
+   await page.locator('.sf-f-tab[data-tab="explore"]').click();
+   const add=page.locator('[data-panel="explore"] [data-friend-action="add"][data-uid="uid-bob"]').first();
+   await add.waitFor({timeout:8000});await add.click();
+   await page.waitForFunction(()=>!!window.__sfMock.getAt('speedy-friends-teams/speedy-friends/friendRequests/inbox/uid-bob/uid-alice'));
+   const tree=JSON.stringify(await page.evaluate(()=>window.__sfMock.getTree()));
+   const bctx=await newContext(browser,{session:BOB});const b=await bctx.newPage();
+   await b.addInitScript(t=>localStorage.setItem('__sfMockDb',t),tree);
+   await b.goto(base+'/friends.html');await waitReady(b);
+   await b.locator('.sf-f-tab[data-tab="requests"]').click();
+   const accept=b.locator('[data-panel="requests"] [data-friend-action="accept"][data-uid="uid-alice"]').first();await accept.waitFor({timeout:8000});await accept.click();
+   await b.waitForFunction(()=>!!window.__sfMock.getAt('speedy-friends-teams/speedy-friends/friends/uid-bob/uid-alice'));
+   assert.ok(await db(b,T+'/friends/uid-alice/uid-bob'),'friendship on both sides');
+   assert.equal(await db(b,T+'/friendRequests/inbox/uid-bob/uid-alice'),null,'request consumed');
+   await bctx.close();await ctx.close();
+  });
+
+  await test('Fanarts: real work listed, like toggles in the database, guest-free',async()=>{
+   const ctx=await newContext(browser,{session:ALICE});const page=await ctx.newPage();
+   await page.goto(base+'/fanarts.html');await waitReady(page);
+   await page.waitForSelector('.fanart-card:not(.fanart-skeleton)');
+   assert.match(await page.locator('#fanartGrid').textContent(),/Arte de prueba/);
+   await page.locator('[data-like="f1"]').click();
+   await page.waitForFunction(()=>!!window.__sfMock.getAt('speedy-friends-teams/speedy-friends/fanarts/f1/likes/uid-alice'));
+   await page.waitForFunction(()=>document.querySelector('[data-like="f1"] b')?.textContent.trim()==='1');
+   await ctx.close();
+  });
+
+  await test('Ranking: members ordered by real Rings',async()=>{
+   const ctx=await newContext(browser,{session:ALICE});const page=await ctx.newPage();
+   await page.goto(base+'/ranking.html');await waitReady(page);
+   await page.waitForFunction(()=>document.querySelectorAll('#member-ranking-list .rank-row, #member-ranking-list [data-profile-id], #member-ranking-list article').length>0,null,{timeout:8000});
+   const text=(await page.locator('#member-ranking-list').textContent()).toUpperCase();
+   assert.ok(text.indexOf('ALICE')>-1&&text.indexOf('BOB')>-1,'members listed: '+text.slice(0,200));
+   assert.ok(text.indexOf('ALICE')<text.indexOf('BOB'),'120 Rings before 80');
+   await ctx.close();
+  });
+
   await browser.close();
  }
  fs.mkdirSync('test-results',{recursive:true});

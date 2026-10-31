@@ -1,5 +1,5 @@
 {
-  "date": "2026-10-31T20:07:59.604Z",
+  "date": "2026-10-31T20:09:03.583Z",
   "note": "Firebase simulado en memoria (tests/firebase-mock.js). No evalúa reglas de seguridad.",
   "report": [
     {
@@ -20,6 +20,21 @@
     {
       "browser": "chromium",
       "test": "Cafeteria: order rejected up-front when Rings are insufficient",
+      "status": "passed"
+    },
+    {
+      "browser": "chromium",
+      "test": "Friends: request, accept on the other account, both sides see the friendship",
+      "status": "passed"
+    },
+    {
+      "browser": "chromium",
+      "test": "Fanarts: real work listed, like toggles in the database, guest-free",
+      "status": "passed"
+    },
+    {
+      "browser": "chromium",
+      "test": "Ranking: members ordered by real Rings",
       "status": "passed"
     }
   ]
