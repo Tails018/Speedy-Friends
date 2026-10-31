@@ -378,15 +378,23 @@
     return ()=>ref.off("value",handler);
   }
 
+  // Los scripts de cada página se suscriben al final del <body>. Como la sesión ya no espera
+  // 8 s, el evento podía llegar antes: se emite cuando el documento terminó de analizarse.
+  const domReady=new Promise(done=>{
+    if(document.readyState!=="loading")done();
+    else document.addEventListener("DOMContentLoaded",()=>setTimeout(done,0),{once:true});
+  });
+  const emit=(name,detail)=>domReady.then(()=>document.dispatchEvent(new CustomEvent(name,{detail})));
   auth.onAuthStateChanged(async ()=>{
     try{
       await resolve();
       state.ready=Boolean(state.uid);
+      state.checked=true;
       if(state.uid) await startPresence(state.uid);
-      document.dispatchEvent(new CustomEvent("speedy:firebase-ready",{detail:{...state}}));
+      await emit("speedy:firebase-ready",{...state});
     }catch(error){
       console.error("[Speedy Firebase]",error);
-      document.dispatchEvent(new CustomEvent("speedy:firebase-error",{detail:error}));
+      await emit("speedy:firebase-error",error);
     }
   });
 

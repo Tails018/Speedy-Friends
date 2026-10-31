@@ -856,7 +856,7 @@ document.addEventListener('DOMContentLoaded',()=>{
     if(heroLead)heroLead.textContent='El marcador de la comunidad: Rings, posición y progreso. Usa "AMIGOS" para ver únicamente tu círculo personal.';
     creatorList.innerHTML=creators.length?creators.map((u,i)=>card(u,i,'creator')).join(''):'<div class="special-empty">CUENTA CREADORA NO ENCONTRADA</div>';
     adminList.innerHTML=admins.length?admins.map((u,i)=>card(u,i,'admin')).join(''):'<div class="special-empty">AÚN NO HAY ADMINISTRADORES</div>';
-    memberList.innerHTML=members.length?members.map((u,i)=>card(u,i,'member')).join(''):'<div class="ranking-empty-state">AÚN NO HAY INTEGRANTES REGISTRADOS</div>';
+    memberList.innerHTML=members.length?members.map((u,i)=>card(u,i,'member')).join(''):`<div class="ranking-empty-state">${window.SpeedyFirebase?.current?.uid?'AÚN NO HAY INTEGRANTES REGISTRADOS':'INICIA SESIÓN PARA VER EL RANKING DEL TEAM'}</div>`;
     memberCount.textContent=`${members.length} MOSTRADOS`; adminCount.textContent=`${admins.length} MOSTRADOS`;
     bindCards(creatorList);bindCards(adminList);bindCards(memberList);
   }

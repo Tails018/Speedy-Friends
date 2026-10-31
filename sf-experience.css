@@ -128,6 +128,29 @@ html[data-sf-theme="dark"] .sf-hero-copy>p:not(.eyebrow){background:rgba(14,16,2
 #sf-firebase-status.ready{opacity:.55;transform-origin:left bottom;scale:.85;transition:opacity .3s,scale .3s}
 #sf-firebase-status.ready:hover{opacity:1;scale:1}
 
+/* ---------- Esqueletos y estados vacíos compartidos (carga real, nunca datos inventados) ---------- */
+.fanart-skeleton{pointer-events:none;animation:none!important;opacity:1!important}
+.fanart-skeleton-media{aspect-ratio:4/3;background:linear-gradient(100deg,rgba(128,128,128,.12) 30%,rgba(128,128,128,.24) 50%,rgba(128,128,128,.12) 70%) 0 0/300% 100%;animation:sfShimmer 1.4s linear infinite}
+.fanart-skeleton .fanart-copy i{display:block;height:10px;margin:10px 0;border-radius:4px;background:rgba(128,128,128,.16)}
+.fanart-skeleton .fanart-copy i:nth-child(2){width:72%}.fanart-skeleton .fanart-copy i:nth-child(3){width:44%}
+@keyframes sfShimmer{to{background-position:-300% 0}}
+@media (prefers-reduced-motion:reduce){.fanart-skeleton-media{animation:none}}
+.fanart-empty{display:grid;gap:10px;justify-items:start;grid-column:1/-1;padding:28px;border:1px dashed rgba(128,128,128,.35);border-radius:14px}
+.fanart-empty strong{font-size:18px}
+.fanart-empty.is-error{border-color:rgba(239,38,63,.45)}
+.fanart-empty .fanart-submit{text-decoration:none;display:inline-flex}
+.sf-news-skeleton,.sf-home-friend-skeleton{pointer-events:none;opacity:1!important;transform:none!important}
+.sf-news-skeleton .thumb{aspect-ratio:16/9;min-height:120px}
+.sf-news-skeleton i,.sf-home-friend-skeleton .friend-info i{display:block;height:10px;margin:10px 0;border-radius:4px;background:rgba(128,128,128,.18)}
+.sf-news-skeleton h3 i{height:18px;width:85%}.sf-news-skeleton p i{width:60%}
+.sf-home-friend-skeleton .friend-img{min-height:180px}
+.sf-home-friend-skeleton .friend-info i:last-child{width:55%}
+.sf-news-state{display:grid;align-content:center;gap:8px;min-height:180px;border:1px dashed rgba(128,128,128,.35)}
+.home-fanart-state{display:grid;align-content:end;min-height:260px;padding:24px;border:1px dashed rgba(128,128,128,.35)!important;background:transparent!important}
+.home-fanart-state-copy{display:grid;gap:10px;justify-items:start}
+.home-fanart-state-copy strong{font-size:22px}
+.home-fanart-state-copy span{opacity:.75;max-width:36ch}
+
 /* ---------- Fanarts: las órbitas giratorias desbordaban el ancho en móvil (hasta 708px en 390px) ---------- */
 .fanart-hero{overflow:clip}
 @supports not (overflow:clip){.fanart-hero{overflow:hidden}}

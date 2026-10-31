@@ -386,6 +386,7 @@
   }
 
   function renderGuestFriendsPage() {
+    renderHomeFriends();
     const root = $('#sf-friends-app');
     if (!root) return;
     root.classList.add('is-guest');
@@ -417,7 +418,7 @@
         <p>Inicia sesión para ver tus amigos, solicitudes, estados online/offline y tu ranking personal por Rings.</p>
         <button class="sf-f-btn sf-f-btn-primary" type="button" data-friend-login><i class="ph ph-sign-in"></i> Iniciar sesión con Google</button>
       </div>
-      <div class="sf-f-guest-preview">${GUEST_FRIENDS.map((p,i)=>`<article class="sf-f-card sf-f-guest-card"><div>${avatarMarkup(p)}</div><div><span>#${String(i+1).padStart(2,'0')}</span><h3>${esc(nameFor(p))}</h3><p>${esc(p.title)}</p></div><strong>${Number(p.__rings).toLocaleString('es-PE')} Rings</strong></article>`).join('')}</div>`;
+      <div class="sf-f-guest-preview sf-f-guest-features">${GUEST_FEATURES.map(f=>`<article class="sf-f-card sf-f-guest-card"><div><span class="sf-home-f-avatar-fallback" aria-hidden="true">${f.icon}</span></div><div><h3>${esc(f.title)}</h3><p>${esc(f.text)}</p></div></article>`).join('')}</div>`;
   }
 
   function showAuthenticatedFriendsPage() {
@@ -568,22 +569,14 @@
     renderProfileFriends();
   }
 
-  const GUEST_FRIENDS = [
-    { id:'guest-blaze', ownerUid:'guest-blaze', nickname:'Blaze', title:'Racer · Explorer', role:'Racer · Explorer', rings:1840, __rings:1840 },
-    { id:'guest-espio', ownerUid:'guest-espio', nickname:'Espio', title:'Stealth · Speed', role:'Stealth · Speed', rings:1620, __rings:1620 },
-    { id:'guest-nova', ownerUid:'guest-nova', nickname:'Nova', title:'Creator · Builder', role:'Creator · Builder', rings:1390, __rings:1390 },
-    { id:'guest-rin', ownerUid:'guest-rin', nickname:'Rin', title:'Artist · Chaser', role:'Artist · Chaser', rings:1110, __rings:1110 }
+  // Sin sesión se explican las funciones reales; no se muestran perfiles ni Rings inventados.
+  const GUEST_FEATURES = [
+    { icon:'+', title:'Solicitudes de amistad', text:'Busca integrantes del team y envía o acepta solicitudes.' },
+    { icon:'●', title:'Estado en línea', text:'Mira quién de tus amigos está conectado ahora mismo.' },
+    { icon:'◎', title:'Ranking por Rings', text:'Compara tus Rings con los de tus amigos.' }
   ];
 
-  function guestRankingRows() {
-    return GUEST_FRIENDS.map((p, i) => `
-      <div class="rank-row sf-guest-rank-row" style="--delay:${i * 70}ms">
-        <div class="rank-no">${String(i + 1).padStart(2,'0')}</div>
-        <div class="rank-user">${avatarMarkup(p)}<div><strong>${esc(nameFor(p))}</strong><small>${esc(p.title)}</small></div></div>
-        <div class="rank-rings"><strong>${Number(p.__rings).toLocaleString('es-PE')}</strong><span>RINGS · VISTA PREVIA</span></div>
-        <div class="rank-move up"><span>PREVIEW</span></div>
-      </div>`).join('');
-  }
+  function guestRankingRows() { return ''; }
 
   function injectRankingSection() {
     // ranking.html now renders the personal friends ranking inside its own AMIGOS filter.
@@ -715,21 +708,21 @@
     }
   }
 
+  const HOME_FRIEND_SKELETONS = Array.from({length:4},()=>'<article class="friend-card card-visible sf-home-friend-skeleton" aria-hidden="true"><div class="friend-img fanart-skeleton-media"></div><div class="friend-info"><i></i><i></i></div></article>').join('');
+
   function renderHomeFriends() {
     const track = $('.friends-track');
     if (!track) return;
 
     const profiles = friendProfilesFor().slice(0, 4);
-    if (!state.uid || !state.ready) {
-      const preview = GUEST_FRIENDS.slice(0, 4);
-      track.innerHTML = preview.map((p, i) => {
-        const img = `<span class="sf-home-f-avatar-fallback">${esc(initials(nameFor(p)))}</span>`;
-        return `<article class="friend-card card-visible${i === 0 ? ' active' : ''} sf-home-guest-card">
-          <div class="friend-img">${img}<span class="sf-home-presence is-offline" aria-hidden="true"></span></div>
-          <div class="friend-info"><span>#${String(i+1).padStart(2,'0')}</span><h3>${esc(nameFor(p))}</h3><p>${esc(p.title)}</p><b class="sf-home-status is-offline">VISTA PREVIA</b></div>
-          <div class="sf-home-ring-mini">${Number(p.__rings).toLocaleString('es-PE')} RINGS</div>
-        </article>`;
-      }).join('');
+    if (!state.ready) {
+      track.setAttribute('aria-busy', 'true');
+      track.innerHTML = HOME_FRIEND_SKELETONS;
+      return;
+    }
+    track.setAttribute('aria-busy', 'false');
+    if (!state.uid) {
+      track.innerHTML = `<article class="friend-card card-visible active sf-home-friends-empty"><div class="friend-img"><span class="sf-home-f-avatar-fallback">SF</span></div><div class="friend-info"><span>AMIGOS</span><h3>Inicia sesión</h3><p>Entra con tu cuenta para ver a tus amigos, su estado en línea y sus Rings.</p></div></article>`;
       return;
     }
     if (!profiles.length) {

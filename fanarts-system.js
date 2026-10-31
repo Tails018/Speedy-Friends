@@ -7,17 +7,11 @@
   const teamRoot = () => SF()?.refs?.root;
   const initials = v => String(v || 'SF').trim().split(/\s+/).slice(0,2).map(x => x[0]).join('').toUpperCase() || 'SF';
 
-  const demo = [
-    {id:'demo-1',title:'Neon Rush',description:'Velocidad, luces y una noche que no piensa frenar.',image:'assets/fanart-demo/neon-rush.svg',authorName:'Nova',likes:248,category:'Digital',mediaType:'image'},
-    {id:'demo-2',title:'Eclipse',description:'Un estudio de sombras, energía y contrastes.',image:'assets/fanart-demo/eclipse.svg',authorName:'Rin',likes:211,category:'Dibujos',mediaType:'image'},
-    {id:'demo-3',title:'Cyber Team',description:'Una composición experimental para todo el team.',image:'assets/fanart-demo/cyber-team.svg',authorName:'Espio',likes:184,category:'Renders',mediaType:'image'},
-    {id:'demo-4',title:'Rose Drive',description:'Color, movimiento y una pequeña chispa de caos.',image:'assets/fanart-demo/rose-drive.svg',authorName:'Blaze',likes:162,category:'Edits',mediaType:'image'}
-  ];
 
   const state = {arts:{}, liked:{}, filter:'Todos', sort:'likes', search:'', ready:false, uid:'', modalId:null, unsub:null};
   const cards = () => $('#fanartGrid');
   const homeCards = () => $('#homeFanartGrid');
-  const sourceList = () => Object.values(state.arts).length ? Object.values(state.arts) : demo;
+  const sourceList = () => Object.values(state.arts);
   const sfIsOwner = a => Boolean(SF()?.current?.uid && a && !String(a.id).startsWith('demo-') && a.ownerUid === SF().current.uid);
   const likeCount = a => Object.prototype.hasOwnProperty.call(a || {}, 'likes') ? Object.keys(a.likes || {}).length : Number(a?.likeCount || 0);
   const filtered = list => {
@@ -32,13 +26,22 @@
     : `<img class="${cls}" src="${esc(a.image)}" alt="${esc(a.title)}" loading="lazy">`;
 
   let visibleCount=12, previewUrl=null, modalOpener=null;
+  // Galería sin tarjetas: cargando, error, vacía o sin coincidencias (nunca contenido inventado).
+  function galleryState(hasArts){
+    if (state.guest) return '<div class="fanart-empty" role="status"><strong>La galería es del team.</strong><span>Inicia sesión para ver, publicar y dar like a los fanarts.</span><a class="fanart-submit" href="index.html">Iniciar sesión</a></div>';
+    if (state.failed) return '<div class="fanart-empty is-error" role="status"><strong>No se pudo cargar la galería.</strong><span>'+esc(state.failed)+'</span><button type="button" class="fanart-submit" data-fanart-retry>Reintentar</button></div>';
+    if (!state.loaded) return Array.from({length:6},()=>'<article class="fanart-card fanart-skeleton" aria-hidden="true"><div class="fanart-skeleton-media"></div><div class="fanart-copy"><i></i><i></i><i></i></div></article>').join('');
+    if (hasArts) return '<div class="fanart-empty" role="status"><strong>No encontramos fanarts.</strong><span>Prueba otro filtro u otra búsqueda.</span></div>';
+    return '<div class="fanart-empty" role="status"><strong>Todavía no hay fanarts publicados.</strong><span>Sube el primero: aparecerá aquí para todo el team.</span><a class="fanart-submit" href="#fanartUploadForm">Publicar un fanart</a></div>';
+  }
   function render(list) {
     const el = cards(); if (!el) return;
     const all = filtered(list);
     const items = all.slice(0,visibleCount);
+    el.setAttribute('aria-busy', String(!state.loaded && !state.failed));
     if (!items.length) {
       const more=$('#fanartLoadMore');if(more)more.hidden=true;
-      el.innerHTML = '<div class="fanart-empty"><strong>No encontramos fanarts.</strong><span>Prueba otro filtro o sé el primero en publicar algo aquí.</span></div>';
+      el.innerHTML = galleryState(list.length > 0);
       return;
     }
     el.innerHTML = items.map((a,i) => `
@@ -66,11 +69,8 @@
     $$('video', el).forEach(v => { v.addEventListener('mouseenter',()=>{if(!matchMedia('(prefers-reduced-motion: reduce)').matches)v.play().catch(()=>{});}, {passive:true}); v.addEventListener('mouseleave',()=>{v.pause(); v.currentTime=0;}, {passive:true}); });
   }
 
-  function renderHome(list) {
-    const el = homeCards(); if (!el) return;
-    const top = [...(list.length ? list : demo)].sort((a,b)=>likeCount(b)-likeCount(a)).slice(0,4);
-    el.innerHTML = top.map((a,i)=>`<article class="home-fanart-card"><a href="fanarts.html" class="home-fanart-open">${a.mediaType==='video'?`<video src="${esc(a.image)}" muted loop playsinline preload="none"></video>`:`<img src="${esc(a.image)}" alt="${esc(a.title)}" loading="lazy">`}<span>${String(i+1).padStart(2,'0')}</span><i class="home-fanart-like-glow">♥</i></a><div class="home-fanart-copy"><small>FANART · ${esc(a.category||'DIGITAL')}</small><h3>${esc(a.title)}</h3><div class="home-fanart-bottom"><div class="home-fanart-person"><div>${a.avatar?`<img src="${esc(a.avatar)}" alt="">`:esc(initials(a.authorName))}</div><b>${esc(a.authorName||'Integrante')}</b></div><strong>♥ ${likeCount(a)}</strong></div></div></article>`).join('');
-  }
+  // La portada pinta #homeFanartGrid con su propio script (index.html, sf-home-fanarts-live).
+  function renderHome() {}
 
   function showModal(a) {
     const m = $('#fanartModal'); if (!m) return;
@@ -175,8 +175,9 @@
   function subscribe(){
     const sf=SF(); if(!sf?.refs?.root)return; state.unsub?.();
     const ref=teamRoot().child('fanarts');
-    const handler=snap=>{ state.arts=snap.val()||{}; scheduleRender(); };
-    ref.on('value', handler);
+    const handler=snap=>{ state.arts=snap.val()||{}; state.loaded=true; state.failed=''; scheduleRender(); };
+    const fail=error=>{ console.warn('[Fanarts]',error); state.failed=/permission/i.test(String(error?.code||error?.message||''))?'Inicia sesión para ver la galería del team.':'Revisa tu conexión y vuelve a intentarlo.'; render(sourceList()); };
+    ref.on('value', handler, fail);
     state.unsub=()=>ref.off('value',handler);
   }
 
@@ -201,7 +202,17 @@
     $('#fanartUploadForm')?.addEventListener('submit',async e=>{e.preventDefault();const form=e.currentTarget,status=$('#fanartUploadStatus'),btn=form.querySelector('.fanart-submit');try{const file=$('#fanartFile').files[0],title=$('#fanartTitle').value,desc=$('#fanartDescription').value,cat=$('#fanartCategory').value;if(!file||!title||!cat)throw new Error('Completa el archivo, el título y el apartado del arte.');btn.disabled=true;status.textContent='PUBLICANDO · SUBIENDO ARCHIVO…';await upload(file,title,desc,cat);form.reset();previewFile(null);status.textContent='PUBLICADO · YA ESTÁ EN LA GALERÍA';setTimeout(()=>status.textContent='',3000);}catch(err){status.textContent=(err.message||'No se pudo publicar').toUpperCase();}finally{btn.disabled=false;}});
     $('#fanartMenu')?.addEventListener('click',()=>{$('#fanartMobile')?.classList.add('is-open');$('#fanartMobile')?.setAttribute('aria-hidden','false');});$('#fanartMobileClose')?.addEventListener('click',()=>{$('#fanartMobile')?.classList.remove('is-open');$('#fanartMobile')?.setAttribute('aria-hidden','true');});
   }
-  function init(){bind();render(demo);renderHome(demo);const sf=SF();if(!sf)return;const ready=()=>{state.ready=true;state.uid=sf.current?.uid||'';subscribe();};if(sf.current?.ready)ready();else document.addEventListener('speedy:firebase-ready',ready,{once:true});setTimeout(()=>{if(!state.ready){render(sourceList());renderHome(sourceList());}},5000);}
+  function init(){
+    bind();
+    const grid=cards(); if(!grid)return;
+    grid.addEventListener('click',e=>{if(e.target.closest('[data-fanart-retry]')){state.failed='';render(sourceList());subscribe();}});
+    render(sourceList());
+    const sf=SF();
+    if(!sf){state.failed='No se pudo conectar con Firebase.';render(sourceList());return;}
+    const ready=()=>{state.ready=true;state.uid=sf.current?.uid||'';if(!state.uid){state.guest=true;render(sourceList());return;}state.guest=false;subscribe();};
+    if(sf.current?.ready)ready();else document.addEventListener('speedy:firebase-ready',ready,{once:true});
+    document.addEventListener('speedy:firebase-error',()=>{if(!state.loaded){state.failed='No se pudo conectar con Firebase.';render(sourceList());}},{once:true});
+  }
   window.addEventListener('pagehide',()=>{if(previewUrl)URL.revokeObjectURL(previewUrl);state.unsub?.();});
   if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init,{once:true});else init();
   window.SpeedyFanarts={renderHome};

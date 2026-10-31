@@ -30,7 +30,15 @@
       "status": "passed"
     },
     {
+      "name": "Fanart gallery never shows invented works: offline shows an error state with retry",
+      "status": "passed"
+    },
+    {
       "name": "Fanart filters, search, empty state and modal close button",
+      "status": "passed"
+    },
+    {
+      "name": "Home shows loading states instead of invented friends, news or fanarts",
       "status": "passed"
     },
     {

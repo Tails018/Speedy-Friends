@@ -66,14 +66,34 @@ let activeBrowser;
   const theme=await page.locator('html').getAttribute('data-sf-theme');await page.reload();
   assert.equal(await page.locator('html').getAttribute('data-sf-theme'),theme);await dismissGate();
  });
+ await test('Fanart gallery never shows invented works: offline shows an error state with retry',async()=>{
+  await page.goto(base+'/fanarts.html');await page.waitForSelector('.fanart-empty.is-error, .fanart-skeleton');
+  await page.waitForTimeout(600);
+  assert.equal(await page.locator('.fanart-card:not(.fanart-skeleton)').count(),0,'no invented fanarts');
+  assert.ok(!(await page.locator('#fanartGrid').innerText()).match(/Neon Rush|Eclipse|Cyber Team|Rose Drive/));
+ });
  await test('Fanart filters, search, empty state and modal close button',async()=>{
-  await page.goto(base+'/fanarts.html');await page.waitForSelector('.fanart-card');
-  await page.locator('.fanart-open').first().click();assert.equal(await page.locator('#fanartModal').getAttribute('aria-hidden'),'false');
-  await page.getByRole('button',{name:'Cerrar fanart'}).click();assert.equal(await page.locator('#fanartModal').getAttribute('aria-hidden'),'true');
-  assert.ok(await page.locator('.fanart-open').first().evaluate(el=>el===document.activeElement));
-  await page.locator('#fanartSearch').fill('zzzz-no-results');await page.waitForSelector('.fanart-empty');
-  await page.locator('#fanartSearch').fill('');await page.waitForSelector('.fanart-card');
-  await page.locator('.fanart-filter').nth(1).click();assert.equal(await page.locator('.fanart-filter').nth(1).getAttribute('aria-pressed'),'true');
+  const fx=await context.newPage();
+  await fx.route('**/friends-system.js',route=>route.fulfill({contentType:'text/javascript',body:'/* Gallery-only fixture */'}));
+  await fx.addInitScript(()=>{
+   const arts={a:{id:'a',title:'Arte A',description:'Fixture',category:'Digital',image:'assets/fanart-demo/neon-rush.svg',authorName:'Prueba',mediaType:'image'},b:{id:'b',title:'Arte B',description:'Fixture',category:'Dibujos',image:'assets/fanart-demo/eclipse.svg',authorName:'Prueba',mediaType:'image'}};
+   window.SpeedyFirebase={current:{ready:true,uid:'fixture'},refs:{root:{child:()=>({on:(event,fn)=>fn({val:()=>arts}),off(){}})}}};
+  });
+  await fx.goto(base+'/fanarts.html');await fx.waitForSelector('.fanart-card:not(.fanart-skeleton)');
+  await fx.locator('.fanart-open').first().click();assert.equal(await fx.locator('#fanartModal').getAttribute('aria-hidden'),'false');
+  await fx.getByRole('button',{name:'Cerrar fanart'}).click();assert.equal(await fx.locator('#fanartModal').getAttribute('aria-hidden'),'true');
+  assert.ok(await fx.locator('.fanart-open').first().evaluate(el=>el===document.activeElement));
+  await fx.locator('#fanartSearch').fill('zzzz-no-results');await fx.waitForSelector('.fanart-empty');
+  assert.match(await fx.locator('.fanart-empty').innerText(),/No encontramos/);
+  await fx.locator('#fanartSearch').fill('');await fx.waitForSelector('.fanart-card');
+  await fx.locator('.fanart-filter').nth(1).click();assert.equal(await fx.locator('.fanart-filter').nth(1).getAttribute('aria-pressed'),'true');
+  await fx.close();
+ });
+ await test('Home shows loading states instead of invented friends, news or fanarts',async()=>{
+  await page.goto(base+'/index.html');await page.waitForFunction(()=>document.body.classList.contains('page-ready'));
+  const text=await page.locator('#friends, #topics, #fanarts').allInnerTexts();
+  assert.ok(!text.join(' ').match(/Blaze|Espio|Neon Rush|El próximo gran encuentro/),'invented content visible');
+  assert.equal(await page.locator('#sf-page-loader').evaluate(el=>getComputedStyle(el).display),'none','no full-screen loader');
  });
  await test('Large fanart fixture paginates and filters reset the visible limit',async()=>{
   const fixture=await context.newPage();
