@@ -6,6 +6,24 @@ Ramas, apiladas para poder revertir cada etapa por separado:
 
 Nada se fusiona en `main`.
 
+## Tercera ronda — `upgrade/visual-system` (sobre `upgrade/professional-rebuild`)
+
+Revisión con capturas de las 14 páginas en móvil (390 px) y escritorio (1366 px) antes y después. Se generan con `scripts/screenshots.cjs` y `scripts/contact-sheet.cjs`.
+
+| Problema comprobado | Corrección |
+|---|---|
+| La tipografía de marca dependía de fuentes de Windows (`SFDisplay` = `local('Arial Black')`, `Impact`). En Android e iOS los titulares caían a una sans regular | Respaldo con fuentes OFL incluidas en el proyecto (Archivo Black y Anton, 18 KB cada una). Windows sigue usando sus fuentes locales |
+| Titulares condensados con letras montadas («NOVEDADES CONTROL», «Conoce el sistema»): negrita sintética de Impact más interletrado de -0,06 em | `font-synthesis:none` en titulares e interletrado de -0,012 em en esas páginas |
+| En móvil, titulares partidos a mitad de palabra («TRABAJAD/OR», «INTEGRA/NTES») | Tamaño adaptado al ancho, con prueba automática |
+| Widget «CAFETERÍA 0» abierto por defecto: tapaba media pantalla en móvil y dejaba un botón ☕ que abría un panel vacío a quien no tiene rol | Oculto por defecto; sin rol no hay ni panel ni botón; en móvil, plegado para el staff |
+| `cafe-worker.html` consultaba cada 250 ms para siempre sin sesión | Máximo 10 s mientras Firebase no responde; después deciden los eventos |
+| `admin-role.html`: texto suelto «ROLE ADMIN» y enlaces sin estilo; nota que decía que las reglas «se conectarán al finalizar la interfaz» | Insignia y accesos con estilo; nota corregida |
+| **377 tamaños de letra de 4–8 px** (etiquetas, menús, botones, paneles) | Subidos a 9–10 px. `scripts/text-overflow.cjs` confirma 0 recortes nuevos (21 antes y 21 después, todos decorativos) y 0 scroll horizontal en 14 páginas, móvil y escritorio |
+
+Pruebas: `npm test` 8/8 y `npm run test:browser` 19/19 (nueva: titulares móviles y widget de cafetería).
+
+Pendiente en diseño: unificar la cabecera y el menú de Cafetería, Fanarts, Amigos y Novedades con los de las demás páginas (hoy hay 4 estilos de cabecera), y revisar los objetivos táctiles en móvil.
+
 ## Segunda ronda — `upgrade/professional-rebuild`
 
 ### Carga y sesión
