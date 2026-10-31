@@ -220,6 +220,18 @@ let activeBrowser;
   await notice.locator('button').click();assert.equal(await notice.count(),0);
   assert.equal(dialogs,0);page.off('dialog',onDialog);
  });
+ await test('OST samples cannot masquerade as playable tracks',async()=>{
+  await page.goto(base+'/ost.html');
+  await page.waitForSelector('#ost-empty');
+  assert.equal(await page.locator('.ost-row[role="button"]').count(),0);
+  assert.equal(await page.locator('.ost-row-duration').filter({hasText:'SIN AUDIO'}).count(),6);
+  assert.ok(await page.locator('#ost-empty').isVisible());
+  const before=await page.locator('#now-track').innerText();
+  await page.locator('.ost-row').first().click();
+  await page.locator('#random').click();
+  assert.equal(await page.locator('#now-track').innerText(),before);
+  assert.match(await page.locator('#ost-firebase-status').innerText(),/AGREGA UNA PISTA/);
+ });
  await test('No uncaught JavaScript errors across the audited routes',async()=>assert.deepEqual(errors,[]));
  writeFileSync('docs/browser-verification.json',JSON.stringify({browser:browser.version(),report,errors,limitations:['External services blocked. Firebase login, live writes, uploads and real administrative permissions not exercised.','Rings use a read-only fixture. Home screenshots dismiss only the local presentation gate.','Chromium responsive emulation; not physical Android/iOS or cross-browser certification.']},null,2));
  await browser.close();
