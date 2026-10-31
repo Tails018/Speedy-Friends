@@ -20,9 +20,17 @@ Revisión con capturas de las 14 páginas en móvil (390 px) y escritorio (1366 
 | `admin-role.html`: texto suelto «ROLE ADMIN» y enlaces sin estilo; nota que decía que las reglas «se conectarán al finalizar la interfaz» | Insignia y accesos con estilo; nota corregida |
 | **377 tamaños de letra de 4–8 px** (etiquetas, menús, botones, paneles) | Subidos a 9–10 px. `scripts/text-overflow.cjs` confirma 0 recortes nuevos (21 antes y 21 después, todos decorativos) y 0 scroll horizontal en 14 páginas, móvil y escritorio |
 
-Pruebas: `npm test` 8/8 y `npm run test:browser` 19/19 (nueva: titulares móviles y widget de cafetería).
+### Navegación y objetivos táctiles
+| Problema comprobado | Corrección |
+|---|---|
+| Cafetería y sus dos paneles, Novedades, Novedad, el editor de novedades y Amigos solo enlazaban a Inicio: había 4 estilos de cabecera y no se podía pasar de una sección a otra | Barra de secciones común (Inicio, Novedades, Amigos, Ranking, Fanarts, Cafetería, Perfil) con la sección activa marcada, el mismo logo y el mismo estilo de enlace. Se ocultan solo los enlaces duplicados y se mantienen los propios (Carta, Mis tickets, Mi cartera, «Volver a novedades»). En móvil, segunda fila desplazable con la sección activa centrada |
+| Botones fijos superpuestos: tema sobre la cartera de cafetería y tocadiscos sobre la barra en móvil | Recolocados |
+| «NOVEDA/DES» partido en escritorio y «CLUB» pegado al párrafo | Tamaño ajustado a su columna y margen |
+| Objetivos táctiles por debajo de 24 px (WCAG 2.2): logo 14–19 px, «Ver todo» 12 px, «TOP ↑», buscador de fanarts, cerrar cartera, controles deslizantes de 4 px | Ampliados solo en pantallas táctiles: 0 objetivos por debajo de 24 px en 9 páginas, salvo los puntos del carrusel, que amplían su área táctil con un pseudo-elemento. Los carriles finos se ven igual |
 
-Pendiente en diseño: unificar la cabecera y el menú de Cafetería, Fanarts, Amigos y Novedades con los de las demás páginas (hoy hay 4 estilos de cabecera), y revisar los objetivos táctiles en móvil.
+Pruebas: `npm test` 8/8 y `npm run test:browser` 20/20 (nuevas: titulares móviles y widget de cafetería; barra de secciones común).
+
+Pendiente en diseño: las cabeceras de Perfil, Ranking, OST y Admin enlazan a anclas de la portada (`index.html#topics`…) en lugar de a las páginas; conviene unificarlas también con la barra de secciones (cambio de marcado con su propio menú móvil).
 
 ## Segunda ronda — `upgrade/professional-rebuild`
 

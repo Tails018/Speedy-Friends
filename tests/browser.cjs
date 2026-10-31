@@ -193,6 +193,18 @@ let activeBrowser;
    assert.equal(r.wallet,false,route+' wallet visible');assert.equal(r.fab,false,route+' cafe button visible');
   }
  });
+ await test('Shared section navigation on pages that only linked to Inicio',async()=>{
+  const expected={'cafeteria.html':'cafeteria.html','cafe-worker.html':'cafeteria.html','cafe-creator.html':'cafeteria.html','novedades.html':'novedades.html','novedad.html':'novedades.html','novedades-admin.html':'novedades.html','friends.html':'friends.html'};
+  for(const [route,active] of Object.entries(expected)){
+   await page.goto(base+'/'+route);await page.waitForSelector('.sf-site-nav');
+   const r=await page.evaluate(()=>({links:[...document.querySelectorAll('.sf-site-nav a')].map(a=>a.getAttribute('href')),current:document.querySelector('.sf-site-nav [aria-current="page"]')?.getAttribute('href'),
+    visibleDup:[...document.querySelectorAll('header.top a, .sf-friends-top a')].filter(a=>!a.closest('.sf-site-nav')&&!a.matches('.brand,.sf-friends-brand')&&a.offsetParent&&/^(index|cafeteria|novedades)\.html$/.test(a.getAttribute('href')||'')&&!/VOLVER/i.test(a.textContent)).length}));
+   assert.equal(r.links.length,7,route);assert.equal(r.current,active,route);assert.equal(r.visibleDup,0,route+' duplicated links visible');
+  }
+  await page.goto(base+'/cafeteria.html');
+  // En móvil el CSS original de cafetería ya ocultaba «Carta»/«Mis tickets»: se comprueba que no se marcan como duplicados.
+  assert.equal(await page.locator('header.top a[href="#menu"]:not(.sf-dup-link)').count(),1,'page-specific links kept');
+ });
  await test('No uncaught JavaScript errors across the audited routes',async()=>assert.deepEqual(errors,[]));
  writeFileSync('docs/browser-verification.json',JSON.stringify({browser:browser.version(),report,errors,limitations:['External services blocked. Firebase login, live writes, uploads and real administrative permissions not exercised.','Rings use a read-only fixture. Home screenshots dismiss only the local presentation gate.','Chromium responsive emulation; not physical Android/iOS or cross-browser certification.']},null,2));
  await browser.close();

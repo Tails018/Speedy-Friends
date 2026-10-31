@@ -95,6 +95,32 @@
       document.addEventListener('visibilitychange', () => hero.classList.toggle('sf-fx-paused', document.hidden));
     }
 
+    // Navegación del portal en páginas cuya cabecera solo enlazaba a Inicio (cafetería, novedades,
+    // amigos): misma lista de secciones y estado activo que Fanarts. No sustituye la cabecera.
+    const siteHeader = document.querySelector('header.top, .sf-friends-top');
+    if (siteHeader && !siteHeader.querySelector('.sf-site-nav')) {
+      const file = (location.pathname.split('/').pop() || 'index.html').toLowerCase();
+      const section = { 'cafe-worker.html': 'cafeteria.html', 'cafe-creator.html': 'cafeteria.html', 'novedad.html': 'novedades.html', 'novedades-admin.html': 'novedades.html' }[file] || file;
+      const links = [['index.html', 'Inicio'], ['novedades.html', 'Novedades'], ['friends.html', 'Amigos'], ['ranking.html', 'Ranking'], ['fanarts.html', 'Fanarts'], ['cafeteria.html', 'Cafetería'], ['profile.html', 'Perfil']];
+      const nav = document.createElement('nav');
+      nav.className = 'sf-site-nav';
+      nav.setAttribute('aria-label', 'Secciones de Speedy Friends');
+      nav.innerHTML = links.map(([href, label]) => `<a href="${href}"${href === section ? ' aria-current="page"' : ''}>${label}</a>`).join('');
+      const brand = siteHeader.querySelector('.brand, .sf-friends-brand');
+      if (brand) brand.after(nav); else siteHeader.prepend(nav);
+      // Enlaces de la cabecera que ahora repite la barra (Inicio, Cafetería, Ver novedades…).
+      const siteFiles = new Set(links.map(([href]) => href));
+      siteHeader.querySelectorAll(':scope > div, :scope > nav:not(.sf-site-nav), .sf-friends-back').forEach(box => {
+        const own = box.matches('a') ? [box] : [...box.querySelectorAll('a[href]')];
+        const dup = own.filter(a => siteFiles.has((a.getAttribute('href') || '').split('#')[0]));
+        dup.forEach(a => a.classList.add('sf-dup-link'));
+        if (!box.matches('a') && own.length && dup.length === own.length) box.classList.add('sf-dup-link');
+      });
+      // En móvil la barra se desplaza en horizontal: la sección activa queda a la vista.
+      const current = nav.querySelector('[aria-current]');
+      if (current) nav.scrollLeft = Math.max(0, current.offsetLeft - (nav.clientWidth - current.offsetWidth) / 2);
+    }
+
     // Interruptor de efectos: en el panel «Accesos» (visible en todos los anchos) o,
     // si la página no lo tiene, junto al botón de tema. No altera el botón de tema.
     const themeToggle = document.querySelector('[data-theme-toggle]');

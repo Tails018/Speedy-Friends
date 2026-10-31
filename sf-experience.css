@@ -209,3 +209,55 @@ html[data-sf-theme="dark"] .admin-side-links a{background:#181818;color:#fff;bor
 
 /* ---------- Titulares condensados (Impact/Anton): con -0,06em las letras se tocaban ---------- */
 [data-sf-impact] h1{letter-spacing:-.012em!important;line-height:.86!important}
+
+/* ---------- Cabecera común en Cafetería, Novedades y Amigos ----------
+   Mismo logo y misma barra de secciones (insertada por sf-experience.js) que el resto del portal. */
+header.top .brand,.sf-friends-brand{font-family:SFDisplay,'Arial Black',Arial,sans-serif!important;font-size:18px!important;font-weight:900;
+  letter-spacing:-.04em!important;text-decoration:none;color:inherit;white-space:nowrap;flex:0 0 auto}
+header.top .brand b{color:var(--sf-red)!important;font-style:italic}
+.sf-friends-brand{color:var(--sf-red)}.sf-friends-brand em{color:#fff;font-style:normal}
+.sf-site-nav{display:flex;align-items:center;gap:2px;margin:0 auto 0 clamp(12px,3vw,40px);min-width:0;overflow-x:auto;scrollbar-width:none;-webkit-overflow-scrolling:touch}
+.sf-site-nav::-webkit-scrollbar{display:none}
+.sf-site-nav a{position:relative;padding:10px 10px;color:inherit;text-decoration:none;white-space:nowrap;opacity:.72;
+  font:900 10px/1 Arial,Helvetica,sans-serif!important;letter-spacing:.14em!important;text-transform:uppercase;transition:opacity .2s,color .2s}
+.sf-site-nav a::after{content:"";position:absolute;left:10px;right:10px;bottom:3px;height:2px;background:var(--sf-red);transform:scaleX(0);transform-origin:left;transition:transform .3s var(--sf-ease-out)}
+.sf-site-nav a:hover{opacity:1}.sf-site-nav a:hover::after{transform:scaleX(1)}
+.sf-site-nav a[aria-current="page"]{opacity:1;color:var(--sf-red)}
+.sf-site-nav a[aria-current="page"]::after{transform:scaleX(1)}
+.sf-dup-link{display:none!important}
+@media (max-width:760px){
+  header.top,.sf-friends-top{flex-wrap:wrap;height:auto!important;min-height:56px;row-gap:0;padding-top:10px!important;padding-bottom:0!important}
+  .sf-site-nav{order:3;flex:1 0 100%;margin:4px -4px 0;padding-bottom:4px;
+    -webkit-mask-image:linear-gradient(90deg,#000 88%,transparent);mask-image:linear-gradient(90deg,#000 88%,transparent)}
+  .sf-site-nav a{padding:12px 10px}
+}
+
+/* ---------- Botones fijos sin solaparse ---------- */
+/* Cafetería: el botón de cartera (#fab) y la píldora de tema compartían la esquina inferior derecha. */
+body:has(#fab) .sf-theme-toggle-global{bottom:80px!important}
+/* Cafetería móvil: el botón del tocadiscos tapaba la barra de secciones de dos filas. */
+@media (max-width:760px){.record-open-tab{top:auto!important;bottom:16px!important;left:12px!important}}
+
+/* ---------- Titulares que se partían en escritorio ---------- */
+/* Novedades: «NOVEDA/DES» en la columna izquierda de 1,2fr; el tamaño se ajusta a esa columna. */
+@media (min-width:761px){.mast h1{font-size:clamp(60px,6.6vw,120px)!important;overflow-wrap:normal}}
+/* Cafetería: «CLUB» quedaba pegado al párrafo. */
+.hero h1{margin-bottom:.18em}
+@media (max-width:560px){body .wrap>h1{line-height:.78!important}}
+
+/* ---------- Objetivos táctiles (WCAG 2.2: mínimo 24px; se apunta a ~40px en táctil) ---------- */
+@media (pointer:coarse){
+  .sf-theme-toggle-global,.sf-fx-toggle{min-height:40px}
+  .sf-more,.sf-brand,header.top .brand,.ranking-brand,.ost-brand,.admin-brand,.sf-friends-brand{display:inline-flex;align-items:center;min-height:40px}
+  .record-close{min-width:40px;min-height:40px}
+  /* Puntos del carrusel: el área táctil crece sin cambiar el punto visible. */
+  .swiper-pagination-bullet{position:relative}
+  .swiper-pagination-bullet::after{content:"";position:absolute;inset:-16px -8px}
+}
+@media (pointer:coarse){
+  a[href="#top"]{display:inline-flex;align-items:center;min-height:40px;padding-inline:8px}
+  #fanartSearch{min-height:44px}
+  #side #close{min-width:40px;min-height:40px}
+  /* Controles deslizantes: el carril se ve igual; la caja táctil crece. */
+  input[type="range"]{border-block:12px solid transparent!important;background-clip:padding-box!important;box-sizing:content-box}
+}
