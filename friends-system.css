@@ -157,7 +157,7 @@ body.sf-friends-page{
 .sf-guest-rank-row{opacity:1!important;transform:none!important;animation:none!important}
 .sf-f-guest-hero{display:grid;grid-template-columns:minmax(0,1fr) minmax(330px,.9fr);gap:18px;align-items:stretch}
 .sf-f-guest-hero>div:first-child{padding:28px;background:linear-gradient(145deg,#17181d,#23242a);color:#fff;border:1px solid rgba(255,255,255,.06);box-shadow:0 25px 70px rgba(0,0,0,.18)}
-.sf-f-guest-hero h2{margin:7px 0 14px;font-family:Impact,"Arial Black",sans-serif;font-size:clamp(42px,6vw,78px);line-height:.82;letter-spacing:-.05em}
+.sf-f-guest-hero h2{margin:7px 0 14px;font-family:Impact,"Arial Black",sans-serif;font-size:clamp(42px,6vw,78px);line-height:.86;letter-spacing:-.012em}
 .sf-f-guest-hero h2 em{font-style:normal;color:#e7c66b}
 .sf-f-guest-hero>div:first-child>p:not(.sf-friends-kicker){max-width:540px;font-size:10px;line-height:1.75;color:rgba(255,255,255,.62)}
 .sf-f-guest-preview{display:grid;gap:8px}

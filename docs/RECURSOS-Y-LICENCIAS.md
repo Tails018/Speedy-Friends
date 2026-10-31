@@ -23,3 +23,12 @@ Se priorizó el material que el sitio ya tenía para conservar identidad y evita
 `vendor/jquery-3.7.1.min.js` y Swiper 11.2.4 conservan sus avisos MIT y no se actualizan. Los cambios a los CSS de vendor se limitan a las rutas locales de sus imágenes; no se declara que los CSS de origen SEGA tengan licencia MIT. Los demás CSS de vendor siguen presentes aunque no estén activos en todas las páginas.
 
 Playwright Core 1.58.2 se añade solo para pruebas de desarrollo, con su licencia Apache-2.0 incluida por el paquete. Se reutilizó un navegador local ya instalado. No se empaqueta Playwright ni Chromium como parte del frontend servido.
+
+## Fuentes de respaldo (añadidas en `upgrade/visual-system`)
+
+| Archivo | Fuente | Licencia | Origen |
+|---|---|---|---|
+| `assets/fonts/archivo-black-latin.woff2` | Archivo Black 400, subconjunto latin | SIL OFL 1.1 (`assets/fonts/OFL-ArchivoBlack.txt`) | `@fontsource/archivo-black@5.3.0` (npm) |
+| `assets/fonts/anton-latin.woff2` | Anton 400, subconjunto latin | SIL OFL 1.1 (`assets/fonts/OFL-Anton.txt`) | `@fontsource/anton@5.3.0` (npm) |
+
+Se usan solo como respaldo de `SFDisplay`/`Arial Black` e `Impact` en dispositivos que no tienen esas fuentes (Android, iOS, Linux). Windows sigue usando sus fuentes locales.

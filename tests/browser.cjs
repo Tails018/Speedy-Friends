@@ -184,6 +184,15 @@ let activeBrowser;
   });
   assert.deepEqual(result,{globalPausedByOther:true,otherPausedByGlobal:true});
  });
+ await test('Mobile: headlines fit the screen and the cafe wallet stays hidden without a cafe role',async()=>{
+  for(const route of ['cafe-worker.html','cafe-creator.html','ranking.html','novedad.html','novedades-admin.html']){
+   await page.goto(base+'/'+route);await page.waitForTimeout(500);
+   const r=await page.evaluate(()=>{const h=document.querySelector('h1');const wallet=document.getElementById('sf-cafe-role-wallet');const fab=document.getElementById('sf-cafe-rw-fab');
+    return {overflow:h?Math.round(h.getBoundingClientRect().right-innerWidth):0,wallet:wallet?getComputedStyle(wallet).opacity!=='0'&&!wallet.classList.contains('is-hidden'):false,fab:fab?getComputedStyle(fab).display!=='none':false};});
+   assert.ok(r.overflow<=2,route+' h1 overflows by '+r.overflow);
+   assert.equal(r.wallet,false,route+' wallet visible');assert.equal(r.fab,false,route+' cafe button visible');
+  }
+ });
  await test('No uncaught JavaScript errors across the audited routes',async()=>assert.deepEqual(errors,[]));
  writeFileSync('docs/browser-verification.json',JSON.stringify({browser:browser.version(),report,errors,limitations:['External services blocked. Firebase login, live writes, uploads and real administrative permissions not exercised.','Rings use a read-only fixture. Home screenshots dismiss only the local presentation gate.','Chromium responsive emulation; not physical Android/iOS or cross-browser certification.']},null,2));
  await browser.close();

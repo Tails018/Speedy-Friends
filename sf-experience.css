@@ -13,6 +13,18 @@
   --sf-ease-snap:cubic-bezier(.2,.9,.25,1.25);
 }
 
+/* ---------- Tipografía de marca en todos los dispositivos ----------
+   SFDisplay era solo local('Arial Black') e Impact solo la fuente de Windows: en Android/iOS los
+   titulares caían a una sans regular. Se mantiene la fuente local y se añade respaldo OFL
+   (assets/fonts, ver docs/RECURSOS-Y-LICENCIAS.md). */
+@font-face{font-family:SFDisplay;src:local('Arial Black'),local('ArialBlack'),url('assets/fonts/archivo-black-latin.woff2') format('woff2');font-weight:100 1000;font-display:swap}
+@font-face{font-family:Impact;src:local('Impact'),url('assets/fonts/anton-latin.woff2') format('woff2');font-display:swap}
+@font-face{font-family:'Arial Black';src:local('Arial Black'),local('ArialBlack'),url('assets/fonts/archivo-black-latin.woff2') format('woff2');font-weight:100 1000;font-display:swap}
+
+/* Impact solo tiene un grosor: con font-weight 700 el navegador lo engrosaba artificialmente y,
+   con el interletrado negativo, las letras se montaban («NOVEDADES CONTROL»). */
+h1,h2,h3{font-synthesis:none}
+
 /* ---------- Transiciones entre páginas (View Transitions entre documentos) ---------- */
 @view-transition{navigation:auto}
 ::view-transition-old(root){animation:sfVtOut .26s cubic-bezier(.4,0,1,1) both}
@@ -162,6 +174,30 @@ html[data-sf-theme="dark"] .sf-hero-copy>p:not(.eyebrow){background:rgba(14,16,2
    cambiaba el área visible (CLS 0,257 intermitente). Se posiciona con transform desde 0,0. ---------- */
 .sf-bg.sf-bg-b{top:0;left:0;bottom:auto;transform:translate3d(-20vw,calc(90vh - 40vw + var(--parallax-y,0px)),0)}
 
+/* ---------- Titulares que no caben en móvil: se partían a mitad de palabra
+   («TRABAJAD/OR», «INTEGRA/NTES») porque el mínimo era de 64–72px. ---------- */
+@media (max-width:560px){
+  body .wrap>h1,body main>h1{font-size:clamp(40px,12.5vw,64px)}
+  .ranking-title{font-size:clamp(40px,11.5vw,72px)!important}
+  h1{overflow-wrap:normal;word-break:normal;hyphens:manual}
+}
+
+/* ---------- Panel de staff: insignia y accesos sin estilo ---------- */
+.admin-role-badge{display:inline-flex;align-items:center;gap:8px;margin:18px clamp(16px,4vw,48px) 0;padding:7px 12px;border-radius:999px;
+  background:var(--sf-ink);color:#fff;font:900 10px/1 Arial,Helvetica,sans-serif;letter-spacing:.14em}
+.admin-role-badge::before{content:"";width:7px;height:7px;border-radius:50%;background:var(--sf-ring)}
+.admin-side-links{display:grid;gap:6px;margin:12px 0}
+.admin-side-links a{display:flex;align-items:center;justify-content:space-between;padding:11px 12px;border:1px solid rgba(18,18,18,.1);
+  background:#fff;color:#171717;text-decoration:none;font:900 10px/1.2 Arial,Helvetica,sans-serif;letter-spacing:.1em;text-transform:uppercase;
+  transition:border-color .2s,transform .2s var(--sf-ease-out)}
+.admin-side-links a::after{content:"↗";color:var(--sf-red)}
+.admin-side-links a:hover{border-color:var(--sf-red);transform:translateX(3px)}
+html[data-sf-theme="dark"] .admin-side-links a{background:#181818;color:#fff;border-color:#2c2c2c}
+
+/* ---------- Widget de cafetería: textos de 5–6px ilegibles ---------- */
+.sf-cafe-rw-kicker,.sf-cafe-rw-top span,.sf-cafe-rw-wallet span,.sf-cafe-rw-wallet small{font-size:10px!important}
+.sf-cafe-rw-actions a{font-size:10px!important;padding:11px 8px!important}
+
 /* ---------- Ranking: reserva espacio mientras llegan los datos (evita CLS) ---------- */
 /* Creadores/administradores sin filas: el script las oculta al recibir datos; se ocultan desde el inicio. */
 #creator-ranking-section:has(#creator-ranking-list:empty),
@@ -170,3 +206,6 @@ html[data-sf-theme="dark"] .sf-hero-copy>p:not(.eyebrow){background:rgba(14,16,2
 .ranking-ghost{top:clamp(56px,8vw,120px)!important}
 #member-ranking-list:empty{min-height:340px;display:grid;place-items:center}
 #member-ranking-list:empty::before{content:"Cargando ranking…";font:900 10px/1 Arial,Helvetica,sans-serif;letter-spacing:.14em;color:#8a8a8a;text-transform:uppercase}
+
+/* ---------- Titulares condensados (Impact/Anton): con -0,06em las letras se tocaban ---------- */
+[data-sf-impact] h1{letter-spacing:-.012em!important;line-height:.86!important}

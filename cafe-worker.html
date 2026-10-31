@@ -118,10 +118,12 @@ document.addEventListener('DOMContentLoaded',()=>{
   }
  };
 
+ let bootTries=0;
  const tryBoot=()=>{
    if(window.SpeedyFirebase?.current?.uid && window.SpeedyCafe){
      boot();
-   }else{
+   }else if(!window.SpeedyFirebase?.current?.checked && ++bootTries<40){
+     // Solo mientras Firebase no haya respondido (máx. 10 s); después deciden los eventos.
      window.setTimeout(tryBoot,250);
    }
  };
@@ -135,7 +137,7 @@ document.addEventListener('DOMContentLoaded',()=>{
  document.addEventListener('speedy:cafe-ready',boot,{once:true});if(window.SpeedyFirebase?.current?.uid)boot();
 });
 </script>
-<div id="sf-cafe-role-wallet" aria-live="polite">
+<div id="sf-cafe-role-wallet" class="is-hidden" aria-live="polite">
   <div class="sf-cafe-rw-kicker">SPEEDY CAFÉ / ACCESO</div>
   <div class="sf-cafe-rw-top">
     <div><strong id="sf-cafe-rw-role">CAFETERÍA</strong><span id="sf-cafe-rw-user">—</span></div>
@@ -186,6 +188,8 @@ document.addEventListener('DOMContentLoaded',()=>{
 
   const hide=()=>{panel.classList.add('is-hidden');fab.style.display='block'};
   const show=()=>{panel.classList.remove('is-hidden');fab.style.display='none'};
+  // Sin rol de cafetería no hay panel ni botón (antes quedaba un ☕ que abría un panel vacío).
+  const off=()=>{panel.classList.add('is-hidden');fab.style.display='none'};
   close.onclick=hide; fab.onclick=show;
 
   const apply=async()=>{
@@ -193,15 +197,15 @@ document.addEventListener('DOMContentLoaded',()=>{
       const sf=window.SpeedyFirebase;
       if(!sf?.resolve || !window.SpeedyCafe) return;
       const state=await sf.resolve();
-      if(!state?.uid){hide();return}
+      if(!state?.uid){off();return}
       let role='';
       if(state.isCreator)role='creator';
       else role=await SpeedyCafe.role();
 
-      if(!['creator','worker'].includes(role)){hide();return}
+      if(!['creator','worker'].includes(role)){off();return}
 
-      panel.classList.remove('is-hidden');
-      fab.style.display='none';
+      // En móvil el panel taparía media pantalla: se muestra plegado en el botón ☕.
+      if(!panel.dataset.sfOpened){panel.dataset.sfOpened='1';if(matchMedia('(max-width:560px)').matches)hide();else show();}
       roleEl.textContent=role==='creator'?'CAFÉ · CREADORA':'CAFÉ · TRABAJADOR';
       const profile=state.profile||SpeedyCafe.profile()||{};
       userEl.textContent=profile.nickname||profile.username||profile.name||state.email||'Cuenta activa';
@@ -225,7 +229,7 @@ document.addEventListener('DOMContentLoaded',()=>{
       ringsEl.textContent=Number.isFinite(rings)?rings.toLocaleString('en-US'):'0';
     }catch(error){
       console.warn('[Café role wallet]',error);
-      hide();
+      off();
     }
   };
 

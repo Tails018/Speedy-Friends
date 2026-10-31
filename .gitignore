@@ -3,3 +3,4 @@ test-results/
 .browser-profile/
 *.log
 .claude/
+.shots/

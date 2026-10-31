@@ -70,6 +70,10 @@
       "status": "passed"
     },
     {
+      "name": "Mobile: headlines fit the screen and the cafe wallet stays hidden without a cafe role",
+      "status": "passed"
+    },
+    {
       "name": "No uncaught JavaScript errors across the audited routes",
       "status": "passed"
     }
