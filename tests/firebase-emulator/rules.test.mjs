@@ -1,7 +1,7 @@
 import { readFileSync } from 'node:fs';
 import { before, beforeEach, after, test } from 'node:test';
 import { initializeTestEnvironment, assertSucceeds, assertFails } from '@firebase/rules-unit-testing';
-import { ref, get, set } from 'firebase/database';
+import { ref, get, set, update, remove } from 'firebase/database';
 
 const projectId = 'demo-speedy-friends';
 const base = 'speedy-friends-teams/speedy-friends';
@@ -21,7 +21,7 @@ beforeEach(async () => {
   await env.clearDatabase();
   await env.withSecurityRulesDisabled(async context => {
     await set(ref(context.database(), base), {
-      users: { aliceProfile: { ownerUid: 'alice', ownerEmail: 'alice@example.test', nickname: 'Alice' } },
+      users: { aliceProfile: { ownerUid: 'alice', ownerEmail: 'alice@example.test', nickname: 'Alice' }, mallory: { ownerUid: 'mallory', ownerEmail: 'mallory@example.test', role: 'admin' } },
       rings: { aliceProfile: 50 },
       permissions: { admin: { role: 'admin' } },
       ringHistory: { one: { amount: 50 } }
@@ -63,4 +63,22 @@ test('usuario nuevo no puede crear un perfil con rol administrativo', async () =
 });
 test('usuario nuevo puede crear un perfil normal', async () => {
   await assertSucceeds(set(ref(db('mallory'), path('users/malloryProfile')), { ownerUid: 'mallory', ownerEmail: 'mallory@example.test', role: 'Runner', rings: 0 }));
+});
+
+test('un rol manipulado en un perfil legado no autoriza publicar novedades', async () => {
+  const item = {id:'n1', title:'Noticia', category:'INFO', date:'2026-01-01', summary:'Resumen', body:'Texto', published:true};
+  await assertFails(set(ref(db('mallory'), path('news/n1')), item));
+});
+test('administrador autorizado en permissions puede publicar novedades', async () => {
+  const item = {id:'n1', title:'Noticia', category:'INFO', date:'2026-01-01', summary:'Resumen', body:'Texto', published:true};
+  await assertSucceeds(set(ref(db('admin'), path('news/n1')), item));
+});
+test('escritura multirruta no permite cambiar identidad de otro perfil', async () => {
+  await assertFails(update(ref(db('mallory'), path('users')), {
+    'aliceProfile/ownerUid': 'mallory', 'aliceProfile/ownerEmail': 'mallory@example.test'
+  }));
+});
+test('no se puede borrar el perfil de otro usuario ni borrar el ownerUid propio', async () => {
+  await assertFails(remove(ref(db('mallory'), path('users/aliceProfile'))));
+  await assertFails(remove(ref(db('alice'), path('users/aliceProfile/ownerUid'))));
 });
