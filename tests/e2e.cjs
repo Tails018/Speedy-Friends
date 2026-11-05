@@ -451,6 +451,29 @@ const waitReady=page=>page.waitForFunction(()=>window.SpeedyFirebase?.current?.c
    await page.waitForFunction(()=>sessionStorage.getItem('sfPublicRanking:v1')===null,null,{timeout:4000});
    await ctx.close();
   });
+
+  await test('Ranking animates a Rings change in place (FLIP + gold pulse) and stays still with reduced motion',async()=>{
+   const seed=JSON.parse(JSON.stringify(SEED));
+   const ctx=await newContext(browser,{session:CREATOR,seed});const page=await ctx.newPage();
+   await page.emulateMedia({reducedMotion:'no-preference'});
+   await page.addInitScript(()=>{try{localStorage.setItem('sfFx','full')}catch{}});
+   await page.goto(base+'/ranking.html');await waitReady(page);
+   await page.waitForFunction(()=>document.querySelectorAll('.member-ranking-section [data-profile-id]').length===2,null,{timeout:8000});
+   await page.waitForTimeout(300);
+   await page.evaluate(()=>{window.__anim=[];const orig=Element.prototype.animate;Element.prototype.animate=function(...a){window.__anim.push(this.dataset?.profileId||'');return orig.apply(this,a)};});
+   await page.evaluate(p=>firebase.database().ref(p).set(900),T+'/rings/user-bob');
+   await page.waitForFunction(()=>document.querySelector('.member-ranking-section [data-profile-id]')?.dataset.profileId==='user-bob',null,{timeout:6000});
+   await page.waitForFunction(()=>window.__anim.includes('user-bob')||window.__anim.includes('user-alice'),null,{timeout:3000});
+   await page.waitForSelector('[data-profile-id="user-bob"] .rank-rings strong.sf7-bump',{timeout:3000}).catch(()=>{});
+   assert.equal(await page.locator('.member-ranking-section [data-profile-id]').count(),2,'list never emptied');
+   await page.emulateMedia({reducedMotion:'reduce'});
+   await page.evaluate(()=>{window.__anim=[]});
+   await page.evaluate(p=>firebase.database().ref(p).set(1),T+'/rings/user-bob');
+   await page.waitForFunction(()=>document.querySelector('.member-ranking-section [data-profile-id]')?.dataset.profileId==='user-alice',null,{timeout:6000});
+   await page.waitForTimeout(200);
+   assert.deepEqual(await page.evaluate(()=>window.__anim),[],'no motion when reduced');
+   await ctx.close();
+  });
   await browser.close();
  }
  fs.mkdirSync('test-results',{recursive:true});

@@ -14,3 +14,58 @@
 .video-preview.has-clip video{display:block;width:100%;height:100%;object-fit:cover;background:#000}
 .video-preview.has-clip span{max-width:calc(100% - 30px);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;pointer-events:none}
 @media (prefers-reduced-motion:reduce){.sf-clip-chip{transition:none}.sf-clip-chip:hover{transform:none}}
+
+/* ===== Identidad V7: azul profundo + oro de Rings =====
+ * Paleta: navy #0B1D4D / azul #1E3A8A / oro #F5B800 (sobre oscuro, 9:1) / oro tinta #A16207
+ * (texto dorado sobre claro, ≥4.5:1). Rojo de marca solo como acento. */
+:root{--sf7-navy:#0b1d4d;--sf7-navy-2:#132a6b;--sf7-blue:#1e3a8a;--sf7-gold:#f5b800;--sf7-gold-ink:#a16207;--sf7-silver:#8a97b0;--sf7-bronze:#b8642a;--sf7-red:#ef263f;--sf7-ease:cubic-bezier(.16,1,.3,1);--sf7-fast:160ms;--sf7-mid:280ms}
+
+/* Foco visible y consistente en toda la plataforma */
+:where(a,button,input,select,textarea,summary,[tabindex]:not([tabindex="-1"])):focus-visible{outline:3px solid var(--sf7-gold)!important;outline-offset:3px;box-shadow:0 0 0 6px rgba(11,29,77,.35)}
+
+/* Barra de navegación compartida: indicador diagonal azul→oro */
+.sf-site-nav a::after{height:3px;background:linear-gradient(90deg,var(--sf7-blue),var(--sf7-gold));transform:scaleX(0) skewX(-24deg)}
+.sf-site-nav a:hover::after,.sf-site-nav a[aria-current="page"]::after{transform:scaleX(1) skewX(-24deg)}
+.sf-site-nav a[aria-current="page"]{color:inherit;opacity:1}
+.sf-site-nav a[aria-current="page"]::before{content:"";position:absolute;left:2px;top:50%;width:4px;height:4px;margin-top:-2px;background:var(--sf7-gold);transform:rotate(45deg)}
+
+/* Barra de navegación entre páginas: estela de velocidad */
+.sf-speedbar{background:linear-gradient(90deg,var(--sf7-blue),var(--sf7-gold) 70%,#fff)!important}
+
+/* Microinteracciones de botones: respuesta táctil inmediata (transform) */
+:where(.sf-btn,.admin-btn,.ranking-filter,.fanart-filter,.activity-filter,.sf-clip-chip,.library-tab){transition:transform var(--sf7-fast) var(--sf7-ease),background-color var(--sf7-fast),color var(--sf7-fast),border-color var(--sf7-fast)}
+:where(.sf-btn,.admin-btn,.ranking-filter,.fanart-filter,.activity-filter,.sf-clip-chip):active{transform:scale(.96)}
+
+/* Ranking: podio Rings y números dorados */
+.member-ranking-section .rank-row{position:relative;transition:box-shadow var(--sf7-mid) var(--sf7-ease),transform var(--sf7-mid) var(--sf7-ease)}
+.member-ranking-section .rank-row:hover{transform:translateX(4px);box-shadow:inset 4px 0 0 var(--sf7-gold)}
+.member-ranking-section .rank-row[data-position="01"]{box-shadow:inset 5px 0 0 var(--sf7-gold);background-image:linear-gradient(100deg,rgba(245,184,0,.16),transparent 46%)}
+.member-ranking-section .rank-row[data-position="02"]{box-shadow:inset 5px 0 0 var(--sf7-silver);background-image:linear-gradient(100deg,rgba(138,151,176,.16),transparent 46%)}
+.member-ranking-section .rank-row[data-position="03"]{box-shadow:inset 5px 0 0 var(--sf7-bronze);background-image:linear-gradient(100deg,rgba(184,100,42,.14),transparent 46%)}
+.member-ranking-section .rank-row[data-position="01"] .rank-no{color:var(--sf7-gold-ink)}
+.member-ranking-section .rank-row[data-position="02"] .rank-no{color:#5b6680}
+.member-ranking-section .rank-row[data-position="03"] .rank-no{color:var(--sf7-bronze)}
+.rank-rings strong{display:inline-block;font-variant-numeric:tabular-nums;white-space:nowrap}
+.rank-rings strong.sf7-bump{animation:sf7Bump .6s var(--sf7-ease)}
+.rank-row.sf7-up{animation:sf7Up .9s var(--sf7-ease)}
+@keyframes sf7Bump{0%{transform:scale(1)}35%{transform:scale(1.22);color:var(--sf7-gold-ink)}100%{transform:scale(1)}}
+@keyframes sf7Up{0%{box-shadow:inset 5px 0 0 var(--sf7-gold),0 0 0 2px rgba(245,184,0,.55)}100%{box-shadow:inset 0 0 0 transparent,0 0 0 0 transparent}}
+
+/* Diálogos: apertura con profundidad (transform/opacity) */
+dialog[open]{animation:sf7Pop var(--sf7-mid) var(--sf7-ease)}
+dialog[open]::backdrop{animation:sf7Fade var(--sf7-mid) ease-out}
+@keyframes sf7Pop{from{opacity:0;transform:translateY(14px) scale(.97)}to{opacity:1;transform:none}}
+@keyframes sf7Fade{from{opacity:0}to{opacity:1}}
+
+/* Paneles del admin y pestañas: transición al cambiar de sección */
+.admin-section.active{animation:sf7Panel var(--sf7-mid) var(--sf7-ease)}
+@keyframes sf7Panel{from{opacity:0;transform:translateX(12px)}to{opacity:1;transform:none}}
+.admin-side-btn.active{box-shadow:inset 4px 0 0 var(--sf7-gold)}
+
+/* Movimiento reducido o modo ligero: sin animaciones decorativas */
+@media (prefers-reduced-motion:reduce){
+ .rank-rings strong.sf7-bump,.rank-row.sf7-up,dialog[open],dialog[open]::backdrop,.admin-section.active{animation:none!important}
+ .member-ranking-section .rank-row:hover{transform:none}
+ :where(.sf-btn,.admin-btn,.ranking-filter,.fanart-filter,.activity-filter,.sf-clip-chip):active{transform:none}
+}
+html[data-sf-fx="lite"] .rank-rings strong.sf7-bump,html[data-sf-fx="lite"] .rank-row.sf7-up,html[data-sf-fx="lite"] dialog[open],html[data-sf-fx="lite"] .admin-section.active{animation:none!important}
