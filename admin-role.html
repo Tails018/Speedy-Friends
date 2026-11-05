@@ -105,6 +105,18 @@
     animation:none!important
   }
 }
+/* V7: Actividad real */
+.activity-toolbar{display:flex;flex-wrap:wrap;gap:8px;margin:4px 0 6px}
+.activity-filter{appearance:none;min-height:40px;padding:10px 16px;border:1px solid rgba(18,18,18,.14);background:#fff;color:var(--aink,#151515);font:900 10px/1 inherit;letter-spacing:.12em;text-transform:uppercase;cursor:pointer;clip-path:polygon(0 0,100% 0,100% 70%,92% 100%,0 100%);transition:background .2s,color .2s,transform .2s}
+.activity-filter:hover{transform:translateY(-1px)}
+.activity-filter.active{background:var(--ablue,#233d8f);color:#fff;border-color:var(--ablue,#233d8f)}
+.activity-filter:focus-visible{outline:3px solid #f5b800;outline-offset:2px}
+.activity-note{margin:8px 0 0;padding:10px 12px;border-left:3px solid #f5b800;background:rgba(245,184,0,.1);font-size:12px;line-height:1.5}
+.activity-feed .audit-time time{display:grid;gap:2px}.activity-feed .audit-time small{font-size:10px;font-weight:700;opacity:.62;text-transform:uppercase}
+.activity-feed .activity-rings{border-left:3px solid #f5b800}.activity-feed .activity-cafe{border-left:3px solid var(--ared,#ef263f)}
+.activity-feed .audit-main span{overflow-wrap:anywhere}
+@media (prefers-reduced-motion:reduce){.activity-filter{transition:none}.activity-filter:hover{transform:none}}
+
 </style>
 <div class="sf-page-loader" id="sf-page-loader" aria-live="polite" aria-busy="true">
   <div class="sf-loader-orbit" aria-hidden="true"></div>
@@ -660,6 +672,8 @@ body.admin-profile-open{overflow:hidden}
 @media(max-width:1000px){.admin-quick-rings{grid-template-columns:1fr 1fr}.admin-quick-rings>div{grid-column:1/-1}.admin-quick-rings .admin-btn{min-height:44px}}
 @media(max-width:680px){.admin-quick-rings{grid-template-columns:1fr 1fr;padding:11px}.admin-quick-rings select,.admin-quick-rings input{grid-column:1/-1}.admin-quick-rings .admin-btn{width:100%;min-height:46px}.admin-quick-rings strong{font-size:31px}}
 </style>
+<link rel="stylesheet" href="sf-v7.css">
+<script defer src="sf-v7.js"></script>
 </head>
 <body data-admin-mode="staff" class="admin-page staff-admin">
 <main class="admin-shell"><div class="admin-role-badge">ROLE ADMIN</div>
@@ -743,8 +757,10 @@ body.admin-profile-open{overflow:hidden}
     <div id="admin-news-list" class="user-list" style="margin-top:16px"></div>
   </div>
 </section>
-<section class="admin-section" id="audit"><div class="admin-section-head"><div><p class="admin-kicker">Team Log</p><h2>Actividad</h2></div><p>Historial de cambios</p></div>
-<div class="audit-list"><div class="audit-row"><div class="audit-time">18:42</div><div class="audit-main"><strong>Runner</strong><span>permiso Rings activado</span></div><div class="audit-delta">✓</div></div><div class="audit-row"><div class="audit-time">18:31</div><div class="audit-main"><strong>Dash</strong><span>+250 Rings · evento semanal</span></div><div class="audit-delta">+250</div></div><div class="audit-row"><div class="audit-time">17:58</div><div class="audit-main"><strong>Nova</strong><span>nuevo integrante registrado</span></div><div class="audit-delta">NEW</div></div></div>
+<section class="admin-section" id="audit"><div class="admin-section-head"><div><p class="admin-kicker">Team Log</p><h2>Actividad</h2></div><p id="activity-summary">Historial real del team</p></div>
+<div class="activity-toolbar" role="group" aria-label="Filtrar actividad"><button type="button" class="activity-filter active" data-activity-filter="all" aria-pressed="true">Todo</button><button type="button" class="activity-filter" data-activity-filter="rings" aria-pressed="false">Rings</button><button type="button" class="activity-filter" data-activity-filter="cafe" aria-pressed="false">Cafetería</button></div>
+<p class="activity-note" id="activity-note" hidden></p>
+<div class="audit-list activity-feed" id="activity-feed" role="list" aria-live="polite" aria-busy="true"><div class="admin-empty-live">Cargando actividad…</div></div>
 </section>
 </section>
 </section>
@@ -1031,13 +1047,107 @@ body.admin-profile-open{overflow:hidden}
       return `<div class="audit-row"><div class="audit-time">${d}</div><div class="audit-main"><strong>${esc(x.byEmail||x.byUid||'Admin')}</strong><span>${x.delta>=0?'Añadió':'Quitó'} ${Math.abs(n(x.delta))} Rings${x.reason?` · ${esc(x.reason)}`:''}</span></div><div class="audit-delta">${x.delta>=0?'+':''}${n(x.delta)}</div></div>`;
     }).join('');
   }
-  function renderAdminAudit(entries){
-    const section=document.querySelector('#audit .audit-list'); if(!section)return;
-    section.innerHTML=entries.slice(-18).reverse().map(x=>{
-      const d=x.at?new Date(x.at).toLocaleTimeString('es-PE',{hour:'2-digit',minute:'2-digit'}):'--:--';
-      return `<div class="audit-row"><div class="audit-time">${d}</div><div class="audit-main"><strong>${esc(x.byEmail||x.byUid||'Admin')}</strong><span>${x.delta>=0?'＋':'−'}${Math.abs(n(x.delta))} Rings${x.reason?` · ${esc(x.reason)}`:''}</span></div><div class="audit-delta">${x.delta>=0?'+R':'-R'}</div></div>`;
+  // Actividad real: historial de Rings (creadora y admins) y actividad de Cafetería (creadora y
+  // equipo de cafetería según las reglas de referencia). Solo se descargan los últimos registros.
+  const activity={filter:'all',rings:{state:'loading',items:[]},cafe:{state:'loading',items:[]},unsub:[]};
+  const activityFeed=document.getElementById('activity-feed');
+  const activityNote=document.getElementById('activity-note');
+  const activitySummary=document.getElementById('activity-summary');
+  const ACTIVITY_LIMIT=60;
+  const statusLabel={pendiente:'pendiente',preparando:'en preparación',listo:'listo',servido:'servido',cancelado:'cancelado',rechazado:'rechazado'};
+  function nameForUid(uid){
+    const u=Object.values(currentUsers).find(x=>String(x?.ownerUid||'')===String(uid||''));
+    return u?(u.nickname||u.username||u.name):'';
+  }
+  function nameForProfile(id){const u=currentUsers[id];return u?(u.nickname||u.username||u.name):'';}
+  function activityRows(){
+    const rows=[];
+    if(activity.filter!=='cafe')for(const x of activity.rings.items){
+      const d=Math.trunc(n(x.delta));
+      rows.push({kind:'rings',at:n(x.at),actor:x.byEmail===sf.current?.email?'Tú':(nameForUid(x.byUid)||x.byEmail||'Admin'),
+        text:`${d>=0?'Añadió':'Quitó'} ${Math.abs(d)} Rings a ${nameForProfile(x.userId)||'un integrante'}${x.reason?` · ${x.reason}`:''}`,badge:`${d>=0?'+':'−'}${Math.abs(d)}`});
+    }
+    if(activity.filter!=='rings')for(const x of activity.cafe.items){
+      if(x.type==='order_created')rows.push({kind:'cafe',at:n(x.at),actor:x.nickname||x.username||nameForUid(x.ownerUid)||'Integrante',text:`Pidió ${Math.max(1,n(x.qty))} × ${x.itemName||'bebida'}`,badge:'TICKET'});
+      else if(x.type==='order_status')rows.push({kind:'cafe',at:n(x.at),actor:x.byName||nameForUid(x.byUid)||'Cafetería',text:`Marcó un pedido como ${statusLabel[x.status]||x.status||'actualizado'}`,badge:'CAFÉ'});
+      else rows.push({kind:'cafe',at:n(x.at),actor:x.byName||x.username||'Cafetería',text:String(x.type||'Actividad de cafetería').replace(/_/g,' '),badge:'CAFÉ'});
+    }
+    return rows.sort((a,b)=>b.at-a.at).slice(0,40);
+  }
+  function renderActivity(){
+    if(!activityFeed)return;
+    const sources=activity.filter==='all'?[activity.rings,activity.cafe]:[activity.filter==='rings'?activity.rings:activity.cafe];
+    const loading=sources.some(x=>x.state==='loading');
+    const notes=[];
+    if(activity.filter!=='cafe'&&activity.rings.state==='error')notes.push('No se pudo leer el historial de Rings con tu cuenta.');
+    if(activity.filter!=='rings'&&activity.cafe.state==='denied')notes.push('La actividad de Cafetería solo es visible para la creadora y el equipo de cafetería.');
+    if(activity.filter!=='rings'&&activity.cafe.state==='error')notes.push('No se pudo leer la actividad de Cafetería.');
+    if(activityNote){activityNote.hidden=!notes.length;activityNote.textContent=notes.join(' ');}
+    const rows=activityRows();
+    activityFeed.setAttribute('aria-busy',String(loading&&!rows.length));
+    if(activitySummary)activitySummary.textContent=rows.length?`${rows.length} movimientos recientes`:'Historial real del team';
+    if(!rows.length){
+      activityFeed.innerHTML=`<div class="admin-empty-live" role="status">${loading?'Cargando actividad…':(sources.every(x=>x.state!=='ready')?'Sin acceso a esta actividad.':'Todavía no hay movimientos registrados.')}</div>`;
+      return;
+    }
+    activityFeed.innerHTML=rows.map(x=>{
+      const date=x.at?new Date(x.at):null;
+      const time=date?date.toLocaleTimeString('es-PE',{hour:'2-digit',minute:'2-digit'}):'--:--';
+      const day=date?date.toLocaleDateString('es-PE',{day:'2-digit',month:'short'}):'';
+      return `<div class="audit-row activity-${x.kind}" role="listitem"><div class="audit-time"><time datetime="${date?date.toISOString():''}">${esc(time)}<small>${esc(day)}</small></time></div><div class="audit-main"><strong>${esc(x.actor)}</strong><span>${esc(x.text)}</span></div><div class="audit-delta">${esc(x.badge)}</div></div>`;
     }).join('');
   }
+  document.querySelectorAll('[data-activity-filter]').forEach(btn=>btn.addEventListener('click',()=>{
+    activity.filter=btn.dataset.activityFilter;
+    document.querySelectorAll('[data-activity-filter]').forEach(b=>{const on=b===btn;b.classList.toggle('active',on);b.setAttribute('aria-pressed',String(on));});
+    renderActivity();
+  }));
+  function bootActivity(){
+    const cafeRef=sf.db.ref(`speedy-friends-teams/${sf.REALTIME_CONFIG?.teamId||'speedy-friends'}/cafeteria/activity`).orderByKey().limitToLast(ACTIVITY_LIMIT);
+    if(sf.current?.isCreator){
+      const handler=cafeRef.on('value',snap=>{activity.cafe={state:'ready',items:Object.values(snap.val()||{})};renderActivity();},()=>{activity.cafe={state:'error',items:[]};renderActivity();});
+      activity.unsub.push(()=>cafeRef.off('value',handler));
+    }else activity.cafe={state:'denied',items:[]};
+    renderActivity();
+  }
+
+  // Identidad real: lee y guarda siteSettings. Las reglas de referencia solo permiten escribir a la
+  // creadora y exigen title y subtitle como texto; aquí se valida antes para dar errores claros.
+  function bootIdentity(){
+    const form=document.getElementById('identity-form'); if(!form||bootIdentity.done)return; bootIdentity.done=true;
+    const title=document.getElementById('identity-title'),subtitle=document.getElementById('identity-subtitle');
+    const status=document.getElementById('identity-status'),save=document.getElementById('save-identity');
+    const pTitle=document.getElementById('identity-preview-title'),pSub=document.getElementById('identity-preview-sub');
+    const canEdit=!!sf.current?.isCreator;
+    let saved=null,saving=false;
+    const preview=()=>{pTitle.textContent=title.value.trim()||'Speedy Friends Community Hub';pSub.textContent=subtitle.value.trim()||'Community Hub';};
+    const dirty=()=>!!saved&&(title.value.trim()!==saved.title||subtitle.value.trim()!==saved.subtitle);
+    const sync=()=>{preview();save.disabled=!canEdit||saving||!dirty();};
+    const fieldError=(input,msg)=>{input.setAttribute('aria-invalid',msg?'true':'false');if(msg){status.textContent=msg;status.dataset.tone='error';input.focus();}return !msg;};
+    title.disabled=subtitle.disabled=!canEdit;
+    sf.refs.siteSettings.once('value').then(snap=>{
+      const v=snap.val()||{};
+      saved={title:String(v.title||'Speedy Friends Community Hub').slice(0,60),subtitle:String(v.subtitle||'Community Hub').slice(0,100)};
+      if(!title.value)title.value=saved.title; if(!subtitle.value)subtitle.value=saved.subtitle;
+      status.dataset.tone='';status.textContent=canEdit?'Configuración cargada desde Firebase.':'Solo la creadora puede editar la identidad. Vista de solo lectura.';
+      sync();
+    },()=>{status.dataset.tone='error';status.textContent='No se pudo leer la identidad guardada. Reintenta más tarde.';});
+    title.addEventListener('input',()=>{title.removeAttribute('aria-invalid');sync();});
+    subtitle.addEventListener('input',()=>{subtitle.removeAttribute('aria-invalid');sync();});
+    form.addEventListener('submit',async e=>{
+      e.preventDefault(); if(!canEdit||saving)return;
+      const t=title.value.trim(),st=subtitle.value.trim();
+      if(!fieldError(title,t.length<3?'El título necesita al menos 3 caracteres.':''))return;
+      if(!fieldError(subtitle,!st?'Escribe un subtítulo.':''))return;
+      saving=true;sync();save.textContent='Guardando…';status.dataset.tone='';status.textContent='Guardando en Firebase…';
+      try{
+        await sf.refs.siteSettings.update({title:t,subtitle:st});
+        saved={title:t,subtitle:st};status.dataset.tone='ok';status.textContent='Identidad guardada. La portada la mostrará en la próxima carga.';notify('Identidad guardada');
+      }catch(err){status.dataset.tone='error';status.textContent='No se pudo guardar: '+(err?.message||'permiso denegado');}
+      finally{saving=false;save.textContent='Guardar identidad';sync();}
+    });
+  }
+  function renderAdminAudit(entries){activity.rings={state:'ready',items:entries};renderActivity();}
 
   async function bootRealtime(){
     if(!sf?.refs?.users || usersUnsub)return;
@@ -1056,10 +1166,12 @@ body.admin-profile-open{overflow:hidden}
       currentPerms=snap.val()||{};
       renderOverview(); renderUsers(); renderRingResults(); if(canManageRoles)renderPermissions();
     });
-    historyUnsub=sf.refs.ringHistory.on('value',snap=>{
+    // Solo los últimos movimientos: el historial completo crece sin límite.
+    historyUnsub=sf.refs.ringHistory.orderByKey().limitToLast(ACTIVITY_LIMIT).on('value',snap=>{
       lastHistory=Object.values(snap.val()||{}).sort((a,b)=>n(a.at)-n(b.at));
       renderAudit(lastHistory); renderAdminAudit(lastHistory);
-    });
+    },()=>{activity.rings={state:'error',items:[]};renderActivity();});
+    bootActivity();
     renderOverview();renderUsers();renderRingResults();if(canManageRoles)renderPermissions();
   }
 
