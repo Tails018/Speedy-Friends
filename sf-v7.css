@@ -113,3 +113,7 @@ html[data-sf-fx="lite"] .rank-rings strong.sf7-bump,html[data-sf-fx="lite"] .ran
  .editor-save-row #save-profile-status{flex:1 1 100%;margin:0}
  .preview-badge{position:relative;z-index:3}
 }
+
+/* Identificación discreta de la versión publicada (diagnóstico). */
+.sf-build-tag{margin:8px auto 16px;padding:0 16px;text-align:center;font:600 12px/1.4 Arial,sans-serif;letter-spacing:.04em;color:#5b6680;opacity:.75}
+html[data-sf-theme="dark"] .sf-build-tag{color:#aab3c8}

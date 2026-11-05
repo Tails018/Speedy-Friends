@@ -2,7 +2,7 @@
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <link rel="preconnect" href="https://www.gstatic.com">
 <link rel="preconnect" href="https://speedy-friends-default-rtdb.firebaseio.com">
-<title>Café Club · Panel de Creadora</title><link rel="stylesheet" href="styles.css">
+<title>Café Club · Panel de Creadora</title><link rel="stylesheet" href="styles.css?v=7.1.0">
 <style>
 :root{--e:#17110f;--p:#fffaf1;--c:#f2e8d7;--r:#c9573f;--s:#71836d;--b:#e8c45d;--l:#8d7ca8;--ink:#28221e;--m:#756b62;--line:#28221e1e}
 *{box-sizing:border-box}body{margin:0;background:var(--c);color:var(--ink);font-family:Arial,sans-serif}.top{height:68px;position:sticky;top:0;z-index:30;background:#f2e8d7ee;backdrop-filter:blur(14px);border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between;padding:0 4vw}.brand{font-size:17px;font-weight:1000;letter-spacing:-.06em}.brand b{color:var(--r);font-style:italic}.top a{font-size:9px;font-weight:900;letter-spacing:.12em;text-decoration:none;color:inherit}.wrap{padding:28px 4vw 80px}.k{font-size:9px;letter-spacing:.22em;font-weight:900;color:var(--r);text-transform:uppercase}h1,h2,h3{font-family:SFDisplay,Arial Black,sans-serif;letter-spacing:-.065em}h1{font-size:clamp(65px,9vw,120px);line-height:.63;margin:8px 0}h2{font-size:42px;line-height:.72;margin:0 0 12px;text-transform:uppercase}.intro{font-size:9px;line-height:1.65;color:var(--m);max-width:760px}.layout{display:grid;grid-template-columns:235px 1fr;gap:11px;margin-top:28px}.side{background:var(--e);color:#fff;padding:10px;height:max-content;position:sticky;top:83px}.side button{width:100%;border:0;background:none;color:#fff;text-align:left;padding:11px 9px;font-size:9px;font-weight:900;letter-spacing:.13em;text-transform:uppercase;cursor:pointer}.side button.active,.side button:hover{background:var(--r)}.panel{display:none;background:var(--p);border:1px solid var(--line);padding:17px}.panel.active{display:block}.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:7px}.stat{padding:14px;background:#eee3d1;min-height:100px}.stat:nth-child(2){background:#dce7da}.stat:nth-child(3){background:#ebe2ee}.stat:nth-child(4){background:#f0d8cf}.stat b{display:block;font-family:SFDisplay,Arial Black,sans-serif;font-size:38px;line-height:.7}.stat span{display:block;margin-top:8px;font-size:9px;font-weight:900;letter-spacing:.11em;color:var(--m)}.search{width:100%;padding:10px;border:1px solid var(--line);background:#fff;font-size:9px}.list{display:grid;gap:7px;margin-top:11px}.row{display:grid;grid-template-columns:auto 1fr auto;gap:10px;align-items:center;background:#fff;border:1px solid var(--line);padding:10px}.avatar{width:45px;height:45px;border-radius:50%;background:#ece7dc;display:grid;place-items:center;font-size:9px;font-weight:900;background-size:cover;background-position:center}.name{font-family:SFDisplay,Arial Black,sans-serif;font-size:20px;line-height:.8}.small{font-size:9px;line-height:1.5;color:var(--m);margin-top:5px}.btn{border:0;background:var(--e);color:#fff;padding:9px 10px;font-size:9px;font-weight:900;letter-spacing:.1em;cursor:pointer}.red{background:var(--r)}.green{background:var(--s)}.form{display:grid;grid-template-columns:1fr 1fr;gap:7px}.form input,.form textarea{width:100%;padding:9px;border:1px solid var(--line);background:#fff;font:inherit;font-size:9px}.form textarea{grid-column:1/-1;min-height:78px}.full{grid-column:1/-1}.special{display:grid;grid-template-columns:1fr 1fr;gap:10px}.special-art{min-height:365px;background:var(--e);color:#fff;position:relative;overflow:hidden}.special-art img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:.35}.special-art>div{position:absolute;left:18px;right:18px;bottom:20px}.special-art h3{font-size:56px;line-height:.65;margin:0}.order-actions{display:flex;gap:5px;flex-wrap:wrap}.order-actions .btn{padding:7px}.history-row{display:grid;grid-template-columns:auto 1fr auto;gap:10px;align-items:center}.note{padding:11px;background:#f0dfbd;font-size:9px;line-height:1.5}.denied{padding:20px;background:#fff;border:1px solid var(--line);margin-top:25px}
@@ -11,15 +11,16 @@
 <script src="https://www.gstatic.com/firebasejs/12.1.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/12.1.0/firebase-auth-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/12.1.0/firebase-database-compat.js"></script>
-<script src="firebase-legacy.js"></script><script src="cafeteria-core.js"></script>
+<script src="firebase-legacy.js?v=7.1.0"></script><script src="cafeteria-core.js?v=7.1.0"></script>
 <meta name="description" content="Café Club · Panel de Creadora · Comunidad de Speedy Friends, perfiles, creatividad y entretenimiento.">
 <meta name="robots" content="noindex,nofollow">
-<link rel="stylesheet" href="portal-ui.css">
-<script defer src="portal-ui.js"></script>
-<link rel="stylesheet" href="sf-experience.css">
-<script src="sf-experience.js"></script>
-<link rel="stylesheet" href="sf-v7.css">
-<script defer src="sf-v7.js"></script>
+<link rel="stylesheet" href="portal-ui.css?v=7.1.0">
+<script defer src="portal-ui.js?v=7.1.0"></script>
+<link rel="stylesheet" href="sf-experience.css?v=7.1.0">
+<script src="sf-experience.js?v=7.1.0"></script>
+<link rel="stylesheet" href="sf-v7.css?v=7.1.0">
+<script defer src="sf-v7.js?v=7.1.0"></script>
+<script defer src="sf-version.js?v=7.1.0"></script>
 </head><body>
 <a class="sf-skip-link" href="#main-content">Saltar al contenido</a>
 <header class="top"><a class="brand" href="cafeteria.html"><b>SPEEDY</b> FRIENDS · CAFÉ</a><div><a href="cafeteria.html">CAFETERÍA</a> · <a href="index.html">INICIO</a></div></header>

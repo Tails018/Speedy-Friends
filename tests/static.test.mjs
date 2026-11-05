@@ -33,7 +33,7 @@ test('All CSS image references resolve, including preserved vendor declarations'
 });
 test('Loader document ordering and original integration IDs remain intact',()=>{
  for(const page of pages){const source=read(page);assert.match(source,/^<!doctype html>\s*<html\b/i,page);
-  if(source.includes('id="sf-page-loader"')){assert.ok(source.indexOf('<body')<source.indexOf('id="sf-page-loader"'),page);if(page!=='cafeteria.html')assert.equal((source.match(/src="page-loader.js"/g)||[]).length,1,page);}
+  if(source.includes('id="sf-page-loader"')){assert.ok(source.indexOf('<body')<source.indexOf('id="sf-page-loader"'),page);if(page!=='cafeteria.html')assert.equal((source.match(/src="page-loader\.js(?:\?v=[^"]*)?"/g)||[]).length,1,page);}
  }
  const source=read('index.html');for(const id of ['sf-auth-gate','topics','friends','special','downloads','quick-actions','videos','fanarts','ultimos-momentos','mobileNav'])assert.ok(source.includes(`id="${id}"`),id);
  assert.equal((source.match(/<h1\b/g)||[]).length,1);assert.ok(source.includes('sf-auth-required-gate'));

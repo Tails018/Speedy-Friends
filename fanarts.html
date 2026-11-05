@@ -5,21 +5,22 @@
 <link rel="preconnect" href="https://www.gstatic.com">
 <link rel="preconnect" href="https://speedy-friends-default-rtdb.firebaseio.com">
 <title>Speedy Friends · Fanarts</title>
-<link rel="stylesheet" href="styles.css">
-<link rel="stylesheet" href="friends-system.css">
-<link rel="stylesheet" href="fanarts.css">
+<link rel="stylesheet" href="styles.css?v=7.1.0">
+<link rel="stylesheet" href="friends-system.css?v=7.1.0">
+<link rel="stylesheet" href="fanarts.css?v=7.1.0">
 <script src="https://www.gstatic.com/firebasejs/12.1.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/12.1.0/firebase-auth-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/12.1.0/firebase-database-compat.js"></script>
-<script src="firebase-legacy.js"></script>
-<script src="friends-system.js"></script>
+<script src="firebase-legacy.js?v=7.1.0"></script>
+<script src="friends-system.js?v=7.1.0"></script>
 <meta name="description" content="Speedy Friends · Fanarts · Comunidad de Speedy Friends, perfiles, creatividad y entretenimiento.">
-<link rel="stylesheet" href="portal-ui.css">
-<script defer src="portal-ui.js"></script>
-<link rel="stylesheet" href="sf-experience.css">
-<script src="sf-experience.js"></script>
-<link rel="stylesheet" href="sf-v7.css">
-<script defer src="sf-v7.js"></script>
+<link rel="stylesheet" href="portal-ui.css?v=7.1.0">
+<script defer src="portal-ui.js?v=7.1.0"></script>
+<link rel="stylesheet" href="sf-experience.css?v=7.1.0">
+<script src="sf-experience.js?v=7.1.0"></script>
+<link rel="stylesheet" href="sf-v7.css?v=7.1.0">
+<script defer src="sf-v7.js?v=7.1.0"></script>
+<script defer src="sf-version.js?v=7.1.0"></script>
 </head>
 <body class="fanart-page">
 <a class="sf-skip-link" href="#main-content">Saltar al contenido</a>
@@ -71,5 +72,5 @@
 
 <div class="fanart-modal" id="fanartModal" aria-hidden="true"><div class="fanart-modal-backdrop" data-fanart-close></div><div class="fanart-modal-dialog" role="dialog" aria-modal="true" aria-labelledby="modalTitle"><button class="fanart-modal-close" data-fanart-close type="button" aria-label="Cerrar fanart">×</button><div class="fanart-modal-media" id="modalMedia"></div><div class="fanart-modal-info"><div class="modal-topline"><span id="modalCategory"></span><small id="modalFormat"></small></div><h2 id="modalTitle"></h2><p id="modalDescription"></p><div class="fanart-modal-author"><div class="fanart-modal-avatar" id="modalAvatar"></div><div><strong id="modalAuthor"></strong><span>ARTISTA DEL TEAM</span></div></div><div class="fanart-modal-likes"><span>♥</span><b id="modalLikes">0</b><small>LIKES</small></div></div></div></div>
 <dialog class="fanart-edit-dialog" id="fanartEditDialog" aria-labelledby="fanartEditHeading"><form id="fanartEditForm"><div class="fanart-edit-head"><div><p class="fanart-step">TU PUBLICACIÓN</p><h2 id="fanartEditHeading">Editar fanart</h2></div><button type="button" class="fanart-edit-close" id="fanartEditClose" aria-label="Cerrar editor">×</button></div><label for="fanartEditTitle">Título</label><input id="fanartEditTitle" maxlength="70" required><label for="fanartEditDescription">Descripción <span>opcional</span></label><textarea id="fanartEditDescription" maxlength="220"></textarea><label for="fanartEditCategory">Categoría</label><select id="fanartEditCategory"><option>Digital</option><option>Dibujos</option><option>Renders</option><option>Edits</option><option>Tradicional</option></select><p id="fanartEditStatus" role="status" aria-live="polite"></p><div class="fanart-edit-actions"><button type="button" id="fanartEditCancel">Cancelar</button><button class="fanart-submit" type="submit">Guardar cambios</button></div></form></dialog>
-<script src="fanarts-system.js"></script>
+<script src="fanarts-system.js?v=7.1.0"></script>
 </body></html>
