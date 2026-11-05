@@ -109,9 +109,14 @@
   // ----- Auth -----
   const authListeners = new Set();
   const makeUser = u => u && ({ ...u, getIdToken: () => Promise.resolve('mock-token'), providerData: [{ providerId: 'google.com' }] });
+  // __sfMockAuthDelay (ms) imita a Firebase real: currentUser vale null mientras se restaura la sesión
+  // guardada y onAuthStateChanged no se notifica hasta terminar.
+  const authDelay = Number(window.__sfMockAuthDelay || 0);
+  const savedUser = makeUser(load(AUTH_KEY, null));
+  let authRestored = !authDelay;
   const auth = {
-    currentUser: makeUser(load(AUTH_KEY, null)),
-    onAuthStateChanged(cb) { authListeners.add(cb); setTimeout(() => authListeners.has(cb) && cb(auth.currentUser), 0); return () => authListeners.delete(cb); },
+    currentUser: authDelay ? null : savedUser,
+    onAuthStateChanged(cb) { authListeners.add(cb); if (authRestored) setTimeout(() => authListeners.has(cb) && cb(auth.currentUser), 0); return () => authListeners.delete(cb); },
     onIdTokenChanged(cb) { return auth.onAuthStateChanged(cb); },
     setPersistence: () => Promise.resolve(),
     async signInWithPopup() {
@@ -122,6 +127,7 @@
     },
     async signOut() { auth.currentUser = null; try { localStorage.removeItem(AUTH_KEY); } catch {} authListeners.forEach(cb => setTimeout(() => cb(null), 0)); }
   };
+  if (authDelay) setTimeout(() => { authRestored = true; auth.currentUser = savedUser; authListeners.forEach(cb => cb(auth.currentUser)); }, authDelay);
   const authFn = () => auth;
   authFn.GoogleAuthProvider = class { setCustomParameters() {} addScope() {} };
   authFn.Auth = { Persistence: { LOCAL: 'local', SESSION: 'session', NONE: 'none' } };
