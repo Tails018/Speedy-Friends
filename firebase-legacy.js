@@ -295,28 +295,22 @@
     }catch(e){console.warn("[Activity log]",e)}
   }
 
+  // Campos que el dueño puede editar en su perfil. Rings, rol, permisos, nivel e historial nunca se
+  // escriben desde aquí, así que un cambio simultáneo de saldo o rol no se pisa.
+  const PROFILE_EDITABLE=["name","nickname","title","username","description","bio","avatar","cover","iconPosition","iconZoom","coverPosition","coverZoom","ostName","ostUrl","hasOst"];
   async function saveProfile(data){
     const user=auth.currentUser;
     if(!user)throw new Error("Inicia sesión con Google");
-
-    const id=state.profileId||state.uid||user.uid;
-    if(!id)throw new Error("No se encontró tu perfil");
-
+    if(state.uid!==user.uid||!state.profileId)throw new Error("Tu sesión todavía se está comprobando. Vuelve a intentarlo.");
+    const id=state.profileId;
+    const patch={};
+    for(const k of PROFILE_EDITABLE)if(data&&Object.prototype.hasOwnProperty.call(data,k))patch[k]=data[k];
     const existing=state.profile||{};
-    const safe={
-      ...existing,...(data||{}),
-      id,
-      ownerUid:existing.ownerUid||state.uid||user.uid,
-      ownerEmail:existing.ownerEmail||state.email||user.email||""
-    };
-
-    await refs.users.child(id).update(safe);
-    state.profile=safe;
-    state.profileId=id;
-    state.uid=user.uid;
-    state.email=String(user.email||state.email||"");
-    state.ready=true;
-    return safe;
+    if(!existing.ownerUid)patch.ownerUid=user.uid;
+    if(!existing.ownerEmail&&user.email)patch.ownerEmail=user.email;
+    if(Object.keys(patch).length)await refs.users.child(id).update(patch);
+    state.profile={...existing,...patch};
+    return state.profile;
   }
 
 
