@@ -1,0 +1,220 @@
+{
+ "profile.html": {
+  "smallText": 65,
+  "smallSample": [
+   "a. 9px «INICIO»",
+   "a. 9px «NOVEDADES»",
+   "a. 9px «AMIGOS»",
+   "a. 9px «RANKING»",
+   "a. 9px «FANARTS»",
+   "a. 9px «CAFETERÍA»",
+   "a.current 9px «PERFIL»",
+   "p.profile-kicker 10px «Speedy Friends / Communi»"
+  ],
+  "tinyTargets": 19,
+  "tinySample": [
+   "a.sf-brand 168×40 «SPEEDY FRIENDS»",
+   "a. 40×29 «INICIO»",
+   "a. 73×29 «NOVEDADES»",
+   "a. 48×29 «AMIGOS»",
+   "a. 56×29 «RANKING»",
+   "a. 55×29 «FANARTS»",
+   "a. 68×29 «CAFETERÍA»",
+   "a.current 43×29 «PERFIL»",
+   "a.sf-nav-menu 40×40 «Abrir menú»",
+   "a.profile-back 102×40 «← Volver»"
+  ],
+  "fixedOverlaps": [],
+  "hscroll": 0
+ },
+ "ranking.html": {
+  "smallText": 45,
+  "smallSample": [
+   "a. 9px «INICIO»",
+   "a. 9px «NOVEDADES»",
+   "a. 9px «AMIGOS»",
+   "a.current 9px «RANKING»",
+   "a. 9px «FANARTS»",
+   "a. 9px «CAFETERÍA»",
+   "a. 9px «PERFIL»",
+   "p.ranking-kicker 9px «Speedy Friends / Communi»"
+  ],
+  "tinyTargets": 10,
+  "tinySample": [
+   "a.ranking-brand 156×40 «SPEEDY FRIENDS»",
+   "a. 40×29 «INICIO»",
+   "a. 73×29 «NOVEDADES»",
+   "a. 48×29 «AMIGOS»",
+   "a.current 56×29 «RANKING»",
+   "a. 55×29 «FANARTS»",
+   "a. 68×29 «CAFETERÍA»",
+   "a. 43×29 «PERFIL»",
+   "button.sf-theme-toggle-global 94×40 «◐MODO OSCURO»",
+   "button.sf-fx-toggle 150×40 «Efectos ligeros ac»"
+  ],
+  "fixedOverlaps": [],
+  "hscroll": 0
+ },
+ "friends.html": {
+  "smallText": 29,
+  "smallSample": [
+   "a. 10px «Inicio»",
+   "a. 10px «Novedades»",
+   "a. 10px «Amigos»",
+   "a. 10px «Ranking»",
+   "a. 10px «Fanarts»",
+   "a. 10px «Cafetería»",
+   "a. 10px «Perfil»",
+   "p.sf-friends-kicker 9px «RED SOCIAL / TEAM»"
+  ],
+  "tinyTargets": 3,
+  "tinySample": [
+   "a.sf-friends-brand 158×40 «SPEEDY FRIENDS»",
+   "button.sf-f-btn 110×36 «Ver perfil»",
+   "button.sf-f-btn 110×36 «Ver perfil»"
+  ],
+  "fixedOverlaps": [],
+  "hscroll": 0
+ },
+ "fanarts.html": {
+  "smallText": 35,
+  "smallSample": [
+   "div.fanart-eyebrow 10px «07 / COMMUNITY ART · SPE»",
+   "span. 8px «CREA»",
+   "span. 8px «COMPARTE»",
+   "span. 8px «DEJA TU HUELLA»",
+   "span. 9px «COMMUNITY»",
+   "span. 9px «ART · 02»",
+   "small. 8px «ONLY IN SPEEDY FRIENDS»",
+   "span. 9px «Tu arte puedeser el sigu»"
+  ],
+  "tinyTargets": 14,
+  "tinySample": [
+   "a.sf-brand 200×40 «Speedy Friends ini»",
+   "button#fanartMenu.sf-menu 34×34 «Abrir menú»",
+   "select#fanartSort. 342×42 «Más likesMás recie»",
+   "button.fanart-filter 64×40 «Todos»",
+   "button.fanart-filter 75×40 «Dibujos»",
+   "button.fanart-filter 77×40 «Renders»",
+   "button.fanart-filter 59×40 «Edits»",
+   "button.fanart-filter 100×40 «Tradicional»",
+   "button.fanart-filter 71×40 «Digital»",
+   "button.fanart-like 41×36 «Dar like a Neon Ru»"
+  ],
+  "fixedOverlaps": [],
+  "hscroll": 0
+ },
+ "novedades.html": {
+  "smallText": 33,
+  "smallSample": [
+   "a. 10px «Inicio»",
+   "a. 10px «Novedades»",
+   "a. 10px «Amigos»",
+   "a. 10px «Ranking»",
+   "a. 10px «Fanarts»",
+   "a. 10px «Cafetería»",
+   "a. 10px «Perfil»",
+   "p.eyebrow 10px «SPEEDY FRIENDS / NEWSROO»"
+  ],
+  "tinyTargets": 7,
+  "tinySample": [
+   "a.brand 158×40 «SPEEDY FRIENDS»",
+   "input#search. 366×34 «Buscar por título,»",
+   "select#cat. 366×36 «TODAS LAS CATEGORÍ»",
+   "button.read 129×37 «VER RESUMEN →»",
+   "button.news-open-summary 144×21 «ABRIR RESUMEN →»",
+   "button.sf-theme-toggle-global 94×40 «◐MODO OSCURO»",
+   "button.sf-fx-toggle 150×40 «Efectos ligeros ac»"
+  ],
+  "fixedOverlaps": [],
+  "hscroll": 0
+ },
+ "admin.html": {
+  "smallText": 38,
+  "smallSample": [
+   "a. 9px «INICIO»",
+   "a. 9px «NOVEDADES»",
+   "a. 9px «AMIGOS»",
+   "a. 9px «RANKING»",
+   "a. 9px «FANARTS»",
+   "a. 9px «CAFETERÍA»",
+   "a. 9px «PERFIL»",
+   "a.current 9px «ADMIN»"
+  ],
+  "tinyTargets": 20,
+  "tinySample": [
+   "a.admin-brand 156×40 «SPEEDY FRIENDS»",
+   "a. 40×29 «INICIO»",
+   "a. 73×29 «NOVEDADES»",
+   "a. 48×29 «AMIGOS»",
+   "a. 56×29 «RANKING»",
+   "a. 55×29 «FANARTS»",
+   "a. 68×29 «CAFETERÍA»",
+   "a. 43×29 «PERFIL»",
+   "a.current 40×29 «ADMIN»",
+   "button.admin-side-btn 312×43 «Resumen»"
+  ],
+  "fixedOverlaps": [],
+  "hscroll": 0
+ },
+ "cafeteria.html": {
+  "smallText": 56,
+  "smallSample": [
+   "span. 9px «SPEEDY RECORDS»",
+   "div.record-kicker 9px «CAFÉ CLUB / NOW PLAYING»",
+   "div.record-artist 9px «Disquera de la cafetería»",
+   "span. 9px «0:00»",
+   "span. 9px «0:00»",
+   "div.empty 9px «LA DISQUERA AÚN ESTÁ VAC»",
+   "a. 10px «Inicio»",
+   "a. 10px «Novedades»"
+  ],
+  "tinyTargets": 15,
+  "tinySample": [
+   "button#record-close.record-close 40×40 «Cerrar»",
+   "button#record-prev. 36×32 «Canción anterior»",
+   "button#record-next. 36×32 «Siguiente canción»",
+   "a.brand 158×40 «SPEEDY FRIENDS»",
+   "input. 58×33 «1»",
+   "button. 96×33 «CREAR TICKET»",
+   "input. 58×33 «1»",
+   "button. 96×33 «CREAR TICKET»",
+   "input. 58×33 «1»",
+   "button. 96×33 «CREAR TICKET»"
+  ],
+  "fixedOverlaps": [
+   "record-open ↔ sf-cafe-rw-fab"
+  ],
+  "hscroll": 0
+ },
+ "index.html": {
+  "smallText": 31,
+  "smallSample": [
+   "p.eyebrow 11px «SPEEDY FRIENDS / COMMUNI»",
+   "a.sf-btn 11px «Explorar novedades →»",
+   "div.scroll-cue 9px «SCROLL»",
+   "p.eyebrow 11px «01 / NEWS»",
+   "a.sf-more 11px «Ver todo →»",
+   "p.eyebrow 11px «02 / COMMUNITY»",
+   "a.sf-more 11px «Todos los perfiles →»",
+   "b.sf-home-status 9px «OFFLINE»"
+  ],
+  "tinyTargets": 19,
+  "tinySample": [
+   "a.sf-brand 168×40 «Speedy Friends»",
+   "button#menuBtn.sf-menu 80×40 «Abrir menú»",
+   "a.sf-btn 238×34 «Explorar novedades»",
+   "a.sf-btn 166×36 «Ver amigos→»",
+   "span.swiper-pagination-bullet 42×4 «Ir a portada 1»",
+   "span.swiper-pagination-bullet 24×4 «Ir a portada 2»",
+   "span.swiper-pagination-bullet 24×4 «Ir a portada 3»",
+   "button.sf-slide-prev 44×40 «Portada anterior»",
+   "button.sf-slide-pause 104×40 «Reproducir carruse»",
+   "button.sf-slide-next 44×40 «Portada siguiente»"
+  ],
+  "fixedOverlaps": [
+   "sf-utility-toggle ↔ sf-role-fab"
+  ],
+  "hscroll": 0
+ }
+}

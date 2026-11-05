@@ -49,3 +49,44 @@
   }
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init, { once: true }); else init();
 })();
+
+/* V7.1 · Tamaño mínimo de lectura en móvil.
+ * Muchas etiquetas heredadas usan 9–10 px. En pantallas estrechas se suben a 12 px y se reduce su
+ * interletrado para que no se corten. Solo procesa los nodos nuevos y en tiempo libre. */
+(() => {
+  const narrow = window.matchMedia('(max-width: 760px)');
+  const MIN = 12;
+  const idle = window.requestIdleCallback || (fn => setTimeout(fn, 32));
+  const pending = new Set();
+  let scheduled = false;
+  function fix(el) {
+    if (!(el instanceof HTMLElement) || el.dataset.sf7Read || el.closest('svg,[aria-hidden="true"]')) return;
+    if (![...el.childNodes].some(n => n.nodeType === 3 && n.textContent.trim().length > 1)) return;
+    const cs = getComputedStyle(el);
+    const size = parseFloat(cs.fontSize);
+    if (!(size > 0 && size < MIN)) return;
+    el.dataset.sf7Read = '1';
+    el.style.setProperty('font-size', MIN + 'px', 'important');
+    const ls = parseFloat(cs.letterSpacing);
+    if (ls > size * 0.06) el.style.setProperty('letter-spacing', '.06em', 'important');
+  }
+  function flush(deadline) {
+    scheduled = false;
+    for (const root of pending) {
+      pending.delete(root);
+      if (!root.isConnected) continue;
+      fix(root);
+      root.querySelectorAll?.('*').forEach(fix);
+      if (deadline?.timeRemaining && deadline.timeRemaining() < 2) break;
+    }
+    if (pending.size) schedule();
+  }
+  function schedule() { if (!scheduled) { scheduled = true; idle(flush, { timeout: 300 }); } }
+  function queue(node) { if (narrow.matches && node instanceof HTMLElement) { pending.add(node); schedule(); } }
+  function start() {
+    queue(document.body);
+    new MutationObserver(list => { for (const m of list) m.addedNodes.forEach(queue); }).observe(document.body, { childList: true, subtree: true });
+    narrow.addEventListener('change', () => queue(document.body));
+  }
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', start, { once: true }); else start();
+})();

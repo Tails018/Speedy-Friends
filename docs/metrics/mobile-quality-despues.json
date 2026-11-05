@@ -1,0 +1,75 @@
+{
+ "profile.html": {
+  "smallText": 0,
+  "smallSample": [],
+  "tinyTargets": 0,
+  "tinySample": [],
+  "fixedOverlaps": [],
+  "hscroll": 0
+ },
+ "ranking.html": {
+  "smallText": 0,
+  "smallSample": [],
+  "tinyTargets": 0,
+  "tinySample": [],
+  "fixedOverlaps": [],
+  "hscroll": 0
+ },
+ "friends.html": {
+  "smallText": 0,
+  "smallSample": [],
+  "tinyTargets": 0,
+  "tinySample": [],
+  "fixedOverlaps": [],
+  "hscroll": 0
+ },
+ "fanarts.html": {
+  "smallText": 12,
+  "smallSample": [
+   "span.fanart-index 9px «01»",
+   "div.fanart-tag 8px «Digital»",
+   "p. 11px «Fixture de prueba»",
+   "strong. 10px «Bob»",
+   "span. 8px «31 dic. 1969»",
+   "span.fanart-index 9px «02»",
+   "div.fanart-tag 8px «Tradicional»",
+   "p. 11px «Fixture de prueba»"
+  ],
+  "tinyTargets": 0,
+  "tinySample": [],
+  "fixedOverlaps": [],
+  "hscroll": 0
+ },
+ "novedades.html": {
+  "smallText": 0,
+  "smallSample": [],
+  "tinyTargets": 0,
+  "tinySample": [],
+  "fixedOverlaps": [],
+  "hscroll": 0
+ },
+ "admin.html": {
+  "smallText": 0,
+  "smallSample": [],
+  "tinyTargets": 0,
+  "tinySample": [],
+  "fixedOverlaps": [],
+  "hscroll": 0
+ },
+ "cafeteria.html": {
+  "smallText": 0,
+  "smallSample": [],
+  "tinyTargets": 0,
+  "tinySample": [],
+  "fixedOverlaps": [],
+  "hscroll": 0
+ },
+ "index.html": {
+  "smallText": 0,
+  "smallSample": [],
+  "tinyTargets": 0,
+  "tinySample": [],
+  "fixedOverlaps": [],
+  "hscroll": 0
+ }
+}
