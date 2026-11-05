@@ -123,8 +123,10 @@ document.addEventListener('DOMContentLoaded',()=>{
  document.addEventListener('speedy:cafe-ready',tryBoot);
  tryBoot();
 
- $('menu-form').onsubmit=async e=>{e.preventDefault();try{let image=$('mu').value.trim();const f=$('mi').files?.[0];if(f){if(f.size>1.5e6)throw new Error('Imagen demasiado grande');image=await toData(f)}await SpeedyCafe.saveMenu({name:$('mn').value.trim(),price:Number($('mp').value)||0,description:$('md').value.trim(),image,active:true});e.target.reset()}catch(err){alert(err.message)}};
- $('music-form').onsubmit=async e=>{e.preventDefault();const b=e.target.querySelector('button');try{const f=$('mf').files?.[0];if(!f)throw new Error('Selecciona un audio');b.disabled=true;const up=await SpeedyCafe.uploadCafeAudio(f);await SpeedyCafe.saveMusic({title:$('mt').value.trim(),artist:$('ma').value.trim(),url:up.url,originalName:f.name,duration:up.duration||0,active:true});e.target.reset()}catch(err){alert(err.message)}finally{b.disabled=false}};
+ // Este panel no siempre incluye el formulario: sin él, no hay nada que enlazar.
+ if($('menu-form'))$('menu-form').onsubmit=async e=>{e.preventDefault();try{let image=$('mu').value.trim();const f=$('mi').files?.[0];if(f){if(f.size>1.5e6)throw new Error('Imagen demasiado grande');image=await toData(f)}await SpeedyCafe.saveMenu({name:$('mn').value.trim(),price:Number($('mp').value)||0,description:$('md').value.trim(),image,active:true});e.target.reset()}catch(err){alert(err.message)}};
+ // Este panel no siempre incluye el formulario: sin él, no hay nada que enlazar.
+ if($('music-form'))$('music-form').onsubmit=async e=>{e.preventDefault();const b=e.target.querySelector('button');try{const f=$('mf').files?.[0];if(!f)throw new Error('Selecciona un audio');b.disabled=true;const up=await SpeedyCafe.uploadCafeAudio(f);await SpeedyCafe.saveMusic({title:$('mt').value.trim(),artist:$('ma').value.trim(),url:up.url,originalName:f.name,duration:up.duration||0,active:true});e.target.reset()}catch(err){alert(err.message)}finally{b.disabled=false}};
  document.addEventListener('speedy:cafe-ready',boot,{once:true});if(window.SpeedyFirebase?.current?.uid)boot();
 });
 </script>
