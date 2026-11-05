@@ -803,7 +803,8 @@ document.addEventListener("DOMContentLoaded", () => {
   const initialize = async () => {
     if(!window.SpeedyFirebase) return;
     renderState(await window.SpeedyFirebase.resolve());
-    await window.SpeedyFirebase.syncRings(value => {
+    // syncRings no existe en SpeedyFirebase; watchUserRings es la suscripción real al saldo.
+    window.SpeedyFirebase.watchUserRings?.(value => {
       rings.forEach(n=>n.textContent=Number(value||0).toLocaleString("es-PE"));
     });
   };
@@ -1290,7 +1291,7 @@ document.addEventListener('DOMContentLoaded',()=>{
     const go=n=>{const els=cards(); if(!els.length)return; idx=(n+els.length)%els.length; els.forEach((c,i)=>c.classList.toggle('is-focus',i===idx)); status&&(status.textContent=`${String(idx+1).padStart(2,'0')} / ${String(els.length).padStart(2,'0')}`)};
     const prev=$('.home-fanart-prev'), next=$('.home-fanart-next');
     if(prev) prev.onclick=()=>go(idx-1); if(next) next.onclick=()=>go(idx+1); go(0);
-    rail.onpointermove=e=>{const c=e.target.closest('.home-fanart-card');if(!c)return;const r=c.getBoundingClientRect();c.style.setProperty('--rx',`${(e.clientY-r.top)/r.height-.5)*-2}deg`);c.style.setProperty('--ry',`${(e.clientX-r.left)/r.width-.5)*3}deg`)};
+    rail.onpointermove=e=>{const c=e.target.closest('.home-fanart-card');if(!c)return;const r=c.getBoundingClientRect();c.style.setProperty('--rx',`${((e.clientY-r.top)/r.height-.5)*-2}deg`);c.style.setProperty('--ry',`${((e.clientX-r.left)/r.width-.5)*3}deg`)};
     rail.onpointerleave=()=>cards().forEach(c=>{c.style.removeProperty('--rx');c.style.removeProperty('--ry')});
   }
   function live(){
