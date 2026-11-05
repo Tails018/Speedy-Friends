@@ -1,0 +1,95 @@
+{
+ "label": "despues",
+ "date": "2026-11-05T02:18:52.559Z",
+ "note": "Firebase simulado con latencia artificial; no son mediciones de producción.",
+ "mockLatencyMs": 80,
+ "runs": 5,
+ "pages": {
+  "ranking.html": {
+   "authMs": 233,
+   "readyEventMs": 227,
+   "firstMemberMs": 143,
+   "fullListMs": 143,
+   "listeners": 8,
+   "onceReads": 2,
+   "jsonChars": 2215,
+   "duplicatedPaths": []
+  },
+  "index.html": {
+   "authMs": 334,
+   "readyEventMs": 305,
+   "firstMemberMs": null,
+   "fullListMs": null,
+   "listeners": 11,
+   "onceReads": 3,
+   "jsonChars": 3114,
+   "duplicatedPaths": [
+    "speedy-friends-teams/speedy-friends/rings/user-creator×2"
+   ]
+  },
+  "friends.html": {
+   "authMs": 221,
+   "readyEventMs": 214,
+   "firstMemberMs": null,
+   "fullListMs": null,
+   "listeners": 8,
+   "onceReads": 2,
+   "jsonChars": 2215,
+   "duplicatedPaths": []
+  },
+  "profile.html": {
+   "authMs": 227,
+   "readyEventMs": 220,
+   "firstMemberMs": null,
+   "fullListMs": null,
+   "listeners": 8,
+   "onceReads": 2,
+   "jsonChars": 2215,
+   "duplicatedPaths": []
+  },
+  "admin.html": {
+   "authMs": 236,
+   "readyEventMs": 221,
+   "firstMemberMs": null,
+   "fullListMs": null,
+   "listeners": 9,
+   "onceReads": 3,
+   "jsonChars": 2414,
+   "duplicatedPaths": []
+  },
+  "cafeteria.html": {
+   "authMs": 243,
+   "readyEventMs": 224,
+   "firstMemberMs": null,
+   "fullListMs": null,
+   "listeners": 7,
+   "onceReads": 2,
+   "jsonChars": 2133,
+   "duplicatedPaths": [
+    "speedy-friends-teams/speedy-friends/rings/user-creator×3"
+   ]
+  },
+  "fanarts.html": {
+   "authMs": 235,
+   "readyEventMs": 228,
+   "firstMemberMs": null,
+   "fullListMs": null,
+   "listeners": 9,
+   "onceReads": 2,
+   "jsonChars": 2657,
+   "duplicatedPaths": []
+  }
+ },
+ "navigation": {
+  "firstMemberMs": 102,
+  "fullListMs": 102,
+  "updateToReorderMs": 2,
+  "emptiedAfterFull": 0,
+  "afterNavigation": {
+   "listeners": 3,
+   "onceReads": 0,
+   "jsonChars": 2055,
+   "duplicatedPaths": []
+  }
+ }
+}

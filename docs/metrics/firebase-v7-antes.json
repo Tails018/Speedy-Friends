@@ -1,0 +1,132 @@
+{
+ "label": "antes",
+ "date": "2026-11-05T02:12:09.116Z",
+ "note": "Firebase simulado con latencia artificial; no son mediciones de producción.",
+ "mockLatencyMs": 80,
+ "runs": 5,
+ "pages": {
+  "ranking.html": {
+   "authMs": 245,
+   "readyEventMs": 329,
+   "firstMemberMs": 220,
+   "fullListMs": 220,
+   "listeners": 12,
+   "onceReads": 13,
+   "jsonChars": 8505,
+   "duplicatedPaths": [
+    "speedy-friends-teams/speedy-friends/users×4",
+    "speedy-friends-teams/speedy-friends/friendRequests/inbox/uid-creator×4",
+    "speedy-friends-teams/speedy-friends/friendRequests/outbox/uid-creator×4",
+    "speedy-friends-teams/speedy-friends/friends/uid-creator×3",
+    "speedy-friends-teams/speedy-friends/rings×3",
+    "speedy-friends-teams/speedy-friends/presence/uid-alice×2",
+    "speedy-friends-teams/speedy-friends/presence/uid-bob×2"
+   ]
+  },
+  "index.html": {
+   "authMs": 328,
+   "readyEventMs": 395,
+   "firstMemberMs": null,
+   "fullListMs": null,
+   "listeners": 16,
+   "onceReads": 14,
+   "jsonChars": 11451,
+   "duplicatedPaths": [
+    "speedy-friends-teams/speedy-friends/users×5",
+    "speedy-friends-teams/speedy-friends/friends/uid-creator×4",
+    "speedy-friends-teams/speedy-friends/friendRequests/inbox/uid-creator×4",
+    "speedy-friends-teams/speedy-friends/friendRequests/outbox/uid-creator×4",
+    "speedy-friends-teams/speedy-friends/rings×4",
+    "speedy-friends-teams/speedy-friends/rings/user-creator×2"
+   ]
+  },
+  "friends.html": {
+   "authMs": 223,
+   "readyEventMs": 304,
+   "firstMemberMs": null,
+   "fullListMs": null,
+   "listeners": 13,
+   "onceReads": 13,
+   "jsonChars": 10552,
+   "duplicatedPaths": [
+    "speedy-friends-teams/speedy-friends/users×5",
+    "speedy-friends-teams/speedy-friends/friends/uid-creator×4",
+    "speedy-friends-teams/speedy-friends/friendRequests/inbox/uid-creator×4",
+    "speedy-friends-teams/speedy-friends/friendRequests/outbox/uid-creator×4",
+    "speedy-friends-teams/speedy-friends/rings×4"
+   ]
+  },
+  "profile.html": {
+   "authMs": 221,
+   "readyEventMs": 305,
+   "firstMemberMs": null,
+   "fullListMs": null,
+   "listeners": 13,
+   "onceReads": 13,
+   "jsonChars": 10552,
+   "duplicatedPaths": [
+    "speedy-friends-teams/speedy-friends/users×5",
+    "speedy-friends-teams/speedy-friends/friends/uid-creator×4",
+    "speedy-friends-teams/speedy-friends/friendRequests/inbox/uid-creator×4",
+    "speedy-friends-teams/speedy-friends/friendRequests/outbox/uid-creator×4",
+    "speedy-friends-teams/speedy-friends/rings×4"
+   ]
+  },
+  "admin.html": {
+   "authMs": 216,
+   "readyEventMs": 304,
+   "firstMemberMs": null,
+   "fullListMs": null,
+   "listeners": 9,
+   "onceReads": 8,
+   "jsonChars": 4289,
+   "duplicatedPaths": [
+    "speedy-friends-teams/speedy-friends/visualPicks×3",
+    "speedy-friends-teams/speedy-friends/cafeteria/workers×3",
+    "speedy-friends-teams/speedy-friends/users×2"
+   ]
+  },
+  "cafeteria.html": {
+   "authMs": 238,
+   "readyEventMs": 307,
+   "firstMemberMs": null,
+   "fullListMs": null,
+   "listeners": 5,
+   "onceReads": 6,
+   "jsonChars": 2139,
+   "duplicatedPaths": [
+    "speedy-friends-teams/speedy-friends/rings/user-creator×5"
+   ]
+  },
+  "fanarts.html": {
+   "authMs": 233,
+   "readyEventMs": 308,
+   "firstMemberMs": null,
+   "fullListMs": null,
+   "listeners": 14,
+   "onceReads": 13,
+   "jsonChars": 10994,
+   "duplicatedPaths": [
+    "speedy-friends-teams/speedy-friends/users×5",
+    "speedy-friends-teams/speedy-friends/friends/uid-creator×4",
+    "speedy-friends-teams/speedy-friends/friendRequests/inbox/uid-creator×4",
+    "speedy-friends-teams/speedy-friends/friendRequests/outbox/uid-creator×4",
+    "speedy-friends-teams/speedy-friends/rings×4"
+   ]
+  }
+ },
+ "navigation": {
+  "firstMemberMs": 196,
+  "fullListMs": 196,
+  "updateToReorderMs": 5,
+  "emptiedAfterFull": 0,
+  "afterNavigation": {
+   "listeners": 3,
+   "onceReads": 2,
+   "jsonChars": 3808,
+   "duplicatedPaths": [
+    "speedy-friends-teams/speedy-friends/users×2"
+   ]
+  }
+ }
+}

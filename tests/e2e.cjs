@@ -421,6 +421,36 @@ const waitReady=page=>page.waitForFunction(()=>window.SpeedyFirebase?.current?.c
    assert.ok(await wallet.evaluate(e=>e.classList.contains('is-hidden')));
    await ctx.close();
   });
+
+  await test('Ranking shows the cached public list instantly on return, then live data, without private fields',async()=>{
+   const ctx=await newContext(browser,{session:CREATOR});const page=await ctx.newPage();
+   await page.goto(base+'/ranking.html');await waitReady(page);
+   await page.waitForFunction(()=>document.querySelectorAll('[data-profile-id]').length>=3,null,{timeout:8000});
+   await page.waitForFunction(()=>!!sessionStorage.getItem('sfPublicRanking:v1'),null,{timeout:4000});
+   const cached=await page.evaluate(()=>sessionStorage.getItem('sfPublicRanking:v1'));
+   assert.doesNotMatch(cached,/@|ownerEmail|description|cover/,'no emails, descriptions or covers in the cache');
+   // Con mucha latencia, la vuelta a Ranking pinta la copia antes de que llegue la red.
+   await page.addInitScript(()=>{window.__sfMockLatency=1500;});
+   await page.goto(base+'/ranking.html',{waitUntil:'domcontentloaded'});
+   await page.waitForFunction(()=>document.querySelectorAll('[data-profile-id]').length>=3,null,{timeout:1200});
+   assert.equal(await page.evaluate(()=>document.documentElement.dataset.rankingSource),'cache');
+   await page.waitForFunction(()=>document.documentElement.dataset.rankingSource==='live',null,{timeout:8000});
+   await ctx.close();
+  });
+
+  await test('Ranking never shows a cached list that belongs to another account, and logout clears it',async()=>{
+   const ctx=await newContext(browser,{session:BOB});const page=await ctx.newPage();
+   await page.addInitScript(()=>{window.__sfMockLatency=1200;if(!sessionStorage.getItem('__planted')){sessionStorage.setItem('__planted','1');sessionStorage.setItem('sfPublicRanking:v1',JSON.stringify({v:1,uid:'uid-alice',at:Date.now(),users:{'user-x':{name:'Fantasma',username:'fantasma',rings:999}},rings:{'user-x':999}}));}});
+   await page.goto(base+'/ranking.html',{waitUntil:'domcontentloaded'});
+   await page.waitForTimeout(600);
+   assert.equal(await page.locator('[data-profile-id="user-x"]').count(),0,'another account cache is not rendered');
+   assert.equal(await page.evaluate(()=>sessionStorage.getItem('sfPublicRanking:v1')),null,'foreign cache is deleted');
+   await waitReady(page);
+   await page.waitForFunction(()=>!!sessionStorage.getItem('sfPublicRanking:v1'),null,{timeout:6000});
+   await page.evaluate(()=>window.SpeedyFirebase.signOut());
+   await page.waitForFunction(()=>sessionStorage.getItem('sfPublicRanking:v1')===null,null,{timeout:4000});
+   await ctx.close();
+  });
   await browser.close();
  }
  fs.mkdirSync('test-results',{recursive:true});
