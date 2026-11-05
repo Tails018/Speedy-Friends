@@ -389,7 +389,7 @@ const waitReady=page=>page.waitForFunction(()=>window.SpeedyFirebase?.current?.c
    await v.goto(base+'/index.html');await waitReady(v);
    await v.waitForFunction(()=>document.getElementById('videos')?.dataset.clips==='ready',null,{timeout:8000});
    assert.equal(await v.locator('#videos .video-preview video').getAttribute('src'),'assets/fanart-demo/clip.mp4');
-   assert.match(await v.locator('#videos .video-preview span').innerText(),/Edit de prueba · Bob/);
+   assert.match(await v.locator('#videos .video-preview span').textContent(),/Edit de prueba · Bob/);
    assert.equal(await v.locator('.sf-clip-chip').count(),1);
    await vctx.close();
   });
