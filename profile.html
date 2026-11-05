@@ -1767,23 +1767,19 @@ document.addEventListener('DOMContentLoaded', async () => {
         );
       }
 
-      const safe={
-        ...existing,
-        ...identity,
-        id,
-        bio:identity.description,
-        ownerUid:existing.ownerUid||user.uid,
-        ownerEmail:existing.ownerEmail||user.email||'',
-        avatar:avatarData||'',
-        cover:coverData||'',
-        iconPosition:iconPosition||'50% 50%',
-        iconZoom:Number(iconZoom)||100,
-        coverPosition:coverPosition||'50% 50%',
-        coverZoom:Number(coverZoom)||100
-      };
+      // Solo campos editables que cambiaron: antes se enviaba {...existing} completo y un saldo de
+      // Rings, rol o nivel modificado a la vez por la creadora volvía a su valor antiguo.
+      const edits={...identity,bio:identity.description,iconPosition:iconPosition||'50% 50%',iconZoom:Number(iconZoom)||100,coverPosition:coverPosition||'50% 50%',coverZoom:Number(coverZoom)||100};
+      if(avatarBlob)edits.avatar=avatarData;
+      if(coverBlob)edits.cover=coverData;
+      const patch={};
+      for(const [k,v] of Object.entries(edits))if(existing[k]!==v)patch[k]=v;
+      if(!existing.ownerUid)patch.ownerUid=user.uid;
+      if(!existing.ownerEmail&&user.email)patch.ownerEmail=user.email;
+      const safe={...existing,...patch,id};
 
-      await withTimeout(
-        sf.refs.users.child(id).update(safe),
+      if(Object.keys(patch).length)await withTimeout(
+        sf.refs.users.child(id).update(patch),
         10000,
         'Firebase tardó demasiado en guardar tu perfil'
       );
