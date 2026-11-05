@@ -561,7 +561,7 @@ document.addEventListener('DOMContentLoaded',()=>{
 });
 </script>
 
-<div id="sf-cafe-role-wallet" aria-live="polite">
+<div id="sf-cafe-role-wallet" class="is-hidden" aria-live="polite">
   <div class="sf-cafe-rw-kicker">SPEEDY CAFÉ / ACCESO</div>
   <div class="sf-cafe-rw-top">
     <div><strong id="sf-cafe-rw-role">CAFETERÍA</strong><span id="sf-cafe-rw-user">—</span></div>
@@ -612,22 +612,24 @@ document.addEventListener('DOMContentLoaded',()=>{
 
   const hide=()=>{panel.classList.add('is-hidden');fab.style.display='block'};
   const show=()=>{panel.classList.remove('is-hidden');fab.style.display='none'};
-  close.onclick=hide; fab.onclick=show;
+  // Sin rol de cafetería no hay panel ni botón (antes quedaba un ☕ que abría un panel vacío).
+  const off=()=>{panel.classList.add('is-hidden');fab.style.display='none'};
+  close.onclick=()=>{hide();try{sessionStorage.removeItem('sfCafeWalletOpen')}catch{}}; fab.onclick=()=>{show();try{sessionStorage.setItem('sfCafeWalletOpen','1')}catch{}};
 
   const apply=async()=>{
     try{
       const sf=window.SpeedyFirebase;
       if(!sf?.resolve || !window.SpeedyCafe) return;
       const state=await sf.resolve();
-      if(!state?.uid){hide();return}
+      if(!state?.uid){off();return}
       let role='';
       if(state.isCreator)role='creator';
       else role=await SpeedyCafe.role();
 
-      if(!['creator','worker'].includes(role)){hide();return}
+      if(!['creator','worker'].includes(role)){off();return}
 
-      panel.classList.remove('is-hidden');
-      fab.style.display='none';
+      // Abierto tapaba la carta y los controles: empieza plegado salvo que se abriera en esta sesión.
+      if(!panel.dataset.sfOpened){panel.dataset.sfOpened='1';let open=false;try{open=sessionStorage.getItem('sfCafeWalletOpen')==='1'}catch{}if(open)show();else hide();}
       roleEl.textContent=role==='creator'?'CAFÉ · CREADORA':'CAFÉ · TRABAJADOR';
       const profile=state.profile||SpeedyCafe.profile()||{};
       userEl.textContent=profile.nickname||profile.username||profile.name||state.email||'Cuenta activa';
