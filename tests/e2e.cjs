@@ -316,6 +316,96 @@ const waitReady=page=>page.waitForFunction(()=>window.SpeedyFirebase?.current?.c
    await ctx.close();
   });
 
+
+  await test('Admin activity merges real Rings and cafe history, filters and never shows invented rows',async()=>{
+   const seed=JSON.parse(JSON.stringify(SEED));const team=seed['speedy-friends-teams']['speedy-friends'];
+   team.ringHistory={h1:{userId:'user-alice',delta:15,reason:'Evento semanal',byUid:CREATOR.uid,byEmail:CREATOR.email,at:Date.now()-60000}};
+   team.cafeteria.activity={c1:{type:'order_created',orderId:'o1',ownerUid:ALICE.uid,username:'alice',itemName:'Chili Latte',qty:2,at:Date.now()-30000}};
+   const ctx=await newContext(browser,{session:CREATOR,seed});const page=await ctx.newPage();const errors=[];page.on('pageerror',e=>errors.push(e.message));
+   await page.goto(base+'/admin.html');await waitReady(page);
+   await page.locator('[data-panel="audit"]').click();
+   const feed=page.locator('#activity-feed');
+   await page.waitForFunction(()=>document.querySelectorAll('#activity-feed [role=listitem]').length===2,null,{timeout:8000});
+   const text=await feed.innerText();
+   assert.match(text,/Añadió 15 Rings a alice · Evento semanal/i);
+   assert.match(text,/Pidió 2 × Chili Latte/i);
+   assert.doesNotMatch(text,/Dash|Nova|Runner/,'no invented rows');
+   await page.locator('[data-activity-filter="rings"]').click();
+   assert.equal(await page.locator('#activity-feed [role=listitem]').count(),1);
+   assert.equal(await page.locator('[data-activity-filter="rings"]').getAttribute('aria-pressed'),'true');
+   await page.locator('[data-activity-filter="cafe"]').click();
+   assert.match(await feed.innerText(),/Chili Latte/);
+   assert.deepEqual(errors,[]);await ctx.close();
+  });
+
+  await test('Admin activity explains an empty history instead of a blank panel',async()=>{
+   const ctx=await newContext(browser,{session:CREATOR});const page=await ctx.newPage();
+   await page.goto(base+'/admin.html');await waitReady(page);
+   await page.locator('[data-panel="audit"]').click();
+   await page.waitForFunction(()=>/Todavía no hay movimientos/.test(document.getElementById('activity-feed')?.textContent||''),null,{timeout:8000});
+   await ctx.close();
+  });
+
+  await test('Admin identity validates, saves siteSettings once and the home page shows it',async()=>{
+   const ctx=await newContext(browser,{session:CREATOR});const page=await ctx.newPage();
+   await page.goto(base+'/admin.html');await waitReady(page);
+   await page.locator('[data-panel="identity"]').click();
+   const title=page.locator('#identity-title'),sub=page.locator('#identity-subtitle'),save=page.locator('#save-identity');
+   await page.waitForFunction(()=>document.getElementById('identity-title').value.length>0);
+   assert.ok(await save.isDisabled(),'nothing to save before editing');
+   await title.fill('SF');await save.click();
+   assert.equal(await title.getAttribute('aria-invalid'),'true');
+   assert.equal(await db(page,T+'/siteSettings'),null,'invalid data is not written');
+   await title.fill('Speedy Friends Arena');await sub.fill('Comunidad veloz');
+   assert.equal(await page.locator('#identity-preview-sub').textContent(),'Comunidad veloz');
+   await save.click();
+   await page.waitForFunction(()=>window.__sfMock.getAt('speedy-friends-teams/speedy-friends/siteSettings')?.subtitle==='Comunidad veloz');
+   assert.deepEqual(await db(page,T+'/siteSettings'),{title:'Speedy Friends Arena',subtitle:'Comunidad veloz'});
+   assert.ok(await save.isDisabled(),'saved state disables the button');
+   await page.goto(base+'/index.html');await waitReady(page);
+   await page.waitForFunction(()=>/COMUNIDAD VELOZ/.test(document.querySelector('.sf-hero .eyebrow')?.textContent||''),null,{timeout:8000});
+   await ctx.close();
+  });
+
+  await test('Admin identity is read-only for an admin who is not the creator',async()=>{
+   const seed=JSON.parse(JSON.stringify(SEED));seed['speedy-friends-teams']['speedy-friends'].permissions={[ALICE.uid]:{role:'admin'}};
+   const ctx=await newContext(browser,{session:ALICE,seed});const page=await ctx.newPage();
+   await page.goto(base+'/admin.html');await waitReady(page);
+   await page.locator('[data-panel="identity"]').click();
+   await page.waitForFunction(()=>/solo lectura/i.test(document.getElementById('identity-status')?.textContent||''),null,{timeout:8000});
+   assert.ok(await page.locator('#identity-title').isDisabled());assert.ok(await page.locator('#save-identity').isDisabled());
+   await ctx.close();
+  });
+
+  await test('Home video section plays real Edits from Fanarts or offers to publish one',async()=>{
+   const ctx=await newContext(browser,{session:ALICE});const page=await ctx.newPage();
+   await page.goto(base+'/index.html');await waitReady(page);
+   await page.waitForFunction(()=>document.getElementById('videos')?.dataset.clips==='empty',null,{timeout:8000});
+   assert.equal(await page.locator('#playDemo').getAttribute('aria-label'),'Publicar un edit en Fanarts');
+   await ctx.close();
+   const seed=JSON.parse(JSON.stringify(SEED));
+   seed['speedy-friends-teams']['speedy-friends'].fanarts.v1={id:'v1',title:'Edit de prueba',description:'Fixture',ownerUid:BOB.uid,authorName:'Bob',category:'Edits',image:'assets/fanart-demo/clip.mp4',mediaType:'video',createdAt:5};
+   const vctx=await newContext(browser,{session:ALICE,seed});const v=await vctx.newPage();
+   await v.goto(base+'/index.html');await waitReady(v);
+   await v.waitForFunction(()=>document.getElementById('videos')?.dataset.clips==='ready',null,{timeout:8000});
+   assert.equal(await v.locator('#videos .video-preview video').getAttribute('src'),'assets/fanart-demo/clip.mp4');
+   assert.match(await v.locator('#videos .video-preview span').innerText(),/Edit de prueba · Bob/);
+   assert.equal(await v.locator('.sf-clip-chip').count(),1);
+   await vctx.close();
+  });
+
+  await test('Staff admin activity shows Rings and explains that cafe activity is restricted',async()=>{
+   const seed=JSON.parse(JSON.stringify(SEED));const team=seed['speedy-friends-teams']['speedy-friends'];
+   team.permissions={[ALICE.uid]:{role:'admin'}};
+   team.ringHistory={h1:{userId:'user-bob',delta:-5,reason:'Ajuste',byUid:ALICE.uid,byEmail:ALICE.email,at:Date.now()}};
+   const ctx=await newContext(browser,{session:ALICE,seed});const page=await ctx.newPage();
+   await page.goto(base+'/admin-role.html');await waitReady(page);
+   await page.locator('[data-panel="audit"]').click();
+   await page.waitForFunction(()=>document.querySelectorAll('#activity-feed [role=listitem]').length===1,null,{timeout:8000});
+   assert.match(await page.locator('#activity-feed').innerText(),/Quitó 5 Rings a bob · Ajuste/);
+   assert.match(await page.locator('#activity-note').innerText(),/solo es visible para la creadora/);
+   await ctx.close();
+  });
   await browser.close();
  }
  fs.mkdirSync('test-results',{recursive:true});
