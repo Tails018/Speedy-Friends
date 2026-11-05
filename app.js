@@ -185,7 +185,7 @@
     window.scrollTo({ top, behavior: reducedMotion.matches ? 'auto' : 'smooth' });
   }));
 
-  $('#playDemo')?.addEventListener('click', () => showToast('Todavía no hay clips publicados.'));
+  // #playDemo lo gestiona home-clips.js con los edits de video reales de Fanarts.
 
 
 

@@ -1,0 +1,16 @@
+/* Speedy Friends V7 — capa compartida de identidad, componentes y movimiento.
+ * Se carga después de los estilos de cada página. Solo usa transform y opacity para animar y
+ * respeta prefers-reduced-motion. */
+.sf-visually-hidden{position:absolute!important;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap;border:0}
+
+/* Portada · clips del team */
+.sf-clip-list{display:flex;flex-wrap:wrap;gap:8px;margin-top:18px}
+.sf-clip-list:empty{display:none}
+.sf-clip-chip{appearance:none;min-height:40px;max-width:220px;padding:10px 14px;border:1px solid rgba(255,255,255,.28);background:rgba(255,255,255,.06);color:#fff;font:900 11px/1.2 Arial,sans-serif;letter-spacing:.08em;text-transform:uppercase;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;cursor:pointer;clip-path:polygon(0 0,100% 0,100% 70%,92% 100%,0 100%);transition:background .2s,border-color .2s,transform .2s}
+.sf-clip-chip:hover{transform:translateY(-2px);border-color:#f5b800}
+.sf-clip-chip.is-active{background:#f5b800;border-color:#f5b800;color:#0b1d4d}
+.sf-clip-chip:focus-visible,#playDemo:focus-visible{outline:3px solid #f5b800;outline-offset:3px}
+.video-preview.has-clip{background:#000}
+.video-preview.has-clip video{display:block;width:100%;height:100%;object-fit:cover;background:#000}
+.video-preview.has-clip span{max-width:calc(100% - 30px);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;pointer-events:none}
+@media (prefers-reduced-motion:reduce){.sf-clip-chip{transition:none}.sf-clip-chip:hover{transform:none}}

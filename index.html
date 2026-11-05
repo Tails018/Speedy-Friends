@@ -192,6 +192,7 @@ body.sf-auth-gate-open{overflow:hidden!important}
 <script defer src="portal-ui.js"></script>
 <link rel="stylesheet" href="sf-experience.css">
 <script src="sf-experience.js"></script>
+<link rel="stylesheet" href="sf-v7.css">
 </head>
 <body class="sf-auth-gate-open">
 <a class="sf-skip-link" href="#top">Saltar al contenido</a>
@@ -550,7 +551,7 @@ body.sf-auth-gate-open{overflow:hidden!important}
 
 <div id="mobileNav" class="mobile-nav" role="dialog" aria-modal="true" aria-label="Navegación" inert><div class="mobile-nav-inner"><button id="closeMenu" type="button" aria-label="Cerrar menú">×</button><p class="eyebrow">SPEEDY FRIENDS</p><a href="#topics">Novedades</a><a href="#friends">Amigos</a><a href="#fanarts">Fanarts</a><a href="#special">Especial</a><a href="#downloads">Descargas</a><a href="#quick-actions" data-open-quick-panel>Accesos</a><a href="#videos">Videos</a><a href="#top">Inicio</a></div></div>
 <div id="toast" class="toast" role="status" aria-live="polite">Demo visual activa</div>
-<script src="vendor/jquery-3.7.1.min.js"></script><script src="vendor/swiper-bundle.min.js"></script><script src="fanarts-system.js"></script><script src="app.js"></script>
+<script src="vendor/jquery-3.7.1.min.js"></script><script src="vendor/swiper-bundle.min.js"></script><script src="fanarts-system.js"></script><script src="app.js"></script><script src="home-clips.js"></script><script src="site-identity.js"></script>
 <script src="ultimos-momentos.js"></script>
 
 <script id="sf-auth-required-gate">
@@ -1237,11 +1238,13 @@ document.addEventListener('DOMContentLoaded',()=>{
     // Visitors stay on the polished preview; authenticated users get the real most-liked fanarts.
     if(!sf.current.uid){ if(sf.current.ready!==undefined && document.documentElement.dataset.sfAuthChecked) renderState('guest'); return false; }
     const ref=sf.refs.root.child('fanarts');
-    ref.on('value',snap=>render(Object.values(snap.val()||{}),true),()=>renderState('error'));
+    const emit=(list,status)=>document.dispatchEvent(new CustomEvent('speedy:fanarts-updated',{detail:{list,status}}));
+    // La sección de clips reutiliza esta misma suscripción (sin otra lectura de fanarts).
+    ref.on('value',snap=>{const list=Object.values(snap.val()||{});render(list,true);emit(list,'ready');},()=>{renderState('error');emit([],'error');});
     return true;
   }
   let liveBound=false; function init(){renderState('loading'); const tryLive=()=>{if(!liveBound) liveBound=live();}; tryLive();
-    document.addEventListener('speedy:firebase-ready',e=>{document.documentElement.dataset.sfAuthChecked='1'; tryLive(); if(!liveBound && !e.detail?.uid) renderState('guest');});
+    document.addEventListener('speedy:firebase-ready',e=>{document.documentElement.dataset.sfAuthChecked='1'; tryLive(); if(!liveBound && !e.detail?.uid){ renderState('guest'); document.dispatchEvent(new CustomEvent('speedy:fanarts-updated',{detail:{list:[],status:'guest'}})); }});
     document.addEventListener('speedy:firebase-error',()=>{ if(!liveBound) renderState('error'); });}
   if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',init); else init();
 })();
