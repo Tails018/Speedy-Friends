@@ -46,6 +46,7 @@
     toJSON() { return this.val(); }
   }
 
+  const ack = () => { const lat = Number(window.__sfMockLatency || 0); return lat ? new Promise(r => setTimeout(r, lat)) : Promise.resolve(); };
   let pushCounter = 0;
   class Query {
     constructor(ref, filter = null) { this.ref = ref; this._filter = filter; }
@@ -62,11 +63,18 @@
     orderByChild(by) { return new Query(this.ref, { by }); }
     orderByKey() { return this; } orderByValue() { return this; } limitToLast() { return this; } limitToFirst() { return this; }
     equalTo(eq) { return new Query(this.ref, { ...(this._filter || {}), eq }); }
-    once(event, cb) { log.push(['read', this.ref.path]); const s = new Snapshot(this.ref, this._value()); cb?.(s); return Promise.resolve(s); }
+    // __sfMockLatency (ms) simula el tiempo de ida y vuelta de la red para comparar optimizaciones.
+    // El registro añade el instante y el tamaño JSON entregado (no son bytes reales de Firebase).
+    once(event, cb) {
+      const lat = Number(window.__sfMockLatency || 0);
+      if (window.__sfMockDenyRead && window.__sfMockDenyRead(this.ref.path)) return new Promise((_, rej) => setTimeout(() => rej(Object.assign(new Error('permission_denied'), { code: 'PERMISSION_DENIED' })), lat));
+      const deliver = () => { const v = this._value(); log.push(['read', this.ref.path, Math.round(performance.now()), JSON.stringify(v ?? null).length]); const s = new Snapshot(this.ref, v); cb?.(s); return s; };
+      return lat ? new Promise(r => setTimeout(() => r(deliver()), lat)) : Promise.resolve(deliver());
+    }
     on(event, cb, errCb) {
       if (window.__sfMockDenyRead && window.__sfMockDenyRead(this.ref.path)) { setTimeout(() => errCb?.(Object.assign(new Error('permission_denied'), { code: 'PERMISSION_DENIED' })), 0); return cb; }
       const l = { ref: this.ref, cb, query: this, fire: () => cb(new Snapshot(this.ref, this._value())) };
-      listeners.add(l); log.push(['listen', this.ref.path]); setTimeout(() => listeners.has(l) && l.fire(), 0);
+      listeners.add(l); log.push(['listen', this.ref.path, Math.round(performance.now()), JSON.stringify(this._value() ?? null).length]); setTimeout(() => listeners.has(l) && l.fire(), Number(window.__sfMockLatency || 0));
       return cb;
     }
     off(event, cb) { for (const l of [...listeners]) if (l.ref.path === this.ref.path && (!cb || l.cb === cb)) listeners.delete(l); }
@@ -76,8 +84,9 @@
     get parent() { const p = split(this.path); return p.length ? new Ref(p.slice(0, -1).join('/')) : null; }
     get root() { return new Ref(''); }
     child(p) { return new Ref([this.path, ...split(p)].join('/')); }
-    set(v) { log.push(['set', this.path]); setAt(split(this.path), v); notify(split(this.path)); return Promise.resolve(); }
-    update(obj) { log.push(['update', this.path]); for (const [k, v] of Object.entries(obj || {})) setAt([...split(this.path), ...split(k)], v); notify(split(this.path)); return Promise.resolve(); }
+    // Como Firebase: la escritura se aplica en local al instante y la promesa espera la confirmación.
+    set(v) { log.push(['set', this.path]); setAt(split(this.path), v); notify(split(this.path)); return ack(); }
+    update(obj) { log.push(['update', this.path]); for (const [k, v] of Object.entries(obj || {})) setAt([...split(this.path), ...split(k)], v); notify(split(this.path)); return ack(); }
     remove() { return this.set(null); }
     push(v) {
       const key = '-mock' + Date.now().toString(36) + (pushCounter++).toString(36).padStart(4, '0');
