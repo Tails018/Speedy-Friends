@@ -80,6 +80,10 @@ html[data-sf-fx="lite"] .rank-rings strong.sf7-bump,html[data-sf-fx="lite"] .ran
  .sf-footer a{min-height:44px;display:inline-flex;align-items:center}
  :where(header,nav,.sf-section-head,.sf-footer) a:where([class*="brand"],.sf-more){min-height:44px!important;height:auto!important}
  :where(.sf-menu,.sf-nav-menu,.fanart-like,.record-close){min-width:44px!important;min-height:44px!important}
+ a:where(.btn,[id^="cafe-role-"]){min-height:44px!important;display:inline-flex;align-items:center;justify-content:center}
+ :where(header,nav,.sf-footer,footer) a{min-width:44px;justify-content:center}
+ :where(#close,.close,[aria-label="Cerrar"]){min-width:44px!important;min-height:44px!important}
+ aside.side a{min-height:44px!important;display:flex;align-items:center}
  :where(button,[role=button],select,summary):not(.sf-clip-chip):not([disabled]){min-height:44px}
  :where(button,[role=button]):where([aria-label]):not(:has(> span,> b,> strong)){min-width:44px}
  :where(input:not([type=checkbox]):not([type=radio]):not([type=range]):not([type=file]):not([type=hidden]),select,textarea){min-height:44px;font-size:max(16px,1em)!important}
