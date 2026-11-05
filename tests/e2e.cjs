@@ -406,6 +406,21 @@ const waitReady=page=>page.waitForFunction(()=>window.SpeedyFirebase?.current?.c
    assert.match(await page.locator('#activity-note').innerText(),/solo es visible para la creadora/);
    await ctx.close();
   });
+
+  await test('Cafe staff wallet starts folded so it never covers the menu, and remembers being opened',async()=>{
+   const ctx=await newContext(browser,{session:CREATOR});const page=await ctx.newPage();
+   await page.goto(base+'/cafeteria.html');await waitReady(page);
+   const fab=page.locator('#sf-cafe-rw-fab'),wallet=page.locator('#sf-cafe-role-wallet');
+   await fab.waitFor({state:'visible',timeout:8000});
+   assert.ok(await wallet.evaluate(e=>e.classList.contains('is-hidden')),'folded on arrival');
+   await fab.click();
+   assert.ok(await wallet.evaluate(e=>!e.classList.contains('is-hidden')));
+   await page.reload();await waitReady(page);
+   await page.waitForFunction(()=>!document.getElementById('sf-cafe-role-wallet').classList.contains('is-hidden'),null,{timeout:8000});
+   await page.locator('#sf-cafe-rw-close').click();
+   assert.ok(await wallet.evaluate(e=>e.classList.contains('is-hidden')));
+   await ctx.close();
+  });
   await browser.close();
  }
  fs.mkdirSync('test-results',{recursive:true});

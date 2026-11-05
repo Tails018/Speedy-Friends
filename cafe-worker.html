@@ -190,7 +190,7 @@ document.addEventListener('DOMContentLoaded',()=>{
   const show=()=>{panel.classList.remove('is-hidden');fab.style.display='none'};
   // Sin rol de cafetería no hay panel ni botón (antes quedaba un ☕ que abría un panel vacío).
   const off=()=>{panel.classList.add('is-hidden');fab.style.display='none'};
-  close.onclick=hide; fab.onclick=show;
+  close.onclick=()=>{hide();try{sessionStorage.removeItem('sfCafeWalletOpen')}catch{}}; fab.onclick=()=>{show();try{sessionStorage.setItem('sfCafeWalletOpen','1')}catch{}};
 
   const apply=async()=>{
     try{
@@ -205,7 +205,8 @@ document.addEventListener('DOMContentLoaded',()=>{
       if(!['creator','worker'].includes(role)){off();return}
 
       // En móvil el panel taparía media pantalla: se muestra plegado en el botón ☕.
-      if(!panel.dataset.sfOpened){panel.dataset.sfOpened='1';if(matchMedia('(max-width:560px)').matches)hide();else show();}
+      // Abierto tapaba titulares y tarjetas también en escritorio: empieza plegado salvo que la persona lo abriera en esta sesión.
+      if(!panel.dataset.sfOpened){panel.dataset.sfOpened='1';let open=false;try{open=sessionStorage.getItem('sfCafeWalletOpen')==='1'}catch{}if(open)show();else hide();}
       roleEl.textContent=role==='creator'?'CAFÉ · CREADORA':'CAFÉ · TRABAJADOR';
       const profile=state.profile||SpeedyCafe.profile()||{};
       userEl.textContent=profile.nickname||profile.username||profile.name||state.email||'Cuenta activa';
