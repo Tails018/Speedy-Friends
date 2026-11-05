@@ -1259,11 +1259,11 @@ document.addEventListener('DOMContentLoaded', async () => {
     if(canvasName) canvasName.textContent=displayName;
     if(mainBio) mainBio.textContent=editDescription?.value.trim() || 'Aquí se verá tu presentación, tus estadísticas y tu identidad dentro de la comunidad.';
     if(mainLabel) mainLabel.textContent=editTitle?.value.trim() || 'Usuario';
-    changed();
   }
 
+  // Solo la edición del usuario marca el borrador; rellenar desde Firebase no cuenta como cambio.
   [editName,editNickname,editTitle,editUsername,editDescription].forEach(field=>{
-    field?.addEventListener('input',syncEditedText);
+    field?.addEventListener('input',()=>{syncEditedText();changed();});
   });
 
   const avatarReset=document.getElementById('avatar-reset');
@@ -1275,8 +1275,13 @@ document.addEventListener('DOMContentLoaded', async () => {
   let coverUrl='';
   let avatarBlob=null;
   let coverBlob=null;
-  let avatarDraftUid='',coverDraftUid='';
-  let activeProfileUid=window.SpeedyFirebase?.current?.uid||'';
+  /* ---------- Sesión del editor ----------
+   * Estados: 'pending' (Firebase Auth todavía restaura la sesión), 'authenticated' y 'signed-out'.
+   * Todo el borrador (texto e imágenes) pertenece a UNA cuenta: draftOwner. Lo editado mientras Auth
+   * está pendiente se asocia a la primera cuenta que Firebase confirme. Si después aparece otra cuenta,
+   * el borrador no se guarda en ella (protección contra cambios reales de usuario). */
+  const session={state:'pending',uid:''};
+  let draftOwner='',dirty=false,saving=false,lastSaveFailed=false;
   // Quitar/restablecer solo borraba la copia local: al guardar volvía la imagen de Firebase.
   let avatarCleared=false,coverCleared=false;
   let iconPosition='50% 50%';
@@ -1348,7 +1353,19 @@ document.addEventListener('DOMContentLoaded', async () => {
     if(uid)try{localStorage.setItem(META_KEY+':'+uid,JSON.stringify(meta))}catch{}
   }
   const revoke=url=>{if(url&&String(url).startsWith('blob:'))try{URL.revokeObjectURL(url)}catch{}};
-  const changed=()=>{if(saveStatus)saveStatus.textContent='CAMBIOS SIN GUARDAR'};
+  function setStatus(text,tone=''){
+    if(!saveStatus)return;
+    saveStatus.textContent=text;
+    saveStatus.dataset.tone=tone;
+  }
+  const changed=()=>{
+    dirty=true;
+    if(session.state==='signed-out')setStatus('Tu sesión se cerró. Tus cambios siguen aquí: inicia sesión con la misma cuenta para guardarlos.','warn');
+    else if(draftOwner&&session.uid&&draftOwner!==session.uid)setStatus('Estos cambios son de otra cuenta. No se guardarán en la cuenta actual.','error');
+    else setStatus(lastSaveFailed?'CAMBIOS SIN GUARDAR · PULSA REINTENTAR':'CAMBIOS SIN GUARDAR','pending');
+    persistDraftSoon();
+    updateSaveButton();
+  };
   const markChanged=changed;
 
   /* ---------- Apply images to EVERY profile preview ---------- */
@@ -1493,7 +1510,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     const file=e.target.files?.[0];
     if(!file || !file.type.startsWith('image/'))return;
     revoke(avatarUrl);
-    avatarBlob=file;avatarCleared=false;avatarDraftUid=window.SpeedyFirebase?.current?.uid||'';
+    avatarBlob=file;avatarCleared=false;
     avatarUrl=URL.createObjectURL(file);
     iconPosition='50% 50%';iconZoom=100;
     if(iconZoomInput)iconZoomInput.value='100';
@@ -1506,7 +1523,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     const file=e.target.files?.[0];
     if(!file || !file.type.startsWith('image/'))return;
     revoke(coverUrl);
-    coverBlob=file;coverCleared=false;coverDraftUid=window.SpeedyFirebase?.current?.uid||'';
+    coverBlob=file;coverCleared=false;
     coverUrl=URL.createObjectURL(file);
     coverPosition='50% 50%';coverZoom=100;
     if(coverZoomInput)coverZoomInput.value='100';
@@ -1573,104 +1590,153 @@ document.addEventListener('DOMContentLoaded', async () => {
     new Promise((_,reject)=>setTimeout(()=>reject(new Error(message)),ms))
   ]);
 
-  const directAuthUser=async()=>{
+  /* ---------- Cuenta, borrador y guardado seguro ---------- */
+  const EDITABLE_TEXT=['name','nickname','title','username','description'];
+  const DRAFT_KEY=uid=>'sfProfileDraft:v1:'+uid;
+  const DRAFT_IMG=(kind,uid)=>'draft-'+kind+':'+uid;
+  const friendlyFail=message=>Object.assign(new Error(message),{friendly:true});
+
+  // Espera a que Firebase Auth termine de restaurar la sesión (sin confundir "pendiente" con "cerrada").
+  function waitForAccount(timeoutMs=15000){
     const sf=window.SpeedyFirebase;
-    if(!sf?.auth||!sf?.refs?.users)throw new Error('Firebase no está disponible');
-
-    let user=sf.auth.currentUser;
-    if(!user){
-      user=await new Promise((resolve,reject)=>{
-        let finished=false;
-        const unsubscribe=sf.auth.onAuthStateChanged(u=>{
-          if(finished||!u)return;
-          finished=true;
-          clearTimeout(timer);
-          try{unsubscribe()}catch{}
-          resolve(u);
-        });
-        const timer=setTimeout(()=>{
-          if(finished)return;
-          finished=true;
-          try{unsubscribe()}catch{}
-          reject(new Error('No se detectó tu sesión de Google'));
-        },7000);
+    if(!sf?.auth)return Promise.reject(friendlyFail('Firebase no está disponible.'));
+    if(session.state==='authenticated'&&sf.auth.currentUser)return Promise.resolve(sf.auth.currentUser);
+    if(session.state==='signed-out')return Promise.reject(friendlyFail('Inicia sesión con Google para guardar tu perfil.'));
+    return new Promise((resolve,reject)=>{
+      let off=()=>{};
+      const timer=setTimeout(()=>{off();reject(friendlyFail('Firebase no confirmó tu sesión a tiempo. Revisa tu conexión y pulsa Reintentar.'));},timeoutMs);
+      off=sf.auth.onAuthStateChanged(u=>{
+        clearTimeout(timer);setTimeout(()=>off(),0);
+        u?resolve(u):reject(friendlyFail('Inicia sesión con Google para guardar tu perfil.'));
       });
+    });
+  }
+
+  // El perfil propio sale de resolve() (lectura compartida de la sesión) en vez de descargar /users.
+  async function ownedProfileId(sf,user){
+    const state=await withTimeout(sf.resolve(),10000,'Firebase tardó demasiado en encontrar tu perfil');
+    if(state?.uid!==user.uid||!state.profileId)throw friendlyFail('No se encontró tu perfil. Recarga la página.');
+    return state.profileId;
+  }
+
+  function friendlyError(error){
+    if(error?.friendly)return error.message;
+    const text=String(error?.code||'')+' '+String(error?.message||'');
+    if(/permission|denied/i.test(text))return 'Firebase rechazó el guardado: tu cuenta no tiene permiso sobre este perfil.';
+    if(/demasiado grande/i.test(text))return error.message;
+    if(/offline|network|tardó|timeout|disconnect/i.test(text))return 'No hay conexión con Firebase. Tus cambios siguen aquí: pulsa Reintentar.';
+    return 'No se pudo guardar. Tus cambios siguen aquí: pulsa Reintentar.';
+  }
+
+  function updateSaveButton(){
+    if(!saveButton)return;
+    const blocked=session.state==='signed-out'||Boolean(draftOwner&&session.uid&&draftOwner!==session.uid);
+    saveButton.disabled=saving||blocked;
+    saveButton.textContent=saving?'GUARDANDO…':(lastSaveFailed?'REINTENTAR GUARDADO':'GUARDAR CAMBIOS');
+    saveButton.title=session.state==='signed-out'?'Inicia sesión para guardar tu perfil':'';
+  }
+
+  // Borrador por cuenta: texto en sessionStorage e imágenes en IndexedDB, ambos con el UID en la clave.
+  const textFields=()=>[['name',editName],['nickname',editNickname],['title',editTitle],['username',editUsername],['description',editDescription]];
+  let draftTimer=0;
+  function persistDraftSoon(){
+    clearTimeout(draftTimer);
+    draftTimer=setTimeout(persistDraft,300);
+  }
+  async function persistDraft(){
+    const uid=draftOwner;
+    if(!uid||!dirty)return;
+    const text={};
+    for(const [k,el] of textFields())text[k]=el?.value||'';
+    try{sessionStorage.setItem(DRAFT_KEY(uid),JSON.stringify({v:1,uid,text,iconPosition,iconZoom,coverPosition,coverZoom,avatarCleared,coverCleared,hasAvatar:Boolean(avatarBlob),hasCover:Boolean(coverBlob)}));}catch{}
+    if(avatarBlob)await dbPut(DRAFT_IMG('avatar',uid),avatarBlob);else await dbDelete(DRAFT_IMG('avatar',uid));
+    if(coverBlob)await dbPut(DRAFT_IMG('cover',uid),coverBlob);else await dbDelete(DRAFT_IMG('cover',uid));
+  }
+  async function clearDraft(uid){
+    clearTimeout(draftTimer);
+    try{sessionStorage.removeItem(DRAFT_KEY(uid));}catch{}
+    await dbDelete(DRAFT_IMG('avatar',uid));await dbDelete(DRAFT_IMG('cover',uid));
+  }
+  async function restoreDraft(uid){
+    let draft=null;try{draft=JSON.parse(sessionStorage.getItem(DRAFT_KEY(uid))||'null');}catch{}
+    if(!draft||draft.uid!==uid)return false;
+    for(const [k,el] of textFields())if(el&&typeof draft.text?.[k]==='string')el.value=draft.text[k];
+    iconPosition=draft.iconPosition||iconPosition;iconZoom=Number(draft.iconZoom)||iconZoom;
+    coverPosition=draft.coverPosition||coverPosition;coverZoom=Number(draft.coverZoom)||coverZoom;
+    avatarCleared=Boolean(draft.avatarCleared);coverCleared=Boolean(draft.coverCleared);
+    if(draft.hasAvatar){const blob=await dbGet(DRAFT_IMG('avatar',uid));if(blob&&draftOwner===uid){revoke(avatarUrl);avatarBlob=blob;avatarUrl=URL.createObjectURL(blob);}}
+    if(draft.hasCover){const blob=await dbGet(DRAFT_IMG('cover',uid));if(blob&&draftOwner===uid){revoke(coverUrl);coverBlob=blob;coverUrl=URL.createObjectURL(blob);}}
+    if(draftOwner!==uid)return false;
+    if(iconZoomInput)iconZoomInput.value=String(iconZoom);
+    if(iconZoomValue)iconZoomValue.textContent=`${iconZoom}%`;
+    if(coverZoomInput)coverZoomInput.value=String(coverZoom);
+    if(coverZoomValue)coverZoomValue.textContent=`${coverZoom}%`;
+    applyAvatar();applyCover();applyCropSurfaces();syncEditedText();
+    dirty=true;
+    setStatus('Recuperamos tus cambios sin guardar de esta cuenta.','pending');
+    updateSaveButton();
+    return true;
+  }
+
+  // Cambios de sesión: pendiente → autenticada / cerrada, y cambios reales de cuenta.
+  function onAccountChange(user){
+    const uid=user?.uid||'';
+    if(!uid){
+      const wasIn=session.state==='authenticated';
+      session.state='signed-out';session.uid='';
+      if(wasIn&&dirty)setStatus('Tu sesión se cerró. Tus cambios siguen aquí: inicia sesión con la misma cuenta para guardarlos.','warn');
+      else if(!dirty)setStatus('Inicia sesión con Google para guardar tu perfil.','warn');
+      updateSaveButton();return;
     }
-    return {sf,user};
-  };
-
-  const findOwnedProfile=async(sf,user)=>{
-    const snapshot=await withTimeout(
-      sf.refs.users.once('value'),
-      8000,
-      'Firebase tardó demasiado en leer los perfiles'
-    );
-    const users=snapshot.val()||{};
-    const email=String(user.email||'').toLowerCase();
-
-    for(const [id,data] of Object.entries(users)){
-      const ownerUid=String(data?.ownerUid||'');
-      const ownerEmail=String(data?.ownerEmail||data?.email||'').toLowerCase();
-      if(ownerUid===String(user.uid)||ownerEmail===email){
-        return {id,data:data||{}};
+    const previous=session.uid,wasSignedOut=session.state==='signed-out';
+    session.state='authenticated';session.uid=uid;
+    if(!draftOwner){
+      draftOwner=uid;
+      // Lo editado antes de que Auth terminara pertenece a esta cuenta; si no hay nada, se recupera
+      // el borrador guardado de esta misma cuenta (por ejemplo, tras recargar en Android).
+      if(dirty)persistDraftSoon();else restoreDraft(uid);
+    }else if(draftOwner!==uid){
+      if(dirty){
+        setStatus('Estos cambios son de otra cuenta. No se guardarán en la cuenta actual: vuelve a esa cuenta o recarga para editar este perfil.','error');
+      }else{
+        // Nada que perder: el editor pasa a la nueva cuenta sin arrastrar imágenes de la anterior.
+        draftOwner=uid;revoke(avatarUrl);revoke(coverUrl);avatarUrl='';coverUrl='';avatarBlob=null;coverBlob=null;
+        for(const [,el] of textFields())if(el)el.value='';
+        applyAvatar();applyCover();
       }
+    }else if((previous!==uid||wasSignedOut)&&dirty){
+      setStatus(lastSaveFailed?'Sesión recuperada. Pulsa Reintentar para guardar.':'Sesión recuperada. Ya puedes guardar tus cambios.','pending');
     }
-
-    // Create a single profile only when this account has no existing record.
-    let id=`user-${user.uid}`;
-    let suffix=1;
-    while(Object.prototype.hasOwnProperty.call(users,id)){
-      id=`user-${user.uid}-${suffix++}`;
-    }
-
-    const baseName=(email.split('@')[0]||'integrante').slice(0,32);
-    const profile={
-      id,
-      name:baseName,
-      username:baseName,
-      nickname:'',
-      title:'Runner',
-      role:'Runner',
-      description:'',
-      bio:'',
-      rings:0,
-      level:1,
-      xp:0,
-      ownerUid:user.uid,
-      ownerEmail:user.email||'',
-      avatar:'',
-      cover:'',
-      iconPosition:'50% 50%',
-      iconZoom:100,
-      coverPosition:'50% 50%',
-      coverZoom:100,
-      ostName:'',
-      hasOst:false,
-      ostUrl:''
-    };
-
-    await withTimeout(
-      sf.refs.users.child(id).set(profile),
-      8000,
-      'No se pudo crear tu perfil'
-    );
-    return {id,data:profile};
+    updateSaveButton();
+  }
+  const authReady=()=>{
+    const sf=window.SpeedyFirebase;
+    if(!sf?.auth||authReady.done)return;authReady.done=true;
+    sf.auth.onAuthStateChanged(onAccountChange);
   };
+  authReady();document.addEventListener('speedy:firebase-ready',authReady);
 
   /* ---------- Save persistently ---------- */
   saveButton?.addEventListener('click',async()=>{
-    if(saveButton.disabled)return;
-    saveButton.disabled=true;
-    if(saveStatus)saveStatus.textContent='GUARDANDO...';
+    if(saving)return;
+    saving=true;updateSaveButton();
+    setStatus(session.state==='pending'?'Comprobando tu sesión…':'Guardando en Firebase…','pending');
     saveButton?.classList.remove('saved');
-
+    let uidAtStart='';
     try{
-      const {sf,user}=await directAuthUser();
-      if(activeProfileUid!==user.uid)throw new Error('La sesión cambió; recarga el perfil antes de guardar.');
-      if((avatarBlob && avatarDraftUid!==user.uid)||(coverBlob && coverDraftUid!==user.uid))throw new Error('La sesión cambió; vuelve a seleccionar tus imágenes.');
-      const owned=await findOwnedProfile(sf,user);
-      const id=owned.id;
-      const existing=owned.data||{};
+      const user=await waitForAccount();
+      uidAtStart=user.uid;
+      if(!draftOwner)draftOwner=user.uid;
+      // Protección real: un borrador de otra cuenta nunca se guarda en la cuenta actual.
+      if(draftOwner!==user.uid)throw friendlyFail('Estos cambios son de otra cuenta. No se guardarán en la cuenta actual.');
+      const sf=window.SpeedyFirebase;
+      const id=await ownedProfileId(sf,user);
+      const ref=sf.refs.users.child(id);
+      const snap=await withTimeout(ref.once('value'),8000,'Firebase tardó demasiado en leer tu perfil');
+      const existing=snap.val()||{};
+      const email=String(user.email||'').toLowerCase();
+      const owns=String(existing.ownerUid||'')===user.uid||(!existing.ownerUid&&email&&String(existing.ownerEmail||existing.email||'').toLowerCase()===email);
+      if(!snap.exists()||!owns)throw friendlyFail('Este perfil no pertenece a tu cuenta. Recarga la página.');
 
       const identity={
         name:editName?.value.trim()||'',
@@ -1679,91 +1745,49 @@ document.addEventListener('DOMContentLoaded', async () => {
         username:editUsername?.value.trim()||'',
         description:editDescription?.value.trim()||''
       };
+      // Solo campos editables del perfil. Rings, rol, permisos, nivel, historial y datos
+      // administrativos nunca se envían, así que un cambio simultáneo de saldo no se pisa.
+      const patch={};
+      for(const k of EDITABLE_TEXT)if(String(existing[k]??'')!==identity[k])patch[k]=identity[k];
+      if(String(existing.bio??'')!==identity.description)patch.bio=identity.description;
+      // Imágenes como data URL en Realtime Database (GIF animados intactos). Solo se envían si cambiaron.
+      if(avatarBlob)patch.avatar=await withTimeout(fileToDataUrl(avatarBlob,2.5*1024*1024),10000,'El icono tardó demasiado en procesarse');
+      else if(avatarCleared&&existing.avatar)patch.avatar='';
+      if(coverBlob)patch.cover=await withTimeout(fileToDataUrl(coverBlob,4*1024*1024),10000,'La portada tardó demasiado en procesarse');
+      else if(coverCleared&&existing.cover)patch.cover='';
+      const crop={iconPosition:iconPosition||'50% 50%',iconZoom:Number(iconZoom)||100,coverPosition:coverPosition||'50% 50%',coverZoom:Number(coverZoom)||100};
+      for(const [k,v] of Object.entries(crop))if(existing[k]!==v)patch[k]=v;
+      // El propietario es inmutable: solo se completa en perfiles antiguos que no lo tenían.
+      if(!existing.ownerUid)patch.ownerUid=user.uid;
+      if(!existing.ownerEmail&&user.email)patch.ownerEmail=user.email;
 
-      // Keep the exact old project approach: profile images are stored as
-      // data URLs in Realtime Database. No Firebase Storage request is made.
-      // This also keeps GIFs animated because the original GIF bytes are kept.
-      let avatarData=avatarCleared?'':(avatarUrl||existing.avatar||'');
-      let coverData=coverCleared?'':(coverUrl||existing.cover||'');
-
-      if(avatarBlob){
-        avatarData=await withTimeout(
-          fileToDataUrl(avatarBlob,2.5*1024*1024),
-          10000,
-          'El icono tardó demasiado en procesarse'
-        );
+      if(Object.keys(patch).length){
+        await withTimeout(ref.update(patch),10000,'Firebase tardó demasiado en guardar tu perfil');
       }
-      if(coverBlob){
-        coverData=await withTimeout(
-          fileToDataUrl(coverBlob,4*1024*1024),
-          10000,
-          'La portada tardó demasiado en procesarse'
-        );
-      }
+      const saved={...existing,...patch};
+      if(sf.current.uid===user.uid){sf.current.profileId=id;sf.current.profile=saved;}
 
-      const safe={
-        ...existing,
-        ...identity,
-        id,
-        bio:identity.description,
-        ownerUid:existing.ownerUid||user.uid,
-        ownerEmail:existing.ownerEmail||user.email||'',
-        avatar:avatarData||'',
-        cover:coverData||'',
-        iconPosition:iconPosition||'50% 50%',
-        iconZoom:Number(iconZoom)||100,
-        coverPosition:coverPosition||'50% 50%',
-        coverZoom:Number(coverZoom)||100
-      };
-
-      await withTimeout(
-        sf.refs.users.child(id).update(safe),
-        10000,
-        'Firebase tardó demasiado en guardar tu perfil'
-      );
-
-      // Update in-memory Firebase state so every preview uses the same data
-      // immediately. Ranking listens to /users in real time.
-      sf.current.uid=user.uid;
-      sf.current.email=String(user.email||'');
-      sf.current.profileId=id;
-      sf.current.profile=safe;
-      sf.current.ready=true;
-
-      avatarUrl=avatarData||'';
-      coverUrl=coverData||'';
-
-      writeMeta({
-        iconPosition,iconZoom,coverPosition,coverZoom,
-        identity,hasAvatar:Boolean(avatarData),hasCover:Boolean(coverData)
-      });
-
-      applyAvatar();
-      applyCover();
-      applyCropSurfaces();
-      syncEditedText();
-
-      // Keep the local IndexedDB copy too, matching the old project behavior.
+      avatarUrl=patch.avatar!==undefined?patch.avatar:(avatarCleared?'':(existing.avatar||avatarUrl));
+      coverUrl=patch.cover!==undefined?patch.cover:(coverCleared?'':(existing.cover||coverUrl));
+      writeMeta({iconPosition,iconZoom,coverPosition,coverZoom,identity,hasAvatar:Boolean(avatarUrl),hasCover:Boolean(coverUrl)});
+      applyAvatar();applyCover();applyCropSurfaces();syncEditedText();
+      // Copia local por UID (nunca se aplica a otra cuenta).
       if(avatarBlob)await dbPut(assetKey('avatar',user.uid),avatarBlob);
       if(coverBlob)await dbPut(assetKey('cover',user.uid),coverBlob);
-
-      avatarBlob=null;
-      coverBlob=null;
-
-      if(saveStatus)saveStatus.textContent='GUARDADO EN FIREBASE ✓';
+      avatarBlob=null;coverBlob=null;avatarCleared=false;coverCleared=false;
+      dirty=false;lastSaveFailed=false;
+      await clearDraft(user.uid);
+      setStatus(Object.keys(patch).length?'GUARDADO EN FIREBASE ✓':'GUARDADO · NO HABÍA CAMBIOS','ok');
       saveButton?.classList.add('saved');
-
-      setTimeout(()=>{
-        if(saveStatus)saveStatus.textContent='CAMBIOS GUARDADOS';
-        saveButton?.classList.remove('saved');
-      },2200);
-
+      setTimeout(()=>{if(!dirty){setStatus('CAMBIOS GUARDADOS','ok');saveButton?.classList.remove('saved');}},2200);
     }catch(error){
-      console.error('[Profile save]',error);
-      if(saveStatus)saveStatus.textContent=`ERROR: ${error?.message||'AL GUARDAR'}`;
+      console.warn('[Profile save]',error?.code||'',error?.message||error);
+      lastSaveFailed=true;
+      if(uidAtStart&&draftOwner===uidAtStart)persistDraftSoon();
+      setStatus(friendlyError(error),'error');
       saveButton?.classList.remove('saved');
     }finally{
-      saveButton.disabled=false;
+      saving=false;updateSaveButton();
     }
   });
 
@@ -1801,8 +1825,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   // Sin sesión no se puede guardar: avisarlo de inmediato en lugar de esperar 7 s y fallar.
   document.addEventListener('speedy:firebase-ready',event=>{
     const guest=!event.detail?.uid;
-    const save=document.getElementById('save-profile');
-    if(save){save.disabled=guest;save.title=guest?'Inicia sesión para guardar tu perfil':'';}
+    updateSaveButton();
     let banner=document.getElementById('sf-profile-guest');
     if(guest&&!banner){
       banner=document.createElement('div');banner.id='sf-profile-guest';banner.className='sf-profile-guest';banner.setAttribute('role','status');
