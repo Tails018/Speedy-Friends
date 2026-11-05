@@ -1157,18 +1157,19 @@ body.admin-profile-open{overflow:hidden}
   function renderAdminAudit(entries){activity.rings={state:'ready',items:entries};renderActivity();}
 
  
+ const workersState={status:'loading',value:{}};
+ function bootWorkers(){
+   if(roleMode!=='creator'||bootWorkers.done)return;bootWorkers.done=true;
+   sf.db.ref(`speedy-friends-teams/${sf.REALTIME_CONFIG?.teamId||'speedy-friends'}/cafeteria/workers`).on('value',snap=>{workersState.status='ready';workersState.value=snap.val()||{};renderCafeWorkers();},()=>{workersState.status='error';workersState.value={};renderCafeWorkers();});
+ }
  async function renderCafeWorkers(){
    if(!cafeWorkerList || roleMode!=='creator')return;
    const users=getUsers();
    const q=String(cafeWorkerSearch?.value||'').trim().toLowerCase();
-   let workers={};
-   try{
-     const snap=await sf.db.ref('speedy-friends-teams/speedy-friends/cafeteria/workers').once('value');
-     workers=snap.val()||{};
-   }catch(error){
-     cafeWorkerList.innerHTML='<div class="admin-empty-live">No se pudo leer trabajadores.</div>';
-     return;
-   }
+   // Un solo listener de trabajadores (antes se releía en cada cambio de usuarios o permisos).
+   if(workersState.status==='loading'){cafeWorkerList.innerHTML='<div class="admin-empty-live">Cargando trabajadores…</div>';return;}
+   if(workersState.status==='error'){cafeWorkerList.innerHTML='<div class="admin-empty-live">No se pudo leer trabajadores.</div>';return;}
+   const workers=workersState.value;
    const filtered=users.filter(u=>!q || [u.username,u.nickname,u.name,u.ownerEmail,u.ownerUid].join(' ').toLowerCase().includes(q));
    if(!filtered.length){cafeWorkerList.innerHTML='<div class="admin-empty-live">Ningún usuario coincide.</div>';return;}
    cafeWorkerList.innerHTML=filtered.map(u=>{
@@ -1187,11 +1188,10 @@ body.admin-profile-open{overflow:hidden}
    cafeWorkerList.querySelectorAll('[data-cafe-worker]').forEach(btn=>btn.addEventListener('click',async()=>{
      const u=selectedUserById(btn.dataset.cafeWorker); if(!u)return;
      try{
-       const snap=await sf.db.ref('speedy-friends-teams/speedy-friends/cafeteria/workers').child(u.ownerUid).once('value');
-       const active=snap.val()?.active!==false && !!snap.val();
+       const current=workersState.value[u.ownerUid];
+       const active=current?.active!==false && !!current;
        await sf.setCafeWorkerRole(u.id,!active);
        notify(!active?'Trabajador activado':'Trabajador desactivado');
-       await renderCafeWorkers();
      }catch(err){notify(err?.message||'No se pudo cambiar el rol');}
    }));
  }
@@ -1203,11 +1203,12 @@ body.admin-profile-open{overflow:hidden}
     if(!state.uid){ notify('Sesión no disponible'); return; }
     bootRealtime.done=true;
     // One shared live users listener.
-    usersUnsub=sf.refs.users.on('value',snap=>{
+    const shared=(key,ref,ok,fail)=>sf.subscribeShared?sf.subscribeShared(key,ref,ok,fail):(ref.on('value',ok,fail),()=>ref.off('value',ok));
+    usersUnsub=shared('users',sf.refs.users,snap=>{
       overviewState.users='ready';currentUsers=snap.val()||{};
       renderOverview(); renderUsers(); renderRingResults(); if(canManageRoles){renderPermissions(); renderCafeWorkers();}
     },()=>{overviewState.users='error';currentUsers={};renderOverview();renderUsers();renderRingResults();});
-    ringsUnsub=sf.refs.rings.on('value',snap=>{
+    ringsUnsub=shared('rings',sf.refs.rings,snap=>{
       overviewState.rings='ready';currentRings=snap.val()||{};
       renderOverview(); renderUsers(); renderRingResults();
     },()=>{overviewState.rings='error';currentRings={};renderOverview();renderUsers();renderRingResults();});
@@ -1220,7 +1221,7 @@ body.admin-profile-open{overflow:hidden}
       lastHistory=Object.values(snap.val()||{}).sort((a,b)=>n(a.at)-n(b.at));
       renderAudit(lastHistory); renderAdminAudit(lastHistory);
     },()=>{activity.rings={state:'error',items:[]};renderActivity();});
-    bootActivity(); bootIdentity();
+    bootActivity(); bootIdentity(); bootWorkers();
     renderOverview();renderUsers();renderRingResults();if(canManageRoles){renderPermissions(); renderCafeWorkers();}
   }
 
@@ -1479,7 +1480,7 @@ document.addEventListener("DOMContentLoaded",()=>{
  $('vp-edit-form')?.addEventListener('submit',async e=>{e.preventDefault();try{if(!(await canUse()))throw new Error('Esta función es exclusiva de la Creadora');const id=$('vp-edit-id').value,base=defaults.find(x=>x.id===id)||editing;await ref().child(id).set({id,title:$('vp-edit-title').value.trim()||base.title,tag:$('vp-edit-tag').value.trim()||base.tag,image:$('vp-edit-image').value.trim()||base.image,order:base.order,updatedAt:firebase.database.ServerValue.TIMESTAMP,updatedByUid:sf.current?.uid||''});$('vp-editor').hidden=true}catch(err){alert(err.message||'No se pudo guardar')}});
  $('vp-remove-current')?.addEventListener('click',async()=>{try{if(!(await canUse()))return;const id=$('vp-edit-id').value;if(confirm('¿Restaurar este espacio a su imagen original?'))await ref().child(id).remove();$('vp-editor').hidden=true}catch(e){alert(e.message||'No se pudo restaurar')}});
  $('vp-edit-file')?.addEventListener('change',()=>{const f=$('vp-edit-file').files?.[0];if(!f)return;$('vp-edit-file-name').textContent=f.name;if(!['image/png','image/jpeg','image/webp','image/gif'].includes(f.type)){ $('vp-edit-file-status').className='vp-upload-status error';$('vp-edit-file-status').textContent='Usa PNG, JPG, WEBP o GIF.';return}if(f.size>1200*1024){$('vp-edit-file-status').className='vp-upload-status error';$('vp-edit-file-status').textContent='Máximo 1.2 MB.';return}const r=new FileReader();r.onload=()=>{const d=String(r.result||'');$('vp-edit-image').value=d;$('vp-edit-preview').src=d;$('vp-edit-file-status').className='vp-upload-status ok';$('vp-edit-file-status').textContent='Imagen lista ✓'};r.readAsDataURL(f)});
- const boot=()=>{if(boot.done)return;boot.done=true;ref().once('value').then(s=>{cache=s.val()||{};render()}).catch(()=>render());ref().on('value',s=>{cache=s.val()||{};render()})};
+ const boot=()=>{if(boot.done)return;boot.done=true;const watchPicks=(on,fail)=>{const sf=window.SpeedyFirebase;const r=sf.db.ref('speedy-friends-teams/speedy-friends/visualPicks');try{if(sf.subscribeShared)return sf.subscribeShared('visualPicks',r,on,fail);}catch{}r.on('value',on,fail);return()=>r.off('value',on);};watchPicks(s=>{cache=s.val()||{};render()},()=>render())};
  if(sf.current?.uid)boot();else{let tries=0;const timer=setInterval(()=>{if(sf.current?.uid){clearInterval(timer);boot()}else if(++tries>30)clearInterval(timer)},400)}
 })();
 </script>
@@ -1593,7 +1594,7 @@ document.addEventListener("DOMContentLoaded",()=>{
   const boot=async()=>{if(boot.done)return;boot.done=true;
     try{
       if(!(await canUse()))return;
-      ref().on('value',s=>{cache=s.val()||{};render()});
+      const watchPicks=(on,fail)=>{const sf=window.SpeedyFirebase;const r=sf.db.ref('speedy-friends-teams/speedy-friends/visualPicks');try{if(sf.subscribeShared)return sf.subscribeShared('visualPicks',r,on,fail);}catch{}r.on('value',on,fail);return()=>r.off('value',on);};watchPicks(s=>{cache=s.val()||{};render()},()=>render());
       render();
     }catch(e){console.warn('[Visual Picks V39]',e)}
   };

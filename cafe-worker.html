@@ -192,6 +192,7 @@ document.addEventListener('DOMContentLoaded',()=>{
   const off=()=>{panel.classList.add('is-hidden');fab.style.display='none'};
   close.onclick=()=>{hide();try{sessionStorage.removeItem('sfCafeWalletOpen')}catch{}}; fab.onclick=()=>{show();try{sessionStorage.setItem('sfCafeWalletOpen','1')}catch{}};
 
+  const ringWatch={id:'',off:null};
   const apply=async()=>{
     try{
       const sf=window.SpeedyFirebase;
@@ -222,12 +223,16 @@ document.addEventListener('DOMContentLoaded',()=>{
 
       // Read the same profile ring balance used by the existing wallet.
       const profileId=state.profileId||profile.id;
-      let rings=Number(state.rings||0);
-      if(profileId && sf.refs?.rings){
-        const snap=await sf.refs.rings.child(profileId).once('value');
-        if(snap.exists())rings=Number(snap.val()||0);
+      const showRings=v=>{const r=Number(v);ringsEl.textContent=Number.isFinite(r)?r.toLocaleString('en-US'):'0';};
+      if(!ringWatch.id)showRings(state.rings||0);
+      // Una sola suscripción en vivo al saldo (antes se releía en cada uno de los 5 intentos de apply).
+      if(profileId && sf.refs?.rings && ringWatch.id!==profileId){
+        ringWatch.off?.();ringWatch.id=profileId;
+        const ref=sf.refs.rings.child(profileId);
+        const onValue=snap=>showRings(snap.exists()?snap.val():state.rings||0);
+        try{ringWatch.off=sf.subscribeShared?sf.subscribeShared(`rings/${profileId}`,ref,onValue,()=>showRings(state.rings||0)):(ref.on('value',onValue),()=>ref.off('value',onValue));}
+        catch{ringWatch.id='';}
       }
-      ringsEl.textContent=Number.isFinite(rings)?rings.toLocaleString('en-US'):'0';
     }catch(error){
       console.warn('[Café role wallet]',error);
       off();
