@@ -54,19 +54,32 @@
     const friendsRef = root.child('friends').child(uid);
     const ringsRef = root.child('rings');
     let users = {}, friends = {}, rings = {};
-    const update = () => render(users, friends, rings, uid);
-    usersRef.on('value', s => { users = s.val() || {}; update(); });
-    friendsRef.on('value', s => { friends = s.val() || {}; update(); });
-    ringsRef.on('value', s => { rings = s.val() || {}; update(); });
+    // Un repintado por fotograma aunque lleguen los tres nodos a la vez.
+    let frame = 0;
+    const update = () => { cancelAnimationFrame(frame); frame = requestAnimationFrame(() => render(users, friends, rings, uid)); };
+    // Mismas claves que Amigos y Ranking: comparten la suscripción en vez de abrir otra.
+    const watch = (key, ref, set) => {
+      const onValue = s => { set(s.val() || {}); update(); };
+      if (sf.subscribeShared) { try { return sf.subscribeShared(key, ref, onValue, () => { set({}); update(); }); } catch {} }
+      ref.on('value', onValue); return () => ref.off('value', onValue);
+    };
+    offAll();
+    offs = [
+      watch('users', usersRef, v => { users = v; }),
+      watch(`friends:${uid}`, friendsRef, v => { friends = v; }),
+      watch('rings', ringsRef, v => { rings = v; })
+    ];
     return true;
   }
+  let offs = [];
+  function offAll(){ offs.forEach(off => { try { off?.(); } catch {} }); offs = []; }
 
   function init(){
     if (!$('#homeFriendsRanking')) return;
     const tryBind = () => {
       const uid = currentSF()?.current?.uid || currentSF()?.state?.uid || '';
       if (uid && uid !== boundUid) { boundUid = uid; bind(uid); }
-      else if (!uid && boundUid !== 'guest') { boundUid = 'guest'; render({}, {}, {}, ''); }
+      else if (!uid && boundUid !== 'guest') { boundUid = 'guest'; offAll(); render({}, {}, {}, ''); }
       return !!uid;
     };
     tryBind();

@@ -81,7 +81,46 @@
     if(uid===sharedUid)return;
     for(const entry of sharedWatches.values())entry.ref.off("value",entry.handler);
     sharedWatches.clear();sharedUid=uid;
+    // Una copia de otra cuenta (o de antes de cerrar sesión) nunca se muestra.
+    const cached=readRankingCache();
+    if(cached&&cached.uid!==uid)clearRankingCache();
   });
+
+  // --- Caché pública de Ranking (stale-while-revalidate) ---
+  // Solo una proyección que cualquier integrante con sesión ya puede leer: nombre, título, rol,
+  // nivel, Rings y avatar si es una URL https corta. Sin correos, descripciones, portadas ni Base64.
+  // Vive en sessionStorage (se borra al cerrar la pestaña), caduca a los 10 min, va ligada al UID y
+  // se borra al cerrar sesión, al cambiar de cuenta o si Firebase deniega la lectura.
+  const RANK_CACHE_KEY="sfPublicRanking:v1",RANK_CACHE_TTL=10*60*1000;
+  function readRankingCache(){
+    try{const v=JSON.parse(sessionStorage.getItem(RANK_CACHE_KEY)||"null");return v&&v.v===1?v:null;}catch{return null;}
+  }
+  function clearRankingCache(){try{sessionStorage.removeItem(RANK_CACHE_KEY);}catch{}}
+  const shortUrl=v=>{const s=String(v||"");return /^https:\/\//i.test(s)&&s.length<=400?s:"";};
+  let rankSaveTimer=0;
+  function scheduleRankingCacheSave(){
+    clearTimeout(rankSaveTimer);
+    rankSaveTimer=setTimeout(()=>{
+      const u=sharedWatches.get("users"),r=sharedWatches.get("rings");
+      const uid=auth.currentUser?.uid||"";
+      if(!uid||uid!==sharedUid||!u?.hasSnapshot||!r?.hasSnapshot)return;
+      const users={},rawUsers=u.snapshot.val()||{},rings=r.snapshot.val()||{};
+      for(const [id,p] of Object.entries(rawUsers)){
+        if(!p||typeof p!=="object")continue;
+        const creator=String(p.ownerEmail||p.email||"").toLowerCase()===creatorEmail;
+        users[id]={name:String(p.name||"").slice(0,60),username:String(p.username||"").slice(0,60),nickname:String(p.nickname||"").slice(0,60),
+          title:String(p.title||"").slice(0,60),role:creator?"creator":String(p.role||"member").slice(0,20),ownerUid:String(p.ownerUid||p.uid||"").slice(0,128),
+          level:Number(p.level||1)||1,rings:Number(p.rings||0)||0,avatar:shortUrl(p.avatar),iconPosition:String(p.iconPosition||"50% 50%").slice(0,20),iconZoom:Number(p.iconZoom||100)||100};
+      }
+      const ringValues={};for(const [id,v] of Object.entries(rings))if(Number.isFinite(Number(v)))ringValues[id]=Number(v);
+      try{sessionStorage.setItem(RANK_CACHE_KEY,JSON.stringify({v:1,uid,at:Date.now(),users,rings:ringValues}));}catch{}
+    },250);
+  }
+  function getRankingCache(){
+    const uid=auth.currentUser?.uid||"";const c=readRankingCache();
+    if(!uid||!c||c.uid!==uid||Date.now()-Number(c.at||0)>RANK_CACHE_TTL)return null;
+    return {users:c.users||{},rings:c.rings||{},at:c.at};
+  }
   function subscribeShared(key,ref,onValue,onError=()=>{}){
     const uid=auth.currentUser?.uid||"";
     if(!uid||uid!==sharedUid)throw new Error("Sesión de Firebase no disponible");
@@ -92,9 +131,11 @@
       entry.handler=ref.on("value",snap=>{
         if(sharedWatches.get(key)!==entry||auth.currentUser?.uid!==uid)return;
         entry.snapshot=snap;entry.hasSnapshot=true;
+        if(key==="users"||key==="rings")scheduleRankingCacheSave();
         for(const client of [...entry.clients])client.onValue(snap);
       },error=>{
         if(sharedWatches.get(key)!==entry)return;
+        if(key==="users"||key==="rings")clearRankingCache();
         sharedWatches.delete(key);entry.snapshot=null;entry.hasSnapshot=false;
         for(const client of [...entry.clients])client.onError(error);
       });
@@ -107,6 +148,24 @@
       entry.clients.delete(client);
       if(!entry.clients.size&&sharedWatches.get(key)===entry){entry.ref.off("value",entry.handler);sharedWatches.delete(key);}
     };
+  }
+
+  // Lectura deduplicada: entrega el primer dato del listener compartido y lo mantiene un tiempo,
+  // así los módulos que se suscriben después reciben el mismo dato sin otra descarga. Si el listener
+  // ya existe, responde con su último dato al instante.
+  function readShared(key,ref,{holdMs=15000}={}){
+    return new Promise((resolve,reject)=>{
+      let done=false,off=null;
+      try{
+        off=subscribeShared(key,ref,snap=>{
+          if(done)return;done=true;resolve(snap);
+          setTimeout(()=>off?.(),holdMs);
+        },error=>{if(done)return;done=true;off?.();reject(error);});
+      }catch{
+        // Sesión todavía no registrada para compartir: lectura normal.
+        ref.once("value").then(resolve,reject);
+      }
+    });
   }
 
   function profileMatches(data,uid,email){
@@ -170,8 +229,12 @@
 
     const uid=user.uid,email=String(user.email||"");
     const creator=email.toLowerCase()===creatorEmail;
+    // Rings se pide en paralelo con el profileId recordado en esta pestaña (no es un dato privado);
+    // si la pista no coincide se vuelve a pedir con el perfil correcto.
+    const hintKey="sfProfileHint:"+uid;let hint="";try{hint=sessionStorage.getItem(hintKey)||"";}catch{}
+    const hintedRings=hint?refs.rings.child(hint).once("value").catch(()=>null):null;
     const [usersSnap,permSnap]=await Promise.all([
-      refs.users.once("value"),
+      readShared("users",refs.users),
       refs.permissions.child(uid).once("value")
     ]);
     const users=usersSnap.val()||{};
@@ -204,8 +267,10 @@
 
     const perms=permSnap.val()||{};
     let rings=Number(profile.rings||0);
-    const ringSnap=await refs.rings.child(profileId).once("value");
+    let ringSnap=hint===profileId?await hintedRings:null;
+    if(!ringSnap)ringSnap=await refs.rings.child(profileId).once("value");
     if(ringSnap.exists())rings=Number(ringSnap.val()||0);
+    try{sessionStorage.setItem(hintKey,profileId);}catch{}
 
     const role=creator?"creator":(String(perms.role||"").toLowerCase()==="admin"?"admin":"member");
     Object.assign(state,{ready:true,uid,email,role,isCreator:creator,isAdmin:creator||role==="admin",profileId,profile,permissions:perms,rings});
@@ -427,7 +492,9 @@
       await resolve();
       state.ready=Boolean(state.uid);
       state.checked=true;
-      if(state.uid) await startPresence(state.uid);
+      // La presencia se escribe en segundo plano: esperar su confirmación retrasaba un viaje de
+      // red completo el evento que esperan todos los módulos de la página.
+      if(state.uid) startPresence(state.uid);
       await emit("speedy:firebase-ready",{...state});
     }catch(error){
       console.error("[Speedy Firebase]",error);
@@ -439,7 +506,7 @@
     auth,db,storage,CloudinaryOST,CLOUDINARY_CONFIG,REALTIME_CONFIG,refs,current:state,
     resolve,saveProfile,signInGoogle,signOut:async()=>{ try{ if(state.uid) await stopPresence(state.uid); }catch(e){} return auth.signOut(); },adminHref,
     uploadProfileAsset,uploadOst:(uid,file,trackId)=>CloudinaryOST.upload(file,uid),
-    watchPublicUsers,watchUserRings,watchUserPresence,subscribeShared,setRingAmount,grantRingsPermission,setAdminRole,setCafeWorkerRole,setRating,
+    watchPublicUsers,watchUserRings,watchUserPresence,subscribeShared,readShared,getRankingCache,setRingAmount,grantRingsPermission,setAdminRole,setCafeWorkerRole,setRating,
     isCreator:()=>state.isCreator,isAdmin:()=>state.isAdmin
   };
 })();

@@ -64,25 +64,26 @@
     });
   }
 
+  // Usa la lectura compartida de firebase-legacy si existe; si no, una lectura normal.
+  const readShared = (key, ref) => SF().readShared ? SF().readShared(key, ref) : ref.once('value');
+
   async function loadDirectory() {
     state.users = {};
     state.rings = {};
 
     // Los usuarios son la fuente principal del directorio. Si otra rama
     // (por ejemplo Rings) falla por reglas, no debemos perder el directorio.
-    try {
-      const usersSnap = await SF().refs.users.once('value');
-      state.users = usersSnap.val() || {};
-    } catch (error) {
-      state.users = {};
-      throw error;
-    }
-
-    try {
-      const ringsSnap = await SF().refs.rings.once('value');
-      state.rings = ringsSnap.val() || {};
-    } catch (error) {
-      console.warn('[Speedy Friends] No se pudo leer Rings; el directorio seguirá disponible.', error);
+    // Usuarios y Rings en paralelo y desde los listeners compartidos de la sesión: los mismos datos
+    // que después usan startRealtime, Ranking y la portada, sin descargarlos otra vez.
+    const [usersResult, ringsResult] = await Promise.allSettled([
+      readShared('users', SF().refs.users),
+      readShared('rings', SF().refs.rings)
+    ]);
+    if (usersResult.status === 'rejected') { state.users = {}; throw usersResult.reason; }
+    state.users = usersResult.value.val() || {};
+    if (ringsResult.status === 'fulfilled') state.rings = ringsResult.value.val() || {};
+    else {
+      console.warn('[Speedy Friends] No se pudo leer Rings; el directorio seguirá disponible.', ringsResult.reason);
       state.rings = {};
     }
 
@@ -136,9 +137,9 @@
 
   async function refreshRelations({ silent = false } = {}) {
     await ensureReady();
-    const readOne = async (ref, key) => {
+    const readOne = async (ref, key, sharedKey) => {
       try {
-        const snap = await ref.once('value');
+        const snap = await readShared(sharedKey, ref);
         state[key] = snap.val() || {};
       } catch (error) {
         state[key] = {};
@@ -146,9 +147,9 @@
       }
     };
     await Promise.all([
-      readOne(friendsRef(state.uid), 'friends'),
-      readOne(inboxRef(state.uid), 'incoming'),
-      readOne(outboxRef(state.uid), 'outgoing')
+      readOne(friendsRef(state.uid), 'friends', `friends:${state.uid}`),
+      readOne(inboxRef(state.uid), 'incoming', `inbox:${state.uid}`),
+      readOne(outboxRef(state.uid), 'outgoing', `outbox:${state.uid}`)
     ]);
     return { friends: state.friends, incoming: state.incoming, outgoing: state.outgoing };
   }
@@ -675,8 +676,8 @@
     };
 
     watch(friendsRef(state.uid), value => { state.friends = value; presenceWatchFriends(); refreshViews(); }, 'amistades', `friends:${state.uid}`,()=>{state.friends={};presenceWatchFriends();refreshViews();});
-    watch(inboxRef(state.uid), value => { state.incoming = value; refreshViews(); });
-    watch(outboxRef(state.uid), value => { state.outgoing = value; refreshViews(); });
+    watch(inboxRef(state.uid), value => { state.incoming = value; refreshViews(); }, 'solicitudes recibidas', `inbox:${state.uid}`);
+    watch(outboxRef(state.uid), value => { state.outgoing = value; refreshViews(); }, 'solicitudes enviadas', `outbox:${state.uid}`);
     watch(SF().refs.users, value => {
       state.users = value || {};
       rebuildDirectory();

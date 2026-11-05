@@ -812,11 +812,20 @@ document.addEventListener('DOMContentLoaded',()=>{
     const offR=window.SpeedyFirebase.subscribeShared('rings',rRef,onR,()=>{ringMap={};users=normalize(sourceUsers);render();});
     offFriends=()=>{offF();offR();};
   }
+  // Muestra al instante la última copia pública de esta misma cuenta (si es reciente). El listener en
+  // vivo la reemplaza enseguida; syncCards conserva las tarjetas, así que no hay parpadeo.
+  function hydrateFromCache(uid){
+    const cache=uid&&window.SpeedyFirebase?.getRankingCache?.();
+    if(!cache||Object.keys(sourceUsers).length)return;
+    sourceUsers=cache.users;ringMap=cache.rings||{};
+    users=normalize(sourceUsers).map(u=>Object.hasOwn(ringMap,u.id)?{...u,rings:num(ringMap[u.id])}:u);
+    document.documentElement.dataset.rankingSource='cache';
+  }
   function bindFirebase(){
     if(!window.SpeedyFirebase?.refs?.users||usersBound||!activeUid||window.SpeedyFirebase?.auth?.currentUser?.uid!==activeUid)return;
     usersBound=true;
     const ref=window.SpeedyFirebase.refs.users;
-    offUsers=window.SpeedyFirebase.subscribeShared('users',ref,snap=>{sourceUsers=snap.val()||{};users=normalize(sourceUsers).map(u=>Object.hasOwn(ringMap,u.id)?{...u,rings:num(ringMap[u.id])}:u);render();},()=>{sourceUsers={};users=[];render();});
+    offUsers=window.SpeedyFirebase.subscribeShared('users',ref,snap=>{document.documentElement.dataset.rankingSource='live';sourceUsers=snap.val()||{};users=normalize(sourceUsers).map(u=>Object.hasOwn(ringMap,u.id)?{...u,rings:num(ringMap[u.id])}:u);render();},()=>{sourceUsers={};users=[];render();});
     const uid=window.SpeedyFirebase?.current?.uid || window.SpeedyFirebase?.state?.uid;
     if(uid)loadFriends(uid);
   }
@@ -829,7 +838,7 @@ document.addEventListener('DOMContentLoaded',()=>{
       const uid=user?.uid||'';
       if(uid!==activeUid){
         offFriends?.();offUsers?.();offFriends=null;offUsers=null;friendsUid='';usersBound=false;
-        friendsMap={};ringMap={};sourceUsers={};users=[];activeUid=uid;render();
+        friendsMap={};ringMap={};sourceUsers={};users=[];activeUid=uid;hydrateFromCache(uid);render();
       }
       if(uid){bindFirebase();loadFriends(uid);}
     });
