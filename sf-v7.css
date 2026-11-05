@@ -69,3 +69,43 @@ dialog[open]::backdrop{animation:sf7Fade var(--sf7-mid) ease-out}
  :where(.sf-btn,.admin-btn,.ranking-filter,.fanart-filter,.activity-filter,.sf-clip-chip):active{transform:none}
 }
 html[data-sf-fx="lite"] .rank-rings strong.sf7-bump,html[data-sf-fx="lite"] .rank-row.sf7-up,html[data-sf-fx="lite"] dialog[open],html[data-sf-fx="lite"] .admin-section.active{animation:none!important}
+
+/* ===== V7.1 · Pulido móvil =====
+ * Zonas táctiles de 44×44 px, campos a 16 px (sin zoom automático en iOS/Android), controles
+ * flotantes apilados sin taparse y espacio inferior reservado para que no oculten contenido. */
+@media (max-width:760px),(pointer:coarse){
+ .sf-site-nav a{display:inline-flex!important;align-items:center;min-height:44px;padding-top:0!important;padding-bottom:0!important}
+ :where(header,nav) a{min-height:44px;display:inline-flex;align-items:center}
+ a:where(.sf-btn,.sf-more,.sf-see-friends,.profile-back,[class*="btn"],[id^="sf-cafe-rw-"]){min-height:44px;display:inline-flex;align-items:center;justify-content:center}
+ .sf-footer a{min-height:44px;display:inline-flex;align-items:center}
+ :where(header,nav,.sf-section-head,.sf-footer) a:where([class*="brand"],.sf-more){min-height:44px!important;height:auto!important}
+ :where(.sf-menu,.sf-nav-menu,.fanart-like,.record-close){min-width:44px!important;min-height:44px!important}
+ :where(button,[role=button],select,summary):not(.sf-clip-chip):not([disabled]){min-height:44px}
+ :where(button,[role=button]):where([aria-label]):not(:has(> span,> b,> strong)){min-width:44px}
+ :where(input:not([type=checkbox]):not([type=radio]):not([type=range]):not([type=file]):not([type=hidden]),select,textarea){min-height:44px;font-size:max(16px,1em)!important}
+ input[type=range]{min-height:32px}
+}
+@media (max-width:760px){
+ /* Tema y efectos dejan de flotar sobre el contenido: pasan al final de la página. */
+ .sf-theme-toggle-global,.sf-fx-toggle{position:static!important;display:flex!important;margin:14px auto!important;inset:auto!important;transform:none!important;min-height:44px;font-size:12px!important}
+ /* Pila de botones flotantes: abajo a la derecha Accesos y, encima, el panel de rol; abajo a la izquierda la cartera. */
+ .sf-utility-toggle{bottom:calc(14px + env(safe-area-inset-bottom))!important;right:12px!important}
+ #sf-role-fab{bottom:calc(80px + env(safe-area-inset-bottom))!important;right:14px!important;width:48px!important;height:48px!important}
+ #sf-cafe-rw-fab{left:12px!important;bottom:calc(14px + env(safe-area-inset-bottom))!important}
+ .record-open-tab{left:12px!important;top:auto!important;bottom:calc(76px + env(safe-area-inset-bottom))!important;width:48px!important;height:48px!important}
+ body{padding-bottom:calc(84px + env(safe-area-inset-bottom))}
+ /* Estados de guardado y avisos legibles con buen contraste. */
+ #save-profile-status{display:block;opacity:1!important;font-size:14px!important;font-weight:700!important;line-height:1.45;letter-spacing:0!important;text-transform:none!important;padding:10px 12px;border-left:4px solid #1e3a8a;background:#eef2ff;color:#0b1d4d!important}
+}
+#save-profile-status[data-tone=error]{color:#8a0f1f!important;background:#fdecee;border-left-color:#c2132b}
+#save-profile-status[data-tone=warn]{color:#6b4500!important;background:#fff6dd;border-left-color:#a16207}
+#save-profile-status[data-tone=ok]{color:#0d5a2c!important;background:#e8f7ee;border-left-color:#16803c}
+#save-profile-status[data-tone=pending]{color:#0b1d4d!important}
+
+/* Perfil en móvil: barra de guardado fija mientras se edita y cinta de vista previa visible. */
+@media (max-width:760px){
+ .editor-save-row{position:sticky;bottom:calc(10px + env(safe-area-inset-bottom));z-index:30;flex-direction:row!important;align-items:center!important;flex-wrap:wrap;gap:8px;margin-top:14px;padding:10px;background:rgba(255,255,255,.97);border:1px solid rgba(11,29,77,.14);box-shadow:0 10px 30px rgba(11,29,77,.18)}
+ .editor-save-row #save-profile{flex:1 1 auto;min-height:48px;font-size:13px!important}
+ .editor-save-row #save-profile-status{flex:1 1 100%;margin:0}
+ .preview-badge{position:relative;z-index:3}
+}
