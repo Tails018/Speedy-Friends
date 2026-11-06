@@ -1,6 +1,6 @@
 /* Generado por scripts/stamp-version.mjs: no editar a mano. */
 (() => {
-  const build = Object.freeze({ version: "7.1.0", commit: "6b7cf14", date: "2026-11-05" });
+  const build = Object.freeze({ version: "7.1.0", commit: "9850857", date: "2026-11-06" });
   window.SF_BUILD = build;
   document.documentElement.dataset.sfBuild = build.version + '+' + build.commit;
   const mark = () => {
